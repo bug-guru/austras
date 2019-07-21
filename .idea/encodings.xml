@@ -4,5 +4,7 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/fuzzbagel-apt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/fuzzbagel-rt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/fuzzbagel-test" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/fuzzbagel-test-apt" charset="UTF-8" />
   </component>
 </project>
