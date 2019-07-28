@@ -1,17 +1,17 @@
 package guru.bug.fuzzbagel.privider;
 
 public abstract class GlobalComponentProvider<T> extends AbstractComponentProvider<T> {
-  private T instance;
+    private T instance;
 
-  @Override
-  public T get() {
-    if (instance == null) {
-      synchronized (this) {
+    @Override
+    public T get() {
         if (instance == null) {
-          instance = takeInstance();
+            synchronized (this) {
+                if (instance == null) {
+                    instance = takeInstance();
+                }
+            }
         }
-      }
+        return instance;
     }
-    return instance;
-  }
 }
