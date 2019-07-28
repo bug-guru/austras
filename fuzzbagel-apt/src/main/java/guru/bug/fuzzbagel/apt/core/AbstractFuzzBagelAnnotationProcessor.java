@@ -6,7 +6,7 @@ import javax.tools.Diagnostic;
 import static javax.tools.Diagnostic.Kind.*;
 
 public abstract class AbstractFuzzBagelAnnotationProcessor extends AbstractProcessor
-    implements Logger {
+        implements Logger {
 
   @Override
   public void log(Diagnostic.Kind kind, String msg, Object... args) {
