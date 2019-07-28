@@ -74,3 +74,4 @@ Temporary Items
 .directory
 .Trash-*
 .nfs*
+target/

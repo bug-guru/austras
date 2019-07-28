@@ -74,7 +74,7 @@ public class ComponentMap {
     }
 
     public Stream<ComponentDescription> allComponentsStream() {
-        return components.values().stream().flatMap(Collection::stream);
+        return components.values().stream().flatMap(Collection::stream).distinct();
     }
 
     private void put(DeclaredType key, ComponentDescription value) {
