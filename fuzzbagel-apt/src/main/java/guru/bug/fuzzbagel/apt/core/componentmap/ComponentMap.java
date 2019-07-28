@@ -3,34 +3,87 @@ package guru.bug.fuzzbagel.apt.core.componentmap;
 import guru.bug.fuzzbagel.apt.core.Logger;
 
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ComponentMap {
     private final Map<DeclaredType, HashSet<ComponentDescription>> components = new HashMap<>();
+    private final Queue<TypeElement> providers = new LinkedList<>();
     private final Logger log;
+    private final TypeElement providerType;
+    private boolean hasProviderAncestor;
 
-    public ComponentMap(Logger log) {
+    public ComponentMap(Logger log, TypeElement providerType) {
         this.log = log;
+        this.providerType = providerType;
     }
 
     public void addClass(TypeElement type) {
-        var ifaces = collectAllAncestor(type);
-        log.debug("All superclasses and interfaces: %s", ifaces);
-        var desc = new ComponentDescription(type);
-        ifaces.forEach(e -> put(e, desc));
-        put((DeclaredType) type.asType(), desc);
+        if (type.getKind() != ElementKind.CLASS || type.getModifiers().contains(Modifier.ABSTRACT)) {
+            throw new IllegalArgumentException("type must be a not abstract class" );
+        }
+        var ancestors = collectAllAncestor(type);
+        log.debug("All superclasses and interfaces: %s", ancestors);
+        if (hasProviderAncestor) {
+            log.debug("Adding as component provider" );
+            providers.add(type);
+        } else {
+            log.debug("Adding as component" );
+            var desc = new ComponentDescription(type);
+            ancestors.forEach(e -> put(e, desc));
+            put((DeclaredType) type.asType(), desc);
+        }
+    }
+
+    public void resolveProviders() {
+        log.debug("Resolving providers" );
+        TypeElement provider;
+        while ((provider = providers.poll()) != null) {
+            log.debug("Resolving provider %s", provider);
+            var type = extractComponentTypeFromProvider(provider);
+            var p = provider;
+            components.get(type).stream().findFirst().ifPresent(cd -> {
+                log.debug("Setting provider %s for %s", p, cd.getComponentType());
+                cd.setProviderType(p);
+            });
+        }
+    }
+
+    private DeclaredType extractComponentTypeFromProvider(TypeElement provider) {
+        var providerAncestors = provider.getInterfaces().stream()
+                .filter(tm -> ((DeclaredType) tm).asElement().equals(providerType))
+                .filter(tm -> ((DeclaredType) tm).getTypeArguments().size() == 1)
+                .filter(tm -> ((DeclaredType) tm).getTypeArguments().get(0).getKind() == TypeKind.DECLARED)
+                .collect(Collectors.toList());
+        if (providerAncestors.size() != 1) {
+            throw new IllegalArgumentException("Unexpected count of ComponentProvider implemented interfaces" );
+        }
+        DeclaredType providerAncestor = (DeclaredType) providerAncestors.get(0);
+        log.debug("ancestor: %s", providerAncestor);
+        var typeArguments = providerAncestor.getTypeArguments();
+        if (typeArguments.size() != 1) {
+            throw new IllegalArgumentException("Unexpected count of type arguments" );
+        }
+        return (DeclaredType) typeArguments.get(0);
+    }
+
+    public Stream<ComponentDescription> allComponentsStream() {
+        return components.values().stream().flatMap(Collection::stream);
     }
 
     private void put(DeclaredType key, ComponentDescription value) {
         components.computeIfAbsent(key, k -> new HashSet<>()).add(value);
     }
 
-    private List<DeclaredType> collectAllAncestor(TypeElement type) {
-        var result = new ArrayList<DeclaredType>();
+    private Set<DeclaredType> collectAllAncestor(TypeElement type) {
+        hasProviderAncestor = false;
+        var result = new HashSet<DeclaredType>();
         var checked = new HashSet<TypeMirror>();
         var toCheck = new LinkedList<TypeMirror>(type.getInterfaces());
         toCheck.add(type.getSuperclass());
@@ -53,6 +106,10 @@ public class ComponentMap {
                 continue;
             }
             var curDeclElem = (TypeElement) curElem;
+            if (curDeclElem.equals(providerType)) {
+                log.debug("marking as provider" );
+                hasProviderAncestor = true;
+            }
             result.add(curType);
             var sup = curDeclElem.getSuperclass();
             if (sup.getKind() == TypeKind.NONE) {

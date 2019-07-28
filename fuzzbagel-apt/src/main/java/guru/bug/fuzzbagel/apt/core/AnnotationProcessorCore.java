@@ -1,6 +1,7 @@
 package guru.bug.fuzzbagel.apt.core;
 
 import guru.bug.fuzzbagel.apt.core.componentmap.ComponentMap;
+import guru.bug.fuzzbagel.privider.ComponentProvider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -23,7 +24,8 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        componentMap = new ComponentMap(this);
+        var providerType = processingEnv.getElementUtils().getTypeElement(ComponentProvider.class.getName());
+        componentMap = new ComponentMap(this, providerType);
     }
 
     @Override
@@ -32,8 +34,13 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
             generateAppMain();
         } else {
             scanRootElements(roundEnv.getRootElements());
+            generateProviders();
         }
         return false;
+    }
+
+    private void generateProviders() {
+        componentMap.resolveProviders();
     }
 
     private void scanRootElements(Set<? extends Element> rootElements) {
