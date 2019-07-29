@@ -1,4 +1,4 @@
-package guru.bug.fuzzbagel.privider;
+package guru.bug.fuzzbagel.provider;
 
 public abstract class GlobalComponentProvider<T> extends AbstractComponentProvider<T> {
     private T instance;

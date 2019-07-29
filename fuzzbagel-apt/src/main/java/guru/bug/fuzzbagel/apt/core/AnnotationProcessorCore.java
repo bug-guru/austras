@@ -1,8 +1,8 @@
 package guru.bug.fuzzbagel.apt.core;
 
 import guru.bug.fuzzbagel.apt.core.componentmap.ComponentMap;
-import guru.bug.fuzzbagel.privider.ComponentProvider;
-import guru.bug.fuzzbagel.privider.GlobalComponentProvider;
+import guru.bug.fuzzbagel.apt.core.generators.StandardProviderGenerator;
+import guru.bug.fuzzbagel.provider.ComponentProvider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -12,9 +12,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Set;
 
 import static javax.lang.model.element.ElementKind.CLASS;
@@ -45,40 +42,13 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
 
     private void generateProviders() {
         componentMap.resolveProviders();
+        System.out.printf("Components: %s\n", componentMap);
+        var spg = new StandardProviderGenerator(processingEnv);
         componentMap.allComponentsStream()
                 .filter(cd -> cd.getProviderType() == null)
-                .forEach(cd -> generateProvider(cd.getComponentType()));
+                .forEach(spg::generateProvider);
     }
 
-    private void generateProvider(TypeElement componentType) {
-        var pkgName = processingEnv.getElementUtils().getPackageOf(componentType).getQualifiedName().toString();
-        var compSimpleName = componentType.getSimpleName().toString();
-        var provSimpleName = componentType.getSimpleName().toString().concat("Provider" );
-        var provQualifiedName = pkgName.concat("." ).concat(provSimpleName);
-
-        try {
-            JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(provQualifiedName);
-            try (var oos = sourceFile.openOutputStream();
-                 var out = new PrintWriter(oos)) {
-                out.printf("package %s;\n", pkgName);
-                out.printf("public class %s extends %s<%s> implements %s<%s> {\n",
-                        provSimpleName,
-                        GlobalComponentProvider.class.getName(),
-                        componentType.getQualifiedName(),
-                        ComponentProvider.class.getName(),
-                        componentType.getQualifiedName());
-
-                out.printf("@Override\n" );
-                out.printf("protected %s takeInstance() {\n", componentType.getQualifiedName());
-                out.print("return null;\n" );
-                out.print("}\n" );
-                out.print("}" );
-            }
-        } catch (IOException e) {
-            error("Unexpected error", e);
-            throw new IllegalStateException(e);
-        }
-    }
 
     private void scanRootElements(Set<? extends Element> rootElements) {
         rootElements.forEach(this::scanElement);

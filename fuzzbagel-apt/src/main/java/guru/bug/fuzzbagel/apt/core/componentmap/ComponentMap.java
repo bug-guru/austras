@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ComponentMap {
-    private final Map<DeclaredType, HashSet<ComponentDescription>> components = new HashMap<>();
+    private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
+    private final Map<String, HashSet<ComponentDescription>> components = new HashMap<>();
     private final Queue<TypeElement> providers = new LinkedList<>();
     private final Logger log;
     private final TypeElement providerType;
@@ -34,12 +35,16 @@ public class ComponentMap {
             log.debug("Adding as component provider" );
             providers.add(type);
         } else {
-            log.debug("Adding as component" );
-            var desc = new ComponentDescription(type);
-            ancestors.forEach(e -> put(e, desc));
-            put((DeclaredType) type.asType(), desc);
+            var varName = uniqueNameGenerator.findFreeVarName(type);
+            var providerVarName = uniqueNameGenerator.findFreeVarName(varName + "Provider" );
+            log.debug("Adding as component (var: %s; provider var: %s)", varName, providerVarName);
+            var desc = new ComponentDescription(varName, type, providerVarName);
+            ancestors.forEach(e -> put(e.toString(), desc));
+            DeclaredType declaredType = (DeclaredType) type.asType();
+            put(declaredType.toString(), desc);
         }
     }
+
 
     public void resolveProviders() {
         log.debug("Resolving providers" );
@@ -47,8 +52,8 @@ public class ComponentMap {
         while ((provider = providers.poll()) != null) {
             log.debug("Resolving provider %s", provider);
             var type = extractComponentTypeFromProvider(provider);
-            var p = provider;
-            components.get(type).stream().findFirst().ifPresent(cd -> {
+            final var p = provider; // final required for accessing from lambdas
+            components.get(type.toString()).stream().findFirst().ifPresent(cd -> {
                 log.debug("Setting provider %s for %s", p, cd.getComponentType());
                 cd.setProviderType(p);
             });
@@ -77,7 +82,20 @@ public class ComponentMap {
         return components.values().stream().flatMap(Collection::stream).distinct();
     }
 
-    private void put(DeclaredType key, ComponentDescription value) {
+    public ComponentDescription findSingleDeclaration(DeclaredType type) {
+        var comps = components.get(type.toString());
+        if (comps == null) {
+            throw new IllegalArgumentException("Component " + type + " not found" );
+        }
+        if (comps.size() > 1) {
+            throw new IllegalArgumentException("Too many components " + type);
+        }
+        return comps.stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Component " + type + " not found" ));
+    }
+
+    private void put(String key, ComponentDescription value) {
         components.computeIfAbsent(key, k -> new HashSet<>()).add(value);
     }
 
@@ -134,7 +152,7 @@ public class ComponentMap {
         StringBuilder result = new StringBuilder(500);
         result.append("componentMap:\n" );
         components.entrySet().stream()
-                .sorted(Comparator.comparing(it -> it.getKey().toString()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(
                         ctrl -> {
                             result.append("\t" ).append(ctrl.getKey()).append(":\n" );

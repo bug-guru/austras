@@ -4,15 +4,27 @@ import javax.lang.model.element.TypeElement;
 import java.util.Objects;
 
 public class ComponentDescription {
+    private final String varName;
     private final TypeElement componentType;
+    private String providerVarName;
     private TypeElement providerType;
 
-    public ComponentDescription(TypeElement componentType) {
+    public ComponentDescription(String varName, TypeElement componentType, String providerVarName) {
+        this.varName = varName;
         this.componentType = componentType;
+        this.providerVarName = providerVarName;
+    }
+
+    public String getVarName() {
+        return varName;
     }
 
     public TypeElement getComponentType() {
         return componentType;
+    }
+
+    public String getProviderVarName() {
+        return providerVarName;
     }
 
     public TypeElement getProviderType() {
