@@ -8,6 +8,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -161,5 +163,16 @@ public class ComponentMap {
                                     .forEach(desc -> result.append("\t\t" ).append(desc).append("\n" ));
                         });
         return result.toString();
+    }
+
+    public void serialize(Writer out) throws IOException {
+        var exported = new HashSet<String>();
+        out.write("components:\n" );
+        components.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(cd -> {
+                    out.write("component:\n" );
+                    cd.
+                });
     }
 }

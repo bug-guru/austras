@@ -12,6 +12,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.StandardLocation;
+import java.io.IOException;
 import java.util.Set;
 
 import static javax.lang.model.element.ElementKind.CLASS;
@@ -32,12 +34,21 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (roundEnv.processingOver()) {
+            generateComponentMap();
             generateAppMain();
         } else {
             scanRootElements(roundEnv.getRootElements());
             generateProviders();
         }
         return false;
+    }
+
+    private void generateComponentMap() {
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "META-INF", "components" ).openWriter()) {
+            componentMap.serialize(out);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void generateProviders() {
