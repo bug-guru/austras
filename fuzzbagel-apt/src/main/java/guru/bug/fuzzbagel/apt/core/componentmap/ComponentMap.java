@@ -9,6 +9,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -165,14 +166,20 @@ public class ComponentMap {
         return result.toString();
     }
 
-    public void serialize(Writer out) throws IOException {
+    public void serialize(PrintWriter out) {
         var exported = new HashSet<String>();
         out.write("components:\n" );
         components.values().stream()
                 .flatMap(Collection::stream)
+                .distinct()
                 .forEach(cd -> {
-                    out.write("component:\n" );
-                    cd.
+                    out.printf("- component:\n" +
+                            "\tname: %s\n" +
+                            "\ttype: %s\n" +
+                            "\tprovider: %s\n",
+                            cd.getVarName(),
+                            cd.getComponentType(),
+                            cd.getProviderType());
                 });
     }
 }

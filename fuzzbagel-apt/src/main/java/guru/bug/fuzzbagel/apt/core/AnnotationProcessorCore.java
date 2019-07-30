@@ -14,12 +14,13 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.StandardLocation;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Set;
 
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 
-@SupportedAnnotationTypes("*" )
+@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcessor {
     private ComponentMap componentMap;
@@ -44,8 +45,9 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
     }
 
     private void generateComponentMap() {
-        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "META-INF", "components" ).openWriter()) {
-            componentMap.serialize(out);
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml").openOutputStream();
+             var w = new PrintWriter(out)) {
+            componentMap.serialize(w);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
