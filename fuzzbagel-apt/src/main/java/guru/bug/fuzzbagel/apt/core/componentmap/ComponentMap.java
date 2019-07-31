@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 
 public class ComponentMap {
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
-    private final Map<String, HashSet<ComponentDescription>> components = new HashMap<>();
-    private final Queue<TypeElement> providers = new LinkedList<>();
+    private final Map<String, HashSet<BaseDescription>> components = new HashMap<>();
+    private final Queue<ProviderDescription> providers = new LinkedList<>();
     private final Logger log;
     private final TypeElement providerType;
     private boolean hasProviderAncestor;
@@ -28,39 +28,39 @@ public class ComponentMap {
 
     public void addClass(TypeElement type) {
         if (type.getKind() != ElementKind.CLASS || type.getModifiers().contains(Modifier.ABSTRACT)) {
-            throw new IllegalArgumentException("type must be a not abstract class" );
+            throw new IllegalArgumentException("type must be a not abstract class");
         }
         var ancestors = collectAllAncestor(type);
         log.debug("All superclasses and interfaces: %s", ancestors);
-
         var varName = uniqueNameGenerator.findFreeVarName(type);
-        var providerVarName = uniqueNameGenerator.findFreeVarName(varName + "Provider" );
-        var desc = new ComponentDescription(varName, type, providerVarName);
-        log.debug("Adding as component (var: %s; provider var: %s)", varName, providerVarName);
+        BaseDescription desc;
+        if (hasProviderAncestor) {
+            log.debug("Adding as component provider");
+            desc = new ProviderDescription(varName, type);
+            providers.add((ProviderDescription) desc);
+        } else {
+            desc = new ComponentDescription(varName, type);
+        }
+        log.debug("Adding as component (var: %s)", varName);
         ancestors.forEach(e -> put(e.toString(), desc));
         DeclaredType declaredType = (DeclaredType) type.asType();
         put(declaredType.toString(), desc);
-
-        if (hasProviderAncestor) {
-            log.debug("Adding as component provider" );
-            providers.add(type);
-            desc.setProvider(true);
-        }
-
     }
 
 
     public void resolveProviders() {
-        log.debug("Resolving providers" );
-        TypeElement provider;
+        log.debug("Resolving providers");
+        ProviderDescription provider;
         while ((provider = providers.poll()) != null) {
             log.debug("Resolving provider %s", provider);
-            var type = extractComponentTypeFromProvider(provider);
-            final var p = provider; // final required for accessing from lambdas
-            components.get(type.toString()).stream().findFirst().ifPresent(cd -> {
-                log.debug("Setting provider %s for %s", p, cd.getComponentType());
-                cd.setProviderType(p);
-            });
+            var type = extractComponentTypeFromProvider(provider.getComponentType());
+            var foundSet = components.get(type.toString());
+            if (foundSet == null || foundSet.size() != 1) {
+                throw new IllegalStateException("expected only one component"); // TODO better error handling
+            }
+            var cd = (ComponentDescription) foundSet.stream().findFirst().orElseThrow();
+            log.debug("Setting provider %s for %s", provider.getComponentType(), cd.getComponentType());
+            cd.setProvider(provider);
         }
     }
 
@@ -71,35 +71,35 @@ public class ComponentMap {
                 .filter(tm -> ((DeclaredType) tm).getTypeArguments().get(0).getKind() == TypeKind.DECLARED)
                 .collect(Collectors.toList());
         if (providerAncestors.size() != 1) {
-            throw new IllegalArgumentException("Unexpected count of ComponentProvider implemented interfaces" );
+            throw new IllegalArgumentException("Unexpected count of ComponentProvider implemented interfaces");
         }
         DeclaredType providerAncestor = (DeclaredType) providerAncestors.get(0);
         log.debug("ancestor: %s", providerAncestor);
         var typeArguments = providerAncestor.getTypeArguments();
         if (typeArguments.size() != 1) {
-            throw new IllegalArgumentException("Unexpected count of type arguments" );
+            throw new IllegalArgumentException("Unexpected count of type arguments");
         }
         return (DeclaredType) typeArguments.get(0);
     }
 
-    public Stream<ComponentDescription> allComponentsStream() {
+    public Stream<BaseDescription> allComponentsStream() {
         return components.values().stream().flatMap(Collection::stream).distinct();
     }
 
-    public ComponentDescription findSingleDeclaration(DeclaredType type) {
+    public BaseDescription findSingleDeclaration(DeclaredType type) {
         var comps = components.get(type.toString());
         if (comps == null) {
-            throw new IllegalArgumentException("Component " + type + " not found" );
+            throw new IllegalArgumentException("Component " + type + " not found");
         }
         if (comps.size() > 1) {
             throw new IllegalArgumentException("Too many components " + type);
         }
         return comps.stream()
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Component " + type + " not found" ));
+                .orElseThrow(() -> new IllegalArgumentException("Component " + type + " not found"));
     }
 
-    private void put(String key, ComponentDescription value) {
+    private void put(String key, BaseDescription value) {
         components.computeIfAbsent(key, k -> new HashSet<>()).add(value);
     }
 
@@ -113,7 +113,7 @@ public class ComponentMap {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked" );
+                log.debug("Already checked");
                 continue;
             }
             checked.add(cur);
@@ -129,20 +129,20 @@ public class ComponentMap {
             }
             var curDeclElem = (TypeElement) curElem;
             if (curDeclElem.equals(providerType)) {
-                log.debug("marking as provider" );
+                log.debug("marking as provider");
                 hasProviderAncestor = true;
             }
             result.add(curType);
             var sup = curDeclElem.getSuperclass();
             if (sup.getKind() == TypeKind.NONE) {
-                log.debug("no superclass found" );
+                log.debug("no superclass found");
             } else {
                 log.debug("adding superclass %s to check-queue", sup);
                 toCheck.add(sup);
             }
             var toAdd = curDeclElem.getInterfaces();
             if (toAdd.isEmpty()) {
-                log.debug("no implemented interfaces" );
+                log.debug("no implemented interfaces");
             } else {
                 log.debug("adding %s to the check-queue", toAdd);
                 toCheck.addAll(toAdd);
@@ -154,22 +154,22 @@ public class ComponentMap {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(500);
-        result.append("componentMap:\n" );
+        result.append("componentMap:\n");
         components.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(
                         ctrl -> {
-                            result.append("\t" ).append(ctrl.getKey()).append(":\n" );
+                            result.append("\t").append(ctrl.getKey()).append(":\n");
                             ctrl.getValue().stream()
                                     .sorted(Comparator.comparing(Object::toString))
-                                    .forEach(desc -> result.append("\t\t" ).append(desc).append("\n" ));
+                                    .forEach(desc -> result.append("\t\t").append(desc).append("\n"));
                         });
         return result.toString();
     }
 
     public void serialize(PrintWriter out) {
         var exported = new HashSet<String>();
-        out.write("components:\n" );
+        out.write("components:\n");
         components.values().stream()
                 .flatMap(Collection::stream)
                 .distinct()
