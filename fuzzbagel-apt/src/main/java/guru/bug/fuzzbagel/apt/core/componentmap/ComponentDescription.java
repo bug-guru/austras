@@ -8,6 +8,7 @@ public class ComponentDescription {
     private final TypeElement componentType;
     private String providerVarName;
     private TypeElement providerType;
+    private boolean isProvider;
 
     public ComponentDescription(String varName, TypeElement componentType, String providerVarName) {
         this.varName = varName;
@@ -33,6 +34,14 @@ public class ComponentDescription {
 
     public void setProviderType(TypeElement providerType) {
         this.providerType = providerType;
+    }
+
+    public boolean isProvider() {
+        return isProvider;
+    }
+
+    public void setProvider(boolean provider) {
+        isProvider = provider;
     }
 
     @Override

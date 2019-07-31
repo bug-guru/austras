@@ -8,9 +8,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,18 +32,21 @@ public class ComponentMap {
         }
         var ancestors = collectAllAncestor(type);
         log.debug("All superclasses and interfaces: %s", ancestors);
+
+        var varName = uniqueNameGenerator.findFreeVarName(type);
+        var providerVarName = uniqueNameGenerator.findFreeVarName(varName + "Provider" );
+        var desc = new ComponentDescription(varName, type, providerVarName);
+        log.debug("Adding as component (var: %s; provider var: %s)", varName, providerVarName);
+        ancestors.forEach(e -> put(e.toString(), desc));
+        DeclaredType declaredType = (DeclaredType) type.asType();
+        put(declaredType.toString(), desc);
+
         if (hasProviderAncestor) {
             log.debug("Adding as component provider" );
             providers.add(type);
-        } else {
-            var varName = uniqueNameGenerator.findFreeVarName(type);
-            var providerVarName = uniqueNameGenerator.findFreeVarName(varName + "Provider" );
-            log.debug("Adding as component (var: %s; provider var: %s)", varName, providerVarName);
-            var desc = new ComponentDescription(varName, type, providerVarName);
-            ancestors.forEach(e -> put(e.toString(), desc));
-            DeclaredType declaredType = (DeclaredType) type.asType();
-            put(declaredType.toString(), desc);
+            desc.setProvider(true);
         }
+
     }
 
 
@@ -174,9 +175,9 @@ public class ComponentMap {
                 .distinct()
                 .forEach(cd -> {
                     out.printf("- component:\n" +
-                            "\tname: %s\n" +
-                            "\ttype: %s\n" +
-                            "\tprovider: %s\n",
+                                    "\tname: %s\n" +
+                                    "\ttype: %s\n" +
+                                    "\tprovider: %s\n",
                             cd.getVarName(),
                             cd.getComponentType(),
                             cd.getProviderType());

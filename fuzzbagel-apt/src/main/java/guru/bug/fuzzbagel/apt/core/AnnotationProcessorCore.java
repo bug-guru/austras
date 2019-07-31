@@ -58,6 +58,7 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
         System.out.printf("Components: %s\n", componentMap);
         var spg = new StandardProviderGenerator(processingEnv);
         componentMap.allComponentsStream()
+                .filter(cd -> !cd.isProvider())
                 .filter(cd -> cd.getProviderType() == null)
                 .forEach(spg::generateProvider);
     }
