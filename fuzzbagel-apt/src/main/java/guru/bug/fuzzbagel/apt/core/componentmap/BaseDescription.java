@@ -5,19 +5,19 @@ import java.util.Objects;
 
 public abstract class BaseDescription {
     private final String varName;
-    private final TypeElement componentType;
+    private final TypeElement type;
 
-    public BaseDescription(String varName, TypeElement componentType) {
+    public BaseDescription(String varName, TypeElement type) {
         this.varName = varName;
-        this.componentType = componentType;
+        this.type = type;
     }
 
     public String getVarName() {
         return varName;
     }
 
-    public TypeElement getComponentType() {
-        return componentType;
+    public TypeElement getType() {
+        return type;
     }
 
     @Override
@@ -25,11 +25,11 @@ public abstract class BaseDescription {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseDescription that = (BaseDescription) o;
-        return componentType.equals(that.componentType);
+        return type.equals(that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(componentType);
+        return Objects.hash(type);
     }
 }

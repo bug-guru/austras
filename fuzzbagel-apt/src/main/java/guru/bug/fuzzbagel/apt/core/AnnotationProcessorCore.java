@@ -1,7 +1,8 @@
 package guru.bug.fuzzbagel.apt.core;
 
+import guru.bug.fuzzbagel.apt.core.componentmap.ComponentDescription;
 import guru.bug.fuzzbagel.apt.core.componentmap.ComponentMap;
-import guru.bug.fuzzbagel.apt.core.generators.StandardProviderGenerator;
+import guru.bug.fuzzbagel.apt.core.generators.StandardProviderCodeGenerator;
 import guru.bug.fuzzbagel.provider.ComponentProvider;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -20,7 +21,7 @@ import java.util.Set;
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 
-@SupportedAnnotationTypes("*")
+@SupportedAnnotationTypes("*" )
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcessor {
     private ComponentMap componentMap;
@@ -45,7 +46,7 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
     }
 
     private void generateComponentMap() {
-        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml").openOutputStream();
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml" ).openOutputStream();
              var w = new PrintWriter(out)) {
             componentMap.serialize(w);
         } catch (IOException e) {
@@ -56,13 +57,13 @@ public class AnnotationProcessorCore extends AbstractFuzzBagelAnnotationProcesso
     private void generateProviders() {
         componentMap.resolveProviders();
         System.out.printf("Components: %s\n", componentMap);
-        var spg = new StandardProviderGenerator(processingEnv);
+        var codeGenerator = new StandardProviderCodeGenerator(processingEnv);
         componentMap.allComponentsStream()
-                .filter(cd -> !cd.isProvider())
-                .filter(cd -> cd.getProviderType() == null)
-                .forEach(spg::generateProvider);
+                .filter(cd -> cd instanceof ComponentDescription)
+                .map(cd -> (ComponentDescription) cd)
+                .filter(cd -> cd.getProvider() == null)
+                .forEach(codeGenerator::generateProvider);
     }
-
 
     private void scanRootElements(Set<? extends Element> rootElements) {
         rootElements.forEach(this::scanElement);

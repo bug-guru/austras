@@ -14,15 +14,15 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StandardProviderGenerator {
+public class StandardProviderCodeGenerator {
     private final ProcessingEnvironment processingEnv;
 
-    public StandardProviderGenerator(ProcessingEnvironment processingEnv) {
+    public StandardProviderCodeGenerator(ProcessingEnvironment processingEnv) {
         this.processingEnv = processingEnv;
     }
 
     public void generateProvider(ComponentDescription cd) {
-        var ct = cd.getComponentType();
+        var ct = cd.getType();
         var pkgName = processingEnv.getElementUtils().getPackageOf(ct).getQualifiedName().toString();
         var provSimpleName = ct.getSimpleName() + "Provider";
         var provQualifiedName = pkgName + "." + provSimpleName;

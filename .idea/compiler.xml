@@ -16,6 +16,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/fuzzbagel-apt/target/classes" />
           <entry name="$PROJECT_DIR$/fuzzbagel-rt/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
         </processorPath>
         <module name="fuzzbagel-test" />
       </profile>
