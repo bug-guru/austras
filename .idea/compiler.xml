@@ -7,23 +7,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="fuzzbagel-rt" />
+        <module name="austras-rt" />
       </profile>
-      <profile name="Annotation profile for fuzzbagel" enabled="true">
+      <profile name="Annotation profile for austras" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/fuzzbagel-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/fuzzbagel-rt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-apt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-rt/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
         </processorPath>
-        <module name="fuzzbagel-test" />
+        <module name="austras-test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="fuzzbagel-apt (1)" target="11" />
-      <module name="fuzzbagel-test-apt" target="11" />
+      <module name="austras" target="11" />
+      <module name="austras-apt" target="11" />
+      <module name="austras-rt" target="11" />
+      <module name="austras-test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
