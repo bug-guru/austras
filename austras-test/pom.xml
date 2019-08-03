@@ -34,7 +34,7 @@
                             </path>
                         </annotationProcessorPaths>
                         <annotationProcessors>
-                            <processor>AnnotationProcessorCore</processor>
+                            <processor>guru.bug.austras.apt.core.AnnotationProcessorCore</processor>
                         </annotationProcessors>
                         <verbose>true</verbose>
                         <showWarnings>true</showWarnings>

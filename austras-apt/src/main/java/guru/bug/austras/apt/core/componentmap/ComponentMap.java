@@ -47,28 +47,28 @@ public class ComponentMap {
         }
     }
 
-    private List<ProviderParamDescription> collectProviderParams(TypeElement type) {
-        ExecutableElement constructor = (ExecutableElement) type.getEnclosedElements().stream()
-                .filter(m -> m.getKind() == ElementKind.CONSTRUCTOR)
-                .filter(m -> m.getModifiers().contains(PUBLIC))
-                .findFirst()
-                .orElse(null);
-        if (constructor == null) {
-            return List.of();
-        }
+//    private List<ProviderParamDescription> collectProviderParams(TypeElement type) {
+//        ExecutableElement constructor = (ExecutableElement) type.getEnclosedElements().stream()
+//                .filter(m -> m.getKind() == ElementKind.CONSTRUCTOR)
+//                .filter(m -> m.getModifiers().contains(PUBLIC))
+//                .findFirst()
+//                .orElse(null);
+//        if (constructor == null) {
+//            return List.of();
+//        }
+//
+//        return constructor.getParameters().stream()
+//                .map(this::createParamDesc)
+//                .collect(Collectors.toList());
+//    }
 
-        return constructor.getParameters().stream()
-                .map(this::createParamDesc)
-                .collect(Collectors.toList());
-    }
-
-    private ProviderParamDescription createParamDesc(VariableElement param) {
-        DeclaredType paramDeclType = (DeclaredType) param.asType();
-        String varName = param.getSimpleName().toString();
-        Qualifier qualifier = param.getAnnotation(Qualifier.class);
-        ComponentKey key = new ComponentKey(paramDeclType, qualifier);
-        return new ProviderParamDescription(key, varName);
-    }
+//    private ProviderParamDescription createParamDesc(VariableElement param) {
+//        DeclaredType paramDeclType = (DeclaredType) param.asType();
+//        String varName = param.getSimpleName().toString();
+//        Qualifier qualifier = param.getAnnotation(Qualifier.class);
+//        ComponentKey key = new ComponentKey(paramDeclType, qualifier);
+//        return new ProviderParamDescription(key, varName);
+//    }
 
 
 //    public Stream<ComponentDescription> allComponentsStream() {
