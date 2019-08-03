@@ -9,4 +9,12 @@ public class ProviderParamDescription {
         this.key = key;
         this.varName = varName;
     }
+
+    public ComponentKey getKey() {
+        return key;
+    }
+
+    public String getVarName() {
+        return varName;
+    }
 }

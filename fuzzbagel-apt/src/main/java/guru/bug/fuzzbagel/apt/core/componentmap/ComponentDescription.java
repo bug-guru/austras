@@ -1,15 +1,25 @@
 package guru.bug.fuzzbagel.apt.core.componentmap;
 
-import guru.bug.fuzzbagel.apt.core.annotations.Provider;
-
 import javax.lang.model.element.TypeElement;
-import java.util.Objects;
 
-public class ComponentDescription extends BaseDescription {
+public class ComponentDescription {
+    private final String qualifier;
+    private final String varName;
+    private final TypeElement type;
     private ProviderDescription provider;
 
-    public ComponentDescription(String varName, TypeElement componentType) {
-        super(varName, componentType);
+    public ComponentDescription(String varName, TypeElement componentType, String qualifier) {
+        this.varName = varName;
+        this.type = componentType;
+        this.qualifier = qualifier;
+    }
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public TypeElement getType() {
+        return type;
     }
 
     public ProviderDescription getProvider() {
@@ -20,4 +30,7 @@ public class ComponentDescription extends BaseDescription {
         this.provider = provider;
     }
 
+    public String getQualifier() {
+        return qualifier;
+    }
 }

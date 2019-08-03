@@ -1,5 +1,5 @@
 package guru.bug.fuzzbagel.test;
 
-public interface TestComponentC {
+public interface ComponentC {
   void doSomething();
 }

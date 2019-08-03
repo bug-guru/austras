@@ -1,5 +1,6 @@
 package guru.bug.fuzzbagel.apt.core.generators;
 
+import guru.bug.fuzzbagel.annotations.Qualifier;
 import guru.bug.fuzzbagel.apt.core.componentmap.ComponentDescription;
 import guru.bug.fuzzbagel.provider.ComponentProvider;
 import guru.bug.fuzzbagel.provider.GlobalComponentProvider;
@@ -31,6 +32,10 @@ public class StandardProviderCodeGenerator {
             try (var oos = sourceFile.openOutputStream();
                  var out = new PrintWriter(oos)) {
                 out.printf("package %s;\n", pkgName);
+                Qualifier qualifier = cd.getType().getAnnotation(Qualifier.class);
+                if (qualifier != null) {
+                    out.printf("@%s(\"%s\")", Qualifier.class.getName(), qualifier.value());
+                }
                 out.printf("public class %s extends %s<%s> implements %s<%s> {\n",
                         provSimpleName,
                         GlobalComponentProvider.class.getName(),

@@ -1,5 +1,5 @@
 package guru.bug.fuzzbagel.test;
 
-public interface TestComponentParametrized<T> {
+public interface ComponentParametrized<T> {
     T test(T p);
 }

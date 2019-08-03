@@ -1,6 +1,6 @@
 package guru.bug.fuzzbagel.test;
 
-public class TestComponentParametrizedInteger implements TestComponentParametrized<Integer> {
+public class ComponentParametrizedInteger implements ComponentParametrized<Integer> {
     @Override
     public Integer test(Integer p) {
         return p;

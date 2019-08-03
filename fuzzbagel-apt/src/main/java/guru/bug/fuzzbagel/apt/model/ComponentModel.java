@@ -6,7 +6,8 @@ import java.util.List;
 public class ComponentModel implements Comparable<ComponentModel> {
     private String name;
     private String instantiable;
-    private List<ComponentKeyModel> keys;
+    private String qualifier;
+    private List<String> types;
     private ProviderModel provider;
 
     public String getName() {
@@ -25,19 +26,27 @@ public class ComponentModel implements Comparable<ComponentModel> {
         this.instantiable = instantiable;
     }
 
-    public List<ComponentKeyModel> keys() {
-        if (keys == null) {
-            keys = new ArrayList<>();
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
+    }
+
+    public List<String> types() {
+        if (types == null) {
+            types = new ArrayList<>();
         }
-        return keys;
+        return types;
     }
 
-    public List<ComponentKeyModel> getKeys() {
-        return keys;
+    public List<String> getTypes() {
+        return types;
     }
 
-    public void setKeys(List<ComponentKeyModel> keys) {
-        this.keys = keys;
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     public ProviderModel getProvider() {
@@ -51,5 +60,14 @@ public class ComponentModel implements Comparable<ComponentModel> {
     @Override
     public int compareTo(ComponentModel o) {
         return instantiable.compareTo(o.instantiable);
+    }
+
+    @Override
+    public String toString() {
+        return "ComponentModel{" +
+                "name='" + name + '\'' +
+                ", instantiable='" + instantiable + '\'' +
+                ", qualifier='" + qualifier + '\'' +
+                '}';
     }
 }

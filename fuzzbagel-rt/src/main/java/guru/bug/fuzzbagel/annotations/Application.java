@@ -1,4 +1,4 @@
-package guru.bug.fuzzbagel.apt.core.annotations;
+package guru.bug.fuzzbagel.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
-public @interface Calling {
-
-  String method();
-
-  Class<?> of();
+public @interface Application {
 }

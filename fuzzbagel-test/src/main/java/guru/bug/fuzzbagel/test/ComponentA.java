@@ -1,4 +1,4 @@
 package guru.bug.fuzzbagel.test;
 
-public class TestComponentA {
+public class ComponentA {
 }

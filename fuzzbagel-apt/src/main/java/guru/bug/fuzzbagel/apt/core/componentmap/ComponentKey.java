@@ -1,19 +1,24 @@
 package guru.bug.fuzzbagel.apt.core.componentmap;
 
-import javax.lang.model.type.DeclaredType;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class ComponentKey implements Comparable<ComponentKey> {
-    private final DeclaredType type;
-    private final String typeAsString;
+    private static final Comparator<String> DEFAULT_COMPARATOR = Comparator.nullsLast(Comparator.naturalOrder());
+    private final String type;
+    private final String qualifier;
 
-    public ComponentKey(DeclaredType type) {
+    public ComponentKey(String type, String qualifier) {
         this.type = type;
-        this.typeAsString = type.toString();
+        this.qualifier = qualifier;
     }
 
-    public DeclaredType getType() {
+    public String getType() {
         return type;
+    }
+
+    public String getQualifier() {
+        return qualifier;
     }
 
     @Override
@@ -21,16 +26,29 @@ public class ComponentKey implements Comparable<ComponentKey> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ComponentKey that = (ComponentKey) o;
-        return typeAsString.equals(that.typeAsString);
+        return Objects.equals(type, that.type) &&
+                Objects.equals(qualifier, that.qualifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(typeAsString);
+        return Objects.hash(type, qualifier);
     }
 
     @Override
-    public int compareTo(ComponentKey o) {
-        return this.typeAsString.compareTo(o.typeAsString);
+    public int compareTo(ComponentKey that) {
+        var result = Objects.compare(this.type, that.type, DEFAULT_COMPARATOR);
+        if (result == 0) {
+            result = Objects.compare(this.qualifier, that.qualifier, DEFAULT_COMPARATOR);
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ComponentKey{" +
+                "type='" + type + '\'' +
+                ", qualifier='" + qualifier + '\'' +
+                '}';
     }
 }

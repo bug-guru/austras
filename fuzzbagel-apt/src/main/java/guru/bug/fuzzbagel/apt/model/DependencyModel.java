@@ -2,7 +2,8 @@ package guru.bug.fuzzbagel.apt.model;
 
 public class DependencyModel {
     private String name;
-    private ComponentKeyModel key;
+    private String type;
+    private String qualifier;
 
     public String getName() {
         return name;
@@ -12,11 +13,19 @@ public class DependencyModel {
         this.name = name;
     }
 
-    public ComponentKeyModel getKey() {
-        return key;
+    public String getType() {
+        return type;
     }
 
-    public void setKey(ComponentKeyModel key) {
-        this.key = key;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
     }
 }
