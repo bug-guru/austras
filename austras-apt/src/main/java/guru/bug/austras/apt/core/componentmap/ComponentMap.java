@@ -3,6 +3,7 @@ package guru.bug.austras.apt.core.componentmap;
 import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.core.Logger;
+import guru.bug.austras.apt.model.ModuleModelSerializer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -84,30 +85,7 @@ public class ComponentMap {
     }
 
     public void serialize(Writer out) throws IOException {
-//        var tmpMap = new HashMap<String, ComponentModel>();
-//        index.values().stream()
-//                .flatMap(Collection::stream)
-//                .filter(b -> b instanceof ComponentDescription)
-//                .distinct()
-//                .map(b -> b)
-//                .forEach(cd -> {
-//                    var cm = convertToModel(cd);
-//                    tmpMap.put(cm.getName(), cm);
-//                });
-//
-//        index.forEach((key, compSet) -> {
-//            compSet.stream()
-//                    .filter(b -> b instanceof ComponentDescription)
-//                    .map(b -> b)
-//                    .forEach(cd -> {
-//                        var cm = tmpMap.get(cd.getVarName());
-//                        cm.types().add(cd.getType().toString());
-//                    });
-//        });
-//
-//        var model = new BagelModel();
-//        model.components().addAll(tmpMap.values());
-//        BagelModelSerializer.store(model, out);
+        ModuleModelSerializer.store(model, out);
     }
 
 //    private ComponentModel convertToModel(ComponentDescription cd) {
