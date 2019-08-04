@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class ComponentMap {
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
@@ -37,20 +39,7 @@ public class ComponentMap {
         }
     }
 
-//    private List<ProviderParamDescription> collectProviderParams(TypeElement type) {
-//        ExecutableElement constructor = (ExecutableElement) type.getEnclosedElements().stream()
-//                .filter(m -> m.getKind() == ElementKind.CONSTRUCTOR)
-//                .filter(m -> m.getModifiers().contains(PUBLIC))
-//                .findFirst()
-//                .orElse(null);
-//        if (constructor == null) {
-//            return List.of();
-//        }
-//
-//        return constructor.getParameters().stream()
-//                .map(this::createParamDesc)
-//                .collect(Collectors.toList());
-//    }
+
 
 //    private ProviderParamDescription createParamDesc(VariableElement param) {
 //        DeclaredType paramDeclType = (DeclaredType) param.asType();
@@ -61,9 +50,9 @@ public class ComponentMap {
 //    }
 
 
-//    public Stream<ComponentDescription> allComponentsStream() {
-//        return index.values().stream().flatMap(Collection::stream).distinct();
-//    }
+    public Stream<ComponentModel> allComponentsStream() {
+        return model.components().stream();
+    }
 
     public ComponentModel findSingleComponentModel(ComponentKey key) {
         var comps = index.get(key);

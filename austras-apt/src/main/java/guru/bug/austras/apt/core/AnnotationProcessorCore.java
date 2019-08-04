@@ -1,9 +1,13 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
+import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.provider.ComponentProvider;
+import guru.bug.austras.apt.core.generators.CachingProviderGenerator;
+import guru.bug.austras.apt.core.generators.EagerSingletonProviderGenerator;
+import guru.bug.austras.apt.core.generators.NonCachingProviderGenerator;
+import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.provider.Provider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -36,6 +40,9 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     private DeclaredType providerInterfaceType;
     private Elements elementUtils;
     private Types typeUtils;
+    private EagerSingletonProviderGenerator eagerSingletonProviderCodeGenerator;
+    private NonCachingProviderGenerator nonCachingProviderCodeGenerator;
+    private CachingProviderGenerator cachingProviderCodeGenerator;
 
 
     @Override
@@ -43,9 +50,12 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         super.init(processingEnv);
         this.elementUtils = processingEnv.getElementUtils();
         this.typeUtils = processingEnv.getTypeUtils();
-        this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(ComponentProvider.class.getName()));
+        this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
         this.modelUtils = new ModelUtils(this, uniqueNameGenerator, typeUtils, elementUtils, providerInterfaceType);
         this.componentMap = new ComponentMap(this);
+        this.eagerSingletonProviderCodeGenerator = new EagerSingletonProviderGenerator(processingEnv);
+        this.nonCachingProviderCodeGenerator = new NonCachingProviderGenerator(processingEnv);
+        this.cachingProviderCodeGenerator = new CachingProviderGenerator(processingEnv);
     }
 
     @Override
@@ -56,7 +66,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         } else {
             scanRootElements(roundEnv.getRootElements());
             resolveProviders();
-//            generateProviders();
+            generateProviders();
         }
         return false;
     }
@@ -112,25 +122,38 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             if (componentModel.getProvider() != null) {
                 throw new IllegalStateException("Provider already set" );
             }
-//            if (foundSet == null || foundSet.size() != 1) {
-//                throw new IllegalStateException("expected only one component" ); // TODO better error handling
-//            }
-//            var cd = (ComponentDescription) foundSet.stream().findFirst().orElseThrow();
-//            log.debug("Setting provider %s for %s", providerElement.getType(), cd.getType());
-//            cd.setProvider(providerElement);
+            var name = uniqueNameGenerator.findFreeVarName(providerElement);
+            var dependencies = modelUtils.collectConstructorParams(providerElement);
+            var instantiable = providerElement.toString();
+
+            var providerModel = new ProviderModel();
+            providerModel.setInstantiable(instantiable);
+            providerModel.setName(name);
+            providerModel.setDependencies(dependencies);
+
+            componentModel.setProvider(providerModel);
         }
     }
-//
-//    private void generateProviders() {
-//        componentMap.resolveProviders();
-//        System.out.printf("Components: %s\n", componentMap);
-//        var codeGenerator = new StandardProviderCodeGenerator(processingEnv);
-//        componentMap.allComponentsStream()
-//                .filter(cd -> cd instanceof ComponentDescription)
-//                .map(cd -> cd)
-//                .filter(cd -> cd.getProvider() == null)
-//                .forEach(codeGenerator::generateProvider);
-//    }
+
+    private void generateProviders() {
+        componentMap.allComponentsStream()
+                .filter(cm -> cm.getProvider() == null)
+                .forEach(cm -> {
+                    switch (cm.getCachingKind()) {
+                        case EAGER_SINGLETON:
+                            eagerSingletonProviderCodeGenerator.generateProvider(cm);
+                            break;
+                        case CACHED:
+                            cachingProviderCodeGenerator.generateProvider(cm);
+                            break;
+                        case NO_CACHE:
+                            nonCachingProviderCodeGenerator.generateProvider(cm);
+                            break;
+                        default:
+                            throw new UnsupportedOperationException(cm.getCachingKind().toString());
+                    }
+                });
+    }
 
     private void generateAppMain() {
         debug("Component Map: %s", componentMap);

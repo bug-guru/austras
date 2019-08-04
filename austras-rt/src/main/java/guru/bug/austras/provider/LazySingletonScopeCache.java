@@ -1,14 +1,16 @@
 package guru.bug.austras.provider;
 
-public abstract class GlobalComponentProvider<T> extends AbstractComponentProvider<T> {
+import java.util.function.Supplier;
+
+public class LazySingletonScopeCache<T> implements ScopeCache<T> {
     private T instance;
 
     @Override
-    public T get() {
+    public T get(Supplier<T> factory) {
         if (instance == null) {
             synchronized (this) {
                 if (instance == null) {
-                    instance = takeInstance();
+                    instance = factory.get();
                 }
             }
         }

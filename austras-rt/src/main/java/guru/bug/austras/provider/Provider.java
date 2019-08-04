@@ -1,5 +1,5 @@
 package guru.bug.austras.provider;
 
-public interface ComponentProvider<T> {
+public interface Provider<T> {
     T get();
 }

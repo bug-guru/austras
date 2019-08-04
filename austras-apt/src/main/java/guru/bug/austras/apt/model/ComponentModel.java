@@ -1,5 +1,7 @@
 package guru.bug.austras.apt.model;
 
+import guru.bug.austras.provider.ScopeCache;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +9,11 @@ public class ComponentModel implements Comparable<ComponentModel> {
     private String name;
     private String instantiable;
     private String qualifier;
+    private CachingKind cachingKind;
+    private String cacheType;
     private List<String> types;
     private ProviderModel provider;
+    private List<DependencyModel> dependencies;
 
     public String getName() {
         return name;
@@ -34,6 +39,22 @@ public class ComponentModel implements Comparable<ComponentModel> {
         this.qualifier = qualifier;
     }
 
+    public CachingKind getCachingKind() {
+        return cachingKind;
+    }
+
+    public void setCachingKind(CachingKind cachingKind) {
+        this.cachingKind = cachingKind;
+    }
+
+    public String getCacheType() {
+        return cacheType;
+    }
+
+    public void setCacheType(String cacheType) {
+        this.cacheType = cacheType;
+    }
+
     public List<String> types() {
         if (types == null) {
             types = new ArrayList<>();
@@ -55,6 +76,14 @@ public class ComponentModel implements Comparable<ComponentModel> {
 
     public void setProvider(ProviderModel provider) {
         this.provider = provider;
+    }
+
+    public List<DependencyModel> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<DependencyModel> dependencies) {
+        this.dependencies = dependencies;
     }
 
     @Override

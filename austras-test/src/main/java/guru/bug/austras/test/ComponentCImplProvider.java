@@ -1,9 +1,9 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.provider.ComponentProvider;
+import guru.bug.austras.provider.Provider;
 import guru.bug.austras.provider.GlobalComponentProvider;
 
-public class ComponentCImplProvider extends GlobalComponentProvider<ComponentCImpl> implements ComponentProvider<ComponentCImpl> {
+public class ComponentCImplProvider extends GlobalComponentProvider<ComponentCImpl> implements Provider<ComponentCImpl> {
 
     @Override
     protected ComponentCImpl takeInstance() {

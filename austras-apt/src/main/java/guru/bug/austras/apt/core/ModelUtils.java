@@ -1,13 +1,14 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.model.ComponentModel;
+import guru.bug.austras.annotations.Cached;
+import guru.bug.austras.annotations.NoCached;
 import guru.bug.austras.annotations.Qualifier;
+import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
+import guru.bug.austras.apt.model.CachingKind;
+import guru.bug.austras.apt.model.ComponentModel;
+import guru.bug.austras.apt.model.DependencyModel;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -15,6 +16,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,12 +51,32 @@ public class ModelUtils {
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifier = extractQualifier(type);
         var model = new ComponentModel();
+        var dependencies = collectConstructorParams(type);
+
         model.setQualifier(qualifier);
         model.setInstantiable(type.toString());
         model.setName(varName);
         model.setTypes(ancestors);
+        model.setDependencies(dependencies);
+
+        setupCaching(model, type);
 
         return model;
+    }
+
+    private void setupCaching(ComponentModel model, TypeElement type) {
+        var cachedAnnotation = type.getAnnotation(Cached.class);
+        var noCachedAnnotation = type.getAnnotation(NoCached.class);
+        if (cachedAnnotation == null && noCachedAnnotation == null) {
+            model.setCachingKind(CachingKind.EAGER_SINGLETON);
+            model.setCacheType(null);
+        } else if (noCachedAnnotation != null) {
+            model.setCachingKind(CachingKind.NO_CACHE);
+            model.setCacheType(null);
+        } else {
+            model.setCachingKind(CachingKind.CACHED);
+            model.setCacheType(cachedAnnotation.value().getName());
+        }
     }
 
     public String extractQualifier(Element type) {
@@ -112,6 +134,31 @@ public class ModelUtils {
         var componentType = (DeclaredType) tmp.get(0);
         log.debug("Provider %s provides component: %s", providerElement, componentType);
         return componentType;
+    }
+
+    public List<DependencyModel> collectConstructorParams(TypeElement type) {
+        ExecutableElement constructor = (ExecutableElement) type.getEnclosedElements().stream()
+                .filter(m -> m.getKind() == ElementKind.CONSTRUCTOR)
+                .filter(m -> m.getModifiers().contains(PUBLIC))
+                .findFirst()
+                .orElse(null);
+        if (constructor == null) {
+            return List.of();
+        }
+
+        return constructor.getParameters().stream()
+                .map(this::createDependencyModel)
+                .collect(Collectors.toList());
+    }
+
+    private DependencyModel createDependencyModel(VariableElement paramElement) {
+        var qualifier = extractQualifier(paramElement);
+        String varName = paramElement.getSimpleName().toString();
+        var result = new DependencyModel();
+        result.setName(varName);
+        result.setQualifier(qualifier);
+        result.setType(paramElement.asType().toString());
+        return result;
     }
 
 }

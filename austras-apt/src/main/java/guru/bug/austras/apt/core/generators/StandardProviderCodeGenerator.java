@@ -1,9 +1,9 @@
 package guru.bug.austras.apt.core.generators;
 
-import guru.bug.austras.apt.core.componentmap.ComponentDescription;
 import guru.bug.austras.annotations.Qualifier;
-import guru.bug.austras.provider.ComponentProvider;
+import guru.bug.austras.apt.core.componentmap.ComponentDescription;
 import guru.bug.austras.provider.GlobalComponentProvider;
+import guru.bug.austras.provider.Provider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
@@ -40,7 +40,7 @@ public class StandardProviderCodeGenerator {
                         provSimpleName,
                         GlobalComponentProvider.class.getName(),
                         ct.getQualifiedName(),
-                        ComponentProvider.class.getName(),
+                        Provider.class.getName(),
                         ct.getQualifiedName());
 
                 generateProviderFields(out, ct);
@@ -77,7 +77,7 @@ public class StandardProviderCodeGenerator {
                 .forEach(p -> {
                     DeclaredType paramDeclType = (DeclaredType) p.asType();
                     out.printf("\tprivate final %s<%s> %s;\n",
-                            ComponentProvider.class.getName(),
+                            Provider.class.getName(),
                             paramDeclType.toString(),
                             p.getSimpleName() + "Provider" );
                 });
@@ -90,7 +90,7 @@ public class StandardProviderCodeGenerator {
             if (paramType.getKind() == TypeKind.DECLARED) {
                 DeclaredType paramDeclType = (DeclaredType) paramType;
                 return String.format("%s<%s> %s",
-                        ComponentProvider.class.getName(),
+                        Provider.class.getName(),
                         paramDeclType.toString(),
                         p.getSimpleName() + "Provider" );
             } else {
