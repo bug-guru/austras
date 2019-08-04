@@ -3,7 +3,7 @@ package guru.bug.austras.apt.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BagelModel {
+public class ModuleModel {
     private List<ComponentModel> components;
 
     public List<ComponentModel> components() {

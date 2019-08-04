@@ -1,30 +1,20 @@
 package guru.bug.austras.apt.core.componentmap;
 
-import guru.bug.austras.apt.model.BagelModel;
+import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ComponentModel;
-import guru.bug.austras.annotations.Qualifier;
 import guru.bug.austras.apt.core.Logger;
 
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ComponentMap {
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
-    private final BagelModel model = new BagelModel();
+    private final ModuleModel model = new ModuleModel();
     private final Logger log;
 
     public ComponentMap(Logger log) {

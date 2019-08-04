@@ -10,17 +10,17 @@ import org.yaml.snakeyaml.representer.Representer;
 import java.io.IOException;
 import java.io.Writer;
 
-public class BagelModelSerializer {
-    private BagelModelSerializer() {
+public class ModuleModelSerializer {
+    private ModuleModelSerializer() {
     }
 
-    public static void store(BagelModel model, Writer out) throws IOException {
-        var baseConstructor = new Constructor(BagelModel.class);
+    public static void store(ModuleModel model, Writer out) throws IOException {
+        var baseConstructor = new Constructor(ModuleModel.class);
         var dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         Representer representer = new Representer();
         representer.setPropertyUtils(new PropertyUtils());
-        representer.addClassTag(BagelModel.class, Tag.MAP);
+        representer.addClassTag(ModuleModel.class, Tag.MAP);
         var yaml = new Yaml(baseConstructor, representer, dumperOptions);
         yaml.dump(model, out);
     }
