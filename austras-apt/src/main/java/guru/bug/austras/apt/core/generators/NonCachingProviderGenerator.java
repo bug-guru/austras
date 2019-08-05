@@ -8,6 +8,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class NonCachingProviderGenerator implements ProviderGenerator {
@@ -38,8 +39,12 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
             try (var oos = sourceFile.openOutputStream();
                  var out = new PrintWriter(oos)) {
                 out.printf("package %s;\n", provPkgName);
-                if (cd.getQualifier() != null) {
-                    out.printf("@%s(\"%s\")", Qualifier.class.getName(), cd.getQualifier());
+                List<String> qualifierList = cd.getQualifiers();
+                if (qualifierList != null && !qualifierList.isEmpty()) {
+                    var qualifiers = qualifierList.stream()
+                            .map(v -> "\""+v+"\"")
+                            .collect(Collectors.joining(",", "{", "}"));
+                    out.printf("@%s(%s)", Qualifier.class.getName(), qualifiers);
                 }
                 out.printf("public class %s implements %s<%s> {\n",
                         provSimpleName,

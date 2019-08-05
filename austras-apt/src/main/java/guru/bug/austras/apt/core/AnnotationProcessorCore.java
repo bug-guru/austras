@@ -115,8 +115,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             TypeElement providerElement = providers.remove();
             debug("Resolving provider %s", providerElement);
             var type = modelUtils.extractComponentTypeFromProvider(providerElement);
-            var qualifier = modelUtils.extractQualifier(providerElement);
-            var key = new ComponentKey(type.toString(), qualifier);
+            var qualifiers = modelUtils.extractQualifiers(providerElement);
+            var key = new ComponentKey(type.toString(), qualifiers);
             var componentModel = componentMap.findSingleComponentModel(key);
             debug("Setting provider %s for component %s", providerElement, componentModel);
             if (componentModel.getProvider() != null) {

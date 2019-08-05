@@ -15,8 +15,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-apt/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
           <entry name="$PROJECT_DIR$/austras-rt/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
         </processorPath>
         <module name="austras-test" />
       </profile>

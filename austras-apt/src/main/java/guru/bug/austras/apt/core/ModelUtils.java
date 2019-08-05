@@ -14,10 +14,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static javax.lang.model.element.Modifier.ABSTRACT;
@@ -41,7 +38,7 @@ public class ModelUtils {
     public ComponentModel createComponentModel(TypeElement type) {
         Set<Modifier> modifiers = type.getModifiers();
         if (type.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
-            throw new IllegalArgumentException("type must be a public, not abstract class" );
+            throw new IllegalArgumentException("type must be a public, not abstract class");
         }
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
@@ -49,11 +46,11 @@ public class ModelUtils {
         ancestors.add(type.toString());
         log.debug("All superclasses and interfaces: %s", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
-        var qualifier = extractQualifier(type);
+        var qualifiers = extractQualifiers(type);
         var model = new ComponentModel();
         var dependencies = collectConstructorParams(type);
 
-        model.setQualifier(qualifier);
+        model.setQualifiers(qualifiers);
         model.setInstantiable(type.toString());
         model.setName(varName);
         model.setTypes(ancestors);
@@ -79,14 +76,19 @@ public class ModelUtils {
         }
     }
 
-    public String extractQualifier(Element type) {
-        var qualifier = type.getAnnotation(Qualifier.class);
-        return qualifier == null ? null : qualifier.value();
-    }
-
-    public String extractQualifier(TypeMirror type) {
-        var qualifier = type.getAnnotation(Qualifier.class);
-        return qualifier == null ? null : qualifier.value();
+    public List<String> extractQualifiers(Element element) {
+        Set<String> qualifiers = element.getAnnotationMirrors().stream()
+                .filter(am -> {
+                    Element annotationElement = typeUtils.asElement(am.getAnnotationType());
+                    return annotationElement.getAnnotation(Qualifier.class) != null;
+                })
+                .map(Object::toString)
+                .collect(Collectors.toCollection(HashSet::new));
+        var rawQualifier = element.getAnnotation(Qualifier.class);
+        if (rawQualifier != null && rawQualifier.value().length > 0) {
+            qualifiers.addAll(List.of(rawQualifier.value()));
+        }
+        return new ArrayList<>(qualifiers);
     }
 
     private Set<DeclaredType> collectAllAncestor(TypeElement componentElement) {
@@ -98,7 +100,7 @@ public class ModelUtils {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked" );
+                log.debug("Already checked");
                 continue;
             }
             checked.add(cur);
@@ -152,11 +154,11 @@ public class ModelUtils {
     }
 
     private DependencyModel createDependencyModel(VariableElement paramElement) {
-        var qualifier = extractQualifier(paramElement);
+        var qualifiers = extractQualifiers(paramElement);
         String varName = paramElement.getSimpleName().toString();
         var result = new DependencyModel();
         result.setName(varName);
-        result.setQualifier(qualifier);
+        result.setQualifiers(qualifiers);
         result.setType(paramElement.asType().toString());
         return result;
     }

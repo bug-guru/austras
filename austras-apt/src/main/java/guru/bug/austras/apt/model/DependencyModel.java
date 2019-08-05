@@ -1,9 +1,11 @@
 package guru.bug.austras.apt.model;
 
+import java.util.List;
+
 public class DependencyModel {
     private String name;
     private String type;
-    private String qualifier;
+    private List<String> qualifiers;
 
     public String getName() {
         return name;
@@ -21,11 +23,11 @@ public class DependencyModel {
         this.type = type;
     }
 
-    public String getQualifier() {
-        return qualifier;
+    public List<String> getQualifiers() {
+        return qualifiers;
     }
 
-    public void setQualifier(String qualifier) {
-        this.qualifier = qualifier;
+    public void setQualifiers(List<String> qualifiers) {
+        this.qualifiers = qualifiers;
     }
 }

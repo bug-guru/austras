@@ -5,8 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-public @interface Qualifier {
-    String[] value() default {};
+@Qualifier
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE, ElementType.PARAMETER})
+public @interface Config {
+    String name();
+
+    String defaultValue() default "";
 }

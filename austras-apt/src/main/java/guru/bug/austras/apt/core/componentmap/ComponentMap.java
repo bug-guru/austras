@@ -33,9 +33,9 @@ public class ComponentMap {
 
     public void addComponent(ComponentModel componentModel) {
         model.components().add(componentModel);
-        var qualifier = componentModel.getQualifier();
+        var qualifiers = componentModel.getQualifiers();
         for (var a : componentModel.getTypes()) {
-            var key = new ComponentKey(a, qualifier);
+            var key = new ComponentKey(a, qualifiers);
             put(key, componentModel);
         }
     }

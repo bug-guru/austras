@@ -1,24 +1,26 @@
 package guru.bug.austras.apt.core.componentmap;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Set;
 
-public class ComponentKey implements Comparable<ComponentKey> {
+public class ComponentKey {
     private static final Comparator<String> DEFAULT_COMPARATOR = Comparator.nullsLast(Comparator.naturalOrder());
     private final String type;
-    private final String qualifier;
+    private final Set<String> qualifiers;
 
-    public ComponentKey(String type, String qualifier) {
+    public ComponentKey(String type, Collection<String> qualifiers) {
         this.type = type;
-        this.qualifier = qualifier;
+        this.qualifiers = Set.copyOf(qualifiers);
     }
 
     public String getType() {
         return type;
     }
 
-    public String getQualifier() {
-        return qualifier;
+    public Set<String> getQualifier() {
+        return qualifiers;
     }
 
     @Override
@@ -27,28 +29,19 @@ public class ComponentKey implements Comparable<ComponentKey> {
         if (o == null || getClass() != o.getClass()) return false;
         ComponentKey that = (ComponentKey) o;
         return Objects.equals(type, that.type) &&
-                Objects.equals(qualifier, that.qualifier);
+                Objects.equals(qualifiers, that.qualifiers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, qualifier);
-    }
-
-    @Override
-    public int compareTo(ComponentKey that) {
-        var result = Objects.compare(this.type, that.type, DEFAULT_COMPARATOR);
-        if (result == 0) {
-            result = Objects.compare(this.qualifier, that.qualifier, DEFAULT_COMPARATOR);
-        }
-        return result;
+        return Objects.hash(type, qualifiers);
     }
 
     @Override
     public String toString() {
         return "ComponentKey{" +
                 "type='" + type + '\'' +
-                ", qualifier='" + qualifier + '\'' +
+                ", qualifiers=" + qualifiers +
                 '}';
     }
 }
