@@ -40,17 +40,6 @@ public class ComponentMap {
         }
     }
 
-
-
-//    private ProviderParamDescription createParamDesc(VariableElement param) {
-//        DeclaredType paramDeclType = (DeclaredType) param.asType();
-//        String varName = param.getSimpleName().toString();
-//        Qualifier qualifier = param.getAnnotation(Qualifier.class);
-//        ComponentKey key = new ComponentKey(paramDeclType, qualifier);
-//        return new ProviderParamDescription(key, varName);
-//    }
-
-
     public Stream<ComponentModel> allComponentsStream() {
         return model.components().stream();
     }
