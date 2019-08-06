@@ -35,28 +35,36 @@ public class ModelUtils {
         this.providerInterfaceType = providerInterfaceType;
     }
 
-    public ComponentModel createComponentModel(TypeElement type) {
-        Set<Modifier> modifiers = type.getModifiers();
-        if (type.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
-            throw new IllegalArgumentException("type must be a public, not abstract class");
+    public ComponentModel createComponentModel(DeclaredType type) {
+        var element = (TypeElement) type.asElement();
+        Set<Modifier> modifiers = element.getModifiers();
+        if (element.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
+            throw new IllegalArgumentException("type must be a public, not abstract class" );
         }
+        var model = createComponentModel(type, element);
+
+        var dependencies = collectConstructorParams(type);
+        model.setDependencies(dependencies);
+
+        return model;
+    }
+
+    public ComponentModel createComponentModel(DeclaredType type, TypeElement metaInfo) {
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
                 .collect(Collectors.toList());
         ancestors.add(type.toString());
         log.debug("All superclasses and interfaces: %s", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
-        var qualifiers = extractQualifiers(type);
+        var qualifiers = extractQualifiers(metaInfo);
         var model = new ComponentModel();
-        var dependencies = collectConstructorParams(type);
 
         model.setQualifiers(qualifiers);
         model.setInstantiable(type.toString());
         model.setName(varName);
         model.setTypes(ancestors);
-        model.setDependencies(dependencies);
 
-        setupCaching(model, type);
+        setupCaching(model, metaInfo);
 
         return model;
     }
@@ -92,7 +100,10 @@ public class ModelUtils {
     }
 
     private Set<DeclaredType> collectAllAncestor(TypeElement componentElement) {
-        var componentType = componentElement.asType();
+        return collectAllAncestor((DeclaredType) componentElement.asType());
+    }
+
+    private Set<DeclaredType> collectAllAncestor(DeclaredType componentType) {
         var result = new HashSet<DeclaredType>();
         var checked = new HashSet<TypeMirror>();
         var toCheck = new LinkedList<TypeMirror>(typeUtils.directSupertypes(componentType));
@@ -100,7 +111,7 @@ public class ModelUtils {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked");
+                log.debug("Already checked" );
                 continue;
             }
             checked.add(cur);
@@ -139,7 +150,11 @@ public class ModelUtils {
     }
 
     public List<DependencyModel> collectConstructorParams(TypeElement type) {
-        ExecutableElement constructor = (ExecutableElement) type.getEnclosedElements().stream()
+        return collectConstructorParams((DeclaredType) type.asType());
+    }
+
+    public List<DependencyModel> collectConstructorParams(DeclaredType type) {
+        ExecutableElement constructor = (ExecutableElement) type.asElement().getEnclosedElements().stream()
                 .filter(m -> m.getKind() == ElementKind.CONSTRUCTOR)
                 .filter(m -> m.getModifiers().contains(PUBLIC))
                 .findFirst()

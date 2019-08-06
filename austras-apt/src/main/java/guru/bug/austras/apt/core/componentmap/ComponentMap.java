@@ -47,14 +47,14 @@ public class ComponentMap {
     public ComponentModel findSingleComponentModel(ComponentKey key) {
         var comps = index.get(key);
         if (comps == null) {
-            throw new IllegalArgumentException("Component " + key + " not found" );
+            return null;
         }
         if (comps.size() > 1) {
             throw new IllegalArgumentException("Too many components " + key);
         }
         return comps.stream()
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Component " + key + " not found" ));
+                .orElse(null);
     }
 
     private void put(ComponentKey key, ComponentModel value) {
