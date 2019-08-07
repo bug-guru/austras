@@ -5,6 +5,7 @@ import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.provider.Provider;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
@@ -64,10 +65,10 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
         }
         for (var q : qualifierList) {
             var props = q.getProperties().entrySet().stream()
-                    .map(e -> String.format("@%s(name=\"%s\",name=\"%s\")",
+                    .map(e -> String.format("@%s(name=\"%s\",value=\"%s\")",
                             QualifierProperty.class.getName(),
-                            e.getKey(),
-                            e.getValue()))
+                            StringEscapeUtils.escapeJava(e.getKey()),
+                            StringEscapeUtils.escapeJava(e.getValue())))
                     .collect(Collectors.joining(",", "{", "}"));
 
             out.printf("@%s(name=\"%s\", properties=%s)\n", Qualifier.class.getName(), q.getName(), props);

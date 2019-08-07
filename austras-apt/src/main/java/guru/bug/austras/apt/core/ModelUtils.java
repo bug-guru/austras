@@ -15,6 +15,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.Types;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +25,12 @@ import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
+    private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<String, Void>() {
+        @Override
+        protected String defaultAction(Object o, Void aVoid) {
+            return Objects.toString(o);
+        }
+    };
     private final Logger log;
     private final UniqueNameGenerator uniqueNameGenerator;
     private final Types typeUtils;
@@ -117,17 +124,26 @@ public class ModelUtils {
         if (qualifier.properties().length == 0) {
             return result;
         }
+        System.out.println("QUALIFIER PROPERTIES = " + Arrays.toString(qualifier.properties()));
         var mappedNames = Stream.of(qualifier.properties())
                 .collect(Collectors.toMap(QualifierProperty::name, p -> p.value().isBlank() ? p.name() : p.value()));
         var elementValuesWithDefaults = elementUtils.getElementValuesWithDefaults(am);
-
-        var props = Stream.of(annotationElement.getEnclosingElement())
+        System.out.println("MAPPED NAMES: " + mappedNames);
+        System.out.println("ELEM VALUES: " + elementValuesWithDefaults);
+        var props = annotationElement.getEnclosedElements().stream()
+                .peek(e -> System.out.println(e + " kind " + e.getKind()))
                 .filter(e -> e.getKind() == ElementKind.METHOD)
                 .map(e -> (ExecutableElement) e)
+                .peek(e -> System.out.println("SIMPLE NAME: " + e.getSimpleName().toString()))
                 .filter(e -> mappedNames.containsKey(e.getSimpleName().toString()))
-                .collect(Collectors.toMap(e -> mappedNames.get(e.getSimpleName().toString()), e -> elementValuesWithDefaults.get(e).toString()));
+                .collect(Collectors.toMap(e -> mappedNames.get(e.getSimpleName().toString()), e -> annotationValueToString(elementValuesWithDefaults.get(e))));
         result.setProperties(props);
+        System.out.println("QUALIFIER CONVERTED: " + props);
         return result;
+    }
+
+    private String annotationValueToString(AnnotationValue annotationValue) {
+        return annotationValue.accept(annotationToStringVisitor, null);
     }
 
     private Set<DeclaredType> collectAllAncestor(TypeElement componentElement) {

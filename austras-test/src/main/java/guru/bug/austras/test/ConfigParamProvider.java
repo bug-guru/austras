@@ -4,7 +4,7 @@ import guru.bug.austras.annotations.Qualifier;
 import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.provider.Provider;
 
-@Qualifier(name = "ConfigurationProperty", properties = @QualifierProperty(name = "name", value = "config"))
+@Qualifier(name = "ConfigurationProperty", properties = @QualifierProperty(name = "name", value = "config\"test\""))
 public class ConfigParamProvider implements Provider<String> {
 
     @Override

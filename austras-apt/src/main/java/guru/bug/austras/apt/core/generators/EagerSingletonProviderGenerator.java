@@ -6,6 +6,7 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.provider.Provider;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
@@ -42,7 +43,8 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
             try (var oos = sourceFile.openOutputStream();
                  var out = new PrintWriter(oos)) {
                 out.printf("package %s;\n", provPkgName);
-                generateQualifierAnnotations(cd.getQualifiers(), out);
+                var qanno = generateQualifierAnnotations(cd.getQualifiers(), true);
+                out.print(qanno);
                 out.printf("public class %s implements %s<%s> {\n",
                         provSimpleName,
                         Provider.class.getName(),
@@ -59,20 +61,27 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
         }
     }
 
-    private void generateQualifierAnnotations(List<QualifierModel> qualifierList, PrintWriter out) {
+    private String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {
         if (qualifierList == null || qualifierList.isEmpty()) {
-            return;
+            return "";
         }
+        var result = new StringBuilder(256);
         for (var q : qualifierList) {
             var props = q.getProperties().entrySet().stream()
-                    .map(e -> String.format("@%s(name=\"%s\",name=\"%s\")",
+                    .map(e -> String.format("@%s(name=\"%s\",value=\"%s\")",
                             QualifierProperty.class.getName(),
-                            e.getKey(),
-                            e.getValue()))
+                            StringEscapeUtils.escapeJava(e.getKey()),
+                            StringEscapeUtils.escapeJava(e.getValue())))
                     .collect(Collectors.joining(",", "{", "}"));
-
-            out.printf("@%s(name=\"%s\", properties=%s)\n", Qualifier.class.getName(), q.getName(), props);
+            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), q.getName(), props);
+            result.append(qline);
+            if (multiline) {
+                result.append('\n');
+            } else {
+                result.append(' ');
+            }
         }
+        return result.toString();
     }
 
     private void generateProviderFields(PrintWriter out, ComponentModel cm) {
@@ -82,7 +91,8 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
     private void generateProviderConstructor(PrintWriter out, String provSimpleName, String compSimpleName, ComponentModel cm) {
         out.printf("\tpublic %s(", provSimpleName);
         String params = cm.getDependencies().stream()
-                .map(p -> String.format("%s<%s> %s",
+                .map(p -> String.format("%s%s<%s> %s",
+                        generateQualifierAnnotations(p.getQualifiers(), false),
                         Provider.class.getName(),
                         p.getType(),
                         p.getName() + "Provider"))
