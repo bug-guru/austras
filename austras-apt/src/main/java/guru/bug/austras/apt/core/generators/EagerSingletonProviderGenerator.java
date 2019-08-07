@@ -22,16 +22,6 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
         this.processingEnv = processingEnv;
     }
 
-    private String extractPackageName(String qualifiedName) {
-        var lastDotIdx = qualifiedName.lastIndexOf('.');
-        return qualifiedName.substring(0, lastDotIdx);
-    }
-
-    private String extractSimpleName(String qualifiedName) {
-        var lastDotIdx = qualifiedName.lastIndexOf('.');
-        return qualifiedName.substring(lastDotIdx + 1);
-    }
-
     public void generateProvider(ComponentModel cd) {
         var compQName = cd.getInstantiable();
         var provQName = compQName + "Provider";
@@ -59,6 +49,16 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private String extractPackageName(String qualifiedName) {
+        var lastDotIdx = qualifiedName.lastIndexOf('.');
+        return qualifiedName.substring(0, lastDotIdx);
+    }
+
+    private String extractSimpleName(String qualifiedName) {
+        var lastDotIdx = qualifiedName.lastIndexOf('.');
+        return qualifiedName.substring(lastDotIdx + 1);
     }
 
     private String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {
