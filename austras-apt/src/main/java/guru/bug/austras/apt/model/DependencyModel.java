@@ -5,7 +5,7 @@ import java.util.List;
 public class DependencyModel {
     private String name;
     private String type;
-    private List<String> qualifiers;
+    private List<QualifierModel> qualifiers;
 
     public String getName() {
         return name;
@@ -23,11 +23,11 @@ public class DependencyModel {
         this.type = type;
     }
 
-    public List<String> getQualifiers() {
+    public List<QualifierModel> getQualifiers() {
         return qualifiers;
     }
 
-    public void setQualifiers(List<String> qualifiers) {
+    public void setQualifiers(List<QualifierModel> qualifiers) {
         this.qualifiers = qualifiers;
     }
 }

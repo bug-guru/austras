@@ -7,5 +7,6 @@ import java.lang.annotation.*;
 @Repeatable(Qualifiers.class)
 public @interface Qualifier {
     String name();
-    QualifierProperties[] properties();
+
+    QualifierProperty[] properties() default {};
 }

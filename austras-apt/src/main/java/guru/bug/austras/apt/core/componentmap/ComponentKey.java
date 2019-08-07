@@ -1,16 +1,16 @@
 package guru.bug.austras.apt.core.componentmap;
 
+import guru.bug.austras.apt.model.QualifierModel;
+
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
 
 public class ComponentKey {
-    private static final Comparator<String> DEFAULT_COMPARATOR = Comparator.nullsLast(Comparator.naturalOrder());
     private final String type;
-    private final Set<String> qualifiers;
+    private final Set<QualifierModel> qualifiers;
 
-    public ComponentKey(String type, Collection<String> qualifiers) {
+    public ComponentKey(String type, Collection<QualifierModel> qualifiers) {
         this.type = type;
         this.qualifiers = Set.copyOf(qualifiers);
     }
@@ -19,7 +19,7 @@ public class ComponentKey {
         return type;
     }
 
-    public Set<String> getQualifier() {
+    public Set<QualifierModel> getQualifier() {
         return qualifiers;
     }
 

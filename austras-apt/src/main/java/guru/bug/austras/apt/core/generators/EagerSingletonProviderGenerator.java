@@ -1,8 +1,10 @@
 package guru.bug.austras.apt.core.generators;
 
 import guru.bug.austras.annotations.Qualifier;
+import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
+import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.provider.Provider;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -40,13 +42,7 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
             try (var oos = sourceFile.openOutputStream();
                  var out = new PrintWriter(oos)) {
                 out.printf("package %s;\n", provPkgName);
-                List<String> qualifierList = cd.getQualifiers();
-                if (qualifierList != null && !qualifierList.isEmpty()) {
-                    var qualifiers = qualifierList.stream()
-                            .map(v -> "\""+v+"\"")
-                            .collect(Collectors.joining(",", "{", "}"));
-                    out.printf("@%s(%s)", Qualifier.class.getName(), qualifiers);
-                }
+                generateQualifierAnnotations(cd.getQualifiers(), out);
                 out.printf("public class %s implements %s<%s> {\n",
                         provSimpleName,
                         Provider.class.getName(),
@@ -60,6 +56,22 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private void generateQualifierAnnotations(List<QualifierModel> qualifierList, PrintWriter out) {
+        if (qualifierList == null || qualifierList.isEmpty()) {
+            return;
+        }
+        for (var q : qualifierList) {
+            var props = q.getProperties().entrySet().stream()
+                    .map(e -> String.format("@%s(name=\"%s\",name=\"%s\")",
+                            QualifierProperty.class.getName(),
+                            e.getKey(),
+                            e.getValue()))
+                    .collect(Collectors.joining(",", "{", "}"));
+
+            out.printf("@%s(name=\"%s\", properties=%s)\n", Qualifier.class.getName(), q.getName(), props);
         }
     }
 

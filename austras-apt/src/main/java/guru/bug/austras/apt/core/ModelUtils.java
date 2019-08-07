@@ -3,10 +3,12 @@ package guru.bug.austras.apt.core;
 import guru.bug.austras.annotations.Cached;
 import guru.bug.austras.annotations.NoCached;
 import guru.bug.austras.annotations.Qualifier;
+import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.model.CachingKind;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
+import guru.bug.austras.apt.model.QualifierModel;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
@@ -16,6 +18,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -39,7 +42,7 @@ public class ModelUtils {
         var element = (TypeElement) type.asElement();
         Set<Modifier> modifiers = element.getModifiers();
         if (element.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
-            throw new IllegalArgumentException("type must be a public, not abstract class" );
+            throw new IllegalArgumentException("type must be a public, not abstract class");
         }
         var model = createComponentModel(type, element);
 
@@ -84,19 +87,47 @@ public class ModelUtils {
         }
     }
 
-    public List<String> extractQualifiers(Element element) {
-        Set<String> qualifiers = element.getAnnotationMirrors().stream()
-                .filter(am -> {
-                    Element annotationElement = typeUtils.asElement(am.getAnnotationType());
-                    return annotationElement.getAnnotation(Qualifier.class) != null;
-                })
-                .map(Object::toString)
+    public List<QualifierModel> extractQualifiers(Element element) {
+        Set<QualifierModel> qualifiers = element.getAnnotationMirrors().stream()
+                .map(this::convertAnnotationToQualifierModel)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(HashSet::new));
-        var rawQualifier = element.getAnnotation(Qualifier.class);
-        if (rawQualifier != null && rawQualifier.value().length > 0) {
-            qualifiers.addAll(List.of(rawQualifier.value()));
+        var rawQualifiers = element.getAnnotationsByType(Qualifier.class);
+        for (var q : rawQualifiers) {
+            var m = new QualifierModel();
+            m.setName(q.name());
+            var propsMap = new HashMap<String, String>();
+            for (var p : q.properties()) {
+                propsMap.put(p.name(), p.value());
+            }
+            m.setProperties(propsMap);
+            qualifiers.add(m);
         }
-        return new ArrayList<>(qualifiers);
+        return List.copyOf(qualifiers);
+    }
+
+    private QualifierModel convertAnnotationToQualifierModel(AnnotationMirror am) {
+        Element annotationElement = typeUtils.asElement(am.getAnnotationType());
+        Qualifier qualifier = annotationElement.getAnnotation(Qualifier.class);
+        if (qualifier == null) {
+            return null;
+        }
+        var result = new QualifierModel();
+        result.setName(qualifier.name());
+        if (qualifier.properties().length == 0) {
+            return result;
+        }
+        var mappedNames = Stream.of(qualifier.properties())
+                .collect(Collectors.toMap(QualifierProperty::name, p -> p.value().isBlank() ? p.name() : p.value()));
+        var elementValuesWithDefaults = elementUtils.getElementValuesWithDefaults(am);
+
+        var props = Stream.of(annotationElement.getEnclosingElement())
+                .filter(e -> e.getKind() == ElementKind.METHOD)
+                .map(e -> (ExecutableElement) e)
+                .filter(e -> mappedNames.containsKey(e.getSimpleName().toString()))
+                .collect(Collectors.toMap(e -> mappedNames.get(e.getSimpleName().toString()), e -> elementValuesWithDefaults.get(e).toString()));
+        result.setProperties(props);
+        return result;
     }
 
     private Set<DeclaredType> collectAllAncestor(TypeElement componentElement) {
@@ -111,7 +142,7 @@ public class ModelUtils {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked" );
+                log.debug("Already checked");
                 continue;
             }
             checked.add(cur);

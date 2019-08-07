@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class QualifierModel {
     private String name;
-    private Map<String, String> properties;
+    private Map<String, String> properties = Map.of();
 
     public String getName() {
         return name;

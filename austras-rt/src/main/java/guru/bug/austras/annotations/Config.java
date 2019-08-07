@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Qualifier
+@Qualifier(name = "ConfigurationProperty", properties = @QualifierProperty(name = "name"))
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE, ElementType.PARAMETER})
 public @interface Config {

@@ -1,15 +1,12 @@
 package guru.bug.austras.apt.model;
 
-import guru.bug.austras.provider.ScopeCache;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ComponentModel implements Comparable<ComponentModel> {
     private String name;
     private String instantiable;
-    private List<String> qualifiers;
+    private List<QualifierModel> qualifiers;
     private CachingKind cachingKind;
     private String cacheType;
     private List<String> types;
@@ -32,11 +29,11 @@ public class ComponentModel implements Comparable<ComponentModel> {
         this.instantiable = instantiable;
     }
 
-    public List<String> getQualifiers() {
+    public List<QualifierModel> getQualifiers() {
         return qualifiers;
     }
 
-    public void setQualifiers(List<String> qualifiers) {
+    public void setQualifiers(List<QualifierModel> qualifiers) {
         this.qualifiers = qualifiers;
     }
 
