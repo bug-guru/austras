@@ -41,8 +41,8 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
     public void generateProvider() {
         var compQName = componentModel.getInstantiable();
         var provQName = compQName + "Provider";
-        var provPkgName = extractPackageName(compQName);
-        var provSimpleName = extractSimpleName(compQName);
+        var provPkgName = extractPackageName(provQName);
+        var provSimpleName = extractSimpleName(provQName);
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(provQName);
             try (var oos = sourceFile.openOutputStream();
@@ -82,7 +82,6 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
     }
 
     private void generateProviderFields(PrintWriter out) {
-        out.printf("\tprivate final %s %s;\n\n", componentModel.getInstantiable(), componentModel.getName());
         dependencies.forEach(p -> {
             out.printf("\tprivate final %s<%s> %s;\n",
                     Provider.class.getName(),
@@ -94,10 +93,10 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
     private void generateProviderConstructor(PrintWriter out, String simpleName) {
         out.printf("\tpublic %s(", simpleName);
         String params = dependencies.stream()
-                .map(p -> String.format("%s<%s> %s",
+                .map(p -> String.format("%s<%s> %sProvider",
                         Provider.class.getName(),
                         p.getType(),
-                        p.getName() + "Provider" ))
+                        p.getName()))
                 .collect(Collectors.joining("," ));
         out.print(params);
         out.print(") {\n" );
@@ -110,8 +109,14 @@ public class NonCachingProviderGenerator implements ProviderGenerator {
 
     private void generateGetInstance(PrintWriter out) {
         out.printf("\t@Override\n" );
-        out.printf("\tprotected %s get() {\n", componentModel.getInstantiable());
-        out.printf("\t\treturn this.%s;\n", componentModel.getName());
+        out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
+        dependencies.forEach(dm -> {
+            out.printf("\t\tvar %s = this.%sProvider.get();\n", dm.getName(), dm.getName());
+        });
+        var params = dependencies.stream()
+                .map(DependencyModel::getName)
+                .collect(Collectors.joining("," ));
+        out.printf("\t\treturn new %s(%s);\n", componentModel.getInstantiable(), params);
         out.print("\t}\n\n" );
     }
 
