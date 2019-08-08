@@ -13,6 +13,7 @@ import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public abstract class BaseProviderGenerator implements ProviderGenerator {
@@ -53,18 +54,70 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                 generateProviderConstructor(out);
                 generateGetInstance(out);
 
-                out.print("}" );
+                out.print("}");
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    protected abstract void generateGetInstance(PrintWriter out);
+    private void generateProviderFields(PrintWriter out) {
+        out.print("\n");
+        generateProviderFields(new BiConsumer<String, String>() {
+            @Override
+            public void accept(String className, String varName) {
+                out.printf("\tprivate final %s %s;\n", className, varName);
+            }
+        });
+        out.print("\n");
+    }
 
-    protected abstract void generateProviderConstructor(PrintWriter out);
+    protected void generateProviderFields(BiConsumer<String, String> fieldGenerator) {
 
-    protected abstract void generateProviderFields(PrintWriter out);
+    }
+
+    private void generateGetInstance(PrintWriter out) {
+        out.printf("\t@Override\n");
+        out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
+        generateGetMethodBody(out);
+        out.print("\t}\n\n");
+
+    }
+
+    protected abstract void generateGetMethodBody(PrintWriter out);
+
+    protected void generateConstructorParams(BiConsumer<String, String> paramGenerator) {
+        dependencies.forEach(p -> {
+            String type = String.format("%s%s<%s>",
+                    generateQualifierAnnotations(p.getQualifiers(), false),
+                    Provider.class.getName(),
+                    p.getType());
+            paramGenerator.accept(type, p.getName() + "Provider");
+        });
+    }
+
+    protected void generateConstructorBody(PrintWriter out) {
+
+    }
+
+    private void generateProviderConstructor(PrintWriter out) {
+        var params = new StringBuilder();
+        generateConstructorParams(new BiConsumer<String, String>() {
+            boolean needSep = false;
+
+            @Override
+            public void accept(String type, String name) {
+                if (needSep) {
+                    params.append(",");
+                }
+                needSep = true;
+                params.append(type).append(" ").append(name);
+            }
+        });
+        out.printf("\tpublic %s(%s) {\n", providerSimpleName, params);
+        generateConstructorBody(out);
+        out.print("\t}\n");
+    }
 
     protected final String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {
         if (qualifierList == null || qualifierList.isEmpty()) {
@@ -77,7 +130,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                             QualifierProperty.class.getName(),
                             StringEscapeUtils.escapeJava(e.getKey()),
                             StringEscapeUtils.escapeJava(e.getValue())))
-                    .collect(Collectors.joining(",", "{", "}" ));
+                    .collect(Collectors.joining(",", "{", "}"));
             var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), q.getName(), props);
             result.append(qline);
             if (multiline) {

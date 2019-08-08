@@ -7,6 +7,7 @@ import guru.bug.austras.provider.Provider;
 import javax.annotation.processing.ProcessingEnvironment;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class NonCachingProviderGenerator extends BaseProviderGenerator {
@@ -17,45 +18,31 @@ public class NonCachingProviderGenerator extends BaseProviderGenerator {
 
 
     @Override
-    protected void generateProviderFields(PrintWriter out) {
+    protected void generateProviderFields(BiConsumer<String, String> fieldGenerator) {
         dependencies.forEach(p -> {
-            out.printf("\tprivate final %s<%s> %s;\n",
-                    Provider.class.getName(),
-                    p.getType(),
-                    p.getName() + "Provider" );
+            var providerClass = String.format("%s<%s>", Provider.class.getName(), p.getType());
+            var providerVar = p.getName() + "Provider";
+            fieldGenerator.accept(providerClass, providerVar);
         });
     }
 
     @Override
-    protected void generateProviderConstructor(PrintWriter out) {
-        out.printf("\tpublic %s(", providerSimpleName);
-        String params = dependencies.stream()
-                .map(p -> String.format("%s<%s> %sProvider",
-                        Provider.class.getName(),
-                        p.getType(),
-                        p.getName()))
-                .collect(Collectors.joining("," ));
-        out.print(params);
-        out.print(") {\n" );
+    protected void generateConstructorBody(PrintWriter out) {
         dependencies.forEach(p -> {
             String varName = p.getName() + "Provider";
             out.printf("\t\tthis.%s = %s;\n", varName, varName);
         });
-        out.print("\t}\n" );
     }
 
     @Override
-    protected void generateGetInstance(PrintWriter out) {
-        out.printf("\t@Override\n" );
-        out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
+    protected void generateGetMethodBody(PrintWriter out) {
         dependencies.forEach(dm -> {
             out.printf("\t\tvar %s = this.%sProvider.get();\n", dm.getName(), dm.getName());
         });
         var params = dependencies.stream()
                 .map(DependencyModel::getName)
-                .collect(Collectors.joining("," ));
+                .collect(Collectors.joining(","));
         out.printf("\t\treturn new %s(%s);\n", componentModel.getInstantiable(), params);
-        out.print("\t}\n\n" );
     }
 
 }
