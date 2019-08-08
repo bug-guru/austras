@@ -3,10 +3,6 @@ package guru.bug.austras.apt.core;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.core.generators.CachingProviderGenerator;
-import guru.bug.austras.apt.core.generators.EagerSingletonProviderGenerator;
-import guru.bug.austras.apt.core.generators.NonCachingProviderGenerator;
-import guru.bug.austras.apt.model.CachingKind;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.provider.Provider;
 
@@ -41,9 +37,6 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     private DeclaredType providerInterfaceType;
     private Elements elementUtils;
     private Types typeUtils;
-    private EagerSingletonProviderGenerator eagerSingletonProviderCodeGenerator;
-    private NonCachingProviderGenerator nonCachingProviderCodeGenerator;
-    private CachingProviderGenerator cachingProviderCodeGenerator;
 
 
     @Override
@@ -52,11 +45,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         this.elementUtils = processingEnv.getElementUtils();
         this.typeUtils = processingEnv.getTypeUtils();
         this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
-        this.modelUtils = new ModelUtils(this, uniqueNameGenerator, typeUtils, elementUtils, providerInterfaceType);
+        this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv, providerInterfaceType);
         this.componentMap = new ComponentMap(this);
-        this.eagerSingletonProviderCodeGenerator = new EagerSingletonProviderGenerator(processingEnv);
-        this.nonCachingProviderCodeGenerator = new NonCachingProviderGenerator(processingEnv);
-        this.cachingProviderCodeGenerator = new CachingProviderGenerator(processingEnv);
     }
 
     @Override
@@ -134,8 +124,6 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             if (componentModel == null) {
                 debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel, key);
                 componentModel = modelUtils.createComponentModel(type, providerElement);
-                componentModel.setCachingKind(CachingKind.CUSTOM);
-                componentModel.setCacheType(null);
                 componentMap.addComponent(componentModel);
             }
             debug("Setting provider %s for component %s", providerElement, componentModel);
@@ -147,19 +135,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         componentMap.allComponentsStream()
                 .filter(cm -> cm.getProvider() == null)
                 .forEach(cm -> {
-                    switch (cm.getCachingKind()) {
-                        case EAGER_SINGLETON:
-                            eagerSingletonProviderCodeGenerator.generateProvider(cm);
-                            break;
-                        case CACHED:
-                            cachingProviderCodeGenerator.generateProvider(cm);
-                            break;
-                        case NO_CACHE:
-                            nonCachingProviderCodeGenerator.generateProvider(cm);
-                            break;
-                        default:
-                            throw new UnsupportedOperationException(cm.getCachingKind().toString());
-                    }
+                    var providerGenerator = modelUtils.createProviderGeneratorFor(cm);
+                    providerGenerator.generateProvider();
                 });
     }
 

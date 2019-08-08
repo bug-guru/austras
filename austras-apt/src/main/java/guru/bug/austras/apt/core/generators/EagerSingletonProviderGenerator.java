@@ -17,13 +17,17 @@ import java.util.stream.Collectors;
 
 public class EagerSingletonProviderGenerator implements ProviderGenerator {
     private final ProcessingEnvironment processingEnv;
+    private final ComponentModel componentModel;
+    private final List<DependencyModel> dependencies;
 
-    public EagerSingletonProviderGenerator(ProcessingEnvironment processingEnv) {
+    public EagerSingletonProviderGenerator(ProcessingEnvironment processingEnv, ComponentModel componentModel, List<DependencyModel> dependencies) {
         this.processingEnv = processingEnv;
+        this.componentModel = componentModel;
+        this.dependencies = dependencies;
     }
 
-    public void generateProvider(ComponentModel cd) {
-        var compQName = cd.getInstantiable();
+    public void generateProvider() {
+        var compQName = componentModel.getInstantiable();
         var provQName = compQName + "Provider";
         var provPkgName = extractPackageName(compQName);
         var compSimpleName = extractSimpleName(compQName);
@@ -33,18 +37,18 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
             try (var oos = sourceFile.openOutputStream();
                  var out = new PrintWriter(oos)) {
                 out.printf("package %s;\n", provPkgName);
-                var qanno = generateQualifierAnnotations(cd.getQualifiers(), true);
+                var qanno = generateQualifierAnnotations(componentModel.getQualifiers(), true);
                 out.print(qanno);
                 out.printf("public class %s implements %s<%s> {\n",
                         provSimpleName,
                         Provider.class.getName(),
                         compQName);
 
-                generateProviderFields(out, cd);
-                generateProviderConstructor(out, provSimpleName, compSimpleName, cd);
-                generateGetInstance(out, cd);
+                generateProviderFields(out);
+                generateProviderConstructor(out, provSimpleName, compSimpleName);
+                generateGetInstance(out);
 
-                out.print("}");
+                out.print("}" );
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -72,7 +76,7 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
                             QualifierProperty.class.getName(),
                             StringEscapeUtils.escapeJava(e.getKey()),
                             StringEscapeUtils.escapeJava(e.getValue())))
-                    .collect(Collectors.joining(",", "{", "}"));
+                    .collect(Collectors.joining(",", "{", "}" ));
             var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), q.getName(), props);
             result.append(qline);
             if (multiline) {
@@ -84,39 +88,39 @@ public class EagerSingletonProviderGenerator implements ProviderGenerator {
         return result.toString();
     }
 
-    private void generateProviderFields(PrintWriter out, ComponentModel cm) {
-        out.printf("\tprivate final %s %s;\n\n", cm.getInstantiable(), cm.getName());
+    private void generateProviderFields(PrintWriter out) {
+        out.printf("\tprivate final %s %s;\n\n", componentModel.getInstantiable(), componentModel.getName());
     }
 
-    private void generateProviderConstructor(PrintWriter out, String provSimpleName, String compSimpleName, ComponentModel cm) {
+    private void generateProviderConstructor(PrintWriter out, String provSimpleName, String compSimpleName) {
         out.printf("\tpublic %s(", provSimpleName);
-        String params = cm.getDependencies().stream()
+        String params = dependencies.stream()
                 .map(p -> String.format("%s%s<%s> %s",
                         generateQualifierAnnotations(p.getQualifiers(), false),
                         Provider.class.getName(),
                         p.getType(),
-                        p.getName() + "Provider"))
-                .collect(Collectors.joining(","));
+                        p.getName() + "Provider" ))
+                .collect(Collectors.joining("," ));
         out.print(params);
-        out.print(") {\n");
-        cm.getDependencies().forEach(p -> {
+        out.print(") {\n" );
+        dependencies.forEach(p -> {
             String compVarName = p.getName();
             String provVarName = compVarName + "Provider";
             out.printf("\t\tvar %s = %s.get();\n", compVarName, provVarName);
         });
-        out.printf("\t\tthis.%s = new %s(", cm.getName(), compSimpleName);
-        String vars = cm.getDependencies().stream()
+        out.printf("\t\tthis.%s = new %s(", componentModel.getName(), compSimpleName);
+        String vars = dependencies.stream()
                 .map(DependencyModel::getName)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining("," ));
         out.print(vars);
-        out.print(");\n");
-        out.print("\t}\n");
+        out.print(");\n" );
+        out.print("\t}\n" );
     }
 
-    private void generateGetInstance(PrintWriter out, ComponentModel cm) {
-        out.printf("\t@Override\n");
-        out.printf("\tpublic %s get() {\n", cm.getInstantiable());
-        out.printf("\t\treturn this.%s;\n", cm.getName());
-        out.print("\t}\n\n");
+    private void generateGetInstance(PrintWriter out) {
+        out.printf("\t@Override\n" );
+        out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
+        out.printf("\t\treturn this.%s;\n", componentModel.getName());
+        out.print("\t}\n\n" );
     }
 }

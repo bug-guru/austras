@@ -5,11 +5,15 @@ import guru.bug.austras.annotations.NoCached;
 import guru.bug.austras.annotations.Qualifier;
 import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.model.CachingKind;
+import guru.bug.austras.apt.core.generators.CachingProviderGenerator;
+import guru.bug.austras.apt.core.generators.EagerSingletonProviderGenerator;
+import guru.bug.austras.apt.core.generators.NonCachingProviderGenerator;
+import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -36,12 +40,14 @@ public class ModelUtils {
     private final Types typeUtils;
     private final Elements elementUtils;
     private final DeclaredType providerInterfaceType;
+    private final ProcessingEnvironment processingEnv;
 
-    public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, Types typeUtils, Elements elementUtils, DeclaredType providerInterfaceType) {
+    public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv, DeclaredType providerInterfaceType) {
         this.log = log;
         this.uniqueNameGenerator = uniqueNameGenerator;
-        this.typeUtils = typeUtils;
-        this.elementUtils = elementUtils;
+        this.processingEnv = processingEnv;
+        this.typeUtils = processingEnv.getTypeUtils();
+        this.elementUtils = processingEnv.getElementUtils();
         this.providerInterfaceType = providerInterfaceType;
     }
 
@@ -49,14 +55,10 @@ public class ModelUtils {
         var element = (TypeElement) type.asElement();
         Set<Modifier> modifiers = element.getModifiers();
         if (element.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
-            throw new IllegalArgumentException("type must be a public, not abstract class");
+            throw new IllegalArgumentException("type must be a public, not abstract class" );
         }
-        var model = createComponentModel(type, element);
 
-        var dependencies = collectConstructorParams(type);
-        model.setDependencies(dependencies);
-
-        return model;
+        return createComponentModel(type, element);
     }
 
     public ComponentModel createComponentModel(DeclaredType type, TypeElement metaInfo) {
@@ -74,23 +76,20 @@ public class ModelUtils {
         model.setName(varName);
         model.setTypes(ancestors);
 
-        setupCaching(model, metaInfo);
-
         return model;
     }
 
-    private void setupCaching(ComponentModel model, TypeElement type) {
-        var cachedAnnotation = type.getAnnotation(Cached.class);
-        var noCachedAnnotation = type.getAnnotation(NoCached.class);
+    public ProviderGenerator createProviderGeneratorFor(ComponentModel componentModel) {
+        TypeElement componentElement = elementUtils.getTypeElement(componentModel.getInstantiable());
+        var cachedAnnotation = componentElement.getAnnotation(Cached.class);
+        var noCachedAnnotation = componentElement.getAnnotation(NoCached.class);
+        List<DependencyModel> dependencies = collectConstructorParams(componentElement);
         if (cachedAnnotation == null && noCachedAnnotation == null) {
-            model.setCachingKind(CachingKind.EAGER_SINGLETON);
-            model.setCacheType(null);
+            return new EagerSingletonProviderGenerator(processingEnv, componentModel, dependencies);
         } else if (noCachedAnnotation != null) {
-            model.setCachingKind(CachingKind.NO_CACHE);
-            model.setCacheType(null);
+            return new NonCachingProviderGenerator(processingEnv, componentModel, dependencies);
         } else {
-            model.setCachingKind(CachingKind.CACHED);
-            model.setCacheType(cachedAnnotation.value().getName());
+            return new CachingProviderGenerator(processingEnv, componentModel, dependencies, cachedAnnotation.value());
         }
     }
 
@@ -152,7 +151,7 @@ public class ModelUtils {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked");
+                log.debug("Already checked" );
                 continue;
             }
             checked.add(cur);
