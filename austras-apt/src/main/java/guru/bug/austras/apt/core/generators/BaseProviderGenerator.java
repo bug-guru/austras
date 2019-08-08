@@ -38,7 +38,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         this.providerSimpleName = extractSimpleName(providerQualifiedName);
     }
 
-    public void generateProvider() {
+    public final void generateProvider() {
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(providerQualifiedName);
             try (var oos = sourceFile.openOutputStream();
@@ -53,7 +53,6 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                 generateProviderFields(out);
                 generateProviderConstructor(out);
                 generateGetInstance(out);
-
                 out.print("}");
             }
         } catch (IOException e) {
@@ -63,12 +62,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
 
     private void generateProviderFields(PrintWriter out) {
         out.print("\n");
-        generateProviderFields(new BiConsumer<String, String>() {
-            @Override
-            public void accept(String className, String varName) {
-                out.printf("\tprivate final %s %s;\n", className, varName);
-            }
-        });
+        generateProviderFields((className, varName) -> out.printf("\tprivate final %s %s;\n", className, varName));
         out.print("\n");
     }
 
@@ -102,7 +96,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
 
     private void generateProviderConstructor(PrintWriter out) {
         var params = new StringBuilder();
-        generateConstructorParams(new BiConsumer<String, String>() {
+        generateConstructorParams(new BiConsumer<>() {
             boolean needSep = false;
 
             @Override
@@ -116,7 +110,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         });
         out.printf("\tpublic %s(%s) {\n", providerSimpleName, params);
         generateConstructorBody(out);
-        out.print("\t}\n");
+        out.print("\t}\n\n");
     }
 
     protected final String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {

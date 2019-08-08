@@ -16,6 +16,7 @@ import guru.bug.austras.apt.model.QualifierModel;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -29,7 +30,7 @@ import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
-    private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<String, Void>() {
+    private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
         @Override
         protected String defaultAction(Object o, Void aVoid) {
             return Objects.toString(o);
@@ -41,6 +42,7 @@ public class ModelUtils {
     private final Elements elementUtils;
     private final DeclaredType providerInterfaceType;
     private final ProcessingEnvironment processingEnv;
+    private final String componentCacheVarName;
 
     public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv, DeclaredType providerInterfaceType) {
         this.log = log;
@@ -49,6 +51,7 @@ public class ModelUtils {
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
         this.providerInterfaceType = providerInterfaceType;
+        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache");
     }
 
     public ComponentModel createComponentModel(DeclaredType type) {
@@ -82,6 +85,7 @@ public class ModelUtils {
     public ProviderGenerator createProviderGeneratorFor(ComponentModel componentModel) {
         TypeElement componentElement = elementUtils.getTypeElement(componentModel.getInstantiable());
         var cachedAnnotation = componentElement.getAnnotation(Cached.class);
+        var cacheType = extractValueFromCachedAnnotation(cachedAnnotation);
         var noCachedAnnotation = componentElement.getAnnotation(NoCached.class);
         List<DependencyModel> dependencies = collectConstructorParams(componentElement);
         if (cachedAnnotation == null && noCachedAnnotation == null) {
@@ -89,8 +93,21 @@ public class ModelUtils {
         } else if (noCachedAnnotation != null) {
             return new NonCachingProviderGenerator(processingEnv, componentModel, dependencies);
         } else {
-            return new CachingProviderGenerator(processingEnv, componentModel, dependencies, cachedAnnotation.value());
+            return new CachingProviderGenerator(processingEnv, componentModel, dependencies, cacheType, componentCacheVarName);
         }
+    }
+
+    private String extractValueFromCachedAnnotation(Cached cachedAnnotation) {
+        if (cachedAnnotation != null) {
+            try {
+                cachedAnnotation.value();
+            } catch (MirroredTypeException e) {
+                var declaredType = (DeclaredType) e.getTypeMirror();
+                var typeElement = (TypeElement) declaredType.asElement();
+                return typeElement.getQualifiedName().toString();
+            }
+        }
+        return null;
     }
 
     public List<QualifierModel> extractQualifiers(Element element) {
