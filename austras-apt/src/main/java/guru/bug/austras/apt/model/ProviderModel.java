@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProviderModel {
@@ -22,13 +21,6 @@ public class ProviderModel {
 
     public void setInstantiable(String instantiable) {
         this.instantiable = instantiable;
-    }
-
-    public List<DependencyModel> dependencies() {
-        if (dependencies == null) {
-            dependencies = new ArrayList<>();
-        }
-        return dependencies;
     }
 
     public List<DependencyModel> getDependencies() {

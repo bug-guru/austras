@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ComponentModel implements Comparable<ComponentModel> {
@@ -32,13 +31,6 @@ public class ComponentModel implements Comparable<ComponentModel> {
 
     public void setQualifiers(List<QualifierModel> qualifiers) {
         this.qualifiers = qualifiers;
-    }
-
-    public List<String> types() {
-        if (types == null) {
-            types = new ArrayList<>();
-        }
-        return types;
     }
 
     public List<String> getTypes() {
