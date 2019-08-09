@@ -34,9 +34,9 @@ public class CachingProviderGenerator extends BaseProviderGenerator {
     @Override
     protected void generateConstructorBody(PrintWriter out) {
         out.printf("\t\tthis.%s = new %s<>(() -> {\n", componentCacheVarName, scopeType);
-        dependencies.forEach(p -> out.printf("\t\t\tvar %1$s = %1$sProvider.get();\n", p.getName()));
-        var params = dependencies.stream()
-                .map(DependencyModel::getName)
+        providerDependencies.forEach(p -> out.printf("\t\t\tvar %s = %s.get();\n", p.componentDependency.getName(), p.getName()));
+        var params = providerDependencies.stream()
+                .map(dm -> dm.componentDependency.getName())
                 .collect(Collectors.joining(","));
         out.printf("\t\t\treturn new %s(%s);\n", componentQualifiedName, params);
         out.print("\t\t});\n");

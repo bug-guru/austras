@@ -6,12 +6,14 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.provider.Provider;
+import guru.bug.austras.provider.ProviderCollection;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -20,22 +22,51 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
 
     protected final ProcessingEnvironment processingEnv;
     protected final ComponentModel componentModel;
-    protected final List<DependencyModel> dependencies;
+    protected final List<DependencyModel> componentDependencies;
+    protected final List<ProviderDependencyModel> providerDependencies;
     protected final String componentQualifiedName;
     protected final String providerQualifiedName;
     protected final String providerPackageName;
     protected final String componentSimpleName;
     protected final String providerSimpleName;
 
-    public BaseProviderGenerator(ProcessingEnvironment processingEnv, ComponentModel componentModel, List<DependencyModel> dependencies) {
+    public BaseProviderGenerator(ProcessingEnvironment processingEnv, ComponentModel componentModel, List<DependencyModel> componentDependencies) {
         this.processingEnv = processingEnv;
         this.componentModel = componentModel;
         this.componentQualifiedName = componentModel.getInstantiable();
-        this.dependencies = dependencies;
+        this.componentDependencies = componentDependencies;
         this.providerQualifiedName = componentQualifiedName + "Provider";
         this.componentSimpleName = extractSimpleName(componentQualifiedName);
         this.providerPackageName = extractPackageName(providerQualifiedName);
         this.providerSimpleName = extractSimpleName(providerQualifiedName);
+        this.providerDependencies = componentDependencies.stream()
+                .map(this::convertToProviderDependency)
+                .collect(Collectors.toList());
+    }
+
+    private ProviderDependencyModel convertToProviderDependency(DependencyModel componentDependency) {
+        var providerDependency = new ProviderDependencyModel(componentDependency);
+        providerDependency.setName(componentDependency.getName() + "Provider" );
+        providerDependency.setQualifiers(componentDependency.getQualifiers());
+
+        var componentDepType = componentDependency.getType();
+        var idx = componentDepType.indexOf('<');
+        if (idx < 0) {
+            var type = Provider.class.getName() + "<" + componentDepType + ">";
+            providerDependency.setType(type);
+        } else {
+            var compDepClass = componentDepType.substring(0, idx);
+            if (compDepClass.equals(Collection.class.getName())) {
+                var dep = componentDepType.substring(idx + 1, componentDepType.length() - 1);
+                String type = ProviderCollection.class.getName() + "<" + dep + ">";
+                providerDependency.setType(type);
+            } else {
+                var type = Provider.class.getName() + "<" + componentDepType + ">";
+                providerDependency.setType(type);
+            }
+        }
+
+        return providerDependency;
     }
 
     public final void generateProvider() {
@@ -53,7 +84,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                 generateProviderFields(out);
                 generateProviderConstructor(out);
                 generateGetInstance(out);
-                out.print("}");
+                out.print("}" );
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -61,9 +92,9 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     private void generateProviderFields(PrintWriter out) {
-        out.print("\n");
+        out.print("\n" );
         generateProviderFields((className, varName) -> out.printf("\tprivate final %s %s;\n", className, varName));
-        out.print("\n");
+        out.print("\n" );
     }
 
     protected void generateProviderFields(BiConsumer<String, String> fieldGenerator) {
@@ -71,22 +102,21 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     private void generateGetInstance(PrintWriter out) {
-        out.printf("\t@Override\n");
+        out.printf("\t@Override\n" );
         out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
         generateGetMethodBody(out);
-        out.print("\t}\n\n");
+        out.print("\t}\n\n" );
 
     }
 
     protected abstract void generateGetMethodBody(PrintWriter out);
 
     protected void generateConstructorParams(BiConsumer<String, String> paramGenerator) {
-        dependencies.forEach(p -> {
-            String type = String.format("%s%s<%s>",
+        providerDependencies.forEach(p -> {
+            String type = String.format("%s%s",
                     generateQualifierAnnotations(p.getQualifiers(), false),
-                    Provider.class.getName(),
                     p.getType());
-            paramGenerator.accept(type, p.getName() + "Provider");
+            paramGenerator.accept(type, p.getName());
         });
     }
 
@@ -102,15 +132,15 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
             @Override
             public void accept(String type, String name) {
                 if (needSep) {
-                    params.append(",");
+                    params.append("," );
                 }
                 needSep = true;
-                params.append(type).append(" ").append(name);
+                params.append(type).append(" " ).append(name);
             }
         });
         out.printf("\tpublic %s(%s) {\n", providerSimpleName, params);
         generateConstructorBody(out);
-        out.print("\t}\n\n");
+        out.print("\t}\n\n" );
     }
 
     protected final String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {
@@ -124,7 +154,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                             QualifierProperty.class.getName(),
                             StringEscapeUtils.escapeJava(e.getKey()),
                             StringEscapeUtils.escapeJava(e.getValue())))
-                    .collect(Collectors.joining(",", "{", "}"));
+                    .collect(Collectors.joining(",", "{", "}" ));
             var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), q.getName(), props);
             result.append(qline);
             if (multiline) {
@@ -144,5 +174,13 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     private String extractSimpleName(String qualifiedName) {
         var lastDotIdx = qualifiedName.lastIndexOf('.');
         return qualifiedName.substring(lastDotIdx + 1);
+    }
+
+    protected class ProviderDependencyModel extends DependencyModel {
+        protected final DependencyModel componentDependency;
+
+        public ProviderDependencyModel(DependencyModel componentDependency) {
+            this.componentDependency = componentDependency;
+        }
     }
 }
