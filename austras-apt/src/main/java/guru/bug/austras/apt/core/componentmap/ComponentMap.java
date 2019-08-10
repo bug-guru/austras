@@ -1,15 +1,14 @@
 package guru.bug.austras.apt.core.componentmap;
 
-import guru.bug.austras.apt.model.ModuleModel;
-import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.core.Logger;
+import guru.bug.austras.apt.model.ComponentModel;
+import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,13 +22,6 @@ public class ComponentMap {
     public ComponentMap(Logger log) {
         this.log = log;
     }
-
-//    public void resolveProvider(TypeElement type) {
-//        log.debug("Adding as component provider" );
-//        var params = collectProviderParams(type);
-//        var desc = new ProviderDescription(varName, type, params);
-//        providers.add(desc);
-//    }
 
     public void addComponent(ComponentModel componentModel) {
         model.components().add(componentModel);
@@ -76,34 +68,4 @@ public class ComponentMap {
     public void serialize(Writer out) throws IOException {
         ModuleModelSerializer.store(model, out);
     }
-
-//    private ComponentModel convertToModel(ComponentDescription cd) {
-//        var cm = new ComponentModel();
-//        cm.setName(cd.getVarName());
-//        cm.setInstantiable(cd.getType().toString());
-//        cm.setQualifier(cd.get().toString());
-//        var pm = convertToModel(cd.getProvider());
-//        cm.setProvider(pm);
-//        return cm;
-//    }
-//
-//    private ProviderModel convertToModel(ProviderDescription pd) {
-//        if (pd == null) {
-//            return null;
-//        }
-//        var pm = new ProviderModel();
-//        pm.setName(pd.getVarName());
-//        pm.setInstantiable(pd.getType().toString());
-//        var deps = pd.getParams().stream()
-//                .map(ppd -> {
-//                    var dm = new DependencyModel();
-//                    dm.setType(ppd.getKey().getType());
-//                    dm.setQualifier(ppd.getKey().getQualifier());
-//                    dm.setName(ppd.getVarName());
-//                    return dm;
-//                })
-//                .collect(Collectors.toList());
-//        pm.dependencies().addAll(deps);
-//        return pm;
-//    }
 }
