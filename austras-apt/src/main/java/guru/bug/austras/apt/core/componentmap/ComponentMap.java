@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.core.componentmap;
 
-import guru.bug.austras.apt.core.Logger;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
@@ -17,11 +16,6 @@ import java.util.stream.Stream;
 public class ComponentMap {
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
     private final ModuleModel model = new ModuleModel();
-    private final Logger log;
-
-    public ComponentMap(Logger log) {
-        this.log = log;
-    }
 
     public void addComponent(ComponentModel componentModel) {
         model.components().add(componentModel);
@@ -34,6 +28,11 @@ public class ComponentMap {
 
     public Stream<ComponentModel> allComponentsStream() {
         return model.components().stream();
+    }
+
+    public boolean hasComponent(ComponentKey key) {
+        var comps = index.get(key);
+        return comps != null && !comps.isEmpty();
     }
 
     public ComponentModel findSingleComponentModel(ComponentKey key) {

@@ -14,6 +14,7 @@ import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
@@ -26,7 +27,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
@@ -51,20 +51,14 @@ public class ModelUtils {
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
         this.providerInterfaceType = providerInterfaceType;
-        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache");
+        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache" );
     }
 
     public ComponentModel createComponentModel(DeclaredType type) {
-        var element = (TypeElement) type.asElement();
-        Set<Modifier> modifiers = element.getModifiers();
-        if (element.getKind() != ElementKind.CLASS || modifiers.contains(ABSTRACT) || !modifiers.contains(PUBLIC)) {
-            throw new IllegalArgumentException("type must be a public, not abstract class" );
-        }
-
-        return createComponentModel(type, element);
+        return createComponentModel(type, type);
     }
 
-    public ComponentModel createComponentModel(DeclaredType type, TypeElement metaInfo) {
+    public ComponentModel createComponentModel(DeclaredType type, DeclaredType metaInfo) {
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
                 .collect(Collectors.toList());
@@ -110,7 +104,7 @@ public class ModelUtils {
         return null;
     }
 
-    public List<QualifierModel> extractQualifiers(Element element) {
+    public List<QualifierModel> extractQualifiers(AnnotatedConstruct element) {
         Set<QualifierModel> qualifiers = element.getAnnotationMirrors().stream()
                 .map(this::convertAnnotationToQualifierModel)
                 .filter(Objects::nonNull)
@@ -191,9 +185,12 @@ public class ModelUtils {
         return result;
     }
 
-    public DeclaredType extractComponentTypeFromProvider(TypeElement providerElement) {
+    public DeclaredType extractComponentTypeFromProvider(DeclaredType providerType) {
+        if (!isProvider(providerType)) {
+            throw new IllegalArgumentException(providerType + " isn't a provider" );
+        }
         Element providerInterfaceElement = providerInterfaceType.asElement();
-        var tmp = collectAllAncestor(providerElement).stream()
+        var tmp = Stream.concat(collectAllAncestor(providerType).stream(), Stream.of(providerType))
                 .filter(dt -> dt.asElement().equals(providerInterfaceElement))
                 .map(dt -> dt.getTypeArguments().get(0))
                 .distinct()
@@ -202,7 +199,7 @@ public class ModelUtils {
             throw new IllegalArgumentException("Not expected count of type parameters: " + tmp);
         }
         var componentType = (DeclaredType) tmp.get(0);
-        log.debug("Provider %s provides component: %s", providerElement, componentType);
+        log.debug("Provider %s provides component: %s", providerType, componentType);
         return componentType;
     }
 
@@ -232,7 +229,15 @@ public class ModelUtils {
         result.setName(varName);
         result.setQualifiers(qualifiers);
         result.setType(paramElement.asType().toString());
+        result.setParamElement(paramElement);
         return result;
     }
 
+    public boolean isProvider(TypeMirror type) {
+        return typeUtils.isAssignable(type, providerInterfaceType);
+    }
+
+    public boolean isProvider(Element element) {
+        return isProvider(element.asType());
+    }
 }

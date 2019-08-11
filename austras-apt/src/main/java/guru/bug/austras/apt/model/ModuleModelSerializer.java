@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
+import javax.lang.model.AnnotatedConstruct;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -32,6 +33,9 @@ public class ModuleModelSerializer {
                     return null;
                 }
                 if (propertyValue instanceof Map && ((Map) propertyValue).isEmpty()) {
+                    return null;
+                }
+                if (propertyValue instanceof AnnotatedConstruct) {
                     return null;
                 }
                 return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);

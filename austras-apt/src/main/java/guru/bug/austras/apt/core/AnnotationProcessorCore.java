@@ -1,8 +1,11 @@
 package guru.bug.austras.apt.core;
 
+import guru.bug.austras.annotations.Application;
+import guru.bug.austras.annotations.Component;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
+import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.provider.Provider;
 
@@ -12,6 +15,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -20,24 +24,27 @@ import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static javax.lang.model.element.ElementKind.CLASS;
-import static javax.lang.model.element.ElementKind.INTERFACE;
+import static javax.lang.model.element.ElementKind.*;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*" )
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor {
-    private final Queue<TypeElement> providers = new LinkedList<>();
+    private static final Set<Class<? extends Annotation>> supportedAnnotations = Set.of(Application.class, Component.class);
+    private final Queue<DeclaredType> providers = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
     private ModelUtils modelUtils;
+    private ComponentMap candidateComponentMap;
     private ComponentMap componentMap;
     private DeclaredType providerInterfaceType;
     private Elements elementUtils;
     private Types typeUtils;
-
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -46,7 +53,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         this.typeUtils = processingEnv.getTypeUtils();
         this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
         this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv, providerInterfaceType);
-        this.componentMap = new ComponentMap(this);
+        this.componentMap = new ComponentMap();
+        this.candidateComponentMap = new ComponentMap();
     }
 
     @Override
@@ -55,7 +63,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             generateComponentMap();
             generateAppMain();
         } else {
-            scanRootElements(roundEnv.getRootElements());
+            var rootElements = roundEnv.getRootElements();
+            scanRootElements(rootElements);
             resolveProviders();
             generateProviders();
         }
@@ -67,28 +76,64 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void scanElement(Element element) {
+        if (modelUtils.isProvider(element)) {
+            processProvider(element);
+        } else {
+            processAsComponent(element);
+        }
+    }
+
+    private void processProvider(Element element) {
+        debug("PROCESS: Found provider class %s.", element);
+        providers.add((DeclaredType) element.asType());
+    }
+
+    private ComponentModel processAsComponent(Element element) {
         if (element.getKind() == CLASS) {
-            TypeElement type = (TypeElement) element;
-            if (!checkIsProcessable(type)) {
+            TypeElement typeElement = (TypeElement) element;
+            if (!checkIsPublicNonAbstractClass(typeElement)) {
                 debug("IGNORE: Found abstract or non-public class %s", element);
-            } else if (typeUtils.isAssignable(type.asType(), providerInterfaceType)) {
-                debug("PROCESS: Found provider class %s.", element);
-                providers.add(type);
+            } else if (!checkUsableConstructor(typeElement)) {
+                debug("IGNORE: No default constructor or multiple public constructors in class %s", element);
             } else {
                 debug("PROCESS: Found component class %s.", element);
-                var model = modelUtils.createComponentModel((DeclaredType) type.asType());
-                componentMap.addComponent(model);
+                var model = modelUtils.createComponentModel((DeclaredType) typeElement.asType());
+                var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
+                var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
+                if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
+                    debug("...Adding to candidate components map" );
+                    candidateComponentMap.addComponent(model);
+                } else {
+                    debug("...Adding to components map" );
+                    componentMap.addComponent(model);
+                }
+                return model;
             }
         } else if (element.getKind() == INTERFACE) {
             debug("IGNORE: Found interface %s.", element);
         } else {
             debug("IGNORE: Unknown element %s.", element);
         }
+        return null;
     }
 
-    private boolean checkIsProcessable(TypeElement type) {
-        var modifiers = type.getModifiers();
+    private boolean checkIsPublicNonAbstractClass(TypeElement typeElement) {
+        var modifiers = typeElement.getModifiers();
         return !modifiers.contains(Modifier.ABSTRACT) && modifiers.contains(Modifier.PUBLIC);
+    }
+
+    private boolean checkUsableConstructor(TypeElement typeElement) {
+        var constructors = typeElement.getEnclosedElements().stream()
+                .filter(e -> e.getKind() == CONSTRUCTOR)
+                .map(e -> (ExecutableElement) e)
+                .collect(Collectors.toSet());
+        if (constructors.isEmpty()) {
+            return true;
+        }
+        var publicConstructors = constructors.stream()
+                .filter(e -> e.getModifiers().contains(PUBLIC))
+                .collect(Collectors.toSet());
+        return publicConstructors.size() == 1;
     }
 
     private void generateComponentMap() {
@@ -122,12 +167,35 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             providerModel.setDependencies(dependencies);
 
             if (componentModel == null) {
-                debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel, key);
+                debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key);
                 componentModel = modelUtils.createComponentModel(type, providerElement);
                 componentMap.addComponent(componentModel);
             }
             debug("Setting provider %s for component %s", providerElement, componentModel);
             componentModel.setProvider(providerModel);
+            ensureProviderSatisfiedDependencies(providerModel);
+        }
+    }
+
+    private void ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
+        for (var d : providerModel.getDependencies()) {
+            var paramVarElement = d.getParamElement();
+            var paramType = (DeclaredType) d.getParamElement().asType();
+            DeclaredType componentType;
+            if (modelUtils.isProvider(paramType)) {
+                componentType = modelUtils.extractComponentTypeFromProvider(paramType);
+            } else {
+                componentType = paramType;
+            }
+            var key = new ComponentKey(componentType.toString(), d.getQualifiers());
+            if (!componentMap.hasComponent(key)) {
+                var componentModel = candidateComponentMap.findSingleComponentModel(key);
+                if (componentModel == null) {
+                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + "Unresolved dependency: " + key);
+                }
+                debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
+                componentMap.addComponent(componentModel);
+            }
         }
     }
 

@@ -1,11 +1,13 @@
 package guru.bug.austras.apt.model;
 
+import javax.lang.model.element.VariableElement;
 import java.util.List;
 
 public class DependencyModel {
     private String name;
     private String type;
     private List<QualifierModel> qualifiers;
+    private VariableElement paramElement;
 
     public String getName() {
         return name;
@@ -29,5 +31,13 @@ public class DependencyModel {
 
     public void setQualifiers(List<QualifierModel> qualifiers) {
         this.qualifiers = qualifiers;
+    }
+
+    public VariableElement getParamElement() {
+        return paramElement;
+    }
+
+    public void setParamElement(VariableElement paramElement) {
+        this.paramElement = paramElement;
     }
 }
