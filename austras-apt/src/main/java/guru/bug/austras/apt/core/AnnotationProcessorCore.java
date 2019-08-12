@@ -37,7 +37,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor {
     private static final Set<Class<? extends Annotation>> supportedAnnotations = Set.of(Application.class, Component.class);
-    private final Queue<DeclaredType> providers = new LinkedList<>();
+    private final Queue<Element> providers = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
     private ModelUtils modelUtils;
     private ComponentMap candidateComponentMap;
@@ -85,7 +85,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
 
     private void processProvider(Element element) {
         debug("PROCESS: Found provider class %s.", element);
-        providers.add((DeclaredType) element.asType());
+        providers.add(element);
     }
 
     private ComponentModel processAsComponent(Element element) {
@@ -150,15 +150,17 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         while (!providers.isEmpty()) {
             var providerElement = providers.remove();
             debug("Resolving provider %s", providerElement);
-            var type = modelUtils.extractComponentTypeFromProvider(providerElement);
+            DeclaredType providerType = (DeclaredType) providerElement.asType();
+            var type = modelUtils.extractComponentTypeFromProvider(providerType);
             var qualifiers = modelUtils.extractQualifiers(providerElement);
+            System.out.println("QUALIFIER " + qualifiers);
             var key = new ComponentKey(type.toString(), qualifiers);
             var componentModel = componentMap.findSingleComponentModel(key);
             if (componentModel != null && componentModel.getProvider() != null) {
                 throw new IllegalStateException("Provider already set" );
             }
-            var name = uniqueNameGenerator.findFreeVarName(providerElement);
-            var dependencies = modelUtils.collectConstructorParams(providerElement);
+            var name = uniqueNameGenerator.findFreeVarName(providerType);
+            var dependencies = modelUtils.collectConstructorParams(providerType);
             var instantiable = providerElement.toString();
 
             var providerModel = new ProviderModel();
@@ -168,11 +170,12 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
 
             if (componentModel == null) {
                 debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key);
-                componentModel = modelUtils.createComponentModel(type, providerElement);
+                componentModel = modelUtils.createComponentModel(type, providerType);
                 componentMap.addComponent(componentModel);
             }
             debug("Setting provider %s for component %s", providerElement, componentModel);
             componentModel.setProvider(providerModel);
+            componentModel.setQualifiers(qualifiers);
             ensureProviderSatisfiedDependencies(providerModel);
         }
     }

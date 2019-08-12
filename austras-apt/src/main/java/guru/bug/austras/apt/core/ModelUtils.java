@@ -109,18 +109,21 @@ public class ModelUtils {
                 .map(this::convertAnnotationToQualifierModel)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(HashSet::new));
-        var rawQualifiers = element.getAnnotationsByType(Qualifier.class);
-        for (var q : rawQualifiers) {
-            var m = new QualifierModel();
-            m.setName(q.name());
-            var propsMap = new HashMap<String, String>();
-            for (var p : q.properties()) {
-                propsMap.put(p.name(), p.value());
-            }
-            m.setProperties(propsMap);
-            qualifiers.add(m);
-        }
+        Arrays.stream(element.getAnnotationsByType(Qualifier.class))
+                .map(this::convertRawQualifierToModel)
+                .collect(Collectors.toCollection(() -> qualifiers));
         return List.copyOf(qualifiers);
+    }
+
+    private QualifierModel convertRawQualifierToModel(Qualifier q) {
+        var m = new QualifierModel();
+        m.setName(q.name());
+        var propsMap = new HashMap<String, String>();
+        for (var p : q.properties()) {
+            propsMap.put(p.name(), p.value());
+        }
+        m.setProperties(propsMap);
+        return m;
     }
 
     private QualifierModel convertAnnotationToQualifierModel(AnnotationMirror am) {
