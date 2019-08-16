@@ -8,14 +8,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ComponentMap {
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
     private final ModuleModel model = new ModuleModel();
+
+    public void addComponents(Collection<ComponentModel> componentModels) {
+        componentModels.forEach(this::addComponent);
+    }
 
     public void addComponent(ComponentModel componentModel) {
         model.components().add(componentModel);
@@ -46,6 +48,14 @@ public class ComponentMap {
         return comps.stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Collection<ComponentModel> findComponentModels(ComponentKey key) {
+        var comps = index.get(key);
+        if (comps == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableCollection(comps);
     }
 
     private void put(ComponentKey key, ComponentModel value) {

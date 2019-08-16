@@ -6,7 +6,6 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.provider.Provider;
-import guru.bug.austras.provider.ProviderCollection;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -48,24 +47,16 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         var providerDependency = new ProviderDependencyModel(componentDependency);
         providerDependency.setName(componentDependency.getName() + "Provider" );
         providerDependency.setQualifiers(componentDependency.getQualifiers());
-
-        var componentDepType = componentDependency.getType();
-        var idx = componentDepType.indexOf('<');
-        if (idx < 0) {
-            var type = Provider.class.getName() + "<" + componentDepType + ">";
-            providerDependency.setType(type);
-        } else {
-            var compDepClass = componentDepType.substring(0, idx);
-            if (compDepClass.equals(Collection.class.getName())) {
-                var dep = componentDepType.substring(idx + 1, componentDepType.length() - 1);
-                String type = ProviderCollection.class.getName() + "<" + dep + ">";
-                providerDependency.setType(type);
-            } else {
-                var type = Provider.class.getName() + "<" + componentDepType + ">";
-                providerDependency.setType(type);
-            }
+        providerDependency.setCollection(componentDependency.isCollection());
+        providerDependency.setProvider(true);
+        var type = componentDependency.getType();
+        if (providerDependency.isCollection()) {
+            type = Collection.class.getName() + "<" + type + ">";
         }
-
+        if (providerDependency.isProvider()) {
+            type = Provider.class.getName() + "<" + type + ">";
+        }
+        providerDependency.setType(type);
         return providerDependency;
     }
 

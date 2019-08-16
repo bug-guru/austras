@@ -7,7 +7,6 @@ import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ProviderModel;
-import guru.bug.austras.provider.Provider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -42,7 +41,6 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     private ModelUtils modelUtils;
     private ComponentMap candidateComponentMap;
     private ComponentMap componentMap;
-    private DeclaredType providerInterfaceType;
     private Elements elementUtils;
     private Types typeUtils;
 
@@ -51,8 +49,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         super.init(processingEnv);
         this.elementUtils = processingEnv.getElementUtils();
         this.typeUtils = processingEnv.getTypeUtils();
-        this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
-        this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv, providerInterfaceType);
+        this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv);
         this.componentMap = new ComponentMap();
         this.candidateComponentMap = new ComponentMap();
     }
@@ -185,19 +182,24 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             var paramVarElement = d.getParamElement();
             var paramType = (DeclaredType) d.getParamElement().asType();
             DeclaredType componentType;
-            if (modelUtils.isProvider(paramType)) {
+            boolean isProvider = modelUtils.isProvider(paramType);
+            if (isProvider) {
                 componentType = modelUtils.extractComponentTypeFromProvider(paramType);
             } else {
                 componentType = paramType;
             }
+            boolean isCollection = modelUtils.isCollection(componentType);
+            if (isCollection) {
+                componentType = modelUtils.extractComponentTypeFromCollection(componentType);
+            }
             var key = new ComponentKey(componentType.toString(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
-                var componentModel = candidateComponentMap.findSingleComponentModel(key);
-                if (componentModel == null) {
+                var componentModels = candidateComponentMap.findComponentModels(key);
+                if (componentModels.isEmpty()) {
                     throw new IllegalStateException("Provider " + providerModel.getInstantiable() + "Unresolved dependency: " + key);
                 }
                 debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
-                componentMap.addComponent(componentModel);
+                componentMap.addComponents(componentModels);
             }
         }
     }

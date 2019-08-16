@@ -6,6 +6,8 @@ import java.util.List;
 public class DependencyModel {
     private String name;
     private String type;
+    private boolean provider;
+    private boolean collection;
     private List<QualifierModel> qualifiers;
     private VariableElement paramElement;
 
@@ -23,6 +25,22 @@ public class DependencyModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isProvider() {
+        return provider;
+    }
+
+    public void setProvider(boolean provider) {
+        this.provider = provider;
+    }
+
+    public boolean isCollection() {
+        return collection;
+    }
+
+    public void setCollection(boolean collection) {
+        this.collection = collection;
     }
 
     public List<QualifierModel> getQualifiers() {

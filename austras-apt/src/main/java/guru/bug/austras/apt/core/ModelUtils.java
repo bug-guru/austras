@@ -12,6 +12,7 @@ import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.provider.Provider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
@@ -41,17 +42,23 @@ public class ModelUtils {
     private final Types typeUtils;
     private final Elements elementUtils;
     private final DeclaredType providerInterfaceType;
+    private final DeclaredType collectionInterfaceType;
     private final ProcessingEnvironment processingEnv;
     private final String componentCacheVarName;
+    private final Element collectionInterfaceElement;
+    private final Element providerInterfaceElement;
 
-    public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv, DeclaredType providerInterfaceType) {
+    public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.log = log;
         this.uniqueNameGenerator = uniqueNameGenerator;
         this.processingEnv = processingEnv;
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
-        this.providerInterfaceType = providerInterfaceType;
         this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache" );
+        this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
+        this.collectionInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Collection.class.getName()));
+        this.collectionInterfaceElement = collectionInterfaceType.asElement();
+        this.providerInterfaceElement = providerInterfaceType.asElement();
     }
 
     public ComponentModel createComponentModel(DeclaredType type) {
@@ -192,9 +199,19 @@ public class ModelUtils {
         if (!isProvider(providerType)) {
             throw new IllegalArgumentException(providerType + " isn't a provider" );
         }
-        Element providerInterfaceElement = providerInterfaceType.asElement();
-        var tmp = Stream.concat(collectAllAncestor(providerType).stream(), Stream.of(providerType))
-                .filter(dt -> dt.asElement().equals(providerInterfaceElement))
+        return unwrap(providerType, providerInterfaceElement);
+    }
+
+    public DeclaredType extractComponentTypeFromCollection(DeclaredType collectionType) {
+        if (!isCollection(collectionType)) {
+            throw new IllegalArgumentException(collectionType + " isn't a collection");
+        }
+        return unwrap(collectionType, collectionInterfaceElement);
+    }
+
+    private DeclaredType unwrap(DeclaredType wrapperType, Element wrapperElement) {
+        var tmp = Stream.concat(collectAllAncestor(wrapperType).stream(), Stream.of(wrapperType))
+                .filter(dt -> dt.asElement().equals(wrapperElement))
                 .map(dt -> dt.getTypeArguments().get(0))
                 .distinct()
                 .collect(Collectors.toList());
@@ -202,9 +219,10 @@ public class ModelUtils {
             throw new IllegalArgumentException("Not expected count of type parameters: " + tmp);
         }
         var componentType = (DeclaredType) tmp.get(0);
-        log.debug("Provider %s provides component: %s", providerType, componentType);
+        log.debug("Wrapper %s wraps component: %s", wrapperType, componentType);
         return componentType;
     }
+
 
     public List<DependencyModel> collectConstructorParams(TypeElement type) {
         return collectConstructorParams((DeclaredType) type.asType());
@@ -226,14 +244,34 @@ public class ModelUtils {
     }
 
     private DependencyModel createDependencyModel(VariableElement paramElement) {
-        var qualifiers = extractQualifiers(paramElement);
-        String varName = paramElement.getSimpleName().toString();
         var result = new DependencyModel();
+
+        var paramType = (DeclaredType) paramElement.asType();
+        var qualifiers = extractQualifiers(paramElement);
+        var varName = paramElement.getSimpleName().toString();
+        boolean isProvider = isProvider(paramType);
+
+        if (isProvider) {
+            paramType = extractComponentTypeFromProvider(paramType);
+        }
+
+        var isCollection = isCollection(paramType);
+        if (isCollection) {
+            paramType = extractComponentTypeFromCollection(paramType);
+        }
+
+        result.setProvider(isProvider);
+        result.setCollection(isCollection);
+        result.setType(paramType.toString());
         result.setName(varName);
         result.setQualifiers(qualifiers);
-        result.setType(paramElement.asType().toString());
         result.setParamElement(paramElement);
         return result;
+    }
+
+
+    public boolean isCollection(DeclaredType type) {
+        return typeUtils.isAssignable(type, collectionInterfaceType);
     }
 
     public boolean isProvider(TypeMirror type) {
