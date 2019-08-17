@@ -112,47 +112,68 @@ public class MainClassGenerator {
         return result;
     }
 
-    private abstract class ParamInitializer {
+    private interface ParamInitializer {
+        void init(PrintWriter out);
+
+        String getAsParameter();
+    }
+
+    private class ProviderUnwrappedParamInitializer implements ParamInitializer {
+        private final ParamInitializer initializer;
+
+        ProviderUnwrappedParamInitializer(ParamInitializer initializer) {
+            this.initializer = initializer;
+        }
+
+        @Override
+        public void init(PrintWriter out) {
+            initializer.init(out);
+        }
+
+        @Override
+        public String getAsParameter() {
+            return initializer.getAsParameter() + ".get()";
+        }
+    }
+
+    private abstract class AbstractParamInitializer implements ParamInitializer {
         final DependencyModel dependencyModel;
         final ComponentKey key;
 
-        ParamInitializer(DependencyModel dependencyModel) {
+        AbstractParamInitializer(DependencyModel dependencyModel) {
             this.dependencyModel = dependencyModel;
             this.key = new ComponentKey(dependencyModel.getType(), dependencyModel.getQualifiers());
         }
 
-        abstract void init(PrintWriter out);
+        @Override
+        public void init(PrintWriter out) {
 
-        abstract String getAsParameter();
+        }
+
     }
 
-    private class StandardParamInitializer extends ParamInitializer {
+    private class StandardParamInitializer extends AbstractParamInitializer {
 
-        public StandardParamInitializer(DependencyModel dependencyModel) {
+        StandardParamInitializer(DependencyModel dependencyModel) {
             super(dependencyModel);
         }
 
         @Override
-        void init(PrintWriter out) {
-
-        }
-
-        @Override
-        String getAsParameter() {
+        public String getAsParameter() {
             return componentMap.findSingleComponentModel(key).getProvider().getName();
         }
     }
 
-    private class CollectionParamInitializer extends ParamInitializer {
+    private class CollectionParamInitializer extends AbstractParamInitializer {
         final String name;
 
-        public CollectionParamInitializer(DependencyModel dependencyModel) {
+        CollectionParamInitializer(DependencyModel dependencyModel) {
             super(dependencyModel);
             this.name = mainMethodUniqueNames.findFreeVarName(dependencyModel.getName() + "Collection");
         }
 
         @Override
-        void init(PrintWriter out) {
+        public void init(PrintWriter out) {
             var params = componentMap.findComponentModels(key).stream()
                     .map(c -> c.getProvider().getName())
                     .collect(Collectors.joining(", "));
@@ -160,27 +181,8 @@ public class MainClassGenerator {
         }
 
         @Override
-        String getAsParameter() {
+        public String getAsParameter() {
             return name;
-        }
-    }
-
-    private class ProviderUnwrappedParamInitializer extends ParamInitializer {
-        private final ParamInitializer initializer;
-
-        public ProviderUnwrappedParamInitializer(ParamInitializer initializer) {
-            super(initializer.dependencyModel);
-            this.initializer = initializer;
-        }
-
-        @Override
-        void init(PrintWriter out) {
-
-        }
-
-        @Override
-        String getAsParameter() {
-            return initializer.getAsParameter() + ".get()";
         }
     }
 
