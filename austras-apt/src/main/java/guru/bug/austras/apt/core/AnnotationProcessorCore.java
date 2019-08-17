@@ -236,9 +236,9 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         try (var out = new PrintWriter(processingEnv.getFiler().createSourceFile(mainClassQualifiedName).openWriter())) {
             out.printf("package %s;\n", packageName);
             out.printf("public class %s {\n", mainClassSimpleName);
-            out.write("public static void main(String... args) {\n");
+            out.write("\tpublic static void main(String... args) {\n");
             sortedComponents.forEach(m -> generateProviderCall(m, out));
-            out.write("}\n");
+            out.write("\t}\n");
             out.write("}\n");
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -258,7 +258,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                                 .append("<>");
                         result.append(componentMap.findComponentModels(key).stream()
                                 .map(c -> c.getProvider().getName())
-                                .collect(Collectors.joining(",", "(", ")")));
+                                .collect(Collectors.joining(", ", "(", ")")));
                     } else {
                         result.append(componentMap.findSingleComponentModel(key).getProvider().getName());
                     }
@@ -267,17 +267,19 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                     }
                     return result.toString();
                 })
-                .collect(Collectors.joining(","));
-        out.write(String.format("var %s = new %s(%s);\n", provider.getName(), provider.getInstantiable(), params));
+                .collect(Collectors.joining(", "));
+        out.write(String.format("\t\tvar %s = new %s(%s);\n", provider.getName(), provider.getInstantiable(), params));
     }
 
     private List<ComponentModel> sortComponents() {
         var result = new ArrayList<ComponentModel>();
         var unresolved = new LinkedList<>(componentMap.getKeys());
+        var resolved = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
         outer:
         while (!unresolved.isEmpty()) {
             var key = unresolved.remove();
-            Collection<ComponentModel> components = componentMap.findComponentModels(key);
+            var components = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
+            components.addAll(componentMap.findComponentModels(key));
             for (var comp : components) {
                 var hasUnresolved = comp.getProvider().getDependencies().stream()
                         .map(d -> new ComponentKey(d.getType(), d.getQualifiers()))
@@ -287,6 +289,8 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                     continue outer;
                 }
             }
+            components.removeAll(resolved);
+            resolved.addAll(components);
             result.addAll(components);
         }
         return result;
