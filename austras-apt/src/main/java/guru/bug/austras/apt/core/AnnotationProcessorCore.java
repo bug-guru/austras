@@ -7,6 +7,7 @@ import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.provider.CollectionProvider;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -24,15 +25,13 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static javax.lang.model.element.ElementKind.*;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-@SupportedAnnotationTypes("*" )
+@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor {
     private static final Set<Class<? extends Annotation>> supportedAnnotations = Set.of(Application.class, Component.class);
@@ -43,6 +42,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     private ComponentMap componentMap;
     private Elements elementUtils;
     private Types typeUtils;
+    private ComponentModel appComponentModel;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -98,11 +98,14 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                 var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
                 var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
                 if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
-                    debug("...Adding to candidate components map" );
+                    debug("...Adding to candidate components map");
                     candidateComponentMap.addComponent(model);
                 } else {
-                    debug("...Adding to components map" );
+                    debug("...Adding to components map");
                     componentMap.addComponent(model);
+                }
+                if (applicationAnnotation.length > 0) {
+                    setAsAppComponent(model);
                 }
                 return model;
             }
@@ -112,6 +115,13 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             debug("IGNORE: Unknown element %s.", element);
         }
         return null;
+    }
+
+    private void setAsAppComponent(ComponentModel model) {
+        if (appComponentModel != null) {
+            throw new IllegalStateException("Application already defined");
+        }
+        appComponentModel = model;
     }
 
     private boolean checkIsPublicNonAbstractClass(TypeElement typeElement) {
@@ -134,7 +144,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void generateComponentMap() {
-        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml" ).openOutputStream();
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml").openOutputStream();
              var w = new PrintWriter(out)) {
             componentMap.serialize(w);
         } catch (IOException e) {
@@ -143,7 +153,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void resolveProviders() {
-        debug("Resolving providers" );
+        debug("Resolving providers");
         while (!providers.isEmpty()) {
             var providerElement = providers.remove();
             debug("Resolving provider %s", providerElement);
@@ -154,7 +164,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             var key = new ComponentKey(type.toString(), qualifiers);
             var componentModel = componentMap.findSingleComponentModel(key);
             if (componentModel != null && componentModel.getProvider() != null) {
-                throw new IllegalStateException("Provider already set" );
+                throw new IllegalStateException("Provider already set");
             }
             var name = uniqueNameGenerator.findFreeVarName(providerType);
             var dependencies = modelUtils.collectConstructorParams(providerType);
@@ -214,6 +224,71 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void generateAppMain() {
-        debug("Component Map: %s", componentMap);
+        if (appComponentModel == null) {
+            debug("No application component");
+            return;
+        }
+        var sortedComponents = sortComponents();
+        TypeElement instantiableElement = appComponentModel.getInstantiableElement();
+        var mainClassQualifiedName = instantiableElement.getQualifiedName() + "Main";
+        var mainClassSimpleName = instantiableElement.getSimpleName() + "Main";
+        var packageName = elementUtils.getPackageOf(instantiableElement).getQualifiedName();
+        try (var out = new PrintWriter(processingEnv.getFiler().createSourceFile(mainClassQualifiedName).openWriter())) {
+            out.printf("package %s;\n", packageName);
+            out.printf("public class %s {\n", mainClassSimpleName);
+            out.write("public static void main(String... args) {\n");
+            sortedComponents.forEach(m -> generateProviderCall(m, out));
+            out.write("}\n");
+            out.write("}\n");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void generateProviderCall(ComponentModel componentModel, PrintWriter out) {
+        ProviderModel provider = componentModel.getProvider();
+
+        var params = provider.getDependencies().stream()
+                .map(d -> {
+                    var result = new StringBuilder();
+                    var key = new ComponentKey(d.getType(), d.getQualifiers());
+                    if (d.isCollection()) {
+                        result.append("new ")
+                                .append(CollectionProvider.class.getName())
+                                .append("<>");
+                        result.append(componentMap.findComponentModels(key).stream()
+                                .map(c -> c.getProvider().getName())
+                                .collect(Collectors.joining(",", "(", ")")));
+                    } else {
+                        result.append(componentMap.findSingleComponentModel(key).getProvider().getName());
+                    }
+                    if (!d.isProvider()) {
+                        result.append(".get()");
+                    }
+                    return result.toString();
+                })
+                .collect(Collectors.joining(","));
+        out.write(String.format("var %s = new %s(%s);\n", provider.getName(), provider.getInstantiable(), params));
+    }
+
+    private List<ComponentModel> sortComponents() {
+        var result = new ArrayList<ComponentModel>();
+        var unresolved = new LinkedList<>(componentMap.getKeys());
+        outer:
+        while (!unresolved.isEmpty()) {
+            var key = unresolved.remove();
+            Collection<ComponentModel> components = componentMap.findComponentModels(key);
+            for (var comp : components) {
+                var hasUnresolved = comp.getProvider().getDependencies().stream()
+                        .map(d -> new ComponentKey(d.getType(), d.getQualifiers()))
+                        .anyMatch(unresolved::contains);
+                if (hasUnresolved) {
+                    unresolved.add(key);
+                    continue outer;
+                }
+            }
+            result.addAll(components);
+        }
+        return result;
     }
 }

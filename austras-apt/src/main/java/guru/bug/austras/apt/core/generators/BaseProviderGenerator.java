@@ -51,10 +51,10 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         providerDependency.setProvider(true);
         var type = componentDependency.getType();
         if (providerDependency.isCollection()) {
-            type = Collection.class.getName() + "<" + type + ">";
+            type = Collection.class.getName() + "<? extends " + type + ">";
         }
         if (providerDependency.isProvider()) {
-            type = Provider.class.getName() + "<" + type + ">";
+            type = Provider.class.getName() + "<? extends " + type + ">";
         }
         providerDependency.setType(type);
         return providerDependency;

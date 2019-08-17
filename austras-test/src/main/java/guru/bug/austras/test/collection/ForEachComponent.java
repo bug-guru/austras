@@ -6,9 +6,9 @@ import java.util.Collection;
 
 @Component
 public class ForEachComponent {
-    private final Collection<CompItem> items;
+    private final Collection<? extends CompItem> items;
 
-    public ForEachComponent(Collection<CompItem> items) {
+    public ForEachComponent(Collection<? extends CompItem> items) {
         this.items = items;
     }
 }

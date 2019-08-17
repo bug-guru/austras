@@ -3,9 +3,9 @@ package guru.bug.austras.test;
 import java.util.Collection;
 
 public class ServiceExecutor {
-    private final Collection<Service> services;
+    private final Collection<? extends Service> services;
 
-    public ServiceExecutor(Collection<Service> services) {
+    public ServiceExecutor(Collection<? extends Service> services) {
         this.services = services;
     }
 

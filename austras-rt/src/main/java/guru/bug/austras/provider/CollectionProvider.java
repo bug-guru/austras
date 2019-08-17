@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CollectionProvider<E> implements Provider<Collection<E>> {
-    private final List<Provider<E>> providers;
+    private final List<Provider<? extends E>> providers;
 
     @SafeVarargs
-    public CollectionProvider(Provider<E>... providers) {
+    public CollectionProvider(Provider<? extends E>... providers) {
         this.providers = List.of(providers);
     }
 

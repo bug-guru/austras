@@ -32,6 +32,10 @@ public class ComponentMap {
         return model.components().stream();
     }
 
+    public Set<ComponentKey> getKeys() {
+        return Collections.unmodifiableSet(index.keySet());
+    }
+
     public boolean hasComponent(ComponentKey key) {
         var comps = index.get(key);
         return comps != null && !comps.isEmpty();
@@ -77,4 +81,5 @@ public class ComponentMap {
     public void serialize(Writer out) throws IOException {
         ModuleModelSerializer.store(model, out);
     }
+
 }

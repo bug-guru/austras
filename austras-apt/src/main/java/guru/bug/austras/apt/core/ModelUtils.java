@@ -17,12 +17,10 @@ import guru.bug.austras.provider.Provider;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.*;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor9;
+import javax.lang.model.util.TypeKindVisitor9;
 import javax.lang.model.util.Types;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,7 +52,7 @@ public class ModelUtils {
         this.processingEnv = processingEnv;
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
-        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache" );
+        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache");
         this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
         this.collectionInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Collection.class.getName()));
         this.collectionInterfaceElement = collectionInterfaceType.asElement();
@@ -73,7 +71,7 @@ public class ModelUtils {
         log.debug("All superclasses and interfaces: %s", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
-        var model = new ComponentModel();
+        var model = new ComponentModel(type);
 
         model.setQualifiers(qualifiers);
         model.setInstantiable(type.toString());
@@ -172,7 +170,7 @@ public class ModelUtils {
             var cur = toCheck.remove();
             log.debug("Checking %s", cur);
             if (checked.contains(cur)) {
-                log.debug("Already checked" );
+                log.debug("Already checked");
                 continue;
             }
             checked.add(cur);
@@ -197,7 +195,7 @@ public class ModelUtils {
 
     public DeclaredType extractComponentTypeFromProvider(DeclaredType providerType) {
         if (!isProvider(providerType)) {
-            throw new IllegalArgumentException(providerType + " isn't a provider" );
+            throw new IllegalArgumentException(providerType + " isn't a provider");
         }
         return unwrap(providerType, providerInterfaceElement);
     }
@@ -218,7 +216,17 @@ public class ModelUtils {
         if (tmp.size() != 1) {
             throw new IllegalArgumentException("Not expected count of type parameters: " + tmp);
         }
-        var componentType = (DeclaredType) tmp.get(0);
+        var componentType = tmp.get(0).accept(new TypeKindVisitor9<DeclaredType, Void>() {
+            @Override
+            public DeclaredType visitDeclared(DeclaredType t, Void aVoid) {
+                return t;
+            }
+
+            @Override
+            public DeclaredType visitWildcard(WildcardType t, Void aVoid) {
+                return (DeclaredType) t.getExtendsBound();
+            }
+        }, null);
         log.debug("Wrapper %s wraps component: %s", wrapperType, componentType);
         return componentType;
     }
