@@ -54,7 +54,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv);
         this.componentMap = new ComponentMap();
         this.candidateComponentMap = new ComponentMap();
-        this.mainClassGenerator = new MainClassGenerator(this, processingEnv, componentMap);
+        this.mainClassGenerator = new MainClassGenerator(this, processingEnv, componentMap, uniqueNameGenerator);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             if (!componentMap.hasComponent(key)) {
                 var componentModels = candidateComponentMap.findComponentModels(key);
                 if (componentModels.isEmpty()) {
-                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + "Unresolved dependency: " + key);
+                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + " Unresolved dependency: " + key);
                 }
                 debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
                 componentMap.addComponents(componentModels);

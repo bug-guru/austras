@@ -8,6 +8,7 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.provider.CollectionProvider;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -18,18 +19,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainClassGenerator {
-    private final UniqueNameGenerator mainMethodUniqueNames = new UniqueNameGenerator();
+    private final UniqueNameGenerator uniqueNameGenerator;
     private final ProcessingEnvironment processingEnv;
     private final Logger log;
     private final ComponentMap componentMap;
     private final Elements elementUtils;
     private ComponentModel appComponentModel;
+    private final String loggerVarName;
 
-    public MainClassGenerator(Logger log, ProcessingEnvironment processingEnv, ComponentMap componentMap) {
+    public MainClassGenerator(Logger log, ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator) {
         this.processingEnv = processingEnv;
         this.log = log;
         this.componentMap = componentMap;
         this.elementUtils = processingEnv.getElementUtils();
+        this.uniqueNameGenerator = uniqueNameGenerator;
+        this.loggerVarName = uniqueNameGenerator.findFreeVarName("log");
     }
 
     public void setAppComponentModel(ComponentModel appComponentModel) {
@@ -44,6 +48,8 @@ public class MainClassGenerator {
             log.debug("No application component");
             return;
         }
+        var l = java.util.logging.Logger.getGlobal();
+        l.info(() -> "");
         var sortedComponents = sortComponents();
         TypeElement instantiableElement = appComponentModel.getInstantiableElement();
         var mainClassQualifiedName = instantiableElement.getQualifiedName() + "Main";
@@ -52,8 +58,11 @@ public class MainClassGenerator {
         try (var out = new PrintWriter(processingEnv.getFiler().createSourceFile(mainClassQualifiedName).openWriter())) {
             out.printf("package %s;\n", packageName);
             out.printf("public class %s {\n", mainClassSimpleName);
-            out.write("\tpublic static void main(String... args) {\n");
+            out.printf("\tprivate static final java.util.logging.Logger %s = java.util.logging.Logger.getLogger(\"%s\");\n", loggerVarName, mainClassQualifiedName);
+            out.print("\tpublic static void main(String... args) {\n");
+            genInfoLog(out, "Initializing...");
             sortedComponents.forEach(m -> generateProviderCall(m, out));
+            genInfoLog(out, "Application is ready");
             out.write("\t}\n");
             out.write("}\n");
         } catch (IOException e) {
@@ -61,8 +70,13 @@ public class MainClassGenerator {
         }
     }
 
+    private void genInfoLog(PrintWriter out, String msg) {
+        out.printf("\t\t%s.info(() -> \"%s\");\n", loggerVarName, StringEscapeUtils.escapeJava(msg));
+    }
+
     private void generateProviderCall(ComponentModel componentModel, PrintWriter out) {
         ProviderModel provider = componentModel.getProvider();
+        genInfoLog(out, "Initializing provider " + provider.getInstantiable() + " for " + componentModel.getInstantiable());
         var initializers = provider.getDependencies().stream()
                 .map(this::createInitializer)
                 .peek(i -> i.init(out))
@@ -169,7 +183,7 @@ public class MainClassGenerator {
 
         CollectionParamInitializer(DependencyModel dependencyModel) {
             super(dependencyModel);
-            this.name = mainMethodUniqueNames.findFreeVarName(dependencyModel.getName() + "Collection");
+            this.name = uniqueNameGenerator.findFreeVarName(dependencyModel.getName() + "Collection");
         }
 
         @Override
