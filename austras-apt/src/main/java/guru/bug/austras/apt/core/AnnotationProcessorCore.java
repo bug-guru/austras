@@ -1,13 +1,13 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.annotations.Application;
-import guru.bug.austras.annotations.Component;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.core.generators.MainClassGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.core.Application;
+import guru.bug.austras.core.Component;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;

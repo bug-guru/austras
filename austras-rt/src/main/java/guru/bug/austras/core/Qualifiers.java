@@ -1,4 +1,4 @@
-package guru.bug.austras.annotations;
+package guru.bug.austras.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

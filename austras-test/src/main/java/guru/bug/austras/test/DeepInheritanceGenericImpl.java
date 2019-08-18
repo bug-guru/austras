@@ -1,10 +1,10 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.annotations.Cached;
-import guru.bug.austras.annotations.Component;
-import guru.bug.austras.provider.LazyThreadLocalScopeCache;
+import guru.bug.austras.core.Component;
+import guru.bug.austras.scopes.Cache;
+import guru.bug.austras.scopes.LazyThreadLocalScopeCache;
 
-@Cached(LazyThreadLocalScopeCache.class)
+@Cache(LazyThreadLocalScopeCache.class)
 @Component
 public class DeepInheritanceGenericImpl extends DeepInheritanceGenericAbstract<Boolean> {
 

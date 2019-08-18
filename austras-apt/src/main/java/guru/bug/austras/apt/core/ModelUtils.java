@@ -1,18 +1,18 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.annotations.Cached;
-import guru.bug.austras.annotations.NoCached;
-import guru.bug.austras.annotations.Qualifier;
-import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.core.generators.CachingProviderGenerator;
+import guru.bug.austras.apt.core.generators.CacheProviderGenerator;
 import guru.bug.austras.apt.core.generators.EagerSingletonProviderGenerator;
-import guru.bug.austras.apt.core.generators.NonCachingProviderGenerator;
+import guru.bug.austras.apt.core.generators.NoCacheProviderGenerator;
 import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.core.Qualifier;
+import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.provider.Provider;
+import guru.bug.austras.scopes.Cache;
+import guru.bug.austras.scopes.NoCache;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
@@ -83,23 +83,23 @@ public class ModelUtils {
 
     public ProviderGenerator createProviderGeneratorFor(ComponentModel componentModel) {
         TypeElement componentElement = elementUtils.getTypeElement(componentModel.getInstantiable());
-        var cachedAnnotation = componentElement.getAnnotation(Cached.class);
+        var cachedAnnotation = componentElement.getAnnotation(Cache.class);
         var cacheType = extractValueFromCachedAnnotation(cachedAnnotation);
-        var noCachedAnnotation = componentElement.getAnnotation(NoCached.class);
+        var noCachedAnnotation = componentElement.getAnnotation(NoCache.class);
         List<DependencyModel> dependencies = collectConstructorParams(componentElement);
         if (cachedAnnotation == null && noCachedAnnotation == null) {
             return new EagerSingletonProviderGenerator(processingEnv, componentModel, dependencies);
         } else if (noCachedAnnotation != null) {
-            return new NonCachingProviderGenerator(processingEnv, componentModel, dependencies);
+            return new NoCacheProviderGenerator(processingEnv, componentModel, dependencies);
         } else {
-            return new CachingProviderGenerator(processingEnv, componentModel, dependencies, cacheType, componentCacheVarName);
+            return new CacheProviderGenerator(processingEnv, componentModel, dependencies, cacheType, componentCacheVarName);
         }
     }
 
-    private String extractValueFromCachedAnnotation(Cached cachedAnnotation) {
-        if (cachedAnnotation != null) {
+    private String extractValueFromCachedAnnotation(Cache cacheAnnotation) {
+        if (cacheAnnotation != null) {
             try {
-                cachedAnnotation.value();
+                cacheAnnotation.value();
             } catch (MirroredTypeException e) {
                 var declaredType = (DeclaredType) e.getTypeMirror();
                 var typeElement = (TypeElement) declaredType.asElement();

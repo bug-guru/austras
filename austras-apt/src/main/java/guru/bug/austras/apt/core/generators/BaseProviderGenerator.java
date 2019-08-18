@@ -1,10 +1,10 @@
 package guru.bug.austras.apt.core.generators;
 
-import guru.bug.austras.annotations.Qualifier;
-import guru.bug.austras.annotations.QualifierProperty;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.core.Qualifier;
+import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.provider.Provider;
 import org.apache.commons.text.StringEscapeUtils;
 

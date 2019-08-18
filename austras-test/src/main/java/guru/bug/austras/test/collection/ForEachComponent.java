@@ -1,6 +1,6 @@
 package guru.bug.austras.test.collection;
 
-import guru.bug.austras.annotations.Component;
+import guru.bug.austras.core.Component;
 
 import java.util.Collection;
 

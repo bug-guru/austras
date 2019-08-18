@@ -1,6 +1,6 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.annotations.Component;
+import guru.bug.austras.core.Component;
 
 @Component
 public class ComponentParametrizedUsingInteger {

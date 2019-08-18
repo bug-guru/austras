@@ -1,4 +1,4 @@
-package guru.bug.austras.provider;
+package guru.bug.austras.scopes;
 
 import java.util.function.Supplier;
 

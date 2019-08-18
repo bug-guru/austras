@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class CachingProviderGenerator extends BaseProviderGenerator {
+public class CacheProviderGenerator extends BaseProviderGenerator {
 
     private final String scopeType;
     private final String componentCacheVarName;
 
-    public CachingProviderGenerator(ProcessingEnvironment processingEnv, ComponentModel componentModel, List<DependencyModel> dependencies, String scopeType, String componentCacheVarName) {
+    public CacheProviderGenerator(ProcessingEnvironment processingEnv, ComponentModel componentModel, List<DependencyModel> dependencies, String scopeType, String componentCacheVarName) {
         super(processingEnv, componentModel, dependencies);
         this.scopeType = scopeType;
         this.componentCacheVarName = componentCacheVarName;

@@ -1,7 +1,7 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.annotations.Qualifier;
-import guru.bug.austras.annotations.QualifierProperty;
+import guru.bug.austras.core.Qualifier;
+import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.provider.Provider;
 
 @Qualifier(name = "ConfigurationProperty", properties = @QualifierProperty(name = "name", value = "config\"test\""))

@@ -24,8 +24,8 @@ public class MainClassGenerator {
     private final Logger log;
     private final ComponentMap componentMap;
     private final Elements elementUtils;
-    private ComponentModel appComponentModel;
     private final String loggerVarName;
+    private ComponentModel appComponentModel;
 
     public MainClassGenerator(Logger log, ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator) {
         this.processingEnv = processingEnv;
@@ -60,14 +60,21 @@ public class MainClassGenerator {
             out.printf("public class %s {\n", mainClassSimpleName);
             out.printf("\tprivate static final java.util.logging.Logger %s = java.util.logging.Logger.getLogger(\"%s\");\n", loggerVarName, mainClassQualifiedName);
             out.print("\tpublic static void main(String... args) {\n");
-            genInfoLog(out, "Initializing...");
+            genInfoLog(out, "Application is initializing...");
             sortedComponents.forEach(m -> generateProviderCall(m, out));
-            genInfoLog(out, "Application is ready");
+            generateServicesCall(out);
+            genInfoLog(out, "Application is ready!");
             out.write("\t}\n");
             out.write("}\n");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private void generateServicesCall(PrintWriter out) {
+        genInfoLog(out, "Starting up services...");
+
+        genInfoLog(out, "Services are started!");
     }
 
     private void genInfoLog(PrintWriter out, String msg) {

@@ -1,6 +1,4 @@
-package guru.bug.austras.annotations;
-
-import guru.bug.austras.provider.ScopeCache;
+package guru.bug.austras.scopes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE, ElementType.PARAMETER})
-public @interface Cached {
+public @interface Cache {
     Class<? extends ScopeCache> value();
 }

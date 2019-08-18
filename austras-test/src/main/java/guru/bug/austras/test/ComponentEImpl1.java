@@ -1,6 +1,6 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.annotations.Qualifier;
+import guru.bug.austras.core.Qualifier;
 
 @Qualifier(name = "alternative")
 public class ComponentEImpl1 implements ComponentE {

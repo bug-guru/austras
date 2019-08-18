@@ -1,7 +1,7 @@
 package guru.bug.austras.test;
 
 
-import guru.bug.austras.annotations.Application;
+import guru.bug.austras.core.Application;
 
 @Application
 public class MyApp {
