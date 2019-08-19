@@ -1,7 +1,7 @@
 package guru.bug.austras.events;
 
 // TODO second type param for response type
-public interface Broadcast<M> {
+public interface Broadcaster<M> {
     // TODO response consumer as the second param (result of each called method must be passed to this consumer)
     void send(M message);
 
