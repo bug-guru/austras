@@ -6,5 +6,4 @@ public class ReceiverModel {
     private String method;
     private List<QualifierModel> qualifiers;
     private List<DependencyModel> dependencies;
-
 }
