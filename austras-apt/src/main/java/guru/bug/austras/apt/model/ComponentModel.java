@@ -11,6 +11,7 @@ public class ComponentModel implements Comparable<ComponentModel> {
     private List<QualifierModel> qualifiers;
     private List<String> types;
     private ProviderModel provider;
+    private List<ReceiverModel> receivers;
 
     public ComponentModel(DeclaredType instantiableType) {
         this.instantiableType = instantiableType;
