@@ -1,5 +1,5 @@
 package guru.bug.austras.events;
 
-public interface Broadcast<M> {
+public interface Broadcaster<M> {
     void send(M message);
 }
