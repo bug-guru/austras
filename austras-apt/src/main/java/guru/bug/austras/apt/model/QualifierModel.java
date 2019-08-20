@@ -36,4 +36,12 @@ public class QualifierModel {
     public int hashCode() {
         return Objects.hash(name, properties);
     }
+
+    @Override
+    public String toString() {
+        return "QualifierModel{" +
+                "name='" + name + '\'' +
+                ", properties=" + properties +
+                '}';
+    }
 }

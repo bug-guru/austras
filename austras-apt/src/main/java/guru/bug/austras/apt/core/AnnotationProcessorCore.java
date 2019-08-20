@@ -197,6 +197,10 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             if (isCollection) {
                 componentType = modelUtils.extractComponentTypeFromCollection(componentType);
             }
+            boolean isBroadcaster = modelUtils.isBroadcaster(componentType);
+            if (isBroadcaster) {
+                componentType = modelUtils.extractComponentTypeFromBroadcaster(componentType);
+            }
             var key = new ComponentKey(componentType.toString(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
                 var componentModels = candidateComponentMap.findComponentModels(key);

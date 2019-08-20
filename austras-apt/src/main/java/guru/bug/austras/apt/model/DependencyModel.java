@@ -8,6 +8,8 @@ public class DependencyModel {
     private String type;
     private boolean provider;
     private boolean collection;
+    private boolean broadcaster;
+    private boolean receiver;
     private List<QualifierModel> qualifiers;
     private VariableElement paramElement;
 
@@ -41,6 +43,22 @@ public class DependencyModel {
 
     public void setCollection(boolean collection) {
         this.collection = collection;
+    }
+
+    public boolean isBroadcaster() {
+        return broadcaster;
+    }
+
+    public void setBroadcaster(boolean broadcaster) {
+        this.broadcaster = broadcaster;
+    }
+
+    public boolean isReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(boolean receiver) {
+        this.receiver = receiver;
     }
 
     public List<QualifierModel> getQualifiers() {

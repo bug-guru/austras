@@ -10,6 +10,7 @@ import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
+import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.provider.Provider;
 import guru.bug.austras.scopes.Cache;
 import guru.bug.austras.scopes.NoCache;
@@ -39,12 +40,14 @@ public class ModelUtils {
     private final UniqueNameGenerator uniqueNameGenerator;
     private final Types typeUtils;
     private final Elements elementUtils;
-    private final DeclaredType providerInterfaceType;
-    private final DeclaredType collectionInterfaceType;
     private final ProcessingEnvironment processingEnv;
     private final String componentCacheVarName;
-    private final Element collectionInterfaceElement;
-    private final Element providerInterfaceElement;
+    private final TypeElement collectionInterfaceElement;
+    private final DeclaredType collectionInterfaceType;
+    private final TypeElement providerInterfaceElement;
+    private final DeclaredType providerInterfaceType;
+    private final TypeElement broadcasterInterfaceElement;
+    private final DeclaredType broadcasterInterfaceType;
 
     public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.log = log;
@@ -53,10 +56,12 @@ public class ModelUtils {
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
         this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache");
-        this.providerInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Provider.class.getName()));
-        this.collectionInterfaceType = typeUtils.getDeclaredType(elementUtils.getTypeElement(Collection.class.getName()));
-        this.collectionInterfaceElement = collectionInterfaceType.asElement();
-        this.providerInterfaceElement = providerInterfaceType.asElement();
+        this.collectionInterfaceElement = elementUtils.getTypeElement(Collection.class.getName());
+        this.collectionInterfaceType = typeUtils.getDeclaredType(collectionInterfaceElement);
+        this.providerInterfaceElement = elementUtils.getTypeElement(Provider.class.getName());
+        this.providerInterfaceType = typeUtils.getDeclaredType(providerInterfaceElement);
+        this.broadcasterInterfaceElement = elementUtils.getTypeElement(Broadcaster.class.getName());
+        this.broadcasterInterfaceType = typeUtils.getDeclaredType(broadcasterInterfaceElement);
     }
 
     public ComponentModel createComponentModel(DeclaredType type) {
@@ -207,6 +212,13 @@ public class ModelUtils {
         return unwrap(collectionType, collectionInterfaceElement);
     }
 
+    public DeclaredType extractComponentTypeFromBroadcaster(DeclaredType broadcasterType) {
+        if (!isBroadcaster(broadcasterType)) {
+            throw new IllegalArgumentException(broadcasterType + " isn't a broadcaster");
+        }
+        return unwrap(broadcasterType, broadcasterInterfaceElement);
+    }
+
     private DeclaredType unwrap(DeclaredType wrapperType, Element wrapperElement) {
         var tmp = Stream.concat(collectAllAncestor(wrapperType).stream(), Stream.of(wrapperType))
                 .filter(dt -> dt.asElement().equals(wrapperElement))
@@ -268,8 +280,14 @@ public class ModelUtils {
             paramType = extractComponentTypeFromCollection(paramType);
         }
 
+        var isBroadcaster = isBroadcaster(paramType);
+        if (isBroadcaster) {
+            paramType = extractComponentTypeFromBroadcaster(paramType);
+        }
+
         result.setProvider(isProvider);
         result.setCollection(isCollection);
+        result.setBroadcaster(isBroadcaster);
         result.setType(paramType.toString());
         result.setName(varName);
         result.setQualifiers(qualifiers);
@@ -277,6 +295,9 @@ public class ModelUtils {
         return result;
     }
 
+    public boolean isBroadcaster(DeclaredType type) {
+        return typeUtils.isAssignable(type, broadcasterInterfaceType);
+    }
 
     public boolean isCollection(DeclaredType type) {
         return typeUtils.isAssignable(type, collectionInterfaceType);
