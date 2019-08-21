@@ -1,9 +1,6 @@
 package guru.bug.austras.apt.events;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.core.Component;
@@ -18,10 +15,12 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +48,48 @@ public class ReceiverGenerator {
     public void generate(ExecutableElement method) throws IOException {
         var packageName = elementUtils.getPackageOf(method).getQualifiedName().toString();
         var receiverName = method.getEnclosingElement().getSimpleName() + StringUtils.capitalize(method.getSimpleName().toString()) + "Receiver";
+        var model = createModel(method);
+
         var receiverParamType = extractReceiverParamType(method);
         var superInterface = typeUtils.getDeclaredType(receiverElement, receiverParamType);
-        var qualifiers = extractReceiverQualifiers(method).stream()
+
+        JavaFile.builder(packageName,
+                TypeSpec.classBuilder(receiverName)
+                        .addAnnotation(Component.class)
+                        .addAnnotations(createQualifierAnnotations(method))
+                        .addSuperinterface(TypeName.get(superInterface))
+                        .add
+                        .build()
+        ).build()
+                .writeTo(filer);
+    }
+
+    private Dependencies createModel(ExecutableElement method) {
+        VariableElement messageParamElement = null;
+        var dependencies = new ArrayList<Dependency>();
+        var callParams = new ArrayList<Dependency>();
+        List<AnnotationSpec> qualifiers;
+
+        dependencies.add(new ProviderDependency())
+
+        for (var p : method.getParameters()) {
+            if (messageParamElement == null && !modelUtils.isBroadcaster(p.asType())) {
+                var msgAnnotations = p.getAnnotationsByType(Message.class);
+                if (msgAnnotations.length > 0) {
+                    messageParamElement = p;
+                    qualifiers = createQualifierAnnotations(p);
+                    var d = new MessageDependency();
+                    callParams.add(d);
+                    continue;
+                }
+            }
+        }
+
+        return new Dependencies();
+    }
+
+    private List<AnnotationSpec> createQualifierAnnotations(Element element) {
+        return modelUtils.extractQualifiers(element).stream()
                 .map(m -> {
                     AnnotationSpec.Builder result = AnnotationSpec.builder(Qualifier.class)
                             .addMember("name", "$S", m.getName());
@@ -60,16 +98,6 @@ public class ReceiverGenerator {
                     return result.build();
                 })
                 .collect(Collectors.toList());
-
-
-        JavaFile.builder(packageName,
-                TypeSpec.classBuilder(receiverName)
-                        .addAnnotation(Component.class)
-                        .addAnnotations(qualifiers)
-                        .addSuperinterface(TypeName.get(superInterface))
-                        .build()
-        ).build()
-                .writeTo(filer);
     }
 
     private TypeMirror extractReceiverParamType(ExecutableElement method) {
@@ -88,5 +116,46 @@ public class ReceiverGenerator {
                 .findFirst()
                 .map(modelUtils::extractQualifiers)
                 .orElseGet(() -> modelUtils.extractQualifiers(method));
+    }
+
+    private class Dependencies {
+        List<Dependency> dependencies;
+        List<AnnotationSpec> annotations;
+        TypeMirror messageType;
+
+        List<AnnotationSpec> annotations() {
+            return annotations;
+        }
+
+        TypeMirror messageType() {
+            return messageType;
+        }
+
+        List<FieldSpec> fields() {
+            return dependencies.stream().map(Dependency::field).collect(Collectors.toList());
+        }
+
+        List<ParameterSpec> parameters() {
+            return dependencies.stream().map(Dependency::param).collect(Collectors.toList());
+        }
+
+    }
+
+    private abstract class Dependency {
+        String name;
+        TypeMirror type;
+        List<AnnotationSpec> qualifiers;
+
+        abstract FieldSpec field();
+
+        abstract ParameterSpec param();
+    }
+
+    private class ProviderDependency extends Dependency {
+
+    }
+
+    private class MessageDependency extends Dependency {
+
     }
 }
