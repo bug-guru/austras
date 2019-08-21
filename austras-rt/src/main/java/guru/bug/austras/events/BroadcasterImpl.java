@@ -14,7 +14,7 @@ public class BroadcasterImpl<M> implements Broadcaster<M> {
         receivers.forEach(r -> {
             try {
 
-                r.process(message);
+                r.receive(message);
 
             } catch (RuntimeException e) {
                 throw e;

@@ -295,7 +295,7 @@ public class ModelUtils {
         return result;
     }
 
-    public boolean isBroadcaster(DeclaredType type) {
+    public boolean isBroadcaster(TypeMirror type) {
         return typeUtils.isAssignable(type, broadcasterInterfaceType);
     }
 
