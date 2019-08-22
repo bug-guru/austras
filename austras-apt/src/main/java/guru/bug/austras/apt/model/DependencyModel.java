@@ -9,7 +9,6 @@ public class DependencyModel {
     private boolean provider;
     private boolean collection;
     private boolean broadcaster;
-    private boolean receiver;
     private List<QualifierModel> qualifiers;
     private VariableElement paramElement;
 
@@ -51,14 +50,6 @@ public class DependencyModel {
 
     public void setBroadcaster(boolean broadcaster) {
         this.broadcaster = broadcaster;
-    }
-
-    public boolean isReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(boolean receiver) {
-        this.receiver = receiver;
     }
 
     public List<QualifierModel> getQualifiers() {

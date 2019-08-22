@@ -1,6 +1,9 @@
 package guru.bug.austras.apt.events;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.core.Component;
@@ -64,7 +67,7 @@ public class ReceiverGenerator {
                 .writeTo(filer);
     }
 
-    private Dependencies createModel(ExecutableElement method) {
+    private MessageReceiverModel createModel(ExecutableElement method) {
         VariableElement messageParamElement = null;
         var dependencies = new ArrayList<Dependency>();
         var callParams = new ArrayList<Dependency>();
@@ -85,7 +88,7 @@ public class ReceiverGenerator {
             }
         }
 
-        return new Dependencies();
+        return new MessageReceiverModel();
     }
 
     private List<AnnotationSpec> createQualifierAnnotations(Element element) {
@@ -118,44 +121,4 @@ public class ReceiverGenerator {
                 .orElseGet(() -> modelUtils.extractQualifiers(method));
     }
 
-    private class Dependencies {
-        List<Dependency> dependencies;
-        List<AnnotationSpec> annotations;
-        TypeMirror messageType;
-
-        List<AnnotationSpec> annotations() {
-            return annotations;
-        }
-
-        TypeMirror messageType() {
-            return messageType;
-        }
-
-        List<FieldSpec> fields() {
-            return dependencies.stream().map(Dependency::field).collect(Collectors.toList());
-        }
-
-        List<ParameterSpec> parameters() {
-            return dependencies.stream().map(Dependency::param).collect(Collectors.toList());
-        }
-
-    }
-
-    private abstract class Dependency {
-        String name;
-        TypeMirror type;
-        List<AnnotationSpec> qualifiers;
-
-        abstract FieldSpec field();
-
-        abstract ParameterSpec param();
-    }
-
-    private class ProviderDependency extends Dependency {
-
-    }
-
-    private class MessageDependency extends Dependency {
-
-    }
 }
