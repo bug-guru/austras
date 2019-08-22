@@ -263,12 +263,9 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    private DependencyModel createDependencyModel(VariableElement paramElement) {
+    public DependencyModel createDependencyModel(String varName, DeclaredType paramType, AnnotatedConstruct metadata) {
         var result = new DependencyModel();
-
-        var paramType = (DeclaredType) paramElement.asType();
-        var qualifiers = extractQualifiers(paramElement);
-        var varName = paramElement.getSimpleName().toString();
+        var qualifiers = extractQualifiers(metadata);
         boolean isProvider = isProvider(paramType);
 
         if (isProvider) {
@@ -291,6 +288,15 @@ public class ModelUtils {
         result.setType(paramType.toString());
         result.setName(varName);
         result.setQualifiers(qualifiers);
+
+        return result;
+    }
+
+    public DependencyModel createDependencyModel(VariableElement paramElement) {
+
+        var paramType = (DeclaredType) paramElement.asType();
+        var varName = paramElement.getSimpleName().toString();
+        var result = createDependencyModel(varName, paramType, paramElement);
         result.setParamElement(paramElement);
         return result;
     }

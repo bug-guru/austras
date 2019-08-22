@@ -1,4 +1,4 @@
-package guru.bug.austras.apt.events;
+package guru.bug.austras.apt.events.model;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
@@ -8,10 +8,11 @@ import javax.lang.model.type.TypeMirror;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class MessageReceiverModel {
-    List<Dependency> dependencies;
-    List<AnnotationSpec> annotations;
-    TypeMirror messageType;
+public class MessageReceiverModel {
+    private final List<DependencyModel> dependencies;
+    private final List<CallParamModel> parameters;
+    private final List<AnnotationSpec> annotations;
+    private final TypeMirror messageType;
 
     List<AnnotationSpec> annotations() {
         return annotations;
@@ -28,5 +29,6 @@ class MessageReceiverModel {
     List<ParameterSpec> parameters() {
         return dependencies.stream().map(Dependency::param).collect(Collectors.toList());
     }
+
 
 }

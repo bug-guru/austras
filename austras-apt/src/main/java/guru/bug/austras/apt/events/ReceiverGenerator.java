@@ -5,6 +5,10 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import guru.bug.austras.apt.core.ModelUtils;
+import guru.bug.austras.apt.events.model.CallParamModel;
+import guru.bug.austras.apt.events.model.MessageCallParamModel;
+import guru.bug.austras.apt.events.model.MessageReceiverModel;
+import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
@@ -19,6 +23,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -69,19 +74,19 @@ public class ReceiverGenerator {
 
     private MessageReceiverModel createModel(ExecutableElement method) {
         VariableElement messageParamElement = null;
-        var dependencies = new ArrayList<Dependency>();
-        var callParams = new ArrayList<Dependency>();
+        var dependencies = new ArrayList<DependencyModel>();
+        var callParams = new ArrayList<CallParamModel>();
         List<AnnotationSpec> qualifiers;
 
-        dependencies.add(new ProviderDependency())
+        DependencyModel componentDependency = createComponentDependency(method);
+        dependencies.add(componentDependency);
 
         for (var p : method.getParameters()) {
             if (messageParamElement == null && !modelUtils.isBroadcaster(p.asType())) {
                 var msgAnnotations = p.getAnnotationsByType(Message.class);
                 if (msgAnnotations.length > 0) {
                     messageParamElement = p;
-                    qualifiers = createQualifierAnnotations(p);
-                    var d = new MessageDependency();
+                    var d = new MessageCallParamModel();
                     callParams.add(d);
                     continue;
                 }
@@ -89,6 +94,13 @@ public class ReceiverGenerator {
         }
 
         return new MessageReceiverModel();
+    }
+
+    private DependencyModel createComponentDependency(ExecutableElement method) {
+        var componentElement = (TypeElement) method.getEnclosingElement();
+        var componentDependency = modelUtils.createDependencyModel("receiver", (DeclaredType) componentElement.asType(), componentElement);
+        componentDependency.setProvider(true);
+        return componentDependency;
     }
 
     private List<AnnotationSpec> createQualifierAnnotations(Element element) {
