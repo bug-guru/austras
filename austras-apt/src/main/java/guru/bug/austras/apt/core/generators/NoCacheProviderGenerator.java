@@ -18,18 +18,18 @@ public class NoCacheProviderGenerator extends BaseProviderGenerator {
 
     @Override
     protected void generateProviderFields(BiConsumer<String, String> fieldGenerator) {
-        providerDependencies.forEach(p -> fieldGenerator.accept(p.getType(), p.getName()));
+        providerDependencies.forEach(p -> fieldGenerator.accept(p.providerDependency.getType(), p.providerDependency.getName()));
     }
 
     @Override
     protected void generateConstructorBody(PrintWriter out) {
-        providerDependencies.forEach(p -> out.printf("\t\tthis.%1$s = %1$s;\n", p.getName()));
+        providerDependencies.forEach(p -> out.printf("\t\tthis.%1$s = %1$s;\n", p.providerDependency.getName()));
     }
 
     @Override
     protected void generateGetMethodBody(PrintWriter out) {
         providerDependencies.forEach(dm -> {
-            out.printf("\t\tvar %s = this.%s.get();\n", dm.componentDependency.getName(), dm.getName());
+            out.printf("\t\tvar %s = this.%s.get();\n", dm.componentDependency.getName(), dm.providerDependency.getName());
         });
         var params = providerDependencies.stream()
                 .map(p -> p.componentDependency.getName())

@@ -11,7 +11,6 @@ import guru.bug.austras.provider.CollectionProvider;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,10 +50,11 @@ public class MainClassGenerator {
         var l = java.util.logging.Logger.getGlobal();
         l.info(() -> "");
         var sortedComponents = sortComponents();
-        TypeElement instantiableElement = appComponentModel.getInstantiableElement();
-        var mainClassQualifiedName = instantiableElement.getQualifiedName() + "Main";
-        var mainClassSimpleName = instantiableElement.getSimpleName() + "Main";
-        var packageName = elementUtils.getPackageOf(instantiableElement).getQualifiedName();
+        var appInstantiable = appComponentModel.getInstantiable();
+        var mainClassQualifiedName = appInstantiable + "Main";
+        var lastDotIndex = mainClassQualifiedName.lastIndexOf('.');
+        var mainClassSimpleName = mainClassQualifiedName.substring(lastDotIndex + 1);
+        var packageName = mainClassQualifiedName.substring(0, lastDotIndex);
         try (var out = new PrintWriter(processingEnv.getFiler().createSourceFile(mainClassQualifiedName).openWriter())) {
             out.printf("package %s;\n", packageName);
             out.printf("public class %s {\n", mainClassSimpleName);

@@ -29,7 +29,7 @@ public class EagerSingletonProviderGenerator extends BaseProviderGenerator {
     @Override
     protected void generateConstructorBody(PrintWriter out) {
         providerDependencies.forEach(p -> {
-            out.printf("\t\tvar %s = %s.get();\n", p.componentDependency.getName(), p.getName());
+            out.printf("\t\tvar %s = %s.get();\n", p.componentDependency.getName(), p.providerDependency.getName());
         });
         out.printf("\t\tthis.%s = new %s(", componentModel.getName(), componentSimpleName);
         String vars = providerDependencies.stream()

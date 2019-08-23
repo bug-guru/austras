@@ -2,24 +2,22 @@ package guru.bug.austras.apt.core.componentmap;
 
 import guru.bug.austras.apt.model.QualifierModel;
 
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 
 public class ComponentKey {
     private final String type;
-    private final Set<QualifierModel> qualifiers;
+    private final QualifierModel qualifiers;
 
-    public ComponentKey(String type, Collection<QualifierModel> qualifiers) {
+    public ComponentKey(String type, QualifierModel qualifiers) {
         this.type = type;
-        this.qualifiers = Set.copyOf(qualifiers);
+        this.qualifiers = qualifiers;
     }
 
     public String getType() {
         return type;
     }
 
-    public Set<QualifierModel> getQualifier() {
+    public QualifierModel getQualifier() {
         return qualifiers;
     }
 

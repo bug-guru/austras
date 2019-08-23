@@ -1,9 +1,15 @@
 package guru.bug.austras.apt.events.model;
 
-public class DependencyCallParamModel extends CallParamModel {
-    private final DependencyModel dependency;
+import guru.bug.austras.apt.model.DependencyModel;
 
-    public DependencyCallParamModel(DependencyModel dependency) {
+public class DependencyCallParamModel extends CallParamModel {
+    private DependencyModel dependency;
+
+    public DependencyModel getDependency() {
+        return dependency;
+    }
+
+    public void setDependency(DependencyModel dependency) {
         this.dependency = dependency;
     }
 }

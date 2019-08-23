@@ -34,7 +34,7 @@ public class CacheProviderGenerator extends BaseProviderGenerator {
     @Override
     protected void generateConstructorBody(PrintWriter out) {
         out.printf("\t\tthis.%s = new %s<>(() -> {\n", componentCacheVarName, scopeType);
-        providerDependencies.forEach(p -> out.printf("\t\t\tvar %s = %s.get();\n", p.componentDependency.getName(), p.getName()));
+        providerDependencies.forEach(p -> out.printf("\t\t\tvar %s = %s.get();\n", p.componentDependency.getName(), p.providerDependency.getName()));
         var params = providerDependencies.stream()
                 .map(dm -> dm.componentDependency.getName())
                 .collect(Collectors.joining(","));

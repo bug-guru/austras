@@ -12,7 +12,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -21,8 +20,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
 
     protected final ProcessingEnvironment processingEnv;
     protected final ComponentModel componentModel;
-    protected final List<DependencyModel> componentDependencies;
-    protected final List<ProviderDependencyModel> providerDependencies;
+    protected final List<Dependency> providerDependencies;
     protected final String componentQualifiedName;
     protected final String providerQualifiedName;
     protected final String providerPackageName;
@@ -33,31 +31,13 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         this.processingEnv = processingEnv;
         this.componentModel = componentModel;
         this.componentQualifiedName = componentModel.getInstantiable();
-        this.componentDependencies = componentDependencies;
         this.providerQualifiedName = componentQualifiedName + "Provider";
         this.componentSimpleName = extractSimpleName(componentQualifiedName);
         this.providerPackageName = extractPackageName(providerQualifiedName);
         this.providerSimpleName = extractSimpleName(providerQualifiedName);
         this.providerDependencies = componentDependencies.stream()
-                .map(this::convertToProviderDependency)
+                .map(Dependency::new)
                 .collect(Collectors.toList());
-    }
-
-    private ProviderDependencyModel convertToProviderDependency(DependencyModel componentDependency) {
-        var providerDependency = new ProviderDependencyModel(componentDependency);
-        providerDependency.setName(componentDependency.getName() + "Provider" );
-        providerDependency.setQualifiers(componentDependency.getQualifiers());
-        providerDependency.setCollection(componentDependency.isCollection());
-        providerDependency.setProvider(true);
-        var type = componentDependency.getType();
-        if (providerDependency.isCollection()) {
-            type = Collection.class.getName() + "<? extends " + type + ">";
-        }
-        if (providerDependency.isProvider()) {
-            type = Provider.class.getName() + "<? extends " + type + ">";
-        }
-        providerDependency.setType(type);
-        return providerDependency;
     }
 
     public final void generateProvider() {
@@ -75,7 +55,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                 generateProviderFields(out);
                 generateProviderConstructor(out);
                 generateGetInstance(out);
-                out.print("}" );
+                out.print("}");
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -83,9 +63,9 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     private void generateProviderFields(PrintWriter out) {
-        out.print("\n" );
+        out.print("\n");
         generateProviderFields((className, varName) -> out.printf("\tprivate final %s %s;\n", className, varName));
-        out.print("\n" );
+        out.print("\n");
     }
 
     protected void generateProviderFields(BiConsumer<String, String> fieldGenerator) {
@@ -93,10 +73,10 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     private void generateGetInstance(PrintWriter out) {
-        out.printf("\t@Override\n" );
+        out.printf("\t@Override\n");
         out.printf("\tpublic %s get() {\n", componentModel.getInstantiable());
         generateGetMethodBody(out);
-        out.print("\t}\n\n" );
+        out.print("\t}\n\n");
 
     }
 
@@ -105,9 +85,9 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     protected void generateConstructorParams(BiConsumer<String, String> paramGenerator) {
         providerDependencies.forEach(p -> {
             String type = String.format("%s%s",
-                    generateQualifierAnnotations(p.getQualifiers(), false),
-                    p.getType());
-            paramGenerator.accept(type, p.getName());
+                    generateQualifierAnnotations(p.providerDependency.getQualifiers(), false),
+                    p.providerDependency.getType());
+            paramGenerator.accept(type, p.providerDependency.getName());
         });
     }
 
@@ -123,37 +103,37 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
             @Override
             public void accept(String type, String name) {
                 if (needSep) {
-                    params.append("," );
+                    params.append(",");
                 }
                 needSep = true;
-                params.append(type).append(" " ).append(name);
+                params.append(type).append(" ").append(name);
             }
         });
         out.printf("\tpublic %s(%s) {\n", providerSimpleName, params);
         generateConstructorBody(out);
-        out.print("\t}\n\n" );
+        out.print("\t}\n\n");
     }
 
-    protected final String generateQualifierAnnotations(List<QualifierModel> qualifierList, boolean multiline) {
-        if (qualifierList == null || qualifierList.isEmpty()) {
+    protected final String generateQualifierAnnotations(QualifierModel qualifier, boolean multiline) {
+        if (qualifier == null || qualifier.isEmpty()) {
             return "";
         }
         var result = new StringBuilder(256);
-        for (var q : qualifierList) {
-            var props = q.getProperties().entrySet().stream()
+        qualifier.forEach((qualifierName, props) -> {
+            var strProps = props.stream()
                     .map(e -> String.format("@%s(name=\"%s\",value=\"%s\")",
                             QualifierProperty.class.getName(),
-                            StringEscapeUtils.escapeJava(e.getKey()),
-                            StringEscapeUtils.escapeJava(e.getValue())))
-                    .collect(Collectors.joining(",", "{", "}" ));
-            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), q.getName(), props);
+                            StringEscapeUtils.escapeJava(e.getLeft()),
+                            StringEscapeUtils.escapeJava(e.getRight())))
+                    .collect(Collectors.joining(",", "{", "}"));
+            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), qualifierName, props);
             result.append(qline);
             if (multiline) {
                 result.append('\n');
             } else {
                 result.append(' ');
             }
-        }
+        });
         return result.toString();
     }
 
@@ -167,11 +147,13 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
         return qualifiedName.substring(lastDotIdx + 1);
     }
 
-    protected class ProviderDependencyModel extends DependencyModel {
+    protected static class Dependency {
         protected final DependencyModel componentDependency;
+        protected final DependencyModel providerDependency;
 
-        public ProviderDependencyModel(DependencyModel componentDependency) {
+        public Dependency(DependencyModel componentDependency) {
             this.componentDependency = componentDependency;
+            this.providerDependency = componentDependency.copyAsProvider();
         }
     }
 }

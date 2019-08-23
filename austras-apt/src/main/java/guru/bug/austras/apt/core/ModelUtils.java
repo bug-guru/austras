@@ -76,7 +76,7 @@ public class ModelUtils {
         log.debug("All superclasses and interfaces: %s", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
-        var model = new ComponentModel(type);
+        var model = new ComponentModel();
 
         model.setQualifiers(qualifiers);
         model.setInstantiable(type.toString());
@@ -114,49 +114,48 @@ public class ModelUtils {
         return null;
     }
 
-    public List<QualifierModel> extractQualifiers(AnnotatedConstruct element) {
-        Set<QualifierModel> qualifiers = element.getAnnotationMirrors().stream()
-                .map(this::convertAnnotationToQualifierModel)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(HashSet::new));
-        Arrays.stream(element.getAnnotationsByType(Qualifier.class))
-                .map(this::convertRawQualifierToModel)
-                .collect(Collectors.toCollection(() -> qualifiers));
-        return List.copyOf(qualifiers);
-    }
-
-    private QualifierModel convertRawQualifierToModel(Qualifier q) {
-        var m = new QualifierModel();
-        m.setName(q.name());
-        var propsMap = new HashMap<String, String>();
-        for (var p : q.properties()) {
-            propsMap.put(p.name(), p.value());
+    public QualifierModel extractQualifiers(AnnotatedConstruct element) {
+        var result = new QualifierModel();
+        for (var a : element.getAnnotationMirrors()) {
+            convertAnnotationToQualifierModel(a, result);
         }
-        m.setProperties(propsMap);
-        return m;
+        for (var e : element.getAnnotationsByType(Qualifier.class)) {
+            convertRawQualifierToModel(e, result);
+        }
+        return result;
     }
 
-    private QualifierModel convertAnnotationToQualifierModel(AnnotationMirror am) {
+    private void convertRawQualifierToModel(Qualifier q, QualifierModel result) {
+        String name = q.name();
+        result.setProperty(name);
+        for (var p : q.properties()) {
+            result.setProperty(name, p.name(), p.value());
+        }
+    }
+
+    private void convertAnnotationToQualifierModel(AnnotationMirror am, QualifierModel result) {
         Element annotationElement = typeUtils.asElement(am.getAnnotationType());
         Qualifier qualifier = annotationElement.getAnnotation(Qualifier.class);
         if (qualifier == null) {
-            return null;
+            return;
         }
-        var result = new QualifierModel();
-        result.setName(qualifier.name());
+        String name = qualifier.name();
+        result.setProperty(name);
         if (qualifier.properties().length == 0) {
-            return result;
+            return;
         }
         var mappedNames = Stream.of(qualifier.properties())
                 .collect(Collectors.toMap(QualifierProperty::name, p -> p.value().isBlank() ? p.name() : p.value()));
         var elementValuesWithDefaults = elementUtils.getElementValuesWithDefaults(am);
-        var props = annotationElement.getEnclosedElements().stream()
+        annotationElement.getEnclosedElements().stream()
                 .filter(e -> e.getKind() == ElementKind.METHOD)
                 .map(e -> (ExecutableElement) e)
                 .filter(e -> mappedNames.containsKey(e.getSimpleName().toString()))
-                .collect(Collectors.toMap(e -> mappedNames.get(e.getSimpleName().toString()), e -> annotationValueToString(elementValuesWithDefaults.get(e))));
-        result.setProperties(props);
-        return result;
+                .forEach(e -> {
+                    var key = mappedNames.get(e.getSimpleName().toString());
+                    var val = annotationValueToString(elementValuesWithDefaults.get(e));
+                    result.setProperty(name, key, val);
+                });
     }
 
     private String annotationValueToString(AnnotationValue annotationValue) {
@@ -266,8 +265,8 @@ public class ModelUtils {
     public DependencyModel createDependencyModel(String varName, DeclaredType paramType, AnnotatedConstruct metadata) {
         var result = new DependencyModel();
         var qualifiers = extractQualifiers(metadata);
-        boolean isProvider = isProvider(paramType);
 
+        boolean isProvider = isProvider(paramType);
         if (isProvider) {
             paramType = extractComponentTypeFromProvider(paramType);
         }
@@ -277,14 +276,8 @@ public class ModelUtils {
             paramType = extractComponentTypeFromCollection(paramType);
         }
 
-        var isBroadcaster = isBroadcaster(paramType);
-        if (isBroadcaster) {
-            paramType = extractComponentTypeFromBroadcaster(paramType);
-        }
-
         result.setProvider(isProvider);
         result.setCollection(isCollection);
-        result.setBroadcaster(isBroadcaster);
         result.setType(paramType.toString());
         result.setName(varName);
         result.setQualifiers(qualifiers);
@@ -297,7 +290,7 @@ public class ModelUtils {
         var paramType = (DeclaredType) paramElement.asType();
         var varName = paramElement.getSimpleName().toString();
         var result = createDependencyModel(varName, paramType, paramElement);
-        result.setParamElement(paramElement);
+//        result.setParamElement(paramElement);
         return result;
     }
 

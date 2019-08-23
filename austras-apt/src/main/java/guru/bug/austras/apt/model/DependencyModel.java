@@ -1,16 +1,15 @@
 package guru.bug.austras.apt.model;
 
-import javax.lang.model.element.VariableElement;
-import java.util.List;
+import guru.bug.austras.provider.Provider;
+
+import java.util.Collection;
 
 public class DependencyModel {
     private String name;
     private String type;
     private boolean provider;
     private boolean collection;
-    private boolean broadcaster;
-    private List<QualifierModel> qualifiers;
-    private VariableElement paramElement;
+    private QualifierModel qualifiers;
 
     public String getName() {
         return name;
@@ -44,27 +43,42 @@ public class DependencyModel {
         this.collection = collection;
     }
 
-    public boolean isBroadcaster() {
-        return broadcaster;
-    }
-
-    public void setBroadcaster(boolean broadcaster) {
-        this.broadcaster = broadcaster;
-    }
-
-    public List<QualifierModel> getQualifiers() {
+    public QualifierModel getQualifiers() {
         return qualifiers;
     }
 
-    public void setQualifiers(List<QualifierModel> qualifiers) {
+    public void setQualifiers(QualifierModel qualifiers) {
         this.qualifiers = qualifiers;
     }
 
-    public VariableElement getParamElement() {
-        return paramElement;
+    public DependencyModel copyAsProvider() {
+        var result = new DependencyModel();
+        result.setCollection(collection);
+        result.setType(type);
+        result.setQualifiers(qualifiers);
+        result.setProvider(true);
+        if (provider) {
+            result.setName(name);
+        } else {
+            result.setName(name + "Provider");
+        }
+        return result;
     }
 
-    public void setParamElement(VariableElement paramElement) {
-        this.paramElement = paramElement;
+    public String asTypeDeclaration() {
+        var result = type;
+        if (collection) {
+            result = Collection.class.getName() + "<? extends " + result + ">";
+        }
+        if (provider) {
+            result = Provider.class.getName() + "<? extends " + result + ">";
+        }
+        return result;
     }
+
+    public String asParameterDeclaration() {
+        return asTypeDeclaration() + " " + getName();
+    }
+
+
 }

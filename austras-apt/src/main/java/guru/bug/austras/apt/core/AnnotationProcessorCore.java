@@ -184,9 +184,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
 
     private void ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
         for (var d : providerModel.getDependencies()) {
-            var paramVarElement = d.getParamElement();
-            var dep = modelUtils.createDependencyModel(paramVarElement);
-            var key = new ComponentKey(dep.getType(), d.getQualifiers());
+            var key = new ComponentKey(d.getType(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
                 var componentModels = candidateComponentMap.findComponentModels(key);
                 if (componentModels.isEmpty()) {
