@@ -1,9 +1,6 @@
 package guru.bug.austras.apt.events;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.DependencyCallParamModel;
 import guru.bug.austras.apt.events.model.MessageCallParamModel;
@@ -12,10 +9,12 @@ import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
+import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.events.Message;
 import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -28,6 +27,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,13 +112,44 @@ public class ReceiverGenerator {
         return componentDependency;
     }
 
+
+    protected final String generateQualifierAnnotations(QualifierModel qualifier, boolean multiline) {
+        if (qualifier == null || qualifier.isEmpty()) {
+            return "";
+        }
+        var result = new StringBuilder(256);
+        qualifier.forEach((qualifierName, props) -> {
+            var strProps = props.stream()
+                    .map(e -> String.format("@%s(name=\"%s\",value=\"%s\")",
+                            QualifierProperty.class.getName(),
+                            StringEscapeUtils.escapeJava(e.getLeft()),
+                            StringEscapeUtils.escapeJava(e.getRight())))
+                    .collect(Collectors.joining(",", "{", "}"));
+            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), qualifierName, props);
+            result.append(qline);
+            if (multiline) {
+                result.append('\n');
+            } else {
+                result.append(' ');
+            }
+        });
+        return result.toString();
+    }
+
     private List<AnnotationSpec> createQualifierAnnotations(Element element) {
-        return modelUtils.extractQualifiers(element).stream()
+        var result = new ArrayList<AnnotationSpec>();
+        modelUtils.extractQualifiers(element).forEach((qualifierName, properties) -> {
+            AnnotationSpec.Builder qualifierBuilder = AnnotationSpec.builder(Qualifier.class)
+                    .addMember("name", "$S", qualifierName);
+            var propsBuilder = CodeBlock.builder().beginControlFlow("")
+            properties.forEach(prop -> {
+                CodeBlock.builder().
+                                            .forEach((k, v) -> result.addMember(k, "%S", v));
+
+            });
+        });
                 .map(m -> {
-                    AnnotationSpec.Builder result = AnnotationSpec.builder(Qualifier.class)
-                            .addMember("name", "$S", m.getName());
                     m.getProperties()
-                            .forEach((k, v) -> result.addMember(k, "%S", v));
                     return result.build();
                 })
                 .collect(Collectors.toList());
