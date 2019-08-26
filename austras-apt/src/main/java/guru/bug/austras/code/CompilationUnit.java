@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CompilationUnit {
+public class CompilationUnit implements Writable {
+
     private final PackageDecl packageDecl;
     private final List<TypeDecl> typeDecls;
 
@@ -15,6 +16,13 @@ public class CompilationUnit {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public void write(CodeWriter out) {
+        contextInstance.set(new ContextInst());
+
+        contextInstance.remove();
     }
 
     public static class Builder {
@@ -39,5 +47,9 @@ public class CompilationUnit {
         public CompilationUnit build() {
             return new CompilationUnit(packageSpec, List.copyOf(typeDecls));
         }
+    }
+
+    private class ContextInst {
+
     }
 }

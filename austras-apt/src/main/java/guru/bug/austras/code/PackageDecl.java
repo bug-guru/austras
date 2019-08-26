@@ -3,7 +3,7 @@ package guru.bug.austras.code;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PackageDecl {
+public class PackageDecl implements Writable {
     private final List<AnnotationSpec> annotationSpecs;
     private final PackageSpec packageSpec;
 

@@ -2,7 +2,7 @@ package guru.bug.austras.code;
 
 import java.util.Objects;
 
-public class PackageSpec {
+public class PackageSpec implements Writable {
     private final String name;
 
     private PackageSpec(String name) {

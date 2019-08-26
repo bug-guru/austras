@@ -1,4 +1,4 @@
 package guru.bug.austras.code;
 
-public class ImportDecl {
+public class ImportDecl implements Writable {
 }

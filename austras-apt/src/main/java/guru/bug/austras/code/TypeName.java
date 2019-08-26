@@ -1,7 +1,7 @@
 package guru.bug.austras.code;
 
 
-public class TypeName {
+public class TypeName implements Writable {
     private final String qualifiedName;
     private final String packageName;
     private final String simpleName;

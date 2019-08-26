@@ -1,5 +1,5 @@
 package guru.bug.austras.code;
 
-public class TypeDecl {
+public class TypeDecl implements Writable {
 
 }

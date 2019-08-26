@@ -3,7 +3,7 @@ package guru.bug.austras.code;
 /**
  * Represents type parameter or type argument.
  */
-public class TypeExt {
+public class TypeExt implements Writable {
     private final TypeSpec bound;
     private final TypeExtBoundType boundType;
     private final String typeVar;

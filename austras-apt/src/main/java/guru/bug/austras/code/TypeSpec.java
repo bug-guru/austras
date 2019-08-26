@@ -6,7 +6,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class TypeSpec {
+public class TypeSpec implements Writable {
     private final TypeName name;
     private final List<TypeExt> typeExts;
 

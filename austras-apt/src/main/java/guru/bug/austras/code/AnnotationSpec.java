@@ -5,7 +5,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AnnotationSpec {
+public class AnnotationSpec implements Writable {
     private final PackageSpec packageSpec;
     private final List<ElementValuePair> pairs;
 
@@ -18,17 +18,29 @@ public class AnnotationSpec {
         return new Builder();
     }
 
-    private interface ElementValue {
+    @Override
+    public void write(CodeWriter out) {
 
     }
 
-    private static class ElementValuePair {
+    private interface ElementValue extends Writable {
+
+    }
+
+    private static class ElementValuePair implements Writable {
         private final String name;
         private final ElementValue value;
 
         public ElementValuePair(String name, ElementValue value) {
             this.name = name;
             this.value = value;
+        }
+
+        @Override
+        public void write(CodeWriter out) {
+            out.print(name);
+            out.print(" = ");
+            value.write(out);
         }
     }
 
@@ -38,6 +50,21 @@ public class AnnotationSpec {
         public ArrayElementValue(List<ElementValue> elements) {
             this.elements = elements;
         }
+
+        @Override
+        public void write(CodeWriter out) {
+            out.print("{");
+            var delim = false;
+            for (var e : elements) {
+                if (delim) {
+                    out.write(", ");
+                } else {
+                    delim = true;
+                }
+                e.write(out);
+            }
+            out.print("}");
+        }
     }
 
     private static class RawElementValue implements ElementValue {
@@ -46,6 +73,11 @@ public class AnnotationSpec {
         public RawElementValue(String value) {
             this.value = value;
         }
+
+        @Override
+        public void write(CodeWriter out) {
+            out.print(value);
+        }
     }
 
     private static class AnnotationElementValue implements ElementValue {
@@ -53,6 +85,11 @@ public class AnnotationSpec {
 
         public AnnotationElementValue(AnnotationSpec annotationSpec) {
             this.annotationSpec = annotationSpec;
+        }
+
+        @Override
+        public void write(CodeWriter out) {
+            annotationSpec.write(out);
         }
     }
 
