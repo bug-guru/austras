@@ -1,10 +1,12 @@
 package guru.bug.austras.code;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CompilationUnit implements Writable {
+public class CompilationUnit {
 
     private final PackageDecl packageDecl;
     private final List<TypeDecl> typeDecls;
@@ -18,12 +20,22 @@ public class CompilationUnit implements Writable {
         return new Builder();
     }
 
-    @Override
-    public void write(CodeWriter out) {
-        contextInstance.set(new ContextInst());
+    public void write(PrintWriter out) {
+        var imports = new ArrayList<ImportDecl>();
+        var buffer = new PrintWriter(new StringWriter(2048));
+        var bufferOut = new CodeWriter(buffer, imports);
+        for (var t : typeDecls) {
+            t.write(bufferOut);
+        }
 
-        contextInstance.remove();
+        var cw = new CodeWriter(out, null);
+        cw.write(packageDecl);
+        for (var i : imports) {
+            cw.write(i);
+        }
+        cw.write(buffer.toString());
     }
+
 
     public static class Builder {
         private PackageDecl packageSpec;

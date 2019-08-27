@@ -16,6 +16,11 @@ public class PackageDecl implements Writable {
         return new Builder();
     }
 
+    @Override
+    public void write(CodeWriter out) {
+
+    }
+
     public static class Builder {
         private final List<AnnotationSpec> annotationSpecs = new ArrayList<>();
         private PackageSpec packageSpec;

@@ -3,6 +3,7 @@ package guru.bug.austras.code;
 import java.util.Objects;
 
 public class PackageSpec implements Writable {
+    private static final PackageSpec empty = new PackageSpec(null);
     private final String name;
 
     private PackageSpec(String name) {
@@ -13,8 +14,16 @@ public class PackageSpec implements Writable {
         return new PackageSpec(name);
     }
 
+    public static PackageSpec empty() {
+        return PackageSpec.empty;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public boolean isBlank() {
+        return name.isBlank();
     }
 
     @Override
@@ -33,5 +42,12 @@ public class PackageSpec implements Writable {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public void write(CodeWriter out) {
+        if (!isBlank()) {
+            out.write(name);
+        }
     }
 }

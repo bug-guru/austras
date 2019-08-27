@@ -1,13 +1,30 @@
 package guru.bug.austras.code;
 
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Locale;
 
 public class CodeWriter implements AutoCloseable {
     private final PrintWriter out;
+    private final List<ImportDecl> imports;
 
-    public CodeWriter(PrintWriter out) {
+    public CodeWriter(PrintWriter out, List<ImportDecl> mutableImports) {
         this.out = out;
+        this.imports = mutableImports;
+    }
+
+    boolean checkImported(TypeName type) {
+        for (var i : imports) {
+            var r = i.check(type);
+            if (r == ImportDecl.Result.CONFLICT) {
+                return false;
+            } else if (r == ImportDecl.Result.SAME) {
+                return true;
+            }
+        }
+        var decl = ImportDecl.of(type);
+        imports.add(decl);
+        return true;
     }
 
     public void write(int c) {
@@ -137,5 +154,9 @@ public class CodeWriter implements AutoCloseable {
     @Override
     public void close() {
         out.close();
+    }
+
+    public void write(Writable writable) {
+        writable.write(this);
     }
 }

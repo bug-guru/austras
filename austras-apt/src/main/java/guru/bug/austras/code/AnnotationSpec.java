@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnnotationSpec implements Writable {
-    private final PackageSpec packageSpec;
+    private final TypeName name;
     private final List<ElementValuePair> pairs;
 
-    public AnnotationSpec(PackageSpec packageSpec, List<ElementValuePair> pairs) {
-        this.packageSpec = packageSpec;
+    public AnnotationSpec(TypeName name, List<ElementValuePair> pairs) {
+        this.name = name;
         this.pairs = pairs;
     }
 
@@ -95,15 +95,26 @@ public class AnnotationSpec implements Writable {
 
     public static class Builder {
         private final Map<String, List<ElementValue>> pairs = new LinkedHashMap<>();
-        private PackageSpec packageSpec;
+        private TypeName typeName;
 
-        public Builder packageSpec(String packageName) {
-            this.packageSpec = PackageSpec.of(packageName);
+
+        public Builder typeName(String packageName, String simpleName) {
+            this.typeName = TypeName.of(packageName, simpleName);
             return this;
         }
 
-        public Builder packageSpec(PackageSpec packageSpec) {
-            this.packageSpec = packageSpec;
+        public Builder typeName(String qualifiedName) {
+            this.typeName = TypeName.of(qualifiedName);
+            return this;
+        }
+
+        public Builder typeName(PackageSpec packageSpec, String simpleName) {
+            this.typeName = TypeName.of(packageSpec, simpleName);
+            return this;
+        }
+
+        public Builder typeName(TypeName typeName) {
+            this.typeName = typeName;
             return this;
         }
 
@@ -165,7 +176,7 @@ public class AnnotationSpec implements Writable {
                     })
                     .collect(Collectors.toList());
 
-            return new AnnotationSpec(packageSpec, pairList);
+            return new AnnotationSpec(typeName, pairList);
         }
     }
 }
