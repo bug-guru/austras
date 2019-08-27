@@ -1,4 +1,7 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.name;
+
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
 
 import java.util.Objects;
 
@@ -27,6 +30,10 @@ public class PackageName implements Writable {
 
     public boolean isRoot() {
         return name == null || name.isEmpty();
+    }
+
+    public boolean isJavaLang() {
+        return name != null && name.equals("java.lang");
     }
 
     @Override

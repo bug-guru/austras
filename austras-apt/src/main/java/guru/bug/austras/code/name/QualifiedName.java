@@ -1,6 +1,8 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.name;
 
 
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class QualifiedName implements Writable {
 
     @Override
     public void write(CodeWriter out) {
-        if (!packageName.isRoot() && !out.checkImported(this)) {
+        if (!packageName.isJavaLang() && !packageName.isRoot() && !out.checkImported(this)) {
             out.write(packageName);
             out.write(".");
         }

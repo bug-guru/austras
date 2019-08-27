@@ -1,10 +1,12 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.decl;
+
+import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.name.SimpleName;
 
 public abstract class TypeDecl implements Writable {
     private final SimpleName simpleName;
 
-
-    protected TypeDecl(SimpleName simpleName) {
+    TypeDecl(SimpleName simpleName) {
         this.simpleName = simpleName;
     }
 
@@ -12,8 +14,12 @@ public abstract class TypeDecl implements Writable {
         return simpleName;
     }
 
-    public static abstract class Builder<T extends Builder> {
-        protected SimpleName simpleName;
+    public static ClassTypeDecl.Builder classBuilder() {
+        return ClassTypeDecl.builder();
+    }
+
+    protected static abstract class Builder<T extends Builder> {
+        SimpleName simpleName;
 
         public T simpleName(SimpleName simpleName) {
             this.simpleName = simpleName;
@@ -26,7 +32,7 @@ public abstract class TypeDecl implements Writable {
             //noinspection unchecked
             return (T) this;
         }
-
-
     }
+
+
 }

@@ -1,5 +1,10 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.spec;
 
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.name.PackageName;
+import guru.bug.austras.code.name.QualifiedName;
+import guru.bug.austras.code.name.SimpleName;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.lang.annotation.Annotation;

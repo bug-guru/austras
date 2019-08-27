@@ -1,5 +1,9 @@
 package guru.bug.austras.code;
 
+import guru.bug.austras.code.decl.ImportDecl;
+import guru.bug.austras.code.name.PackageName;
+import guru.bug.austras.code.name.QualifiedName;
+
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -15,12 +19,12 @@ public class CodeWriter implements AutoCloseable {
         this.imports = mutableImports;
     }
 
-    boolean checkImported(QualifiedName type) {
+    public boolean checkImported(QualifiedName type) {
+        if (type.getPackageName().isJavaLang())
         for (var i : imports) {
-            var r = i.check(type);
-            if (r == ImportDecl.Result.CONFLICT) {
+            if (i.isConflict(type)) {
                 return false;
-            } else if (r == ImportDecl.Result.SAME) {
+            } else if (i.isSame(type)) {
                 return true;
             }
         }

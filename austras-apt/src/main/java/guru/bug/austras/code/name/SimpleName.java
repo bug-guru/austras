@@ -1,4 +1,7 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.name;
+
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
 
 import java.util.Objects;
 

@@ -1,5 +1,7 @@
 package guru.bug.austras.code;
 
+import guru.bug.austras.code.name.QualifiedName;
+
 import java.util.ArrayList;
 import java.util.List;
 

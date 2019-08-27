@@ -1,4 +1,8 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.decl;
+
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.name.QualifiedName;
 
 public class ImportDecl implements Writable {
     private final QualifiedName type;
@@ -16,14 +20,12 @@ public class ImportDecl implements Writable {
         return new ImportDecl(type);
     }
 
-    Result check(QualifiedName type) {
-        if (this.type.equals(type)) {
-            return Result.SAME;
-        }
-        if (this.type.getSimpleName().equals(type.getSimpleName())) {
-            return Result.CONFLICT;
-        }
-        return Result.DIFFERENT;
+    public boolean isSame(QualifiedName qname) {
+        return this.type.equals(qname);
+    }
+
+    public boolean isConflict(QualifiedName qname) {
+        return this.type.getSimpleName().equals(qname.getSimpleName());
     }
 
     @Override
@@ -37,9 +39,4 @@ public class ImportDecl implements Writable {
         out.write(";\n");
     }
 
-    enum Result {
-        DIFFERENT,
-        SAME,
-        CONFLICT
-    }
 }

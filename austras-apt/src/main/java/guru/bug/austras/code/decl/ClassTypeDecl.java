@@ -1,10 +1,14 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.decl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.name.SimpleName;
+import guru.bug.austras.code.spec.AnnotationSpec;
+import guru.bug.austras.code.spec.ClassTypeSpec;
 
-public class ClassTypeDecl extends TypeDecl {
+import java.util.*;
+
+class ClassTypeDecl extends TypeDecl {
+    private final List<ClassModifier> modifiers;
     private final List<TypeParam> typeParams;
     private final List<AnnotationSpec> annotationSpecs;
     private final ClassTypeSpec superclass;
@@ -12,12 +16,13 @@ public class ClassTypeDecl extends TypeDecl {
     private final List<ClassMemberDecl> members;
 
     private ClassTypeDecl(SimpleName simpleName,
-                          List<TypeParam> typeParams,
+                          List<ClassModifier> modifiers, List<TypeParam> typeParams,
                           List<AnnotationSpec> annotationSpecs,
                           ClassTypeSpec superclass,
                           List<ClassTypeSpec> superinterfaces,
                           List<ClassMemberDecl> members) {
         super(simpleName);
+        this.modifiers = modifiers;
         this.typeParams = typeParams;
         this.annotationSpecs = annotationSpecs;
         this.superclass = superclass;
@@ -34,11 +39,24 @@ public class ClassTypeDecl extends TypeDecl {
     }
 
     public static class Builder extends TypeDecl.Builder<Builder> {
+        private Set<ClassModifier> modifiers;
         private List<TypeParam> typeParams;
         private List<AnnotationSpec> annotations;
         private ClassTypeSpec superclass;
         private List<ClassTypeSpec> superinterfaces;
         private List<ClassMemberDecl> members;
+
+        private Set<ClassModifier> modifiers() {
+            if (modifiers == null) {
+                modifiers = new LinkedHashSet<>();
+            }
+            return modifiers;
+        }
+
+        public Builder modifiers(ClassModifier... modifiers) {
+            modifiers().addAll(Arrays.asList(modifiers));
+            return this;
+        }
 
         private List<TypeParam> typeParams() {
             if (typeParams == null) {
@@ -113,9 +131,10 @@ public class ClassTypeDecl extends TypeDecl {
             return this;
         }
 
-        public ClassTypeDecl build() {
+        public TypeDecl build() {
             return new ClassTypeDecl(
                     simpleName,
+                    modifiers == null ? null : List.copyOf(modifiers),
                     typeParams == null ? null : List.copyOf(typeParams),
                     annotations == null ? null : List.copyOf(annotations),
                     superclass,

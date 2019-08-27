@@ -1,4 +1,9 @@
-package guru.bug.austras.code;
+package guru.bug.austras.code.decl;
+
+import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.name.PackageName;
+import guru.bug.austras.code.spec.AnnotationSpec;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,12 @@ import guru.bug.austras.apt.events.model.MessageCallParamModel;
 import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
-import guru.bug.austras.code.*;
+import guru.bug.austras.code.CompilationUnit;
+import guru.bug.austras.code.TypeSpec;
+import guru.bug.austras.code.decl.ClassModifier;
+import guru.bug.austras.code.decl.PackageDecl;
+import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
@@ -61,7 +66,8 @@ public class ReceiverGenerator {
         var unit = CompilationUnit.builder()
                 .packageDecl(PackageDecl.of(model.getPackageName()))
                 .addTypeDecl(
-                        ClassTypeDecl.builder()
+                        TypeDecl.classBuilder()
+                                .modifiers(ClassModifier.PUBLIC)
                                 .addAnnotation(AnnotationSpec.of(Component.class))
                                 .addAnnotations(createQualifierAnnotations(method))
                                 .simpleName(model.getClassName())
