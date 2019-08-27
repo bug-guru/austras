@@ -23,12 +23,14 @@ public class CompilationUnit {
     public void write(PrintWriter out) {
         var imports = new ArrayList<ImportDecl>();
         var buffer = new PrintWriter(new StringWriter(2048));
-        var bufferOut = new CodeWriter(buffer, imports);
+        var currentPackage = packageDecl.getPackageName();
+
+        var bufferOut = new CodeWriter(buffer, currentPackage, imports);
         for (var t : typeDecls) {
             t.write(bufferOut);
         }
 
-        var cw = new CodeWriter(out, null);
+        var cw = new CodeWriter(out, currentPackage, imports);
         cw.write(packageDecl);
         for (var i : imports) {
             cw.write(i);
@@ -61,7 +63,4 @@ public class CompilationUnit {
         }
     }
 
-    private class ContextInst {
-
-    }
 }

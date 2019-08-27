@@ -2,35 +2,38 @@ package guru.bug.austras.code;
 
 import java.util.Objects;
 
-public class PackageSpec implements Writable {
-    private static final PackageSpec empty = new PackageSpec(null);
+public class PackageName implements Writable {
+    private static final PackageName root = new PackageName(null);
     private final String name;
 
-    private PackageSpec(String name) {
+    private PackageName(String name) {
         this.name = name;
     }
 
-    public static PackageSpec of(String name) {
-        return new PackageSpec(name);
+    public static PackageName of(String name) {
+        if (name == null || name.isBlank()) {
+            return root;
+        }
+        return new PackageName(name.trim());
     }
 
-    public static PackageSpec empty() {
-        return PackageSpec.empty;
+    public static PackageName root() {
+        return PackageName.root;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isBlank() {
-        return name.isBlank();
+    public boolean isRoot() {
+        return name == null || name.isEmpty();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PackageSpec that = (PackageSpec) o;
+        PackageName that = (PackageName) o;
         return Objects.equals(name, that.name);
     }
 
@@ -46,7 +49,7 @@ public class PackageSpec implements Writable {
 
     @Override
     public void write(CodeWriter out) {
-        if (!isBlank()) {
+        if (!isRoot()) {
             out.write(name);
         }
     }

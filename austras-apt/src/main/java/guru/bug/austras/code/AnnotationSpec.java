@@ -2,16 +2,25 @@ package guru.bug.austras.code;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnnotationSpec implements Writable {
-    private final TypeName name;
+    private final QualifiedName name;
     private final List<ElementValuePair> pairs;
 
-    public AnnotationSpec(TypeName name, List<ElementValuePair> pairs) {
+    public AnnotationSpec(QualifiedName name, List<ElementValuePair> pairs) {
         this.name = name;
         this.pairs = pairs;
+    }
+
+    public static AnnotationSpec of(String qualifiedName) {
+        return new AnnotationSpec(QualifiedName.of(qualifiedName), null);
+    }
+
+    public static AnnotationSpec of(Class<? extends Annotation> annotationClass) {
+        return new AnnotationSpec(QualifiedName.of(annotationClass), null);
     }
 
     public static Builder builder() {
@@ -20,7 +29,16 @@ public class AnnotationSpec implements Writable {
 
     @Override
     public void write(CodeWriter out) {
-
+        out.write("@");
+        out.write(name);
+        if (pairs != null && !pairs.isEmpty()) {
+            out.write("(");
+            for (var p : pairs) {
+                out.write(p);
+            }
+            out.write(")");
+        }
+        out.write("\n");
     }
 
     private interface ElementValue extends Writable {
@@ -95,26 +113,31 @@ public class AnnotationSpec implements Writable {
 
     public static class Builder {
         private final Map<String, List<ElementValue>> pairs = new LinkedHashMap<>();
-        private TypeName typeName;
+        private QualifiedName qualifiedName;
 
 
         public Builder typeName(String packageName, String simpleName) {
-            this.typeName = TypeName.of(packageName, simpleName);
+            this.qualifiedName = QualifiedName.of(packageName, simpleName);
             return this;
         }
 
         public Builder typeName(String qualifiedName) {
-            this.typeName = TypeName.of(qualifiedName);
+            this.qualifiedName = QualifiedName.of(qualifiedName);
             return this;
         }
 
-        public Builder typeName(PackageSpec packageSpec, String simpleName) {
-            this.typeName = TypeName.of(packageSpec, simpleName);
+        public Builder typeName(Class<? extends Annotation> annotationClass) {
+            this.qualifiedName = QualifiedName.of(annotationClass);
             return this;
         }
 
-        public Builder typeName(TypeName typeName) {
-            this.typeName = typeName;
+        public Builder typeName(PackageName packageName, SimpleName simpleName) {
+            this.qualifiedName = QualifiedName.of(packageName, simpleName);
+            return this;
+        }
+
+        public Builder typeName(QualifiedName qualifiedName) {
+            this.qualifiedName = qualifiedName;
             return this;
         }
 
@@ -176,7 +199,7 @@ public class AnnotationSpec implements Writable {
                     })
                     .collect(Collectors.toList());
 
-            return new AnnotationSpec(typeName, pairList);
+            return new AnnotationSpec(qualifiedName, pairList);
         }
     }
 }

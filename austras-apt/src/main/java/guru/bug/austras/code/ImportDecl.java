@@ -1,22 +1,22 @@
 package guru.bug.austras.code;
 
 public class ImportDecl implements Writable {
-    private final TypeName type;
+    private final QualifiedName type;
 
-    private ImportDecl(TypeName type) {
+    private ImportDecl(QualifiedName type) {
         this.type = type;
     }
 
     public static ImportDecl of(String qualifiedName) {
-        var type = TypeName.of(qualifiedName);
+        var type = QualifiedName.of(qualifiedName);
         return new ImportDecl(type);
     }
 
-    public static ImportDecl of(TypeName type) {
+    public static ImportDecl of(QualifiedName type) {
         return new ImportDecl(type);
     }
 
-    public Result check(TypeName type) {
+    Result check(QualifiedName type) {
         if (this.type.equals(type)) {
             return Result.SAME;
         }
@@ -29,15 +29,15 @@ public class ImportDecl implements Writable {
     @Override
     public void write(CodeWriter out) {
         out.write("import ");
-        if (!type.getPackageSpec().isBlank()) {
-            out.write(type.getPackageSpec());
+        if (!type.getPackageName().isRoot()) {
+            out.write(type.getPackageName());
             out.write(".");
         }
         out.write(type.getSimpleName());
-        out.write(";" + System.lineSeparator());
+        out.write(";\n");
     }
 
-    public enum Result {
+    enum Result {
         DIFFERENT,
         SAME,
         CONFLICT

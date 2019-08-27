@@ -6,14 +6,16 @@ import java.util.Locale;
 
 public class CodeWriter implements AutoCloseable {
     private final PrintWriter out;
+    private final PackageName current;
     private final List<ImportDecl> imports;
 
-    public CodeWriter(PrintWriter out, List<ImportDecl> mutableImports) {
+    public CodeWriter(PrintWriter out, PackageName current, List<ImportDecl> mutableImports) {
         this.out = out;
+        this.current = current;
         this.imports = mutableImports;
     }
 
-    boolean checkImported(TypeName type) {
+    boolean checkImported(QualifiedName type) {
         for (var i : imports) {
             var r = i.check(type);
             if (r == ImportDecl.Result.CONFLICT) {
@@ -21,6 +23,9 @@ public class CodeWriter implements AutoCloseable {
             } else if (r == ImportDecl.Result.SAME) {
                 return true;
             }
+        }
+        if (current.equals(type.getPackageName())) {
+            return true;
         }
         var decl = ImportDecl.of(type);
         imports.add(decl);

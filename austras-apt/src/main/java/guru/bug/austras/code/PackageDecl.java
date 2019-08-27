@@ -5,11 +5,19 @@ import java.util.List;
 
 public class PackageDecl implements Writable {
     private final List<AnnotationSpec> annotationSpecs;
-    private final PackageSpec packageSpec;
+    private final PackageName packageName;
 
-    private PackageDecl(List<AnnotationSpec> annotationSpecs, PackageSpec packageSpec) {
+    private PackageDecl(List<AnnotationSpec> annotationSpecs, PackageName packageName) {
         this.annotationSpecs = annotationSpecs;
-        this.packageSpec = packageSpec;
+        this.packageName = packageName;
+    }
+
+    public PackageName getPackageName() {
+        return packageName;
+    }
+
+    public static PackageDecl of(String packageName) {
+        return new PackageDecl(null, PackageName.of(packageName));
     }
 
     public static Builder builder() {
@@ -23,15 +31,15 @@ public class PackageDecl implements Writable {
 
     public static class Builder {
         private final List<AnnotationSpec> annotationSpecs = new ArrayList<>();
-        private PackageSpec packageSpec;
+        private PackageName packageName;
 
         public Builder packageSpec(String name) {
-            this.packageSpec = PackageSpec.of(name);
+            this.packageName = PackageName.of(name);
             return this;
         }
 
-        public Builder packageSpec(PackageSpec packageSpec) {
-            this.packageSpec = packageSpec;
+        public Builder packageSpec(PackageName packageName) {
+            this.packageName = packageName;
             return this;
         }
 
@@ -46,7 +54,7 @@ public class PackageDecl implements Writable {
         }
 
         public PackageDecl build() {
-            return new PackageDecl(annotationSpecs, packageSpec);
+            return new PackageDecl(annotationSpecs, packageName);
         }
     }
 }

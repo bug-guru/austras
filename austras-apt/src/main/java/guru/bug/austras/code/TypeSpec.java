@@ -7,10 +7,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 public class TypeSpec implements Writable {
-    private final TypeName name;
+    private final QualifiedName name;
     private final List<TypeExt> typeExts;
 
-    private TypeSpec(TypeName name, List<TypeExt> typeExts) {
+    private TypeSpec(QualifiedName name, List<TypeExt> typeExts) {
         this.name = name;
         this.typeExts = typeExts;
     }
@@ -35,9 +35,9 @@ public class TypeSpec implements Writable {
 
     public static class Builder {
         private List<TypeExt> typeExts = new ArrayList<>();
-        private TypeName name;
+        private QualifiedName name;
 
-        public Builder name(TypeName name) {
+        public Builder name(QualifiedName name) {
             this.name = requireNonNull(name);
             return this;
         }

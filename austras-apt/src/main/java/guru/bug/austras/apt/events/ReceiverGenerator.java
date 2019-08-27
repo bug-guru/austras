@@ -1,12 +1,12 @@
 package guru.bug.austras.apt.events;
 
-import com.squareup.javapoet.*;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.DependencyCallParamModel;
 import guru.bug.austras.apt.events.model.MessageCallParamModel;
 import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.code.*;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
@@ -57,6 +57,17 @@ public class ReceiverGenerator {
 
         var receiverParamType = extractReceiverParamType(method);
         var superInterface = typeUtils.getDeclaredType(receiverElement, receiverParamType);
+
+        var unit = CompilationUnit.builder()
+                .packageDecl(PackageDecl.of(model.getPackageName()))
+                .addTypeDecl(
+                        ClassTypeDecl.builder()
+                                .addAnnotation(AnnotationSpec.of(Component.class))
+                                .addAnnotations(createQualifierAnnotations(method))
+                                .simpleName(model.getClassName())
+                                .addSuperinterface(ClassTypeSpec)
+                                .build())
+                .build();
 
         JavaFile.builder(model.getPackageName(),
                 TypeSpec.classBuilder(model.getClassName())
@@ -139,20 +150,19 @@ public class ReceiverGenerator {
     private List<AnnotationSpec> createQualifierAnnotations(Element element) {
         var result = new ArrayList<AnnotationSpec>();
         modelUtils.extractQualifiers(element).forEach((qualifierName, properties) -> {
-            AnnotationSpec.Builder qualifierBuilder = AnnotationSpec.builder(Qualifier.class)
-                    .addMember("name", "$S", qualifierName);
-            var propsBuilder = CodeBlock.builder().beginControlFlow("")
+            var qualifierBuilder = AnnotationSpec.builder().typeName(Qualifier.class)
+                    .add("name", qualifierName);
             properties.forEach(prop -> {
-                CodeBlock.builder().
-                                            .forEach((k, v) -> result.addMember(k, "%S", v));
-
+                qualifierBuilder.add("properties",
+                        AnnotationSpec.builder()
+                                .typeName(QualifierProperty.class)
+                                .add("name", prop.getKey())
+                                .add("value", prop.getValue())
+                                .build());
             });
+            result.add(qualifierBuilder.build());
         });
-                .map(m -> {
-                    m.getProperties()
-                    return result.build();
-                })
-                .collect(Collectors.toList());
+        return result;
     }
 
     private TypeMirror extractReceiverParamType(ExecutableElement method) {
