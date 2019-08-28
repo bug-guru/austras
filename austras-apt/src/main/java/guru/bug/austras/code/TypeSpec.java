@@ -8,7 +8,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class TypeSpec implements Writable {
+public class TypeSpec implements Printable {
     private final QualifiedName name;
     private final List<TypeExt> typeExts;
 

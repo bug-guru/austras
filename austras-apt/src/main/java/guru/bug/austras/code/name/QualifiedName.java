@@ -1,8 +1,8 @@
 package guru.bug.austras.code.name;
 
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class QualifiedName implements Writable {
+public class QualifiedName implements Printable {
     private final PackageName packageName;
     private final SimpleName simpleName;
 
@@ -63,12 +63,20 @@ public class QualifiedName implements Writable {
     }
 
     @Override
-    public void write(CodeWriter out) {
+    public void print(CodePrinter out) {
         if (!packageName.isJavaLang() && !packageName.isRoot() && !out.checkImported(this)) {
-            out.write(packageName);
-            out.write(".");
+            out.print(packageName);
+            out.print(".");
         }
-        out.write(simpleName);
+        out.print(simpleName);
+    }
+
+    public void printNoImport(CodePrinter out) {
+        if (!packageName.isJavaLang() && !packageName.isRoot()) {
+            out.print(packageName);
+            out.print(".");
+        }
+        out.print(simpleName);
     }
 
     @Override

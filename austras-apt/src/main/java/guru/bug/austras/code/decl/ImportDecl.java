@@ -1,10 +1,10 @@
 package guru.bug.austras.code.decl;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.name.QualifiedName;
 
-public class ImportDecl implements Writable {
+public class ImportDecl implements Printable {
     private final QualifiedName type;
 
     private ImportDecl(QualifiedName type) {
@@ -29,14 +29,10 @@ public class ImportDecl implements Writable {
     }
 
     @Override
-    public void write(CodeWriter out) {
-        out.write("import ");
-        if (!type.getPackageName().isRoot()) {
-            out.write(type.getPackageName());
-            out.write(".");
-        }
-        out.write(type.getSimpleName());
-        out.write(";\n");
+    public void print(CodePrinter out) {
+        out.printImport();
+        type.printNoImport(out);
+        out.print(";\n");
     }
 
 }

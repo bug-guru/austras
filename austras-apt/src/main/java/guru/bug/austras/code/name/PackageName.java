@@ -1,11 +1,11 @@
 package guru.bug.austras.code.name;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 
 import java.util.Objects;
 
-public class PackageName implements Writable {
+public class PackageName implements Printable {
     private static final PackageName root = new PackageName(null);
     private final String name;
 
@@ -55,9 +55,9 @@ public class PackageName implements Writable {
     }
 
     @Override
-    public void write(CodeWriter out) {
+    public void print(CodePrinter out) {
         if (!isRoot()) {
-            out.write(name);
+            out.print(name);
         }
     }
 }

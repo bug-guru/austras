@@ -1,24 +1,20 @@
 package guru.bug.austras.code.decl;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.name.PackageName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PackageDecl implements Writable {
-    private final List<AnnotationSpec> annotationSpecs;
+public class PackageDecl implements Printable {
+    private final List<AnnotationSpec> annotations;
     private final PackageName packageName;
 
-    private PackageDecl(List<AnnotationSpec> annotationSpecs, PackageName packageName) {
-        this.annotationSpecs = annotationSpecs;
+    private PackageDecl(List<AnnotationSpec> annotations, PackageName packageName) {
+        this.annotations = annotations;
         this.packageName = packageName;
-    }
-
-    public PackageName getPackageName() {
-        return packageName;
     }
 
     public static PackageDecl of(String packageName) {
@@ -29,13 +25,18 @@ public class PackageDecl implements Writable {
         return new Builder();
     }
 
-    @Override
-    public void write(CodeWriter out) {
+    public PackageName getPackageName() {
+        return packageName;
+    }
 
+    @Override
+    public void print(CodePrinter out) {
+        out.print(null, "\n", "\n", o -> o.print(annotations));
+        out.printPackage().print(packageName).print(";\n");
     }
 
     public static class Builder {
-        private final List<AnnotationSpec> annotationSpecs = new ArrayList<>();
+        private final List<AnnotationSpec> annotations = new ArrayList<>();
         private PackageName packageName;
 
         public Builder packageSpec(String name) {
@@ -49,17 +50,17 @@ public class PackageDecl implements Writable {
         }
 
         public Builder addAnnotation(AnnotationSpec annotationSpec) {
-            this.annotationSpecs.add(annotationSpec);
+            this.annotations.add(annotationSpec);
             return this;
         }
 
         public Builder addAnnotations(List<AnnotationSpec> annotationSpecs) {
-            this.annotationSpecs.addAll(annotationSpecs);
+            this.annotations.addAll(annotationSpecs);
             return this;
         }
 
         public PackageDecl build() {
-            return new PackageDecl(annotationSpecs, packageName);
+            return new PackageDecl(annotations, packageName);
         }
     }
 }

@@ -1,26 +1,28 @@
 package guru.bug.austras.code.decl;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 
-public enum ClassModifier implements Writable {
-    PUBLIC("public"),
-    PROTECTED("protected"),
-    PRIVATE("private"),
-    ABSTRACT("abstract"),
-    STATIC("static"),
-    FINAL("final"),
-    STRICTFP("strictfp");
+import java.util.function.Consumer;
 
-    private final String modifier;
+public enum ClassModifier implements Printable {
+    PUBLIC(CodePrinter::printPublic),
+    PROTECTED(CodePrinter::printProtected),
+    PRIVATE(CodePrinter::printPrivate),
+    ABSTRACT(CodePrinter::printAbstract),
+    STATIC(CodePrinter::printStatic),
+    FINAL(CodePrinter::printFinal),
+    STRICTFP(CodePrinter::printStrictfp);
 
-    ClassModifier(String modifier) {
+    private final Consumer<CodePrinter> modifierPrinter;
 
-        this.modifier = modifier;
+    ClassModifier(Consumer<CodePrinter> modifierPrinter) {
+
+        this.modifierPrinter = modifierPrinter;
     }
 
     @Override
-    public void write(CodeWriter out) {
-        out.write(modifier);
+    public void print(CodePrinter out) {
+        modifierPrinter.accept(out);
     }
 }

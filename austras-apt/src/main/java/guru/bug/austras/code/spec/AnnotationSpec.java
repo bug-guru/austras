@@ -1,7 +1,7 @@
 package guru.bug.austras.code.spec;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.name.PackageName;
 import guru.bug.austras.code.name.QualifiedName;
 import guru.bug.austras.code.name.SimpleName;
@@ -11,7 +11,7 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AnnotationSpec implements Writable {
+public class AnnotationSpec implements Printable {
     private final QualifiedName name;
     private final List<ElementValuePair> pairs;
 
@@ -33,24 +33,18 @@ public class AnnotationSpec implements Writable {
     }
 
     @Override
-    public void write(CodeWriter out) {
-        out.write("@");
-        out.write(name);
+    public void print(CodePrinter out) {
+        out.print("@").print(name);
         if (pairs != null && !pairs.isEmpty()) {
-            out.write("(");
-            for (var p : pairs) {
-                out.write(p);
-            }
-            out.write(")");
+            out.indent("(", ")", ", ", o -> o.print(pairs));
         }
-        out.write("\n");
     }
 
-    private interface ElementValue extends Writable {
+    private interface ElementValue extends Printable {
 
     }
 
-    private static class ElementValuePair implements Writable {
+    private static class ElementValuePair implements Printable {
         private final String name;
         private final ElementValue value;
 
@@ -60,10 +54,8 @@ public class AnnotationSpec implements Writable {
         }
 
         @Override
-        public void write(CodeWriter out) {
-            out.print(name);
-            out.print(" = ");
-            value.write(out);
+        public void print(CodePrinter out) {
+            out.print(name).print(" = ").print(value);
         }
     }
 
@@ -75,18 +67,8 @@ public class AnnotationSpec implements Writable {
         }
 
         @Override
-        public void write(CodeWriter out) {
-            out.print("{");
-            var delim = false;
-            for (var e : elements) {
-                if (delim) {
-                    out.write(", ");
-                } else {
-                    delim = true;
-                }
-                e.write(out);
-            }
-            out.print("}");
+        public void print(CodePrinter out) {
+            out.print("{", "}", ", ", o -> o.print(elements));
         }
     }
 
@@ -98,7 +80,7 @@ public class AnnotationSpec implements Writable {
         }
 
         @Override
-        public void write(CodeWriter out) {
+        public void print(CodePrinter out) {
             out.print(value);
         }
     }
@@ -111,8 +93,8 @@ public class AnnotationSpec implements Writable {
         }
 
         @Override
-        public void write(CodeWriter out) {
-            annotationSpec.write(out);
+        public void print(CodePrinter out) {
+            out.print(annotationSpec);
         }
     }
 

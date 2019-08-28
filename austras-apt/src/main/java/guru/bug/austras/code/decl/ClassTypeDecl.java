@@ -1,6 +1,6 @@
 package guru.bug.austras.code.decl;
 
-import guru.bug.austras.code.CodeWriter;
+import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.name.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.ClassTypeSpec;
@@ -10,21 +10,21 @@ import java.util.*;
 class ClassTypeDecl extends TypeDecl {
     private final List<ClassModifier> modifiers;
     private final List<TypeParam> typeParams;
-    private final List<AnnotationSpec> annotationSpecs;
+    private final List<AnnotationSpec> annotations;
     private final ClassTypeSpec superclass;
     private final List<ClassTypeSpec> superinterfaces;
     private final List<ClassMemberDecl> members;
 
     private ClassTypeDecl(SimpleName simpleName,
                           List<ClassModifier> modifiers, List<TypeParam> typeParams,
-                          List<AnnotationSpec> annotationSpecs,
+                          List<AnnotationSpec> annotations,
                           ClassTypeSpec superclass,
                           List<ClassTypeSpec> superinterfaces,
                           List<ClassMemberDecl> members) {
         super(simpleName);
         this.modifiers = modifiers;
         this.typeParams = typeParams;
-        this.annotationSpecs = annotationSpecs;
+        this.annotations = annotations;
         this.superclass = superclass;
         this.superinterfaces = superinterfaces;
         this.members = members;
@@ -35,7 +35,19 @@ class ClassTypeDecl extends TypeDecl {
     }
 
     @Override
-    public void write(CodeWriter out) {
+    public void print(CodePrinter out) {
+        out
+                .print(null, "\n", "\n", o -> o.print(annotations))
+                .print(modifiers)
+                .print(getSimpleName())
+                .print("<", ">", ", ", o -> o.print(typeParams));
+        if (superclass != null) {
+            out.printExtends().print(superclass);
+        }
+        if (superinterfaces != null && !superinterfaces.isEmpty()) {
+            out.printImplements().print(", ", o -> o.print(superinterfaces));
+        }
+        out.indent("{\n", "}\n", "\n", o -> o.print(members));
     }
 
     public static class Builder extends TypeDecl.Builder<Builder> {
@@ -97,6 +109,13 @@ class ClassTypeDecl extends TypeDecl {
             return this;
         }
 
+        private List<ClassTypeSpec> superinterfaces() {
+            if (superinterfaces == null) {
+                superinterfaces = new ArrayList<>();
+            }
+            return superinterfaces;
+        }
+
         public Builder addSuperinterface(ClassTypeSpec superinterface) {
             superinterfaces().add(superinterface);
             return this;
@@ -105,13 +124,6 @@ class ClassTypeDecl extends TypeDecl {
         public Builder addSuperinterfaces(Collection<ClassTypeSpec> superinterfaces) {
             superinterfaces().addAll(superinterfaces);
             return this;
-        }
-
-        private List<ClassTypeSpec> superinterfaces() {
-            if (superinterfaces == null) {
-                superinterfaces = new ArrayList<>();
-            }
-            return superinterfaces;
         }
 
         private List<ClassMemberDecl> members() {

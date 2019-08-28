@@ -24,22 +24,19 @@ public class CompilationUnit {
         return new Builder();
     }
 
-    public void write(PrintWriter out) {
+    public void print(PrintWriter out) {
         var imports = new ArrayList<ImportDecl>();
         var buffer = new PrintWriter(new StringWriter(2048));
         var currentPackage = packageDecl.getPackageName();
 
-        var bufferOut = new CodeWriter(buffer, currentPackage, imports);
-        for (var t : typeDecls) {
-            t.write(bufferOut);
-        }
+        var bufferOut = new CodePrinter(buffer, currentPackage, imports);
+        bufferOut.print(typeDecls);
 
-        var cw = new CodeWriter(out, currentPackage, imports);
-        cw.write(packageDecl);
-        for (var i : imports) {
-            cw.write(i);
-        }
-        cw.write(buffer.toString());
+        var cw = new CodePrinter(out, currentPackage, imports);
+        cw.print(packageDecl);
+        cw.print(imports);
+
+        out.print(buffer.toString());
     }
 
 

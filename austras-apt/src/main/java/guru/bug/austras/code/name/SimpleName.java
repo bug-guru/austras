@@ -1,11 +1,11 @@
 package guru.bug.austras.code.name;
 
-import guru.bug.austras.code.CodeWriter;
-import guru.bug.austras.code.Writable;
+import guru.bug.austras.code.CodePrinter;
+import guru.bug.austras.code.Printable;
 
 import java.util.Objects;
 
-public class SimpleName implements Writable {
+public class SimpleName implements Printable {
     private String name;
 
     private SimpleName(String name) {
@@ -22,8 +22,8 @@ public class SimpleName implements Writable {
     }
 
     @Override
-    public void write(CodeWriter out) {
-        out.write(name);
+    public void print(CodePrinter out) {
+        out.print(name);
     }
 
     @Override
