@@ -3,6 +3,7 @@ package guru.bug.austras.code;
 import guru.bug.austras.code.decl.ImportDecl;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.name.QualifiedName;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,13 +12,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class CompilationUnit {
-
     private final PackageDecl packageDecl;
     private final List<TypeDecl> typeDecls;
+    private final QualifiedName topLevel;
 
-    private CompilationUnit(PackageDecl packageDecl, List<TypeDecl> typeDecls) {
+    private CompilationUnit(PackageDecl packageDecl, List<TypeDecl> typeDecls, QualifiedName topLevel) {
         this.packageDecl = packageDecl;
         this.typeDecls = typeDecls;
+        this.topLevel = topLevel;
     }
 
     public static Builder builder() {
@@ -26,10 +28,11 @@ public class CompilationUnit {
 
     public void print(PrintWriter out) {
         var imports = new ArrayList<ImportDecl>();
-        var buffer = new PrintWriter(new StringWriter(2048));
+        var buffer = new StringWriter(2048);
+        var memOut = new PrintWriter(buffer);
         var currentPackage = packageDecl.getPackageName();
 
-        var bufferOut = new CodePrinter(buffer, currentPackage, imports);
+        var bufferOut = new CodePrinter(memOut, currentPackage, imports);
         bufferOut.print(typeDecls);
 
         var cw = new CodePrinter(out, currentPackage, imports);
@@ -39,10 +42,15 @@ public class CompilationUnit {
         out.print(buffer.toString());
     }
 
+    public String getQualifiedName() {
+        return topLevel.asString();
+    }
+
 
     public static class Builder {
         private PackageDecl packageSpec;
         private List<TypeDecl> typeDecls = new ArrayList<>();
+        private QualifiedName topLevel;
 
         public Builder packageDecl(PackageDecl packageDecl) {
             this.packageSpec = packageDecl;
@@ -51,6 +59,9 @@ public class CompilationUnit {
 
         public Builder addTypeDecl(TypeDecl typeDecl) {
             typeDecls.add(typeDecl);
+            if (typeDecl.isTopLevel()) {
+                topLevel = QualifiedName.of(packageSpec.getPackageName(), typeDecl.getSimpleName());
+            }
             return this;
         }
 
@@ -60,7 +71,7 @@ public class CompilationUnit {
         }
 
         public CompilationUnit build() {
-            return new CompilationUnit(packageSpec, List.copyOf(typeDecls));
+            return new CompilationUnit(packageSpec, List.copyOf(typeDecls), topLevel);
         }
     }
 

@@ -12,6 +12,7 @@ public class MessageReceiverModel {
     private List<DependencyModel> dependencies;
     private List<CallParamModel> parameters;
     private QualifierModel qualifiers;
+    private String messageType;
 
     public String getPackageName() {
         return packageName;
@@ -65,5 +66,13 @@ public class MessageReceiverModel {
 
     public void setQualifiers(QualifierModel qualifiers) {
         this.qualifiers = qualifiers;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 }

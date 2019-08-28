@@ -60,4 +60,8 @@ public class PackageName implements Printable {
             out.print(name);
         }
     }
+
+    public String asString() {
+        return name;
+    }
 }

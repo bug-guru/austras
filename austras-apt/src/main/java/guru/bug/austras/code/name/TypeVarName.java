@@ -1,18 +1,18 @@
-package guru.bug.austras.code.decl;
+package guru.bug.austras.code.name;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
 
-public class TypeVar implements Printable {
+public class TypeVarName implements Printable {
     private final String name;
 
-    private TypeVar(String name) {
+    private TypeVarName(String name) {
         this.name = name;
     }
 
-    public static TypeVar of(String name) {
+    public static TypeVarName of(String name) {
         // TODO validation
-        return new TypeVar(name);
+        return new TypeVarName(name);
     }
 
     @Override

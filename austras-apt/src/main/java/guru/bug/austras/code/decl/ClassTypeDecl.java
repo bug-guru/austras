@@ -50,6 +50,11 @@ class ClassTypeDecl extends TypeDecl {
         out.indent("{\n", "}\n", "\n", o -> o.print(members));
     }
 
+    @Override
+    public boolean isTopLevel() {
+        return modifiers != null && modifiers.contains(ClassModifier.PUBLIC);
+    }
+
     public static class Builder extends TypeDecl.Builder<Builder> {
         private Set<ClassModifier> modifiers;
         private List<TypeParam> typeParams;

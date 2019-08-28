@@ -7,11 +7,13 @@ import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.code.CompilationUnit;
-import guru.bug.austras.code.TypeSpec;
 import guru.bug.austras.code.decl.ClassModifier;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.name.QualifiedName;
 import guru.bug.austras.code.spec.AnnotationSpec;
+import guru.bug.austras.code.spec.ClassTypeSpec;
+import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
@@ -32,6 +34,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,19 +74,18 @@ public class ReceiverGenerator {
                                 .addAnnotation(AnnotationSpec.of(Component.class))
                                 .addAnnotations(createQualifierAnnotations(method))
                                 .simpleName(model.getClassName())
-                                .addSuperinterface(ClassTypeSpec)
+                                .addSuperinterface(ClassTypeSpec.builder()
+                                        .name(QualifiedName.of(Receiver.class))
+                                        .addTypeArg(TypeArg.wildcardExtends(ClassTypeSpec.of(QualifiedName.of(model.getMessageType()))))
+                                        .build())
                                 .build())
                 .build();
 
-        JavaFile.builder(model.getPackageName(),
-                TypeSpec.classBuilder(model.getClassName())
-                        .addAnnotation(Component.class)
-                        .addAnnotations(createQualifierAnnotations(method))
-                        .addSuperinterface(TypeName.get(superInterface))
-                        .add
-                        .build()
-        ).build()
-                .writeTo(filer);
+        try (var writer = filer.createSourceFile(unit.getQualifiedName()).openWriter();
+             var out = new PrintWriter(writer)) {
+            unit.print(out);
+        }
+
     }
 
     private MessageReceiverModel createModel(ExecutableElement method) {
@@ -113,11 +115,18 @@ public class ReceiverGenerator {
                 var callParam = new DependencyCallParamModel();
                 callParam.setDependency(dependency);
                 callParam.setName(dependency.getName());
-                callParam.setType(dep);
+                callParam.setType(dependency.getType());
+                result.addDependency(dependency);
+                result.addParameter(callParam);
             }
         }
+        if (messageParamElement == null) {
+            result.setMessageType(Void.class.getName());
+        } else {
+            result.setMessageType(messageParamElement.asType().toString());
+        }
 
-        return new MessageReceiverModel();
+        return result;
     }
 
     private DependencyModel createComponentDependency(ExecutableElement method) {
@@ -180,13 +189,13 @@ public class ReceiverGenerator {
                 .orElse(voidType);
     }
 
-    private List<QualifierModel> extractReceiverQualifiers(ExecutableElement method) {
-        return method.getParameters().stream()
-                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                .filter(p -> !typeUtils.isAssignable(p.asType(), broadcaster.asType()))
-                .findFirst()
-                .map(modelUtils::extractQualifiers)
-                .orElseGet(() -> modelUtils.extractQualifiers(method));
-    }
+//    private List<QualifierModel> extractReceiverQualifiers(ExecutableElement method) {
+//        return method.getParameters().stream()
+//                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
+//                .filter(p -> !typeUtils.isAssignable(p.asType(), broadcaster.asType()))
+//                .findFirst()
+//                .map(modelUtils::extractQualifiers)
+//                .orElseGet(() -> modelUtils.extractQualifiers(method));
+//    }
 
 }

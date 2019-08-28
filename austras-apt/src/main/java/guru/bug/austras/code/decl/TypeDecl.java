@@ -18,6 +18,8 @@ public abstract class TypeDecl implements Printable {
         return ClassTypeDecl.builder();
     }
 
+    public abstract boolean isTopLevel();
+
     protected static abstract class Builder<T extends Builder> {
         SimpleName simpleName;
 

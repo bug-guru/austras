@@ -2,32 +2,33 @@ package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.TypeSpec;
+import guru.bug.austras.code.name.TypeVarName;
+import guru.bug.austras.code.spec.ClassTypeSpec;
 
 import java.util.List;
 
 public class TypeParam implements Printable {
-    private final TypeVar typeVar;
+    private final TypeVarName typeVar;
     private final Bound bound;
 
-    private TypeParam(TypeVar typeVar, Bound bound) {
+    private TypeParam(TypeVarName typeVar, Bound bound) {
         this.typeVar = typeVar;
         this.bound = bound;
     }
 
-    public static TypeParam of(TypeVar typeVar) {
+    public static TypeParam of(TypeVarName typeVar) {
         return new TypeParam(typeVar, null);
     }
 
-    public static TypeParam of(TypeVar typeVar, TypeVar boundVar) {
+    public static TypeParam of(TypeVarName typeVar, TypeVarName boundVar) {
         return new TypeParam(typeVar, new TypeVarBound(boundVar));
     }
 
-    public static TypeParam of(TypeVar typeVar, TypeSpec bound) {
+    public static TypeParam of(TypeVarName typeVar, ClassTypeSpec bound) {
         return new TypeParam(typeVar, new TypeBound(bound));
     }
 
-    public static TypeParam of(TypeVar typeVar, TypeSpec... bounds) {
+    public static TypeParam of(TypeVarName typeVar, ClassTypeSpec... bounds) {
         return new TypeParam(typeVar, new TypeListBound(List.of(bounds)));
     }
 
@@ -44,9 +45,9 @@ public class TypeParam implements Printable {
     }
 
     private static class TypeVarBound extends Bound {
-        private final TypeVar typeVar;
+        private final TypeVarName typeVar;
 
-        private TypeVarBound(TypeVar typeVar) {
+        private TypeVarBound(TypeVarName typeVar) {
             this.typeVar = typeVar;
         }
 
@@ -57,9 +58,9 @@ public class TypeParam implements Printable {
     }
 
     private static class TypeBound extends Bound {
-        private final TypeSpec type;
+        private final ClassTypeSpec type;
 
-        private TypeBound(TypeSpec type) {
+        private TypeBound(ClassTypeSpec type) {
             this.type = type;
         }
 
@@ -70,9 +71,9 @@ public class TypeParam implements Printable {
     }
 
     private static class TypeListBound extends Bound {
-        private final List<TypeSpec> types;
+        private final List<ClassTypeSpec> types;
 
-        private TypeListBound(List<TypeSpec> types) {
+        private TypeListBound(List<ClassTypeSpec> types) {
             this.types = types;
         }
 

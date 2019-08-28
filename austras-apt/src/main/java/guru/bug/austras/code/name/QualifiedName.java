@@ -79,6 +79,16 @@ public class QualifiedName implements Printable {
         out.print(simpleName);
     }
 
+    public String asString() {
+        var result = new StringBuilder();
+        if (!packageName.isJavaLang() && !packageName.isRoot()) {
+            result.append(packageName.asString());
+            result.append(".");
+        }
+        result.append(simpleName.asString());
+        return result.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

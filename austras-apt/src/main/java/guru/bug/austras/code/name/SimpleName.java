@@ -38,4 +38,8 @@ public class SimpleName implements Printable {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    public String asString() {
+        return name;
+    }
 }
