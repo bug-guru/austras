@@ -9,7 +9,6 @@ import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.code.CompilationUnit;
 import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.ClassMemberDecl;
-import guru.bug.austras.code.decl.ClassModifier;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
 import guru.bug.austras.code.spec.AnnotationSpec;
@@ -51,7 +50,7 @@ public class ReceiverGenerator {
                 .packageDecl(PackageDecl.of(model.getPackageName()))
                 .addTypeDecl(
                         TypeDecl.classBuilder()
-                                .modifiers(ClassModifier.PUBLIC)
+                                .publicMod()
                                 .addAnnotation(AnnotationSpec.of(Component.class))
                                 .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
                                 .simpleName(model.getClassName())
@@ -71,7 +70,9 @@ public class ReceiverGenerator {
     }
 
     private ClassMemberDecl createConstructorSpec(MessageReceiverModel model) {
-        return ClassMemberDecl.constructorBuilder().build();
+        return ClassMemberDecl.constructorBuilder()
+                .
+                .build();
     }
 
     private MessageReceiverModel createModel(ExecutableElement method) {

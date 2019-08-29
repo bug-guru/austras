@@ -5,18 +5,22 @@ import guru.bug.austras.code.Printable;
 
 import java.util.function.Consumer;
 
-public enum ClassModifier implements Printable {
+public enum Modifier implements Printable {
     PUBLIC(CodePrinter::printPublic),
     PROTECTED(CodePrinter::printProtected),
     PRIVATE(CodePrinter::printPrivate),
     ABSTRACT(CodePrinter::printAbstract),
     STATIC(CodePrinter::printStatic),
     FINAL(CodePrinter::printFinal),
-    STRICTFP(CodePrinter::printStrictfp);
+    STRICTFP(CodePrinter::printStrictfp),
+    SYNCHRONIZED(CodePrinter::printSynchronized),
+    NATIVE(CodePrinter::printNative),
+    TRANSIENT(CodePrinter::printTransient),
+    VOLATILE(CodePrinter::printVolatile);
 
     private final Consumer<CodePrinter> modifierPrinter;
 
-    ClassModifier(Consumer<CodePrinter> modifierPrinter) {
+    Modifier(Consumer<CodePrinter> modifierPrinter) {
 
         this.modifierPrinter = modifierPrinter;
     }

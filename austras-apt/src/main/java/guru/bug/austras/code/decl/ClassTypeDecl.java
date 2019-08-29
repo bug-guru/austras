@@ -8,7 +8,7 @@ import guru.bug.austras.code.spec.ClassTypeSpec;
 import java.util.*;
 
 class ClassTypeDecl extends TypeDecl {
-    private final List<ClassModifier> modifiers;
+    private final List<Modifier> modifiers;
     private final List<TypeParam> typeParams;
     private final List<AnnotationSpec> annotations;
     private final ClassTypeSpec superclass;
@@ -16,7 +16,7 @@ class ClassTypeDecl extends TypeDecl {
     private final List<ClassMemberDecl> members;
 
     private ClassTypeDecl(SimpleName simpleName,
-                          List<ClassModifier> modifiers, List<TypeParam> typeParams,
+                          List<Modifier> modifiers, List<TypeParam> typeParams,
                           List<AnnotationSpec> annotations,
                           ClassTypeSpec superclass,
                           List<ClassTypeSpec> superinterfaces,
@@ -66,26 +66,56 @@ class ClassTypeDecl extends TypeDecl {
 
     @Override
     public boolean isTopLevel() {
-        return modifiers != null && modifiers.contains(ClassModifier.PUBLIC);
+        return modifiers != null && modifiers.contains(Modifier.PUBLIC);
     }
 
     public static class Builder extends TypeDecl.Builder<Builder> {
-        private Set<ClassModifier> modifiers;
+        private Set<Modifier> modifiers;
         private List<TypeParam> typeParams;
         private List<AnnotationSpec> annotations;
         private ClassTypeSpec superclass;
         private List<ClassTypeSpec> superinterfaces;
         private List<ClassMemberDecl> members;
 
-        private Set<ClassModifier> modifiers() {
+        private Set<Modifier> modifiers() {
             if (modifiers == null) {
                 modifiers = new LinkedHashSet<>();
             }
             return modifiers;
         }
 
-        public Builder modifiers(ClassModifier... modifiers) {
-            modifiers().addAll(Arrays.asList(modifiers));
+        public Builder publicMod() {
+            modifiers().add(Modifier.PUBLIC);
+            return this;
+        }
+
+        public Builder protectedMod() {
+            modifiers().add(Modifier.PROTECTED);
+            return this;
+        }
+
+        public Builder privateMod() {
+            modifiers().add(Modifier.PRIVATE);
+            return this;
+        }
+
+        public Builder abstractMod() {
+            modifiers().add(Modifier.ABSTRACT);
+            return this;
+        }
+
+        public Builder staticMod() {
+            modifiers().add(Modifier.STATIC);
+            return this;
+        }
+
+        public Builder finalMod() {
+            modifiers().add(Modifier.FINAL);
+            return this;
+        }
+
+        public Builder strictfpMod() {
+            modifiers().add(Modifier.STRICTFP);
             return this;
         }
 
