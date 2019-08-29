@@ -54,6 +54,10 @@ public class TypeArg implements Printable {
         return new TypeArg(upperBound, TypeArgBoundType.SUPER, TypeVarName.of(varName));
     }
 
+    public static TypeArg ofType(String typeName) {
+        return new TypeArg(ClassTypeSpec.of(typeName), null, null);
+    }
+
     @Override
     public void print(CodePrinter out) {
         out

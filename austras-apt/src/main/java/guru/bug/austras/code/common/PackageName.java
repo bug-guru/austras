@@ -51,7 +51,9 @@ public class PackageName implements Printable {
 
     @Override
     public String toString() {
-        return name;
+        return "PackageName{" +
+                "name='" + name + '\'' +
+                '}';
     }
 
     @Override

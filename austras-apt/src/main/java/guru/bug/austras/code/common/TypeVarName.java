@@ -19,4 +19,11 @@ public class TypeVarName implements Printable {
     public void print(CodePrinter out) {
         out.print(name);
     }
+
+    @Override
+    public String toString() {
+        return "TypeVarName{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

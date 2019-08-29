@@ -38,6 +38,14 @@ public class AnnotationSpec implements Printable {
                 .print(out.withAttributes().weakPrefix("(").weakSuffix(")").separator(", "), o -> o.print(pairs));
     }
 
+    @Override
+    public String toString() {
+        return "AnnotationSpec{" +
+                "name=" + name +
+                ", pairs=" + pairs +
+                '}';
+    }
+
     private interface ElementValue extends Printable {
 
     }
@@ -55,6 +63,14 @@ public class AnnotationSpec implements Printable {
         public void print(CodePrinter out) {
             out.print(name).print(" = ").print(value);
         }
+
+        @Override
+        public String toString() {
+            return "ElementValuePair{" +
+                    "name='" + name + '\'' +
+                    ", value=" + value +
+                    '}';
+        }
     }
 
     private static class ArrayElementValue implements ElementValue {
@@ -67,6 +83,13 @@ public class AnnotationSpec implements Printable {
         @Override
         public void print(CodePrinter out) {
             out.print(out.withAttributes().prefix("{").suffix("}").separator(", "), o -> o.print(elements));
+        }
+
+        @Override
+        public String toString() {
+            return "ArrayElementValue{" +
+                    "elements=" + elements +
+                    '}';
         }
     }
 
@@ -81,6 +104,13 @@ public class AnnotationSpec implements Printable {
         public void print(CodePrinter out) {
             out.print(value);
         }
+
+        @Override
+        public String toString() {
+            return "RawElementValue{" +
+                    "value='" + value + '\'' +
+                    '}';
+        }
     }
 
     private static class AnnotationElementValue implements ElementValue {
@@ -93,6 +123,13 @@ public class AnnotationSpec implements Printable {
         @Override
         public void print(CodePrinter out) {
             out.print(annotationSpec);
+        }
+
+        @Override
+        public String toString() {
+            return "AnnotationElementValue{" +
+                    "annotationSpec=" + annotationSpec +
+                    '}';
         }
     }
 

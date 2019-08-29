@@ -7,65 +7,45 @@ import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.code.CompilationUnit;
+import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.ClassMemberDecl;
 import guru.bug.austras.code.decl.ClassModifier;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
-import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.ClassTypeSpec;
 import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
-import guru.bug.austras.events.Broadcaster;
-import guru.bug.austras.events.Message;
 import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReceiverGenerator {
-    private final ProcessingEnvironment processingEnv;
     private final Elements elementUtils;
     private final ModelUtils modelUtils;
-    private final Types typeUtils;
     private final Filer filer;
-    private final TypeElement receiverElement;
-    private final TypeElement broadcaster;
-    private final TypeMirror voidType;
 
     public ReceiverGenerator(ProcessingEnvironment processingEnv, ModelUtils modelUtils) {
-        this.processingEnv = processingEnv;
         this.filer = processingEnv.getFiler();
-        this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
         this.modelUtils = modelUtils;
-        this.receiverElement = elementUtils.getTypeElement(Receiver.class.getName());
-        this.broadcaster = elementUtils.getTypeElement(Broadcaster.class.getName());
-        this.voidType = elementUtils.getTypeElement(Void.class.getName()).asType();
     }
 
     public void generate(ExecutableElement method) throws IOException {
         var model = createModel(method);
-
-        var receiverParamType = extractReceiverParamType(method);
-        var superInterface = typeUtils.getDeclaredType(receiverElement, receiverParamType);
 
         var unit = CompilationUnit.builder()
                 .packageDecl(PackageDecl.of(model.getPackageName()))
@@ -73,11 +53,11 @@ public class ReceiverGenerator {
                         TypeDecl.classBuilder()
                                 .modifiers(ClassModifier.PUBLIC)
                                 .addAnnotation(AnnotationSpec.of(Component.class))
-                                .addAnnotations(createQualifierAnnotations(method))
+                                .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
                                 .simpleName(model.getClassName())
                                 .addSuperinterface(ClassTypeSpec.builder()
                                         .name(QualifiedName.of(Receiver.class))
-                                        .addTypeArg(TypeArg.wildcardExtends(model.getMessageType()))
+                                        .addTypeArg(TypeArg.ofType(model.getMessageType()))
                                         .build())
                                 .addMember(createConstructorSpec(model))
                                 .build())
@@ -128,6 +108,7 @@ public class ReceiverGenerator {
         }
         if (messageParamElement == null) {
             result.setMessageType(Void.class.getName());
+            result.setQualifiers(modelUtils.extractQualifiers(method));
         } else {
             result.setMessageType(messageParamElement.asType().toString());
         }
@@ -144,64 +125,21 @@ public class ReceiverGenerator {
         return componentDependency;
     }
 
-
-    protected final String generateQualifierAnnotations(QualifierModel qualifier, boolean multiline) {
-        if (qualifier == null || qualifier.isEmpty()) {
-            return "";
-        }
-        var result = new StringBuilder(256);
-        qualifier.forEach((qualifierName, props) -> {
-            var strProps = props.stream()
-                    .map(e -> String.format("@%s(name=\"%s\",value=\"%s\")",
-                            QualifierProperty.class.getName(),
-                            StringEscapeUtils.escapeJava(e.getLeft()),
-                            StringEscapeUtils.escapeJava(e.getRight())))
-                    .collect(Collectors.joining(",", "{", "}"));
-            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), qualifierName, props);
-            result.append(qline);
-            if (multiline) {
-                result.append('\n');
-            } else {
-                result.append(' ');
-            }
-        });
-        return result.toString();
-    }
-
-    private List<AnnotationSpec> createQualifierAnnotations(Element element) {
+    private List<AnnotationSpec> createQualifierAnnotations(QualifierModel qualifierModel) {
         var result = new ArrayList<AnnotationSpec>();
-        modelUtils.extractQualifiers(element).forEach((qualifierName, properties) -> {
+        qualifierModel.forEach((qualifierName, properties) -> {
             var qualifierBuilder = AnnotationSpec.builder().typeName(Qualifier.class)
                     .add("name", qualifierName);
-            properties.forEach(prop -> {
-                qualifierBuilder.add("properties",
-                        AnnotationSpec.builder()
-                                .typeName(QualifierProperty.class)
-                                .add("name", prop.getKey())
-                                .add("value", prop.getValue())
-                                .build());
-            });
+            properties.forEach(prop ->
+                    qualifierBuilder.add("properties",
+                            AnnotationSpec.builder()
+                                    .typeName(QualifierProperty.class)
+                                    .add("name", prop.getKey())
+                                    .add("value", prop.getValue())
+                                    .build()));
             result.add(qualifierBuilder.build());
         });
         return result;
     }
-
-    private TypeMirror extractReceiverParamType(ExecutableElement method) {
-        return method.getParameters().stream()
-                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                .filter(p -> !typeUtils.isAssignable(p.asType(), broadcaster.asType()))
-                .findFirst()
-                .map(Element::asType)
-                .orElse(voidType);
-    }
-
-//    private List<QualifierModel> extractReceiverQualifiers(ExecutableElement method) {
-//        return method.getParameters().stream()
-//                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-//                .filter(p -> !typeUtils.isAssignable(p.asType(), broadcaster.asType()))
-//                .findFirst()
-//                .map(modelUtils::extractQualifiers)
-//                .orElseGet(() -> modelUtils.extractQualifiers(method));
-//    }
 
 }

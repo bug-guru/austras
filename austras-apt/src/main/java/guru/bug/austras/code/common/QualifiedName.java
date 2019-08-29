@@ -90,6 +90,14 @@ public class QualifiedName implements Printable {
     }
 
     @Override
+    public String toString() {
+        return "QualifiedName{" +
+                "packageName=" + packageName +
+                ", simpleName=" + simpleName +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

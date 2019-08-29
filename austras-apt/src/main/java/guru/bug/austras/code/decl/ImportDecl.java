@@ -25,7 +25,7 @@ public class ImportDecl implements Printable {
     }
 
     public boolean isConflict(QualifiedName qname) {
-        return this.type.getSimpleName().equals(qname.getSimpleName());
+        return this.type.getSimpleName().equals(qname.getSimpleName()) && !this.type.getPackageName().equals(qname.getPackageName());
     }
 
     @Override

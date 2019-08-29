@@ -26,14 +26,16 @@ public class CodePrinter implements AutoCloseable {
     }
 
     public boolean checkImported(QualifiedName type) {
-        if (type.getPackageName().isJavaLang())
-            for (var i : imports) {
-                if (i.isConflict(type)) {
-                    return false;
-                } else if (i.isSame(type)) {
-                    return true;
-                }
+        if (type.getPackageName().isJavaLang()) {
+            return true;
+        }
+        for (var i : imports) {
+            if (i.isConflict(type)) {
+                return false;
+            } else if (i.isSame(type)) {
+                return true;
             }
+        }
         if (current.equals(type.getPackageName())) {
             return true;
         }
@@ -264,14 +266,26 @@ public class CodePrinter implements AutoCloseable {
         if (printable == null) {
             return this;
         }
-        var attr = Optional.ofNullable(attributesStack.peek());
-        attr.filter(a -> a.weakPrefix != null && !a.printed)
-                .ifPresent(a -> acceptPart(a.weakPrefix));
+        weakPrefix();
+        separator();
         attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
         printable.print(this);
-        attr.ifPresent(a -> a.printed = true);
         attributesStack.pop();
+        markPrinted();
         return this;
+    }
+
+    private void weakPrefix() {
+        Optional.ofNullable(attributesStack.peek())
+                .filter(a -> a.weakPrefix != null && !a.printed)
+                .ifPresent(a -> acceptPart(a.weakPrefix));
+
+    }
+
+    private void markPrinted() {
+        Optional.ofNullable(attributesStack.peek())
+                .ifPresent(a -> a.printed = true);
+
     }
 
     public CodePrinter print(List<? extends Printable> printables) {
@@ -285,6 +299,11 @@ public class CodePrinter implements AutoCloseable {
     }
 
     public CodePrinter print(String str) {
+        print(out -> out.print0(str));
+        return this;
+    }
+
+    private void separator() {
         Optional.ofNullable(attributesStack.peek())
                 .ifPresent(attr -> {
                     if (attr.separator != null && attr.needSeparator) {
@@ -292,8 +311,6 @@ public class CodePrinter implements AutoCloseable {
                     }
                     attr.needSeparator = true;
                 });
-        print0(str);
-        return this;
     }
 
     private void acceptPart(Consumer<CodePrinter> part) {
@@ -340,7 +357,7 @@ public class CodePrinter implements AutoCloseable {
             acceptPart(snapshot.weakSuffix);
         }
         if (snapshot.suffix != null) {
-            snapshot.suffix.accept(this);
+            acceptPart(snapshot.suffix);
         }
         return this;
     }
