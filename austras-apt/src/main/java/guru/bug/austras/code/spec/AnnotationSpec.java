@@ -2,9 +2,9 @@ package guru.bug.austras.code.spec;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.PackageName;
-import guru.bug.austras.code.name.QualifiedName;
-import guru.bug.austras.code.name.SimpleName;
+import guru.bug.austras.code.common.PackageName;
+import guru.bug.austras.code.common.QualifiedName;
+import guru.bug.austras.code.common.SimpleName;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.lang.annotation.Annotation;

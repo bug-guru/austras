@@ -1,7 +1,7 @@
 package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
-import guru.bug.austras.code.name.SimpleName;
+import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.ClassTypeSpec;
 

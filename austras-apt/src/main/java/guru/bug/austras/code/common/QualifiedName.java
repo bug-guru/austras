@@ -1,4 +1,4 @@
-package guru.bug.austras.code.name;
+package guru.bug.austras.code.common;
 
 
 import guru.bug.austras.code.CodePrinter;

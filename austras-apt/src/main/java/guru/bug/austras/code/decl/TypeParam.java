@@ -2,7 +2,7 @@ package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.TypeVarName;
+import guru.bug.austras.code.common.TypeVarName;
 import guru.bug.austras.code.spec.ClassTypeSpec;
 
 import java.util.List;

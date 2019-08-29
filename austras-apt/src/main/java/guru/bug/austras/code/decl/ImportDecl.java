@@ -2,7 +2,7 @@ package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.QualifiedName;
+import guru.bug.austras.code.common.QualifiedName;
 
 public class ImportDecl implements Printable {
     private final QualifiedName type;

@@ -2,7 +2,7 @@ package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.PackageName;
+import guru.bug.austras.code.common.PackageName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package guru.bug.austras.code.spec;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.QualifiedName;
+import guru.bug.austras.code.common.QualifiedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,10 @@ public class ClassTypeSpec implements Printable {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static ClassTypeSpec of(String qualifiedName) {
+        return of(QualifiedName.of(qualifiedName));
     }
 
     public static ClassTypeSpec of(QualifiedName name) {

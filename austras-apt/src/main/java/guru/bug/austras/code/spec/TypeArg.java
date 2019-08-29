@@ -2,7 +2,7 @@ package guru.bug.austras.code.spec;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.TypeVarName;
+import guru.bug.austras.code.common.TypeVarName;
 
 import java.util.function.Consumer;
 
@@ -28,6 +28,10 @@ public class TypeArg implements Printable {
     public static TypeArg wildcard() {
 
         return new TypeArg(null, null, WILDCARD_VAR);
+    }
+
+    public static TypeArg wildcardExtends(String upperBoundQualifiedName) {
+        return wildcardExtends(ClassTypeSpec.of(upperBoundQualifiedName));
     }
 
     public static TypeArg wildcardExtends(ClassTypeSpec upperBound) {

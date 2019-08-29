@@ -1,8 +1,8 @@
 package guru.bug.austras.code;
 
+import guru.bug.austras.code.common.PackageName;
+import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.ImportDecl;
-import guru.bug.austras.code.name.PackageName;
-import guru.bug.austras.code.name.QualifiedName;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.PrintWriter;
@@ -379,6 +379,56 @@ public class CodePrinter implements AutoCloseable {
             }
             lastCodePoint = ' ';
         }
+    }
+
+    public static class AttributesBuilder {
+        private String suffix;
+        private String prefix;
+        private String weakSuffix;
+        private String weakPrefix;
+        private String separator;
+        private int indent;
+        private boolean absoluteIndent;
+
+        public AttributesBuilder prefix(String s) {
+            this.prefix = s;
+            return this;
+        }
+
+        public AttributesBuilder suffix(String s) {
+            this.suffix = s;
+            return this;
+        }
+
+        public AttributesBuilder weakPrefix(String s) {
+            this.weakPrefix = s;
+            return this;
+        }
+
+        public AttributesBuilder weakSuffix(String s) {
+            this.weakSuffix = s;
+            return this;
+        }
+
+        public AttributesBuilder separator(String s) {
+            this.separator = s;
+            return this;
+        }
+
+        public AttributesBuilder indent(int relative) {
+            absoluteIndent = false;
+            this.indent = relative;
+            return this;
+        }
+
+        public AttributesBuilder absoluteIndent(int absolute) {
+            absoluteIndent = true;
+            this.indent = absolute;
+            return this;
+        }
+
+        // TODO how to print using these attributes?
+
     }
 
     private static class PrintingAttr {

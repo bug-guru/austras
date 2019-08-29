@@ -1,7 +1,7 @@
 package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.Printable;
-import guru.bug.austras.code.name.SimpleName;
+import guru.bug.austras.code.common.SimpleName;
 
 public abstract class TypeDecl implements Printable {
     private final SimpleName simpleName;
