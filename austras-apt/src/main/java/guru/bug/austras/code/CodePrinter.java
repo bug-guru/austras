@@ -52,7 +52,9 @@ public class CodePrinter implements AutoCloseable {
         if (printable == null) {
             return this;
         }
+        attributes.push(new PrintingAttr(null, getCurrentIndent()));
         printable.print(this);
+        attributes.pop();
         return this;
     }
 
@@ -61,7 +63,7 @@ public class CodePrinter implements AutoCloseable {
             return this;
         }
         for (var w : printables) {
-            w.print(this);
+            print(w);
         }
         return this;
     }
@@ -293,7 +295,7 @@ public class CodePrinter implements AutoCloseable {
     private CodePrinter print0(String str) {
         var first = str.codePointAt(0);
         if (Character.isLetterOrDigit(first) && Character.isLetterOrDigit(lastCodePoint)) {
-            ensureSpace();
+            space();
         }
         str.codePoints().forEach(this::print);
         return this;
@@ -360,16 +362,17 @@ public class CodePrinter implements AutoCloseable {
                 .orElse(0);
     }
 
-    private void ensureSpace() {
+    public CodePrinter space() {
         if (Character.isWhitespace(lastCodePoint)) {
-            return;
+            return this;
         }
         out.print(' ');
         lastCodePoint = ' ';
+        return this;
     }
 
     private void ensureIdent() {
-        var indent = attributes.size();
+        var indent = getCurrentIndent();
         if (lastCodePoint == '\n' && indent > 0) {
             for (int i = 0; i < indent; i++) {
                 out.print("    ");

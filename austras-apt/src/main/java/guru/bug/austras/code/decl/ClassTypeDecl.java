@@ -39,15 +39,18 @@ class ClassTypeDecl extends TypeDecl {
         out
                 .print(null, "\n", "\n", o -> o.print(annotations))
                 .print(modifiers)
-                .print(getSimpleName())
-                .print("<", ">", ", ", o -> o.print(typeParams));
+                .printClass()
+                .print(getSimpleName());
+        if (typeParams != null && !typeParams.isEmpty()) {
+            out.print("<", ">", ", ", o -> o.print(typeParams));
+        }
         if (superclass != null) {
             out.printExtends().print(superclass);
         }
         if (superinterfaces != null && !superinterfaces.isEmpty()) {
             out.printImplements().print(", ", o -> o.print(superinterfaces));
         }
-        out.indent("{\n", "}\n", "\n", o -> o.print(members));
+        out.space().indent("{\n", "}\n", "\n", o -> o.print(members));
     }
 
     @Override

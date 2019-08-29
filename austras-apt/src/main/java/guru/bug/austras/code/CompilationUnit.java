@@ -37,9 +37,15 @@ public class CompilationUnit {
 
         var cw = new CodePrinter(out, currentPackage, imports);
         cw.print(packageDecl);
-        cw.print(imports);
+        if (!imports.isEmpty()) {
+            cw.print("\n");
+            cw.print(imports);
+        }
 
-        out.print(buffer.toString());
+        if (!typeDecls.isEmpty()) {
+            cw.print("\n");
+            out.print(buffer.toString());
+        }
     }
 
     public String getQualifiedName() {

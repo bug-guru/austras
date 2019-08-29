@@ -75,6 +75,7 @@ public class TypeArg implements Printable {
 
         @Override
         public void print(CodePrinter out) {
+            out.space();
             printer.accept(out);
         }
     }

@@ -31,7 +31,9 @@ public class PackageDecl implements Printable {
 
     @Override
     public void print(CodePrinter out) {
-        out.print(null, "\n", "\n", o -> o.print(annotations));
+        if (annotations != null && !annotations.isEmpty()) {
+            out.print(null, "\n", "\n", o -> o.print(annotations));
+        }
         out.printPackage().print(packageName).print(";\n");
     }
 

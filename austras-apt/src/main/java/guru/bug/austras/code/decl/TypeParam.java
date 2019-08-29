@@ -36,7 +36,7 @@ public class TypeParam implements Printable {
     public void print(CodePrinter out) {
         out.print(typeVar);
         if (bound != null) {
-            out.print(" extends ").print(bound);
+            out.space().printExtends().space().print(bound);
         }
     }
 
