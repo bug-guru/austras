@@ -16,7 +16,7 @@ public class CodePrinter implements AutoCloseable {
     private final PrintWriter out;
     private final PackageName current;
     private final List<ImportDecl> imports;
-    private final Deque<PrintingAttr> attributes = new LinkedList<>();
+    private final Deque<AttributesSnapshot> attributesStack = new LinkedList<>();
     private int lastCodePoint = '\n';
 
     public CodePrinter(PrintWriter out, PackageName current, List<ImportDecl> mutableImports) {
@@ -46,26 +46,6 @@ public class CodePrinter implements AutoCloseable {
     @Override
     public void close() {
         out.close();
-    }
-
-    public CodePrinter print(Printable printable) {
-        if (printable == null) {
-            return this;
-        }
-        attributes.push(new PrintingAttr(null, getCurrentIndent()));
-        printable.print(this);
-        attributes.pop();
-        return this;
-    }
-
-    public CodePrinter print(List<? extends Printable> printables) {
-        if (printables == null || printables.isEmpty()) {
-            return this;
-        }
-        for (var w : printables) {
-            print(w);
-        }
-        return this;
     }
 
     public CodePrinter printAbstract() {
@@ -280,16 +260,46 @@ public class CodePrinter implements AutoCloseable {
         return print("false");
     }
 
+    public CodePrinter print(Printable printable) {
+        if (printable == null) {
+            return this;
+        }
+        var attr = Optional.ofNullable(attributesStack.peek());
+        attr.filter(a -> a.weakPrefix != null && !a.printed)
+                .ifPresent(a -> acceptPart(a.weakPrefix));
+        attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
+        printable.print(this);
+        attr.ifPresent(a -> a.printed = true);
+        attributesStack.pop();
+        return this;
+    }
+
+    public CodePrinter print(List<? extends Printable> printables) {
+        if (printables == null || printables.isEmpty()) {
+            return this;
+        }
+        for (var w : printables) {
+            print(w);
+        }
+        return this;
+    }
+
     public CodePrinter print(String str) {
-        Optional.ofNullable(attributes.peek())
+        Optional.ofNullable(attributesStack.peek())
                 .ifPresent(attr -> {
                     if (attr.separator != null && attr.needSeparator) {
-                        print0(attr.separator);
+                        acceptPart(attr.separator);
                     }
                     attr.needSeparator = true;
                 });
         print0(str);
         return this;
+    }
+
+    private void acceptPart(Consumer<CodePrinter> part) {
+        attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
+        part.accept(this);
+        attributesStack.pop();
     }
 
     private CodePrinter print0(String str) {
@@ -314,51 +324,34 @@ public class CodePrinter implements AutoCloseable {
         lastCodePoint = codePoint;
     }
 
-    public CodePrinter print(String prefix, String suffix, String separator, Consumer<CodePrinter> out) {
-        return indent(0, prefix, suffix, separator, out);
-    }
-
-    public CodePrinter print(String separator, Consumer<CodePrinter> out) {
-        return indent(0, null, null, separator, out);
-    }
-
-    public CodePrinter print(String prefix, String suffix, Consumer<CodePrinter> out) {
-        return indent(0, prefix, suffix, null, out);
-    }
-
-    public CodePrinter indent(String prefix, String suffix, Consumer<CodePrinter> out) {
-        return indent(prefix, suffix, null, out);
-    }
-
-    public CodePrinter indent(Consumer<CodePrinter> out) {
-        return indent(null, null, null, out);
-    }
-
-    public CodePrinter indent(String prefix, String suffix, String separator, Consumer<CodePrinter> out) {
-        return indent(1, prefix, suffix, separator, out);
-    }
-
-    public CodePrinter indent(String separator, Consumer<CodePrinter> out) {
-        return indent(1, null, separator, separator, out);
-    }
-
-    public CodePrinter indent(int extraIndent, String prefix, String suffix, String separator, Consumer<CodePrinter> out) {
-        if (prefix != null) {
-            print0(prefix);
+    public CodePrinter print(Attributes attributes, Consumer<CodePrinter> out) {
+        var snapshot = new AttributesSnapshot(attributes);
+        if (snapshot.prefix != null) {
+            acceptPart(snapshot.prefix);
         }
-        var indent = getCurrentIndent();
-        attributes.push(new PrintingAttr(separator, indent + extraIndent));
+        snapshot.actualIdent = snapshot.indent;
+        if (!snapshot.absoluteIndent) {
+            snapshot.actualIdent += getCurrentIndent();
+        }
+        attributesStack.push(snapshot);
         out.accept(this);
-        attributes.pop();
-        if (suffix != null) {
-            print0(suffix);
+        attributesStack.pop();
+        if (snapshot.printed && snapshot.weakSuffix != null) {
+            acceptPart(snapshot.weakSuffix);
+        }
+        if (snapshot.suffix != null) {
+            snapshot.suffix.accept(this);
         }
         return this;
     }
 
+    public Attributes withAttributes() {
+        return new Attributes();
+    }
+
     private Integer getCurrentIndent() {
-        return Optional.ofNullable(attributes.peek())
-                .map(a -> a.indent)
+        return Optional.ofNullable(attributesStack.peek())
+                .map(a -> a.actualIdent)
                 .orElse(0);
     }
 
@@ -381,64 +374,95 @@ public class CodePrinter implements AutoCloseable {
         }
     }
 
-    public static class AttributesBuilder {
-        private String suffix;
-        private String prefix;
-        private String weakSuffix;
-        private String weakPrefix;
-        private String separator;
+    public static class Attributes {
+        private Consumer<CodePrinter> suffix;
+        private Consumer<CodePrinter> prefix;
+        private Consumer<CodePrinter> weakPrefix;
+        private Consumer<CodePrinter> weakSuffix;
+        private Consumer<CodePrinter> separator;
         private int indent;
         private boolean absoluteIndent;
 
-        public AttributesBuilder prefix(String s) {
+        public Attributes prefix(String s) {
+            return prefix(o -> o.print(s));
+        }
+
+        public Attributes prefix(Consumer<CodePrinter> s) {
             this.prefix = s;
             return this;
         }
 
-        public AttributesBuilder suffix(String s) {
+        public Attributes suffix(String s) {
+            return suffix(o -> o.print(s));
+        }
+
+        public Attributes suffix(Consumer<CodePrinter> s) {
             this.suffix = s;
             return this;
         }
 
-        public AttributesBuilder weakPrefix(String s) {
+        public Attributes weakPrefix(String s) {
+            return weakPrefix(o -> o.print(s));
+        }
+
+        public Attributes weakPrefix(Consumer<CodePrinter> s) {
             this.weakPrefix = s;
             return this;
         }
 
-        public AttributesBuilder weakSuffix(String s) {
+        public Attributes weakSuffix(String s) {
+            return weakSuffix(o -> o.print(s));
+        }
+
+        public Attributes weakSuffix(Consumer<CodePrinter> s) {
             this.weakSuffix = s;
             return this;
         }
 
-        public AttributesBuilder separator(String s) {
+        public Attributes separator(String s) {
+            return separator(o -> o.print(s));
+        }
+
+        public Attributes separator(Consumer<CodePrinter> s) {
             this.separator = s;
             return this;
         }
 
-        public AttributesBuilder indent(int relative) {
+        public Attributes indent(int relative) {
             absoluteIndent = false;
             this.indent = relative;
             return this;
         }
 
-        public AttributesBuilder absoluteIndent(int absolute) {
+        public Attributes absoluteIndent(int absolute) {
             absoluteIndent = true;
             this.indent = absolute;
             return this;
         }
 
-        // TODO how to print using these attributes?
-
     }
 
-    private static class PrintingAttr {
-        private final String separator;
+    private static class AttributesSnapshot {
+        private final Consumer<CodePrinter> suffix;
+        private final Consumer<CodePrinter> prefix;
+        private final Consumer<CodePrinter> weakSuffix;
+        private final Consumer<CodePrinter> weakPrefix;
+        private final Consumer<CodePrinter> separator;
         private final int indent;
-        private boolean needSeparator = false;
+        private final boolean absoluteIndent;
 
-        private PrintingAttr(String separator, int indent) {
-            this.separator = separator;
-            this.indent = indent;
+        private int actualIdent;
+        private boolean needSeparator = false;
+        private boolean printed = false;
+
+        private AttributesSnapshot(Attributes attributes) {
+            this.suffix = attributes.suffix;
+            this.prefix = attributes.prefix;
+            this.weakPrefix = attributes.weakPrefix;
+            this.weakSuffix = attributes.weakSuffix;
+            this.separator = attributes.separator;
+            this.indent = attributes.indent;
+            this.absoluteIndent = attributes.absoluteIndent;
         }
     }
 }

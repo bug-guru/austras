@@ -56,15 +56,10 @@ public class TypeArg implements Printable {
 
     @Override
     public void print(CodePrinter out) {
-        if (typeVar != null) {
-            out.print(typeVar);
-        }
-        if (boundType != null) {
-            out.print(boundType);
-        }
-        if (bound != null) {
-            out.print(bound);
-        }
+        out
+                .print(typeVar)
+                .print(boundType)
+                .print(bound);
     }
 
     private enum TypeArgBoundType implements Printable {

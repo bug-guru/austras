@@ -34,10 +34,8 @@ public class AnnotationSpec implements Printable {
 
     @Override
     public void print(CodePrinter out) {
-        out.print("@").print(name);
-        if (pairs != null && !pairs.isEmpty()) {
-            out.indent("(", ")", ", ", o -> o.print(pairs));
-        }
+        out.print("@").print(name)
+                .print(out.withAttributes().weakPrefix("(").weakSuffix(")").separator(", "), o -> o.print(pairs));
     }
 
     private interface ElementValue extends Printable {
@@ -68,7 +66,7 @@ public class AnnotationSpec implements Printable {
 
         @Override
         public void print(CodePrinter out) {
-            out.print("{", "}", ", ", o -> o.print(elements));
+            out.print(out.withAttributes().prefix("{").suffix("}").separator(", "), o -> o.print(elements));
         }
     }
 

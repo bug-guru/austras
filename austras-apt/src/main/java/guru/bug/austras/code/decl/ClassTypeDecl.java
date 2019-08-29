@@ -37,20 +37,31 @@ class ClassTypeDecl extends TypeDecl {
     @Override
     public void print(CodePrinter out) {
         out
-                .print(null, "\n", "\n", o -> o.print(annotations))
+                .print(out.withAttributes()
+                                .weakSuffix("\n")
+                                .separator("\n"),
+                        o -> o.print(annotations))
                 .print(modifiers)
                 .printClass()
-                .print(getSimpleName());
-        if (typeParams != null && !typeParams.isEmpty()) {
-            out.print("<", ">", ", ", o -> o.print(typeParams));
-        }
-        if (superclass != null) {
-            out.printExtends().print(superclass);
-        }
-        if (superinterfaces != null && !superinterfaces.isEmpty()) {
-            out.printImplements().print(", ", o -> o.print(superinterfaces));
-        }
-        out.space().indent("{\n", "}\n", "\n", o -> o.print(members));
+                .print(getSimpleName())
+                .print(out.withAttributes()
+                                .weakPrefix("<")
+                                .weakSuffix(">")
+                                .separator(", "),
+                        o -> o.print(typeParams))
+                .print(out.withAttributes()
+                                .weakPrefix(o -> o.space().printExtends().space()),
+                        o -> o.print(superclass))
+                .print(out.withAttributes()
+                                .weakPrefix(o -> o.space().printImplements().space())
+                                .separator(", "),
+                        o -> o.print(superinterfaces))
+                .print(out.withAttributes()
+                                .indent(4)
+                                .prefix(" {\n")
+                                .suffix("}\n")
+                                .separator("\n"),
+                        o -> o.print(members));
     }
 
     @Override
