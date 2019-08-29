@@ -7,9 +7,7 @@ import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.ClassTypeSpec;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MethodClassMemberDecl extends ClassMemberDecl implements Printable {
     private final List<Modifier> modifiers;
@@ -42,6 +40,30 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
 
     @Override
     public void print(CodePrinter out) {
+        SimpleName actualName;
+        if (name == null) {
+            actualName = out.find(ClassTypeDecl.class).getSimpleName();
+        } else {
+            actualName = name;
+        }
+        out.print(out.withAttributes()
+                        .weakSuffix("\n")
+                        .separator("\n"),
+                o -> o.print(annotations))
+                .print(modifiers)
+                .print(returnType)
+                .print(actualName)
+                .print(out.withAttributes()
+                                .separator(", ")
+                                .prefix("(")
+                                .suffix(")"),
+                        o -> o.print(params))
+                .print(out.withAttributes()
+                                .weakPrefix(" {\n")
+                                .weakSuffix("}\n")
+                                .indent(4)
+                                .empty(";\n"),
+                        o -> o.print(body));
 
     }
 
@@ -110,13 +132,35 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
             return this;
         }
 
+        private List<MethodParamDecl> params() {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+            return params;
+        }
+
+        public Builder addParam(MethodParamDecl param) {
+            params().add(param);
+            return this;
+        }
+
+        public Builder addParams(Collection<MethodParamDecl> params) {
+            params().addAll(params);
+            return this;
+        }
+
+        public Builder body(CodeBlock body) {
+            this.body = body;
+            return this;
+        }
+
         public MethodClassMemberDecl build() {
             return new MethodClassMemberDecl(
-                    List.copyOf(modifiers),
+                    modifiers == null ? null : List.copyOf(modifiers),
                     returnType,
                     name,
-                    List.copyOf(params),
-                    List.copyOf(annotations),
+                    params == null ? null : List.copyOf(params),
+                    annotations == null ? null : List.copyOf(annotations),
                     body);
         }
     }

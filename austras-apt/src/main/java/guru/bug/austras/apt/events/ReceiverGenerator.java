@@ -7,6 +7,7 @@ import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.code.CompilationUnit;
+import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.ClassMemberDecl;
 import guru.bug.austras.code.decl.PackageDecl;
@@ -71,7 +72,8 @@ public class ReceiverGenerator {
 
     private ClassMemberDecl createConstructorSpec(MessageReceiverModel model) {
         return ClassMemberDecl.constructorBuilder()
-                .
+                .publicMod()
+                .body(new CodeBlock())
                 .build();
     }
 

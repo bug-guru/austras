@@ -17,6 +17,7 @@ public class CodePrinter implements AutoCloseable {
     private final PackageName current;
     private final List<ImportDecl> imports;
     private final Deque<AttributesSnapshot> attributesStack = new LinkedList<>();
+    private final Deque<Printable> printableStack = new LinkedList<>();
     private int lastCodePoint = '\n';
 
     public CodePrinter(PrintWriter out, PackageName current, List<ImportDecl> mutableImports) {
@@ -269,10 +270,17 @@ public class CodePrinter implements AutoCloseable {
         weakPrefix();
         separator();
         attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
+        printableStack.push(printable);
         printable.print(this);
+        printableStack.pop();
         attributesStack.pop();
         markPrinted();
         return this;
+    }
+
+    public <T> T find(Class<T> clazz) {
+        //noinspection unchecked
+        return (T) printableStack.stream().filter(p -> clazz.isAssignableFrom(p.getClass())).findFirst().orElse(null);
     }
 
     private void weakPrefix() {
@@ -346,7 +354,6 @@ public class CodePrinter implements AutoCloseable {
         if (snapshot.prefix != null) {
             acceptPart(snapshot.prefix);
         }
-        snapshot.actualIdent = snapshot.indent;
         if (!snapshot.absoluteIndent) {
             snapshot.actualIdent += getCurrentIndent();
         }
@@ -358,6 +365,9 @@ public class CodePrinter implements AutoCloseable {
         }
         if (snapshot.suffix != null) {
             acceptPart(snapshot.suffix);
+        }
+        if (!snapshot.printed && snapshot.empty != null) {
+            acceptPart(snapshot.empty);
         }
         return this;
     }
@@ -385,7 +395,7 @@ public class CodePrinter implements AutoCloseable {
         var indent = getCurrentIndent();
         if (lastCodePoint == '\n' && indent > 0) {
             for (int i = 0; i < indent; i++) {
-                out.print("    ");
+                out.print(" ");
             }
             lastCodePoint = ' ';
         }
@@ -397,6 +407,7 @@ public class CodePrinter implements AutoCloseable {
         private Consumer<CodePrinter> weakPrefix;
         private Consumer<CodePrinter> weakSuffix;
         private Consumer<CodePrinter> separator;
+        private Consumer<CodePrinter> empty;
         private int indent;
         private boolean absoluteIndent;
 
@@ -445,6 +456,15 @@ public class CodePrinter implements AutoCloseable {
             return this;
         }
 
+        public Attributes empty(String s) {
+            return empty(o -> o.print(s));
+        }
+
+        public Attributes empty(Consumer<CodePrinter> s) {
+            this.empty = s;
+            return this;
+        }
+
         public Attributes indent(int relative) {
             absoluteIndent = false;
             this.indent = relative;
@@ -465,6 +485,7 @@ public class CodePrinter implements AutoCloseable {
         private final Consumer<CodePrinter> weakSuffix;
         private final Consumer<CodePrinter> weakPrefix;
         private final Consumer<CodePrinter> separator;
+        private final Consumer<CodePrinter> empty;
         private final int indent;
         private final boolean absoluteIndent;
 
@@ -478,7 +499,9 @@ public class CodePrinter implements AutoCloseable {
             this.weakPrefix = attributes.weakPrefix;
             this.weakSuffix = attributes.weakSuffix;
             this.separator = attributes.separator;
+            this.empty = attributes.empty;
             this.indent = attributes.indent;
+            this.actualIdent = attributes.indent;
             this.absoluteIndent = attributes.absoluteIndent;
         }
     }
