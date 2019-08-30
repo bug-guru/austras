@@ -269,7 +269,7 @@ public class CodePrinter implements AutoCloseable {
         }
         weakPrefix();
         separator();
-        attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
+        attributesStack.push(new AttributesSnapshot(withAbsoluteIndent(getCurrentIndent())));
         printableStack.push(printable);
         printable.print(this);
         printableStack.pop();
@@ -322,7 +322,7 @@ public class CodePrinter implements AutoCloseable {
     }
 
     private void acceptPart(Consumer<CodePrinter> part) {
-        attributesStack.push(new AttributesSnapshot(withAttributes().absoluteIndent(getCurrentIndent())));
+        attributesStack.push(new AttributesSnapshot(withAbsoluteIndent(getCurrentIndent())));
         part.accept(this);
         attributesStack.pop();
     }
@@ -372,10 +372,6 @@ public class CodePrinter implements AutoCloseable {
         return this;
     }
 
-    public Attributes withAttributes() {
-        return new Attributes();
-    }
-
     private Integer getCurrentIndent() {
         return Optional.ofNullable(attributesStack.peek())
                 .map(a -> a.actualIdent)
@@ -400,6 +396,66 @@ public class CodePrinter implements AutoCloseable {
             lastCodePoint = ' ';
         }
     }
+
+    // ************************************** Attributes starters ********************************
+
+    public Attributes withPrefix(String s) {
+        return new Attributes().prefix(s);
+    }
+
+    public Attributes withPrefix(Consumer<CodePrinter> s) {
+        return new Attributes().prefix(s);
+    }
+
+    public Attributes withSuffix(String s) {
+        return new Attributes().suffix(s);
+    }
+
+    public Attributes withSuffix(Consumer<CodePrinter> s) {
+        return new Attributes().suffix(s);
+    }
+
+    public Attributes withWeakPrefix(String s) {
+        return new Attributes().weakPrefix(s);
+    }
+
+    public Attributes withWeakPrefix(Consumer<CodePrinter> s) {
+        return new Attributes().weakPrefix(s);
+    }
+
+    public Attributes withWeakSuffix(String s) {
+        return new Attributes().weakSuffix(s);
+    }
+
+    public Attributes withWeakSuffix(Consumer<CodePrinter> s) {
+        return new Attributes().weakSuffix(s);
+    }
+
+    public Attributes withSeparator(String s) {
+        return new Attributes().separator(s);
+    }
+
+    public Attributes withSeparator(Consumer<CodePrinter> s) {
+        return new Attributes().separator(s);
+    }
+
+    public Attributes withEmpty(String s) {
+        return new Attributes().empty(s);
+    }
+
+    public Attributes withEmpty(Consumer<CodePrinter> s) {
+        return new Attributes().empty(s);
+    }
+
+    public Attributes withIndent(int relative) {
+        return new Attributes().indent(relative);
+    }
+
+    public Attributes withAbsoluteIndent(int absolute) {
+        return new Attributes().absoluteIndent(absolute);
+    }
+
+    // ************************ Attributes *************************************************************
 
     public static class Attributes {
         private Consumer<CodePrinter> suffix;

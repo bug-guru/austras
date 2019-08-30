@@ -36,8 +36,7 @@ public class TypeParam implements Printable {
     public void print(CodePrinter out) {
         out
                 .print(typeVar)
-                .print(out.withAttributes()
-                                .weakPrefix(o -> o.space().printExtends().space()),
+                .print(out.withWeakPrefix(o -> o.space().printExtends().space()),
                         o -> o.print(bound));
     }
 
@@ -80,7 +79,7 @@ public class TypeParam implements Printable {
 
         @Override
         public void print(CodePrinter out) {
-            out.print(out.withAttributes().separator(" & "), o -> o.print(types));
+            out.print(out.withSeparator(" & "), o -> o.print(types));
         }
     }
 }

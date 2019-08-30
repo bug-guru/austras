@@ -34,10 +34,7 @@ public class ClassTypeSpec implements Printable {
     public void print(CodePrinter out) {
         out
                 .print(name)
-                .print(out.withAttributes()
-                                .weakPrefix("<")
-                                .weakSuffix(">")
-                                .separator(","),
+                .print(out.withWeakPrefix("<").weakSuffix(">").separator(","),
                         o -> o.print(typeArgs));
     }
 

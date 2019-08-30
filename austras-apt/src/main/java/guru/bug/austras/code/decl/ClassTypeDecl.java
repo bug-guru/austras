@@ -37,30 +37,19 @@ class ClassTypeDecl extends TypeDecl {
     @Override
     public void print(CodePrinter out) {
         out
-                .print(out.withAttributes()
-                                .weakSuffix("\n")
-                                .separator("\n"),
+                .print(out.withWeakSuffix("\n").separator("\n"),
                         o -> o.print(annotations))
                 .print(modifiers)
                 .printClass()
                 .print(getSimpleName())
-                .print(out.withAttributes()
-                                .weakPrefix("<")
-                                .weakSuffix(">")
-                                .separator(", "),
+                .print(out.withWeakPrefix("<").weakSuffix(">").separator(", "),
                         o -> o.print(typeParams))
-                .print(out.withAttributes()
-                                .weakPrefix(o -> o.space().printExtends().space()),
+                .print(out.withWeakPrefix(o -> o.space().printExtends().space()),
                         o -> o.print(superclass))
-                .print(out.withAttributes()
-                                .weakPrefix(o -> o.space().printImplements().space())
+                .print(out.withWeakPrefix(o -> o.space().printImplements().space())
                                 .separator(", "),
                         o -> o.print(superinterfaces))
-                .print(out.withAttributes()
-                                .indent(4)
-                                .prefix(" {\n")
-                                .suffix("}\n")
-                                .separator("\n"),
+                .print(out.withIndent(4).prefix(" {\n").suffix("}\n").separator("\n"),
                         o -> o.print(members));
     }
 

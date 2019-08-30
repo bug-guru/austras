@@ -46,23 +46,14 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
         } else {
             actualName = name;
         }
-        out.print(out.withAttributes()
-                        .weakSuffix("\n")
-                        .separator("\n"),
+        out.print(out.withWeakSuffix("\n").separator("\n"),
                 o -> o.print(annotations))
                 .print(modifiers)
                 .print(returnType)
                 .print(actualName)
-                .print(out.withAttributes()
-                                .separator(", ")
-                                .prefix("(")
-                                .suffix(")"),
+                .print(out.withSeparator(", ").prefix("(").suffix(")"),
                         o -> o.print(params))
-                .print(out.withAttributes()
-                                .weakPrefix(" {\n")
-                                .weakSuffix("}\n")
-                                .indent(4)
-                                .empty(";\n"),
+                .print(out.withWeakPrefix(" {\n").weakSuffix("}\n").indent(4).empty(";\n"),
                         o -> o.print(body));
 
     }

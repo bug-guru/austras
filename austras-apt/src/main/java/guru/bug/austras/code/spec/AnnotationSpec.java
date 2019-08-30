@@ -35,7 +35,7 @@ public class AnnotationSpec implements Printable {
     @Override
     public void print(CodePrinter out) {
         out.print("@").print(name)
-                .print(out.withAttributes().weakPrefix("(").weakSuffix(")").separator(", "), o -> o.print(pairs));
+                .print(out.withWeakPrefix("(").weakSuffix(")").separator(", "), o -> o.print(pairs));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class AnnotationSpec implements Printable {
 
         @Override
         public void print(CodePrinter out) {
-            out.print(out.withAttributes().prefix("{").suffix("}").separator(", "), o -> o.print(elements));
+            out.print(out.withPrefix("{").suffix("}").separator(", "), o -> o.print(elements));
         }
 
         @Override
