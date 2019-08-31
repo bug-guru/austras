@@ -4,17 +4,17 @@ import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
-import guru.bug.austras.code.spec.ClassTypeSpec;
+import guru.bug.austras.code.spec.TypeSpec;
 
 import java.util.*;
 
 public class MethodParamDecl implements Printable {
     private final List<Modifier> modifiers;
     private final List<AnnotationSpec> annotations;
-    private final ClassTypeSpec type;
+    private final TypeSpec type;
     private final SimpleName name;
 
-    private MethodParamDecl(List<Modifier> modifiers, List<AnnotationSpec> annotations, ClassTypeSpec type, SimpleName name) {
+    private MethodParamDecl(List<Modifier> modifiers, List<AnnotationSpec> annotations, TypeSpec type, SimpleName name) {
         this.modifiers = modifiers;
         this.annotations = annotations;
         this.type = type;
@@ -39,7 +39,7 @@ public class MethodParamDecl implements Printable {
     public static class Builder {
         private Set<Modifier> modifiers;
         private List<AnnotationSpec> annotations;
-        private ClassTypeSpec type;
+        private TypeSpec type;
         private SimpleName name;
 
         private Set<Modifier> modifiers() {
@@ -71,13 +71,13 @@ public class MethodParamDecl implements Printable {
             return this;
         }
 
-        public Builder type(ClassTypeSpec type) {
+        public Builder type(TypeSpec type) {
             this.type = type;
             return this;
         }
 
         public Builder type(String type) {
-            this.type = ClassTypeSpec.of(type);
+            this.type = TypeSpec.of(type);
             return this;
         }
 

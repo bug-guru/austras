@@ -5,19 +5,19 @@ import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
-import guru.bug.austras.code.spec.ClassTypeSpec;
+import guru.bug.austras.code.spec.TypeSpec;
 
 import java.util.*;
 
 public class MethodClassMemberDecl extends ClassMemberDecl implements Printable {
     private final List<Modifier> modifiers;
-    private final ClassTypeSpec returnType;
+    private final TypeSpec returnType;
     private final SimpleName name;
     private final List<MethodParamDecl> params;
     private final List<AnnotationSpec> annotations;
     private final CodeBlock body;
 
-    private MethodClassMemberDecl(List<Modifier> modifiers, ClassTypeSpec returnType, SimpleName name, List<MethodParamDecl> params, List<AnnotationSpec> annotations, CodeBlock body) {
+    private MethodClassMemberDecl(List<Modifier> modifiers, TypeSpec returnType, SimpleName name, List<MethodParamDecl> params, List<AnnotationSpec> annotations, CodeBlock body) {
         this.modifiers = modifiers;
         this.returnType = returnType;
         this.name = name;
@@ -30,11 +30,11 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
         return new Builder(null, null);
     }
 
-    public static Builder methodBuilder(String name, ClassTypeSpec returnType) {
+    public static Builder methodBuilder(String name, TypeSpec returnType) {
         return new Builder(SimpleName.of(name), returnType);
     }
 
-    public static Builder methodBuilder(SimpleName name, ClassTypeSpec returnType) {
+    public static Builder methodBuilder(SimpleName name, TypeSpec returnType) {
         return new Builder(name, returnType);
     }
 
@@ -60,16 +60,34 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
 
     public static class Builder {
         private final SimpleName name;
-        private final ClassTypeSpec returnType;
+        private final TypeSpec returnType;
         private Set<Modifier> modifiers;
         private List<AnnotationSpec> annotations;
         private List<MethodParamDecl> params;
         private CodeBlock body;
 
-        public Builder(SimpleName name, ClassTypeSpec returnType) {
+        public Builder(SimpleName name, TypeSpec returnType) {
             this.name = name;
             this.returnType = returnType;
         }
+
+        private List<AnnotationSpec> annotations() {
+            if (annotations == null) {
+                annotations = new ArrayList<>();
+            }
+            return annotations;
+        }
+
+        public Builder addAnnotation(AnnotationSpec annotation) {
+            annotations().add(annotation);
+            return this;
+        }
+
+        public Builder addAnnotations(Collection<AnnotationSpec> annotations) {
+            annotations().addAll(annotations);
+            return this;
+        }
+
 
         private Set<Modifier> modifiers() {
             if (modifiers == null) {

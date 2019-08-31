@@ -64,7 +64,7 @@ public class QualifiedName implements Printable {
 
     @Override
     public void print(CodePrinter out) {
-        if (!packageName.isJavaLang() && !packageName.isRoot() && !out.checkImported(this)) {
+        if (packageName != null && !packageName.isJavaLang() && !packageName.isRoot() && !out.checkImported(this)) {
             out.print(packageName);
             out.print(".");
         }
@@ -72,7 +72,7 @@ public class QualifiedName implements Printable {
     }
 
     public void printNoImport(CodePrinter out) {
-        if (!packageName.isJavaLang() && !packageName.isRoot()) {
+        if (packageName != null && !packageName.isJavaLang() && !packageName.isRoot()) {
             out.print(packageName);
             out.print(".");
         }

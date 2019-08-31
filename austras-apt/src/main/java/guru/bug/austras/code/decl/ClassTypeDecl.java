@@ -3,7 +3,7 @@ package guru.bug.austras.code.decl;
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.AnnotationSpec;
-import guru.bug.austras.code.spec.ClassTypeSpec;
+import guru.bug.austras.code.spec.TypeSpec;
 
 import java.util.*;
 
@@ -11,15 +11,15 @@ class ClassTypeDecl extends TypeDecl {
     private final List<Modifier> modifiers;
     private final List<TypeParam> typeParams;
     private final List<AnnotationSpec> annotations;
-    private final ClassTypeSpec superclass;
-    private final List<ClassTypeSpec> superinterfaces;
+    private final TypeSpec superclass;
+    private final List<TypeSpec> superinterfaces;
     private final List<ClassMemberDecl> members;
 
     private ClassTypeDecl(SimpleName simpleName,
                           List<Modifier> modifiers, List<TypeParam> typeParams,
                           List<AnnotationSpec> annotations,
-                          ClassTypeSpec superclass,
-                          List<ClassTypeSpec> superinterfaces,
+                          TypeSpec superclass,
+                          List<TypeSpec> superinterfaces,
                           List<ClassMemberDecl> members) {
         super(simpleName);
         this.modifiers = modifiers;
@@ -62,8 +62,8 @@ class ClassTypeDecl extends TypeDecl {
         private Set<Modifier> modifiers;
         private List<TypeParam> typeParams;
         private List<AnnotationSpec> annotations;
-        private ClassTypeSpec superclass;
-        private List<ClassTypeSpec> superinterfaces;
+        private TypeSpec superclass;
+        private List<TypeSpec> superinterfaces;
         private List<ClassMemberDecl> members;
 
         private Set<Modifier> modifiers() {
@@ -142,24 +142,24 @@ class ClassTypeDecl extends TypeDecl {
             return this;
         }
 
-        public Builder superclass(ClassTypeSpec superclass) {
+        public Builder superclass(TypeSpec superclass) {
             this.superclass = superclass;
             return this;
         }
 
-        private List<ClassTypeSpec> superinterfaces() {
+        private List<TypeSpec> superinterfaces() {
             if (superinterfaces == null) {
                 superinterfaces = new ArrayList<>();
             }
             return superinterfaces;
         }
 
-        public Builder addSuperinterface(ClassTypeSpec superinterface) {
+        public Builder addSuperinterface(TypeSpec superinterface) {
             superinterfaces().add(superinterface);
             return this;
         }
 
-        public Builder addSuperinterfaces(Collection<ClassTypeSpec> superinterfaces) {
+        public Builder addSuperinterfaces(Collection<TypeSpec> superinterfaces) {
             superinterfaces().addAll(superinterfaces);
             return this;
         }

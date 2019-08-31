@@ -14,8 +14,8 @@ import guru.bug.austras.code.decl.MethodParamDecl;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
 import guru.bug.austras.code.spec.AnnotationSpec;
-import guru.bug.austras.code.spec.ClassTypeSpec;
 import guru.bug.austras.code.spec.TypeArg;
+import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
@@ -59,11 +59,12 @@ public class ReceiverGenerator {
                                 .addAnnotation(AnnotationSpec.of(Component.class))
                                 .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
                                 .simpleName(model.getClassName())
-                                .addSuperinterface(ClassTypeSpec.builder()
+                                .addSuperinterface(TypeSpec.builder()
                                         .name(QualifiedName.of(Receiver.class))
                                         .addTypeArg(TypeArg.ofType(model.getMessageType()))
                                         .build())
-                                .addMember(createConstructorSpec(model))
+                                .addMember(convertToConstructorDecl(model))
+                                .addMember(createReceiverMethod(model))
                                 .build())
                 .build();
 
@@ -74,15 +75,27 @@ public class ReceiverGenerator {
 
     }
 
-    private ClassMemberDecl createConstructorSpec(MessageReceiverModel model) {
-        return ClassMemberDecl.constructorBuilder()
+    private ClassMemberDecl createReceiverMethod(MessageReceiverModel model) {
+        return ClassMemberDecl.methodBuilder("receive", TypeSpec.voidType())
+                .addAnnotation(AnnotationSpec.of(Override.class))
                 .publicMod()
-                .addParams(model.getDependencies().stream().map(this::convertToParameter).collect(Collectors.toList()))
+                .addParam(MethodParamDecl.builder()
+                        .name("message")
+                        .type(model.getMessageType())
+                        .build())
                 .body(new CodeBlock())
                 .build();
     }
 
-    private MethodParamDecl convertToParameter(DependencyModel model) {
+    private ClassMemberDecl convertToConstructorDecl(MessageReceiverModel model) {
+        return ClassMemberDecl.constructorBuilder()
+                .publicMod()
+                .addParams(model.getDependencies().stream().map(this::convertToParametersDecl).collect(Collectors.toList()))
+                .body(new CodeBlock())
+                .build();
+    }
+
+    private MethodParamDecl convertToParametersDecl(DependencyModel model) {
         return MethodParamDecl.builder()
                 .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
                 .name(model.getName())
@@ -90,16 +103,16 @@ public class ReceiverGenerator {
                 .build();
     }
 
-    private ClassTypeSpec calculateParameterType(DependencyModel model) {
-        var result = ClassTypeSpec.of(model.getType());
+    private TypeSpec calculateParameterType(DependencyModel model) {
+        var result = TypeSpec.of(model.getType());
         if (model.isCollection()) {
-            result = ClassTypeSpec.builder()
+            result = TypeSpec.builder()
                     .name(QualifiedName.of(Collection.class))
                     .addTypeArg(TypeArg.wildcardExtends(result))
                     .build();
         }
         if (model.isProvider()) {
-            result = ClassTypeSpec.builder()
+            result = TypeSpec.builder()
                     .name(QualifiedName.of(Provider.class))
                     .addTypeArg(TypeArg.wildcardExtends(result))
                     .build();

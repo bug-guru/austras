@@ -11,11 +11,11 @@ import java.util.function.Consumer;
  */
 public class TypeArg implements Printable {
     private static final TypeVarName WILDCARD_VAR = TypeVarName.of("?");
-    private final ClassTypeSpec bound;
+    private final TypeSpec bound;
     private final TypeArgBoundType boundType;
     private final TypeVarName typeVar;
 
-    private TypeArg(ClassTypeSpec bound, TypeArgBoundType boundType, TypeVarName typeVar) {
+    private TypeArg(TypeSpec bound, TypeArgBoundType boundType, TypeVarName typeVar) {
         this.bound = bound;
         this.boundType = boundType;
         this.typeVar = typeVar;
@@ -31,14 +31,14 @@ public class TypeArg implements Printable {
     }
 
     public static TypeArg wildcardExtends(String upperBoundQualifiedName) {
-        return wildcardExtends(ClassTypeSpec.of(upperBoundQualifiedName));
+        return wildcardExtends(TypeSpec.of(upperBoundQualifiedName));
     }
 
-    public static TypeArg wildcardExtends(ClassTypeSpec upperBound) {
+    public static TypeArg wildcardExtends(TypeSpec upperBound) {
         return new TypeArg(upperBound, TypeArgBoundType.EXTENDS, WILDCARD_VAR);
     }
 
-    public static TypeArg wildcardSuper(ClassTypeSpec lowerBound) {
+    public static TypeArg wildcardSuper(TypeSpec lowerBound) {
         return new TypeArg(lowerBound, TypeArgBoundType.SUPER, WILDCARD_VAR);
     }
 
@@ -46,16 +46,16 @@ public class TypeArg implements Printable {
         return new TypeArg(null, null, TypeVarName.of(varName));
     }
 
-    public static TypeArg paramExtends(String varName, ClassTypeSpec upperBound) {
+    public static TypeArg paramExtends(String varName, TypeSpec upperBound) {
         return new TypeArg(upperBound, TypeArgBoundType.EXTENDS, TypeVarName.of(varName));
     }
 
-    public static TypeArg paramSuper(String varName, ClassTypeSpec upperBound) {
+    public static TypeArg paramSuper(String varName, TypeSpec upperBound) {
         return new TypeArg(upperBound, TypeArgBoundType.SUPER, TypeVarName.of(varName));
     }
 
     public static TypeArg ofType(String typeName) {
-        return new TypeArg(ClassTypeSpec.of(typeName), null, null);
+        return new TypeArg(TypeSpec.of(typeName), null, null);
     }
 
     @Override

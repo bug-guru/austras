@@ -3,7 +3,7 @@ package guru.bug.austras.code.decl;
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
 import guru.bug.austras.code.common.TypeVarName;
-import guru.bug.austras.code.spec.ClassTypeSpec;
+import guru.bug.austras.code.spec.TypeSpec;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class TypeParam implements Printable {
         return new TypeParam(typeVar, new TypeVarBound(boundVar));
     }
 
-    public static TypeParam of(TypeVarName typeVar, ClassTypeSpec bound) {
+    public static TypeParam of(TypeVarName typeVar, TypeSpec bound) {
         return new TypeParam(typeVar, new TypeBound(bound));
     }
 
-    public static TypeParam of(TypeVarName typeVar, ClassTypeSpec... bounds) {
+    public static TypeParam of(TypeVarName typeVar, TypeSpec... bounds) {
         return new TypeParam(typeVar, new TypeListBound(List.of(bounds)));
     }
 
@@ -58,9 +58,9 @@ public class TypeParam implements Printable {
     }
 
     private static class TypeBound extends Bound {
-        private final ClassTypeSpec type;
+        private final TypeSpec type;
 
-        private TypeBound(ClassTypeSpec type) {
+        private TypeBound(TypeSpec type) {
             this.type = type;
         }
 
@@ -71,9 +71,9 @@ public class TypeParam implements Printable {
     }
 
     private static class TypeListBound extends Bound {
-        private final List<ClassTypeSpec> types;
+        private final List<TypeSpec> types;
 
-        private TypeListBound(List<ClassTypeSpec> types) {
+        private TypeListBound(List<TypeSpec> types) {
             this.types = types;
         }
 

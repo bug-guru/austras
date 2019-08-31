@@ -9,11 +9,12 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class ClassTypeSpec implements Printable {
+public class TypeSpec implements Printable {
+    private static final TypeSpec VOID_TYPE = new TypeSpec(QualifiedName.of(null, "void"), null);
     private final QualifiedName name;
     private final List<TypeArg> typeArgs;
 
-    private ClassTypeSpec(QualifiedName name, List<TypeArg> typeArgs) {
+    private TypeSpec(QualifiedName name, List<TypeArg> typeArgs) {
         this.name = name;
         this.typeArgs = typeArgs;
     }
@@ -22,12 +23,16 @@ public class ClassTypeSpec implements Printable {
         return new Builder();
     }
 
-    public static ClassTypeSpec of(String qualifiedName) {
+    public static TypeSpec of(String qualifiedName) {
         return of(QualifiedName.of(qualifiedName));
     }
 
-    public static ClassTypeSpec of(QualifiedName name) {
-        return new ClassTypeSpec(name, null);
+    public static TypeSpec of(QualifiedName name) {
+        return new TypeSpec(name, null);
+    }
+
+    public static TypeSpec voidType() {
+        return VOID_TYPE;
     }
 
     @Override
@@ -52,8 +57,8 @@ public class ClassTypeSpec implements Printable {
             return this;
         }
 
-        public ClassTypeSpec build() {
-            return new ClassTypeSpec(name, List.copyOf(typeArgs));
+        public TypeSpec build() {
+            return new TypeSpec(name, List.copyOf(typeArgs));
         }
     }
 }
