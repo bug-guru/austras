@@ -33,7 +33,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <annotationProcessors>
-                        <processor>guru.bug.austras.apt.events.ReceiverProcessor</processor>
+                        <processor>guru.bug.austras.apt.events.EventComponentsProcessor</processor>
                         <processor>guru.bug.austras.apt.core.AnnotationProcessorCore</processor>
                     </annotationProcessors>
                     <verbose>true</verbose>

@@ -1,2 +1,2 @@
-guru.bug.austras.apt.events.ReceiverProcessor
+guru.bug.austras.apt.events.EventComponentsProcessor
 guru.bug.austras.apt.core.AnnotationProcessorCore
