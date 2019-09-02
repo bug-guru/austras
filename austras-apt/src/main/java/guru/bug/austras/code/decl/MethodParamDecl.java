@@ -29,7 +29,7 @@ public class MethodParamDecl implements Printable {
     public void print(CodePrinter out) {
         out
                 .print(modifiers)
-                .print(out.withSeparator(" "),
+                .print(out.withSeparator(CodePrinter::space).weakSuffix(CodePrinter::space),
                         o -> o.print(annotations))
                 .print(type)
                 .space()

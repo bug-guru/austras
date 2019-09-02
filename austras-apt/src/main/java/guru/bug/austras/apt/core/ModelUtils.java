@@ -8,6 +8,7 @@ import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
@@ -308,5 +309,22 @@ public class ModelUtils {
 
     public boolean isProvider(Element element) {
         return isProvider(element.asType());
+    }
+
+    public List<AnnotationSpec> createQualifierAnnotations(QualifierModel qualifierModel) {
+        var result = new ArrayList<AnnotationSpec>();
+        qualifierModel.forEach((qualifierName, properties) -> {
+            var qualifierBuilder = AnnotationSpec.builder().typeName(Qualifier.class)
+                    .add("name", qualifierName);
+            properties.forEach(prop ->
+                    qualifierBuilder.add("properties",
+                            AnnotationSpec.builder()
+                                    .typeName(QualifierProperty.class)
+                                    .add("name", prop.getKey())
+                                    .add("value", prop.getValue())
+                                    .build()));
+            result.add(qualifierBuilder.build());
+        });
+        return result;
     }
 }

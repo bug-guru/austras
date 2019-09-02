@@ -5,7 +5,6 @@ import guru.bug.austras.apt.events.model.DependencyCallParamModel;
 import guru.bug.austras.apt.events.model.MessageCallParamModel;
 import guru.bug.austras.apt.events.model.MessageReceiverModel;
 import guru.bug.austras.apt.model.DependencyModel;
-import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.code.CompilationUnit;
 import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.QualifiedName;
@@ -17,8 +16,6 @@ import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.core.Component;
-import guru.bug.austras.core.Qualifier;
-import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Receiver;
 import guru.bug.austras.provider.Provider;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +29,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReceiverGenerator {
@@ -57,7 +52,7 @@ public class ReceiverGenerator {
                         TypeDecl.classBuilder()
                                 .publicMod()
                                 .addAnnotation(AnnotationSpec.of(Component.class))
-                                .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
+                                .addAnnotations(modelUtils.createQualifierAnnotations(model.getQualifiers()))
                                 .simpleName(model.getClassName())
                                 .addSuperinterface(TypeSpec.builder()
                                         .name(QualifiedName.of(Receiver.class))
@@ -83,7 +78,7 @@ public class ReceiverGenerator {
                         .name("message")
                         .type(model.getMessageType())
                         .build())
-                .body(new CodeBlock())
+                .body(new CodeBlock()) // TODO
                 .build();
     }
 
@@ -91,13 +86,13 @@ public class ReceiverGenerator {
         return ClassMemberDecl.constructorBuilder()
                 .publicMod()
                 .addParams(model.getDependencies().stream().map(this::convertToParametersDecl).collect(Collectors.toList()))
-                .body(new CodeBlock())
+                .body(new CodeBlock()) // TODO
                 .build();
     }
 
     private MethodParamDecl convertToParametersDecl(DependencyModel model) {
         return MethodParamDecl.builder()
-                .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
+                .addAnnotations(modelUtils.createQualifierAnnotations(model.getQualifiers()))
                 .name(model.getName())
                 .type(calculateParameterType(model))
                 .build();
@@ -171,21 +166,5 @@ public class ReceiverGenerator {
         return componentDependency;
     }
 
-    private List<AnnotationSpec> createQualifierAnnotations(QualifierModel qualifierModel) {
-        var result = new ArrayList<AnnotationSpec>();
-        qualifierModel.forEach((qualifierName, properties) -> {
-            var qualifierBuilder = AnnotationSpec.builder().typeName(Qualifier.class)
-                    .add("name", qualifierName);
-            properties.forEach(prop ->
-                    qualifierBuilder.add("properties",
-                            AnnotationSpec.builder()
-                                    .typeName(QualifierProperty.class)
-                                    .add("name", prop.getKey())
-                                    .add("value", prop.getValue())
-                                    .build()));
-            result.add(qualifierBuilder.build());
-        });
-        return result;
-    }
 
 }

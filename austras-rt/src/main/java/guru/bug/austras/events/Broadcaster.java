@@ -1,14 +1,26 @@
 package guru.bug.austras.events;
 
-// TODO second type param for response type
-public interface Broadcaster<M> {
-    // TODO response consumer as the second param (result of each called method must be passed to this consumer)
-    void send(M message);
+import java.util.Collection;
+import java.util.List;
 
-    /**
-     * convenience method, the same as send(null). Useful when @Message annotation is placed on method, not on parameter
-     */
-    default void send() {
-        send(null);
+public abstract class Broadcaster<M> {
+    private final List<Receiver<M>> receivers;
+
+    public Broadcaster(Collection<? extends Receiver<M>> receivers) {
+        this.receivers = List.copyOf(receivers);
+    }
+
+    public void send(M message) {
+        receivers.forEach(r -> {
+            try {
+
+                r.receive(message);
+
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);// TODO
+            }
+        });
     }
 }
