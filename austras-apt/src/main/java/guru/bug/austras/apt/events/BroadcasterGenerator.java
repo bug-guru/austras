@@ -6,8 +6,10 @@ import guru.bug.austras.code.CompilationUnit;
 import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.*;
+import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
+import guru.bug.austras.core.Component;
 import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +43,7 @@ public class BroadcasterGenerator {
                 .packageDecl(PackageDecl.of(model.getPackageName()))
                 .addTypeDecl(TypeDecl.classBuilder()
                         .publicMod()
+                        .addAnnotation(AnnotationSpec.of(Component.class))
                         .addAnnotations(qualifiers)
                         .simpleName(model.getSimpleName())
                         .superclass(TypeSpec.builder()
@@ -59,6 +62,7 @@ public class BroadcasterGenerator {
     private MethodClassMemberDecl createConstructor(MessageBroadcasterModel model) {
         var qualifiers = modelUtils.createQualifierAnnotations(model.getQualifier());
         return ClassMemberDecl.constructorBuilder()
+                .publicMod()
                 .addParam(MethodParamDecl.builder()
                         .name("receivers")
                         .addAnnotations(qualifiers)
@@ -70,7 +74,13 @@ public class BroadcasterGenerator {
                                         .build()))
                                 .build())
                         .build())
-                .body(new CodeBlock()) // TODO
+                .body(createConstructorBody())
+                .build();
+    }
+
+    private CodeBlock createConstructorBody() {
+        return CodeBlock.builder()
+                .addLine("super(receivers);")
                 .build();
     }
 

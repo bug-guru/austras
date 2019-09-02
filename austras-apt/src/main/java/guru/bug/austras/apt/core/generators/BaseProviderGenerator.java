@@ -12,6 +12,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -84,9 +85,17 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
 
     protected void generateConstructorParams(BiConsumer<String, String> paramGenerator) {
         providerDependencies.forEach(p -> {
+            var ptype = p.providerDependency.getType();
+            if (p.providerDependency.isCollection()) {
+                ptype = Collection.class.getName() + "<? extends " + ptype + ">";
+            }
+
+            if (p.providerDependency.isProvider()) {
+                ptype = Provider.class.getName() + "<? extends " + ptype + ">";
+            }
             String type = String.format("%s%s",
                     generateQualifierAnnotations(p.providerDependency.getQualifiers(), false),
-                    p.providerDependency.getType());
+                    ptype);
             paramGenerator.accept(type, p.providerDependency.getName());
         });
     }
@@ -126,7 +135,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
                             StringEscapeUtils.escapeJava(e.getLeft()),
                             StringEscapeUtils.escapeJava(e.getRight())))
                     .collect(Collectors.joining(",", "{", "}"));
-            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), qualifierName, props);
+            var qline = String.format("@%s(name=\"%s\", properties=%s)", Qualifier.class.getName(), qualifierName, strProps);
             result.append(qline);
             if (multiline) {
                 result.append('\n');

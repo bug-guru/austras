@@ -291,7 +291,6 @@ public class ModelUtils {
         var paramType = (DeclaredType) paramElement.asType();
         var varName = paramElement.getSimpleName().toString();
         var result = createDependencyModel(varName, paramType, paramElement);
-//        result.setParamElement(paramElement);
         return result;
     }
 

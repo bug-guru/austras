@@ -4,6 +4,7 @@ import guru.bug.austras.apt.model.DependencyModel;
 
 public class DependencyCallParamModel extends CallParamModel {
     private DependencyModel dependency;
+    private boolean resolveProvider;
 
     public DependencyModel getDependency() {
         return dependency;
@@ -11,5 +12,13 @@ public class DependencyCallParamModel extends CallParamModel {
 
     public void setDependency(DependencyModel dependency) {
         this.dependency = dependency;
+    }
+
+    public boolean isResolveProvider() {
+        return resolveProvider;
+    }
+
+    public void setResolveProvider(boolean resolveProvider) {
+        this.resolveProvider = resolveProvider;
     }
 }

@@ -13,6 +13,8 @@ public class MessageReceiverModel {
     private List<CallParamModel> parameters;
     private QualifierModel qualifiers;
     private String messageType;
+    private String methodName;
+    private MessageCallParamModel messageParam;
 
     public String getPackageName() {
         return packageName;
@@ -74,5 +76,21 @@ public class MessageReceiverModel {
 
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public void setMessageParam(MessageCallParamModel messageParam) {
+        this.messageParam = messageParam;
+    }
+
+    public MessageCallParamModel getMessageParam() {
+        return messageParam;
     }
 }

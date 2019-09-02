@@ -187,9 +187,10 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             var key = new ComponentKey(d.getType(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
                 var componentModels = candidateComponentMap.findComponentModels(key);
-                if (componentModels.isEmpty()) {
-                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + " Unresolved dependency: " + key);
-                }
+                // TODO is it safe to remove following lines?
+//                if (componentModels.isEmpty()) {
+//                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + " Unresolved dependency: " + key);
+//                }
                 debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
                 componentMap.addComponents(componentModels);
             }

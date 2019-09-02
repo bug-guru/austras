@@ -38,6 +38,8 @@
                     </annotationProcessors>
                     <verbose>true</verbose>
                     <showWarnings>true</showWarnings>
+                    <debug>true</debug>
+                    <debuglevel>source</debuglevel>
                 </configuration>
             </plugin>
             <plugin>

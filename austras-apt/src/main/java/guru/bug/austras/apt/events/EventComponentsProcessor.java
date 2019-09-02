@@ -126,14 +126,9 @@ public class EventComponentsProcessor extends AbstractAustrasAnnotationProcessor
                 return null;
             }
 
-            System.out.println("PROCESSING " + e);
-
-
             if (modelUtils.isBroadcaster(e.asType())) {
-                System.out.println("GENERATING BROADCASTER");
                 generateBroadcaster(e);
             } else {
-                System.out.println("GENERATING RECEIVER");
                 generateReceiver(e);
             }
 

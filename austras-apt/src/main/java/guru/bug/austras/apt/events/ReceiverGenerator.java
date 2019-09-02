@@ -8,10 +8,7 @@ import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.code.CompilationUnit;
 import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.QualifiedName;
-import guru.bug.austras.code.decl.ClassMemberDecl;
-import guru.bug.austras.code.decl.MethodParamDecl;
-import guru.bug.austras.code.decl.PackageDecl;
-import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.decl.*;
 import guru.bug.austras.code.spec.AnnotationSpec;
 import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
@@ -58,6 +55,7 @@ public class ReceiverGenerator {
                                         .name(QualifiedName.of(Receiver.class))
                                         .addTypeArg(TypeArg.ofType(model.getMessageType()))
                                         .build())
+                                .addMembers(createFields(model))
                                 .addMember(convertToConstructorDecl(model))
                                 .addMember(createReceiverMethod(model))
                                 .build())
@@ -70,24 +68,60 @@ public class ReceiverGenerator {
 
     }
 
+    private Collection<ClassMemberDecl> createFields(MessageReceiverModel model) {
+        return model.getDependencies().stream()
+                .map(this::convertToField)
+                .collect(Collectors.toList());
+    }
+
+    private FieldClassMemberDecl convertToField(DependencyModel dependencyModel) {
+        return FieldClassMemberDecl.builder(calculateParameterType(dependencyModel), dependencyModel.getName())
+                .privateMod()
+                .finalMod()
+                .build();
+    }
+
     private ClassMemberDecl createReceiverMethod(MessageReceiverModel model) {
         return ClassMemberDecl.methodBuilder("receive", TypeSpec.voidType())
                 .addAnnotation(AnnotationSpec.of(Override.class))
                 .publicMod()
                 .addParam(MethodParamDecl.builder()
-                        .name("message")
+                        .name(model.getMessageParam().getName())
                         .type(model.getMessageType())
                         .build())
-                .body(new CodeBlock()) // TODO
+                .body(createReceiverMethodBody(model))
                 .build();
+    }
+
+    private CodeBlock createReceiverMethodBody(MessageReceiverModel model) {
+        var builder = CodeBlock.builder();
+        var params = model.getParameters().stream()
+                .map(p -> {
+                    if (p instanceof DependencyCallParamModel && ((DependencyCallParamModel) p).isResolveProvider()) {
+                        return String.format("%s.get()", p.getName());
+                    } else {
+                        return p.getName();
+                    }
+                })
+                .collect(Collectors.joining(", "));
+        builder.addLine(String.format("this.%s.get().%s(%s);", model.getDependencies().get(0).getName(), model.getMethodName(), params));
+        return builder.build();
     }
 
     private ClassMemberDecl convertToConstructorDecl(MessageReceiverModel model) {
         return ClassMemberDecl.constructorBuilder()
                 .publicMod()
                 .addParams(model.getDependencies().stream().map(this::convertToParametersDecl).collect(Collectors.toList()))
-                .body(new CodeBlock()) // TODO
+                .body(createConstructorBody(model))
                 .build();
+    }
+
+    private CodeBlock createConstructorBody(MessageReceiverModel model) {
+        var builder = CodeBlock.builder();
+        for (var d : model.getDependencies()) {
+            builder.addLine(String.format("this.%1$s = %1$s;", d.getName()));
+        }
+        return builder.build();
     }
 
     private MethodParamDecl convertToParametersDecl(DependencyModel model) {
@@ -123,6 +157,9 @@ public class ReceiverGenerator {
         result.setClassName(receiverClassName);
         VariableElement messageParamElement = null;
 
+        var methodName = method.getSimpleName();
+        result.setMethodName(methodName.toString());
+
         var componentDependency = createComponentDependency(method);
         result.addDependency(componentDependency);
 
@@ -137,9 +174,12 @@ public class ReceiverGenerator {
                 d.setName(p.getSimpleName().toString());
                 d.setType(p.asType().toString());
                 result.addParameter(d);
+                result.setMessageParam(d);
             } else {
-                var dependency = modelUtils.createDependencyModel(p).copyAsProvider();
+                var origDep = modelUtils.createDependencyModel(p);
+                var dependency = origDep.copyAsProvider();
                 var callParam = new DependencyCallParamModel();
+                callParam.setResolveProvider(!origDep.isProvider());
                 callParam.setDependency(dependency);
                 callParam.setName(dependency.getName());
                 callParam.setType(dependency.getType());
@@ -150,6 +190,10 @@ public class ReceiverGenerator {
         if (messageParamElement == null) {
             result.setMessageType(Void.class.getName());
             result.setQualifiers(modelUtils.extractQualifiers(method));
+            var mp = new MessageCallParamModel();
+            mp.setName("aVoid");
+            mp.setType(Void.class.getName());
+            result.setMessageParam(mp);
         } else {
             result.setMessageType(messageParamElement.asType().toString());
         }
