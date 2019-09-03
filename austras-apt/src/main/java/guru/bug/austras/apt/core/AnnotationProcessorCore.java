@@ -173,28 +173,29 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             if (componentModel == null) {
                 debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key);
                 componentModel = modelUtils.createComponentModel(type, providerType);
+                componentModel.setQualifiers(qualifiers);
                 componentMap.addComponent(componentModel);
             }
             debug("Setting provider %s for component %s", providerElement, componentModel);
             componentModel.setProvider(providerModel);
-            componentModel.setQualifiers(qualifiers);
-            ensureProviderSatisfiedDependencies(providerModel);
         }
     }
 
-    private void ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
+    // TODO need to check all providers for satisfied dependencies before generating Main.
+    private boolean ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
+        var result = true;
         for (var d : providerModel.getDependencies()) {
             var key = new ComponentKey(d.getType(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
                 var componentModels = candidateComponentMap.findComponentModels(key);
-                // TODO is it safe to remove following lines?
-//                if (componentModels.isEmpty()) {
-//                    throw new IllegalStateException("Provider " + providerModel.getInstantiable() + " Unresolved dependency: " + key);
-//                }
+                if (componentModels.isEmpty()) {
+                    result = false;
+                }
                 debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
                 componentMap.addComponents(componentModels);
             }
         }
+        return result;
     }
 
     private void generateProviders() {

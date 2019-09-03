@@ -58,7 +58,7 @@ public class DependencyModel {
         result.setQualifiers(qualifiers);
         result.setProvider(true);
         if (provider) {
-            result.setName(name);
+            result.setName(name + "_");
         } else {
             result.setName(name + "Provider");
         }

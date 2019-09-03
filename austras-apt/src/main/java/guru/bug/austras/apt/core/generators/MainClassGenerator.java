@@ -181,7 +181,15 @@ public class MainClassGenerator {
 
         @Override
         public String getAsParameter() {
-            return componentMap.findSingleComponentModel(key).getProvider().getName();
+            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
+            if (singleComponentModel == null) {
+                throw new IllegalStateException("Component " + key + " not found"); // TODO
+            }
+            ProviderModel provider = singleComponentModel.getProvider();
+            if (provider == null) {
+                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
+            }
+            return provider.getName();
         }
     }
 
