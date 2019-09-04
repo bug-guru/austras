@@ -240,6 +240,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
                 }
                 log.fine(() -> String.format("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key));
                 componentMap.addComponents(componentModels);
+                // FIXME AFTER THIS NO MORE CODE GENERATION IS EXECUTED, BUT PROVIDERS ARE NOT GENERATED FOR CANDIDATES
             }
         }
         return result;
