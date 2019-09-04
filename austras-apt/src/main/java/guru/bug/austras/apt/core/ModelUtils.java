@@ -25,19 +25,20 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
 import javax.lang.model.util.Types;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
+    private static final Logger log = Logger.getLogger(ModelUtils.class.getName());
     private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
         @Override
         protected String defaultAction(Object o, Void aVoid) {
             return Objects.toString(o);
         }
     };
-    private final Logger log;
     private final UniqueNameGenerator uniqueNameGenerator;
     private final Types typeUtils;
     private final Elements elementUtils;
@@ -50,8 +51,7 @@ public class ModelUtils {
     private final TypeElement broadcasterInterfaceElement;
     private final DeclaredType broadcasterInterfaceType;
 
-    public ModelUtils(Logger log, UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
-        this.log = log;
+    public ModelUtils(UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.uniqueNameGenerator = uniqueNameGenerator;
         this.processingEnv = processingEnv;
         this.typeUtils = processingEnv.getTypeUtils();
@@ -74,7 +74,7 @@ public class ModelUtils {
                 .map(TypeMirror::toString)
                 .collect(Collectors.toList());
         ancestors.add(type.toString());
-        log.debug("All superclasses and interfaces: %s", ancestors);
+        log.fine(() -> String.format("All superclasses and interfaces: %s", ancestors));
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
         var model = new ComponentModel();
@@ -173,26 +173,26 @@ public class ModelUtils {
         var toCheck = new LinkedList<TypeMirror>(typeUtils.directSupertypes(componentType));
         while (!toCheck.isEmpty()) {
             var cur = toCheck.remove();
-            log.debug("Checking %s", cur);
+            log.fine(() -> String.format("Checking %s", cur));
             if (checked.contains(cur)) {
-                log.debug("Already checked");
+                log.fine("Already checked");
                 continue;
             }
             checked.add(cur);
             if (cur.getKind() != TypeKind.DECLARED) {
-                log.debug("%s is not a declared type", cur);
+                log.fine(() -> String.format("%s is not a declared type", cur));
                 continue;
             }
             var curType = ((DeclaredType) cur);
             var curElem = curType.asElement();
             if (curElem.getKind() != ElementKind.CLASS && curElem.getKind() != ElementKind.INTERFACE) {
-                log.debug("%s is not an interface or class", curElem);
+                log.fine(() -> String.format("%s is not an interface or class", curElem));
                 continue;
             }
             var curDeclElem = (TypeElement) curElem;
             result.add(curType);
             var supertypes = typeUtils.directSupertypes(curType);
-            log.debug("adding supertypes to check-queue: %s", supertypes);
+            log.fine(() -> String.format("adding supertypes to check-queue: %s", supertypes));
             toCheck.addAll(supertypes);
         }
         return result;
@@ -239,7 +239,7 @@ public class ModelUtils {
                 return (DeclaredType) t.getExtendsBound();
             }
         }, null);
-        log.debug("Wrapper %s wraps component: %s", wrapperType, componentType);
+        log.fine(() -> String.format("Wrapper %s wraps component: %s", wrapperType, componentType));
         return componentType;
     }
 

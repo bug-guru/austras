@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.core.generators;
 
-import guru.bug.austras.apt.core.Logger;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
@@ -15,20 +14,20 @@ import javax.lang.model.util.Elements;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MainClassGenerator {
+    private static final Logger log = Logger.getLogger(MainClassGenerator.class.getName());
     private final UniqueNameGenerator uniqueNameGenerator;
     private final ProcessingEnvironment processingEnv;
-    private final Logger log;
     private final ComponentMap componentMap;
     private final Elements elementUtils;
     private final String loggerVarName;
     private ComponentModel appComponentModel;
 
-    public MainClassGenerator(Logger log, ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator) {
+    public MainClassGenerator(ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator) {
         this.processingEnv = processingEnv;
-        this.log = log;
         this.componentMap = componentMap;
         this.elementUtils = processingEnv.getElementUtils();
         this.uniqueNameGenerator = uniqueNameGenerator;
@@ -44,7 +43,7 @@ public class MainClassGenerator {
 
     public void generateAppMain() {
         if (appComponentModel == null) {
-            log.debug("No application component");
+            log.fine("No application component");
             return;
         }
         var l = java.util.logging.Logger.getGlobal();
@@ -104,7 +103,9 @@ public class MainClassGenerator {
             var components = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
             components.addAll(componentMap.findComponentModels(key));
             for (var comp : components) {
-                var hasUnresolved = comp.getProvider().getDependencies().stream()
+                ProviderModel provider = Objects.requireNonNull(comp.getProvider(), () -> String.format("Component %s doesn't have a provider", comp));
+                List<DependencyModel> dependencies = Objects.requireNonNull(provider.getDependencies());
+                var hasUnresolved = dependencies.stream()
                         .map(d -> new ComponentKey(d.getType(), d.getQualifiers()))
                         .anyMatch(unresolved::contains);
                 if (hasUnresolved) {

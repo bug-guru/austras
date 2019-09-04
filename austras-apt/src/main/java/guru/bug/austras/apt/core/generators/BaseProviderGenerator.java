@@ -15,10 +15,11 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class BaseProviderGenerator implements ProviderGenerator {
-
+    private static final Logger log = Logger.getLogger(BaseProviderGenerator.class.getPackageName());
     protected final ProcessingEnvironment processingEnv;
     protected final ComponentModel componentModel;
     protected final List<Dependency> providerDependencies;
@@ -42,6 +43,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     public final void generateProvider() {
+        log.fine(() -> String.format("Generating provider %s for component %s", providerQualifiedName, componentModel));
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(providerQualifiedName);
             try (var oos = sourceFile.openOutputStream();

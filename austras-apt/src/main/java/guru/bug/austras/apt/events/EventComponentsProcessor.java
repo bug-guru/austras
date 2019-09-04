@@ -1,19 +1,25 @@
 package guru.bug.austras.apt.events;
 
-import guru.bug.austras.apt.core.AbstractAustrasAnnotationProcessor;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.events.Message;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.util.SimpleElementVisitor9;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class EventComponentsProcessor extends AbstractAustrasAnnotationProcessor {
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
+public class EventComponentsProcessor extends AbstractProcessor {
+    private static final Logger log = Logger.getLogger(EventComponentsProcessor.class.getName());
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
     private ModelUtils modelUtils;
     private UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
@@ -23,7 +29,7 @@ public class EventComponentsProcessor extends AbstractAustrasAnnotationProcessor
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv);
+        modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
         receiverGenerator = new ReceiverGenerator(processingEnv, modelUtils);
         broadcasterGenerator = new BroadcasterGenerator(processingEnv, modelUtils);
     }
@@ -72,19 +78,28 @@ public class EventComponentsProcessor extends AbstractAustrasAnnotationProcessor
 
 
     private void logError(Element e) {
-        logError(e, null);
+        logError(e, null, null);
+    }
+
+    private void logError(Element e, Throwable t) {
+        logError(e, null, t);
     }
 
     private void logError(Element e, String reason) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Cannot process " + e + (reason == null ? "" : ": " + reason), e);
+        logError(e, reason, null);
+    }
+
+    private void logError(Element e, String reason, Throwable t) {
+        String msg = "Cannot process " + e + (reason == null ? "" : ": " + reason);
+        log.log(Level.SEVERE, msg, t);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
 
     private void generateBroadcaster(VariableElement e) {
         try {
             broadcasterGenerator.generate(e);
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-            logError(e, "Code generation exception"); // TODO Better error handling
+            logError(e, "Code generation exception", ex); // TODO Better error handling
         }
     }
 
@@ -96,8 +111,7 @@ public class EventComponentsProcessor extends AbstractAustrasAnnotationProcessor
         try {
             receiverGenerator.generate(e);
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-            logError(e, "Code generation exception"); // TODO Better error handling
+            logError(e, "Code generation exception", ex); // TODO Better error handling
         }
     }
 

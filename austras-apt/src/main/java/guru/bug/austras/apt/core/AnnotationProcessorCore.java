@@ -9,10 +9,7 @@ import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
 
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -22,12 +19,11 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.annotation.Annotation;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Formatter;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
 import static javax.lang.model.element.ElementKind.*;
@@ -35,8 +31,45 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
-public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor {
+public class AnnotationProcessorCore extends AbstractProcessor {
+    private static final Logger log = Logger.getLogger(AnnotationProcessorCore.class.getName());
     private static final Set<Class<? extends Annotation>> supportedAnnotations = Set.of(Application.class, Component.class);
+    private final List<ProviderModel> allProviders = new ArrayList<>();
+
+    static {
+        Logger logger = Logger.getLogger("guru.bug.austras");
+        logger.setLevel(Level.ALL);
+        logger.setUseParentHandlers(false);
+        var f = new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                StringWriter sw = new StringWriter();
+                var out = new PrintWriter(sw);
+
+                String loggerName = record.getLoggerName();
+                if (loggerName.length() > 25) {
+                    loggerName = loggerName.substring(loggerName.length() - 25);
+                }
+                out.printf("[%-6s][%-25s] %s", record.getLevel(), loggerName, record.getMessage());
+                if (record.getThrown() != null) {
+                    out.print(" ");
+                    record.getThrown().printStackTrace(out);
+                }
+                out.println();
+                return sw.toString();
+            }
+        };
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream("austras.log");
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        var h = new StreamHandler(out, f);
+        h.setLevel(Level.ALL);
+        logger.addHandler(h);
+    }
+
     private final Queue<Element> providers = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
     private ModelUtils modelUtils;
@@ -51,24 +84,30 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         super.init(processingEnv);
         this.elementUtils = processingEnv.getElementUtils();
         this.typeUtils = processingEnv.getTypeUtils();
-        this.modelUtils = new ModelUtils(this, uniqueNameGenerator, processingEnv);
+        this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
         this.componentMap = new ComponentMap();
         this.candidateComponentMap = new ComponentMap();
-        this.mainClassGenerator = new MainClassGenerator(this, processingEnv, componentMap, uniqueNameGenerator);
+        this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
-            generateComponentMap();
-            mainClassGenerator.generateAppMain();
-        } else {
-            var rootElements = roundEnv.getRootElements();
-            scanRootElements(rootElements);
-            resolveProviders();
-            generateProviders();
+        try {
+            if (roundEnv.processingOver()) {
+                ensureAllProviderSatisfiedDependencies();
+                generateComponentMap();
+                mainClassGenerator.generateAppMain();
+            } else {
+                var rootElements = roundEnv.getRootElements();
+                scanRootElements(rootElements);
+                resolveProviders();
+                generateProviders();
+            }
+            return false;
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Unexpected error", e);
+            throw new IllegalStateException(e);
         }
-        return false;
     }
 
     private void scanRootElements(Set<? extends Element> rootElements) {
@@ -84,7 +123,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void processProvider(Element element) {
-        debug("PROCESS: Found provider class %s.", element);
+        log.fine(() -> String.format("PROCESS: Found provider class %s.", element));
         providers.add(element);
     }
 
@@ -92,19 +131,19 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
         if (element.getKind() == CLASS) {
             TypeElement typeElement = (TypeElement) element;
             if (!checkIsPublicNonAbstractClass(typeElement)) {
-                debug("IGNORE: Found abstract or non-public class %s", element);
+                log.fine(() -> String.format("IGNORE: Found abstract or non-public class %s", element));
             } else if (!checkUsableConstructor(typeElement)) {
-                debug("IGNORE: No default constructor or multiple public constructors in class %s", element);
+                log.fine(() -> String.format("IGNORE: No default constructor or multiple public constructors in class %s", element));
             } else {
-                debug("PROCESS: Found component class %s.", element);
+                log.fine(() -> String.format("PROCESS: Found component class %s.", element));
                 var model = modelUtils.createComponentModel((DeclaredType) typeElement.asType());
                 var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
                 var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
                 if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
-                    debug("...Adding to candidate components map");
+                    log.fine("...Adding to candidate components map");
                     candidateComponentMap.addComponent(model);
                 } else {
-                    debug("...Adding to components map");
+                    log.fine("...Adding to components map");
                     componentMap.addComponent(model);
                 }
                 if (applicationAnnotation.length > 0) {
@@ -113,9 +152,9 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                 return model;
             }
         } else if (element.getKind() == INTERFACE) {
-            debug("IGNORE: Found interface %s.", element);
+            log.fine(() -> String.format("IGNORE: Found interface %s.", element));
         } else {
-            debug("IGNORE: Unknown element %s.", element);
+            log.fine(() -> String.format("IGNORE: Unknown element %s.", element));
         }
         return null;
     }
@@ -149,10 +188,10 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
     }
 
     private void resolveProviders() {
-        debug("Resolving providers");
+        log.fine("Resolving providers");
         while (!providers.isEmpty()) {
             var providerElement = providers.remove();
-            debug("Resolving provider %s", providerElement);
+            log.fine(() -> String.format("Resolving provider %s", providerElement));
             DeclaredType providerType = (DeclaredType) providerElement.asType();
             var type = modelUtils.extractComponentTypeFromProvider(providerType);
             var qualifiers = modelUtils.extractQualifiers(providerElement);
@@ -171,13 +210,21 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
             providerModel.setDependencies(dependencies);
 
             if (componentModel == null) {
-                debug("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key);
+                log.fine(() -> String.format("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key));
                 componentModel = modelUtils.createComponentModel(type, providerType);
                 componentModel.setQualifiers(qualifiers);
                 componentMap.addComponent(componentModel);
             }
-            debug("Setting provider %s for component %s", providerElement, componentModel);
+            var cm = componentModel;
+            log.fine(() -> String.format("Setting provider %s for component %s", providerElement, cm));
             componentModel.setProvider(providerModel);
+            allProviders.add(providerModel);
+        }
+    }
+
+    private void ensureAllProviderSatisfiedDependencies() {
+        for (var p : allProviders) {
+            ensureProviderSatisfiedDependencies(p);
         }
     }
 
@@ -191,7 +238,7 @@ public class AnnotationProcessorCore extends AbstractAustrasAnnotationProcessor 
                 if (componentModels.isEmpty()) {
                     result = false;
                 }
-                debug("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key);
+                log.fine(() -> String.format("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key));
                 componentMap.addComponents(componentModels);
             }
         }

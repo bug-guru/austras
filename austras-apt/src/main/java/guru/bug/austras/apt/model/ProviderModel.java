@@ -24,7 +24,7 @@ public class ProviderModel {
     }
 
     public List<DependencyModel> getDependencies() {
-        return dependencies;
+        return dependencies == null ? List.of() : dependencies;
     }
 
     public void setDependencies(List<DependencyModel> dependencies) {
