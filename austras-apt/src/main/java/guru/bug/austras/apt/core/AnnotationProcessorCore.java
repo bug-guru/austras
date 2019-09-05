@@ -140,7 +140,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
     }
 
     private void scanComponent(TypeElement typeElement) {
-        var model = modelUtils.createComponentModel((DeclaredType) typeElement.asType());
+        var model = modelUtils.createComponentModel(typeElement);
         var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
         var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
         if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
@@ -237,7 +237,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
                 .forEach(cm -> {
                     var provider = cm.getProvider();
                     if (provider == null) {
-                        log.info(() -> format("Component %s doesn't have a provider yet. Generating.", cm.getInstantiable()));
+                        log.info(() -> format("<1>Component %s doesn't have a provider yet. Generating.", cm.getInstantiable()));
                         generateProvider(cm);
                     } else {
                         log.info(() -> format("Resolving dependencies of provider %s (component %s)", provider.getInstantiable(), cm.getInstantiable()));
@@ -251,7 +251,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
                 });
         componentMap.addComponents(toAdd);
         for (var c : toAdd) {
-            log.info(() -> format("Component %s doesn't have a provider yet. Generating.", c.getInstantiable()));
+            log.info(() -> format("<2>Component %s doesn't have a provider yet. Generating.", c.getInstantiable()));
             generateProvider(c);
         }
     }

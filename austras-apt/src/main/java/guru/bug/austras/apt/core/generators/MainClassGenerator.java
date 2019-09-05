@@ -77,7 +77,7 @@ public class MainClassGenerator {
     }
 
     private void genInfoLog(PrintWriter out, String msg) {
-        out.printf("\t\t%s.info(() -> \"%s\");\n", loggerVarName, StringEscapeUtils.escapeJava(msg));
+        out.printf("\t\t%s.info(\"%s\");\n", loggerVarName, StringEscapeUtils.escapeJava(msg));
     }
 
     private void generateProviderCall(ComponentModel componentModel, PrintWriter out) {

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class BaseProviderGenerator implements ProviderGenerator {
-    private static final Logger log = Logger.getLogger(BaseProviderGenerator.class.getPackageName());
+    private static final Logger log = Logger.getLogger(BaseProviderGenerator.class.getName());
     protected final ProcessingEnvironment processingEnv;
     protected final ComponentModel componentModel;
     protected final List<Dependency> providerDependencies;

@@ -65,11 +65,11 @@ public class ModelUtils {
         this.broadcasterInterfaceType = typeUtils.getDeclaredType(broadcasterInterfaceElement);
     }
 
-    public ComponentModel createComponentModel(DeclaredType type) {
-        return createComponentModel(type, type);
+    public ComponentModel createComponentModel(TypeElement type) {
+        return createComponentModel((DeclaredType) type.asType(), type);
     }
 
-    public ComponentModel createComponentModel(DeclaredType type, DeclaredType metaInfo) {
+    public ComponentModel createComponentModel(DeclaredType type, AnnotatedConstruct metaInfo) {
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
                 .collect(Collectors.toList());
