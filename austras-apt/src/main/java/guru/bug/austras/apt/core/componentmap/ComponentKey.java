@@ -10,7 +10,11 @@ public class ComponentKey {
 
     public ComponentKey(String type, QualifierModel qualifiers) {
         this.type = type;
-        this.qualifiers = qualifiers;
+        if (qualifiers != null && !qualifiers.isEmpty()) {
+            this.qualifiers = qualifiers;
+        } else {
+            this.qualifiers = null;
+        }
     }
 
     public String getType() {

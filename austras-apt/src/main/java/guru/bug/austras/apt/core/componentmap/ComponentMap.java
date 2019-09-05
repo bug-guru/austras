@@ -9,9 +9,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
+
 public class ComponentMap {
+    private static final Logger log = Logger.getLogger(ComponentMap.class.getName());
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
     private final ModuleModel model = new ModuleModel();
 
@@ -20,10 +24,12 @@ public class ComponentMap {
     }
 
     public void addComponent(ComponentModel componentModel) {
+        log.fine(() -> format("Indexing component %s", componentModel.getInstantiable()));
         model.components().add(componentModel);
         var qualifiers = componentModel.getQualifiers();
         for (var a : componentModel.getTypes()) {
             var key = new ComponentKey(a, qualifiers);
+            log.finer(() -> format("--- key %s", key));
             put(key, componentModel);
         }
     }
@@ -58,6 +64,26 @@ public class ComponentMap {
         var comps = index.get(key);
         if (comps == null) {
             return Collections.emptyList();
+        }
+        return Collections.unmodifiableCollection(comps);
+    }
+
+    public Collection<ComponentModel> findAndRemoveComponentModels(ComponentKey key) {
+        var comps = index.remove(key);
+        if (comps == null) {
+            return Collections.emptyList();
+        }
+        for (var c : comps) {
+            for (var t : c.getTypes()) {
+                var k = new ComponentKey(t, c.getQualifiers());
+                var m = index.get(k);
+                if (m != null) {
+                    m.remove(c);
+                    if (m.isEmpty()) {
+                        index.remove(k);
+                    }
+                }
+            }
         }
         return Collections.unmodifiableCollection(comps);
     }

@@ -20,21 +20,22 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
 import java.io.*;
-import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.logging.Formatter;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 import java.util.logging.*;
 import java.util.stream.Collectors;
 
-import static javax.lang.model.element.ElementKind.*;
+import static java.lang.String.format;
+import static javax.lang.model.element.ElementKind.CLASS;
+import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractProcessor {
     private static final Logger log = Logger.getLogger(AnnotationProcessorCore.class.getName());
-    private static final Set<Class<? extends Annotation>> supportedAnnotations = Set.of(Application.class, Component.class);
-    private final List<ProviderModel> allProviders = new ArrayList<>();
 
     static {
         Logger logger = Logger.getLogger("guru.bug.austras");
@@ -70,10 +71,10 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         logger.addHandler(h);
     }
 
-    private final Queue<Element> providers = new LinkedList<>();
+    private final Queue<TypeElement> stagedProviders = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
     private ModelUtils modelUtils;
-    private ComponentMap candidateComponentMap;
+    private ComponentMap stagedComponents;
     private ComponentMap componentMap;
     private Elements elementUtils;
     private Types typeUtils;
@@ -86,7 +87,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         this.typeUtils = processingEnv.getTypeUtils();
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
         this.componentMap = new ComponentMap();
-        this.candidateComponentMap = new ComponentMap();
+        this.stagedComponents = new ComponentMap();
         this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator);
     }
 
@@ -94,14 +95,17 @@ public class AnnotationProcessorCore extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
             if (roundEnv.processingOver()) {
-                ensureAllProviderSatisfiedDependencies();
+//                ensureAllProviderSatisfiedDependencies();
                 generateComponentMap();
                 mainClassGenerator.generateAppMain();
             } else {
+                log.fine("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
-                resolveProviders();
-                generateProviders();
+                log.fine("LINK");
+                linkProviders();
+                log.fine("RESOLVE AND GENERATE");
+                resolveAndGenerateProviders();
             }
             return false;
         } catch (Exception e) {
@@ -111,52 +115,44 @@ public class AnnotationProcessorCore extends AbstractProcessor {
     }
 
     private void scanRootElements(Set<? extends Element> rootElements) {
-        rootElements.forEach(this::scanElement);
-    }
-
-    private void scanElement(Element element) {
-        if (modelUtils.isProvider(element)) {
-            processProvider(element);
-        } else {
-            processAsComponent(element);
-        }
-    }
-
-    private void processProvider(Element element) {
-        log.fine(() -> String.format("PROCESS: Found provider class %s.", element));
-        providers.add(element);
-    }
-
-    private ComponentModel processAsComponent(Element element) {
-        if (element.getKind() == CLASS) {
+        for (var element : rootElements) {
+            if (element.getKind() != CLASS) {
+                log.fine(() -> format("IGNORE: root element isn't a class: %s", element));
+                continue;
+            }
             TypeElement typeElement = (TypeElement) element;
             if (!checkIsPublicNonAbstractClass(typeElement)) {
-                log.fine(() -> String.format("IGNORE: Found abstract or non-public class %s", element));
-            } else if (!checkUsableConstructor(typeElement)) {
-                log.fine(() -> String.format("IGNORE: No default constructor or multiple public constructors in class %s", element));
-            } else {
-                log.fine(() -> String.format("PROCESS: Found component class %s.", element));
-                var model = modelUtils.createComponentModel((DeclaredType) typeElement.asType());
-                var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
-                var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
-                if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
-                    log.fine("...Adding to candidate components map");
-                    candidateComponentMap.addComponent(model);
-                } else {
-                    log.fine("...Adding to components map");
-                    componentMap.addComponent(model);
-                }
-                if (applicationAnnotation.length > 0) {
-                    mainClassGenerator.setAppComponentModel(model);
-                }
-                return model;
+                log.info(() -> format("IGNORE: Found abstract or non-public class %s", element));
+                continue;
             }
-        } else if (element.getKind() == INTERFACE) {
-            log.fine(() -> String.format("IGNORE: Found interface %s.", element));
-        } else {
-            log.fine(() -> String.format("IGNORE: Unknown element %s.", element));
+            if (!checkUsableConstructor(typeElement)) {
+                log.info(() -> format("IGNORE: No default constructor or multiple public constructors in class %s", element));
+                continue;
+            }
+            if (modelUtils.isProvider(element)) {
+                log.info(() -> format("PROCESS: Found provider class %s.", element));
+                stagedProviders.add(typeElement);
+            } else {
+                log.info(() -> format("PROCESS: Found component class %s.", element));
+                scanComponent(typeElement);
+            }
         }
-        return null;
+    }
+
+    private void scanComponent(TypeElement typeElement) {
+        var model = modelUtils.createComponentModel((DeclaredType) typeElement.asType());
+        var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
+        var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
+        if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
+            log.fine(() -> format("PROCESS: Adding component to staging: %s", typeElement));
+            stagedComponents.addComponent(model);
+        } else {
+            log.fine(() -> format("PROCESS: Adding component to index: %s", typeElement));
+            componentMap.addComponent(model);
+        }
+        if (applicationAnnotation.length > 0) {
+            mainClassGenerator.setAppComponentModel(model);
+        }
     }
 
     private boolean checkIsPublicNonAbstractClass(TypeElement typeElement) {
@@ -187,18 +183,33 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         }
     }
 
-    private void resolveProviders() {
-        log.fine("Resolving providers");
-        while (!providers.isEmpty()) {
-            var providerElement = providers.remove();
-            log.fine(() -> String.format("Resolving provider %s", providerElement));
+    private void linkProviders() {
+        if (stagedProviders.isEmpty()) {
+            log.info("No providers found for linking");
+            return;
+        } else {
+            log.fine(() -> format("Linking %d providers", stagedProviders.size()));
+        }
+        while (!stagedProviders.isEmpty()) {
+            log.info(() -> format("%d providers yet to link", stagedProviders.size()));
+            var providerElement = stagedProviders.remove();
+            log.info(() -> format("Link provider %s", providerElement));
             DeclaredType providerType = (DeclaredType) providerElement.asType();
-            var type = modelUtils.extractComponentTypeFromProvider(providerType);
+            var componentType = modelUtils.extractComponentTypeFromProvider(providerType);
             var qualifiers = modelUtils.extractQualifiers(providerElement);
-            var key = new ComponentKey(type.toString(), qualifiers);
+            var key = new ComponentKey(componentType.toString(), qualifiers);
+
+            var models = stagedComponents.findAndRemoveComponentModels(key);
+            componentMap.addComponents(models);
+
             var componentModel = componentMap.findSingleComponentModel(key);
             if (componentModel != null && componentModel.getProvider() != null) {
-                throw new IllegalStateException("Provider already set");
+                var msg = format("CONFLICT: provider %s cannot be set for the component %s. Provider already set: %s",
+                        providerElement,
+                        componentModel.getInstantiable(),
+                        componentModel.getProvider().getInstantiable());
+                log.log(Level.SEVERE, msg);
+                throw new IllegalStateException(msg); // TODO better error handling
             }
             var name = uniqueNameGenerator.findFreeVarName(providerType);
             var dependencies = modelUtils.collectConstructorParams(providerType);
@@ -210,23 +221,46 @@ public class AnnotationProcessorCore extends AbstractProcessor {
             providerModel.setDependencies(dependencies);
 
             if (componentModel == null) {
-                log.fine(() -> String.format("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key));
-                componentModel = modelUtils.createComponentModel(type, providerType);
+                log.fine(() -> format("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key));
+                componentModel = modelUtils.createComponentModel(componentType, providerType);
                 componentModel.setQualifiers(qualifiers);
                 componentMap.addComponent(componentModel);
             }
-            var cm = componentModel;
-            log.fine(() -> String.format("Setting provider %s for component %s", providerElement, cm));
+            log.info(() -> format("Assigning provider %s for component %s", providerElement, componentType));
             componentModel.setProvider(providerModel);
-            allProviders.add(providerModel);
         }
     }
 
-    private void ensureAllProviderSatisfiedDependencies() {
-        for (var p : allProviders) {
-            ensureProviderSatisfiedDependencies(p);
+    private void resolveAndGenerateProviders() {
+        var toAdd = new ArrayList<ComponentModel>();
+        componentMap.allComponentsStream()
+                .forEach(cm -> {
+                    var provider = cm.getProvider();
+                    if (provider == null) {
+                        log.info(() -> format("Component %s doesn't have a provider yet. Generating.", cm.getInstantiable()));
+                        generateProvider(cm);
+                    } else {
+                        log.info(() -> format("Resolving dependencies of provider %s (component %s)", provider.getInstantiable(), cm.getInstantiable()));
+                        for (var d : provider.getDependencies()) {
+                            log.fine(() -> format("resolving %s of type %s", d.getName(), d.getType()));
+                            var k = new ComponentKey(d.getType(), d.getQualifiers());
+                            var components = stagedComponents.findAndRemoveComponentModels(k);
+                            toAdd.addAll(components);
+                        }
+                    }
+                });
+        componentMap.addComponents(toAdd);
+        for (var c : toAdd) {
+            log.info(() -> format("Component %s doesn't have a provider yet. Generating.", c.getInstantiable()));
+            generateProvider(c);
         }
     }
+
+//    private void ensureAllProviderSatisfiedDependencies() {
+//        for (var p : allProviders) {
+//            ensureProviderSatisfiedDependencies(p);
+//        }
+//    }
 
     // TODO need to check all providers for satisfied dependencies before generating Main.
     private boolean ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
@@ -234,11 +268,11 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         for (var d : providerModel.getDependencies()) {
             var key = new ComponentKey(d.getType(), d.getQualifiers());
             if (!componentMap.hasComponent(key)) {
-                var componentModels = candidateComponentMap.findComponentModels(key);
+                var componentModels = stagedComponents.findAndRemoveComponentModels(key);
                 if (componentModels.isEmpty()) {
                     result = false;
                 }
-                log.fine(() -> String.format("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key));
+                log.fine(() -> format("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key));
                 componentMap.addComponents(componentModels);
                 // FIXME AFTER THIS NO MORE CODE GENERATION IS EXECUTED, BUT PROVIDERS ARE NOT GENERATED FOR CANDIDATES
             }
@@ -246,13 +280,9 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         return result;
     }
 
-    private void generateProviders() {
-        componentMap.allComponentsStream()
-                .filter(cm -> cm.getProvider() == null)
-                .forEach(cm -> {
-                    var providerGenerator = modelUtils.createProviderGeneratorFor(cm);
-                    providerGenerator.generateProvider();
-                });
+    private void generateProvider(ComponentModel model) {
+        var providerGenerator = modelUtils.createProviderGeneratorFor(model);
+        providerGenerator.generateProvider();
     }
 
 }

@@ -1,0 +1,16 @@
+1. SCAN:
+   Scan root classes for potential components and providers and add them to the staging.
+   Components marked with @Component put to the component map directly instead of staging.
+
+2. LINK:
+   Try to find components for every provider (by instantiable class and qualifiers). Move found components to the component map.
+   Create "virtual" components for rest of providers. Add these components to the component map.
+
+4. RESOLVE:
+   Process dependencies of all providers (component map -> component -> provider)
+        1. if the dependency is in component map - do nothing
+        2. if the dependency is in staging - move it to component map
+        3. if not found - do nothing
+
+5. GENERATE:
+   Generate providers for components without providers
