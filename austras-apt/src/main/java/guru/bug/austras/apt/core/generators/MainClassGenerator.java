@@ -6,6 +6,15 @@ import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.code.CompilationUnit;
+import guru.bug.austras.code.common.CodeBlock;
+import guru.bug.austras.code.common.CodeLine;
+import guru.bug.austras.code.common.QualifiedName;
+import guru.bug.austras.code.decl.ClassMemberDecl;
+import guru.bug.austras.code.decl.MethodParamDecl;
+import guru.bug.austras.code.decl.PackageDecl;
+import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.provider.CollectionProvider;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -16,6 +25,8 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 public class MainClassGenerator {
     private static final Logger log = Logger.getLogger(MainClassGenerator.class.getName());
@@ -41,56 +52,92 @@ public class MainClassGenerator {
         this.appComponentModel = appComponentModel;
     }
 
-    public void generateAppMain() {
+    public void generateAppMain() throws IOException {
         if (appComponentModel == null) {
             log.fine("No application component");
             return;
         }
-        var l = java.util.logging.Logger.getGlobal();
-        l.info(() -> "");
         var sortedComponents = sortComponents();
         var appInstantiable = appComponentModel.getInstantiable();
         var mainClassQualifiedName = appInstantiable + "Main";
         var lastDotIndex = mainClassQualifiedName.lastIndexOf('.');
         var mainClassSimpleName = mainClassQualifiedName.substring(lastDotIndex + 1);
         var packageName = mainClassQualifiedName.substring(0, lastDotIndex);
-        try (var out = new PrintWriter(processingEnv.getFiler().createSourceFile(mainClassQualifiedName).openWriter())) {
-            out.printf("package %s;\n", packageName);
-            out.printf("public class %s {\n", mainClassSimpleName);
-            out.printf("\tprivate static final java.util.logging.Logger %s = java.util.logging.Logger.getLogger(\"%s\");\n", loggerVarName, mainClassQualifiedName);
-            out.print("\tpublic static void main(String... args) {\n");
-            genInfoLog(out, "Application is initializing...");
-            sortedComponents.forEach(m -> generateProviderCall(m, out));
-            generateServicesCall(out);
-            genInfoLog(out, "Application is ready!");
-            out.write("\t}\n");
-            out.write("}\n");
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+
+        var unit = CompilationUnit.builder()
+                .packageDecl(PackageDecl.of(packageName))
+                .addTypeDecl(TypeDecl.classBuilder()
+                        .publicMod()
+                        .simpleName(mainClassSimpleName)
+                        .addMember(ClassMemberDecl.fieldBulder(TypeSpec.of(QualifiedName.of(Logger.class)), loggerVarName)
+                                .publicMod()
+                                .staticMod()
+                                .finalMod()
+                                .initializer(CodeBlock.builder()
+                                        .addLine(format("java.util.logging.Logger.getLogger(\"%s\")", mainClassQualifiedName))
+                                        .build())
+                                .build())
+                        .addMember(ClassMemberDecl.methodBuilder("main", TypeSpec.voidType())
+                                .publicMod()
+                                .staticMod()
+                                .addParam(MethodParamDecl.builder()
+                                        .type(TypeSpec.builder()
+                                                .name(QualifiedName.of(String.class))
+                                                .array()
+                                                .build())
+                                        .name("args")
+                                        .build())
+                                .body(createMainBody(sortedComponents))
+                                .build())
+                        .build())
+                .build();
+
+
+        try (var file = processingEnv.getFiler().createSourceFile(unit.getQualifiedName()).openWriter();
+             var out = new PrintWriter(file)) {
+            unit.print(out);
         }
     }
 
-    private void generateServicesCall(PrintWriter out) {
-        genInfoLog(out, "Starting up services...");
-
-        genInfoLog(out, "Services are started!");
+    private CodeBlock createMainBody(List<ComponentModel> sortedComponents) {
+        return CodeBlock.builder()
+                .addLine(genInfoLog("Application is initializing..."))
+                .addLines(generateProviderCalls(sortedComponents))
+                .addLines(generateServicesCall())
+                .addLine(genInfoLog("Application is ready!"))
+                .build();
     }
 
-    private void genInfoLog(PrintWriter out, String msg) {
-        out.printf("\t\t%s.info(\"%s\");\n", loggerVarName, StringEscapeUtils.escapeJava(msg));
+    private Collection<CodeLine> generateProviderCalls(List<ComponentModel> sortedComponents) {
+        return sortedComponents.stream()
+                .flatMap(m -> generateProviderCall(m).stream())
+                .collect(Collectors.toList());
     }
 
-    private void generateProviderCall(ComponentModel componentModel, PrintWriter out) {
+    private List<CodeLine> generateServicesCall() {
+        return List.of(
+                genInfoLog("Starting up services..."),
+                genInfoLog("Services are started!")
+        );
+    }
+
+    private CodeLine genInfoLog(String msg) {
+        return CodeLine.raw(format("%s.info(\"%s\");", loggerVarName, StringEscapeUtils.escapeJava(msg)));
+    }
+
+    private List<CodeLine> generateProviderCall(ComponentModel componentModel) {
+        var result = new ArrayList<CodeLine>();
         ProviderModel provider = componentModel.getProvider();
-        genInfoLog(out, "Initializing provider " + provider.getInstantiable() + " for " + componentModel.getInstantiable());
+        result.add(genInfoLog("Initializing provider " + provider.getInstantiable() + " for " + componentModel.getInstantiable()));
         var initializers = provider.getDependencies().stream()
                 .map(this::createInitializer)
-                .peek(i -> i.init(out))
+                .peek(i -> result.add(i.init()))
                 .collect(Collectors.toList());
         var params = initializers.stream()
                 .map(ParamInitializer::getAsParameter)
                 .collect(Collectors.joining(", "));
-        out.write(String.format("\t\tvar %s = new %s(%s);\n", provider.getName(), provider.getInstantiable(), params));
+        result.add(CodeLine.raw(format("var %s = new %s(%s);", provider.getName(), provider.getInstantiable(), params)));
+        return result;
     }
 
     private List<ComponentModel> sortComponents() {
@@ -103,7 +150,7 @@ public class MainClassGenerator {
             var components = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
             components.addAll(componentMap.findComponentModels(key));
             for (var comp : components) {
-                ProviderModel provider = Objects.requireNonNull(comp.getProvider(), () -> String.format("Component %s doesn't have a provider", comp));
+                ProviderModel provider = Objects.requireNonNull(comp.getProvider(), () -> format("Component %s doesn't have a provider", comp));
                 List<DependencyModel> dependencies = Objects.requireNonNull(provider.getDependencies());
                 var hasUnresolved = dependencies.stream()
                         .map(d -> new ComponentKey(d.getType(), d.getQualifiers()))
@@ -135,7 +182,7 @@ public class MainClassGenerator {
     }
 
     private interface ParamInitializer {
-        void init(PrintWriter out);
+        CodeLine init();
 
         String getAsParameter();
     }
@@ -148,8 +195,8 @@ public class MainClassGenerator {
         }
 
         @Override
-        public void init(PrintWriter out) {
-            initializer.init(out);
+        public CodeLine init() {
+            return initializer.init();
         }
 
         @Override
@@ -168,8 +215,8 @@ public class MainClassGenerator {
         }
 
         @Override
-        public void init(PrintWriter out) {
-
+        public CodeLine init() {
+            return null;
         }
 
     }
@@ -203,11 +250,11 @@ public class MainClassGenerator {
         }
 
         @Override
-        public void init(PrintWriter out) {
+        public CodeLine init() {
             var params = componentMap.findComponentModels(key).stream()
                     .map(c -> c.getProvider().getName())
                     .collect(Collectors.joining(", "));
-            out.printf("\t\tvar %s = new %s<>(%s);\n", name, CollectionProvider.class.getName(), params);
+            return CodeLine.raw(format("var %s = new %s<>(%s);", name, CollectionProvider.class.getName(), params));
         }
 
         @Override

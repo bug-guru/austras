@@ -4,7 +4,10 @@ import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CodeBlock implements Printable {
     private final List<CodeLine> lines;
@@ -19,7 +22,7 @@ public class CodeBlock implements Printable {
 
     @Override
     public void print(CodePrinter out) {
-        out.print(out.withSeparator("\n").suffix("\n"), o -> o.print(lines));
+        out.print(out.withSeparator("\n"), o -> o.print(lines));
     }
 
     public static class Builder {
@@ -37,8 +40,18 @@ public class CodeBlock implements Printable {
             return this;
         }
 
+        public Builder addLines(Collection<CodeLine> lines) {
+            lines().addAll(lines);
+            return this;
+        }
+
         public CodeBlock build() {
-            return new CodeBlock(lines == null ? null : List.copyOf(lines));
+            return new CodeBlock(lines == null ? null : List.copyOf(lines.stream().filter(Objects::nonNull).collect(Collectors.toList())));
+        }
+
+        public Builder addLine(CodeLine line) {
+            lines().add(line);
+            return this;
         }
     }
 }

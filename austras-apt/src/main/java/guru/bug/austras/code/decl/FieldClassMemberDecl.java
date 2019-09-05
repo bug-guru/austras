@@ -2,6 +2,7 @@ package guru.bug.austras.code.decl;
 
 import guru.bug.austras.code.CodePrinter;
 import guru.bug.austras.code.Printable;
+import guru.bug.austras.code.common.CodeBlock;
 import guru.bug.austras.code.common.SimpleName;
 import guru.bug.austras.code.spec.TypeSpec;
 
@@ -13,11 +14,13 @@ public class FieldClassMemberDecl extends ClassMemberDecl implements Printable {
     private final List<Modifier> modifiers;
     private final TypeSpec type;
     private final SimpleName name;
+    private final CodeBlock initializer;
 
-    private FieldClassMemberDecl(List<Modifier> modifiers, TypeSpec type, SimpleName name) {
+    private FieldClassMemberDecl(List<Modifier> modifiers, TypeSpec type, SimpleName name, CodeBlock initializer) {
         this.modifiers = modifiers;
         this.type = type;
         this.name = name;
+        this.initializer = initializer;
     }
 
     public static Builder builder(TypeSpec type, String name) {
@@ -31,6 +34,7 @@ public class FieldClassMemberDecl extends ClassMemberDecl implements Printable {
                 .print(type)
                 .space()
                 .print(name)
+                .print(out.withWeakPrefix(" = "), o -> o.print(initializer))
                 .print(";");
     }
 
@@ -38,6 +42,12 @@ public class FieldClassMemberDecl extends ClassMemberDecl implements Printable {
         private Set<Modifier> modifiers;
         private TypeSpec type;
         private SimpleName name;
+        private CodeBlock initializer;
+
+        public Builder(TypeSpec type, String name) {
+            this.type = type;
+            this.name = SimpleName.of(name);
+        }
 
         private Set<Modifier> modifiers() {
             if (modifiers == null) {
@@ -76,17 +86,17 @@ public class FieldClassMemberDecl extends ClassMemberDecl implements Printable {
             return this;
         }
 
-        public Builder(TypeSpec type, String name) {
-            this.type = type;
-            this.name = SimpleName.of(name);
+        public Builder initializer(CodeBlock initializer) {
+            this.initializer = initializer;
+            return this;
         }
 
         public FieldClassMemberDecl build() {
             return new FieldClassMemberDecl(
                     modifiers == null ? null : List.copyOf(modifiers),
                     type,
-                    name
-            );
+                    name,
+                    initializer);
         }
     }
 }

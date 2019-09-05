@@ -10,13 +10,15 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 public class TypeSpec implements Printable {
-    private static final TypeSpec VOID_TYPE = new TypeSpec(QualifiedName.of(null, "void"), null);
+    private static final TypeSpec VOID_TYPE = new TypeSpec(QualifiedName.of(null, "void"), null, false);
     private final QualifiedName name;
     private final List<TypeArg> typeArgs;
+    private final boolean array;
 
-    private TypeSpec(QualifiedName name, List<TypeArg> typeArgs) {
+    private TypeSpec(QualifiedName name, List<TypeArg> typeArgs, boolean array) {
         this.name = name;
         this.typeArgs = typeArgs;
+        this.array = array;
     }
 
     public static Builder builder() {
@@ -28,7 +30,7 @@ public class TypeSpec implements Printable {
     }
 
     public static TypeSpec of(QualifiedName name) {
-        return new TypeSpec(name, null);
+        return new TypeSpec(name, null, false);
     }
 
     public static TypeSpec voidType() {
@@ -41,11 +43,15 @@ public class TypeSpec implements Printable {
                 .print(name)
                 .print(out.withWeakPrefix("<").weakSuffix(">").separator(","),
                         o -> o.print(typeArgs));
+        if (array) {
+            out.print("[]");
+        }
     }
 
     public static class Builder {
         private List<TypeArg> typeArgs = new ArrayList<>();
         private QualifiedName name;
+        private boolean array;
 
         public Builder name(QualifiedName name) {
             this.name = requireNonNull(name);
@@ -57,8 +63,13 @@ public class TypeSpec implements Printable {
             return this;
         }
 
+        public Builder array() {
+            this.array = true;
+            return this;
+        }
+
         public TypeSpec build() {
-            return new TypeSpec(name, List.copyOf(typeArgs));
+            return new TypeSpec(name, List.copyOf(typeArgs), array);
         }
     }
 }

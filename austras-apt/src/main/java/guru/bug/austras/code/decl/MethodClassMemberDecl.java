@@ -53,7 +53,7 @@ public class MethodClassMemberDecl extends ClassMemberDecl implements Printable 
                 .print(actualName)
                 .print(out.withSeparator(", ").prefix("(").suffix(")"),
                         o -> o.print(params))
-                .print(out.withWeakPrefix(" {\n").weakSuffix("}\n").indent(4).empty(";\n"),
+                .print(out.withWeakPrefix(" {\n").weakSuffix("\n}\n").indent(4).empty(";\n"),
                         o -> o.print(body));
 
     }
