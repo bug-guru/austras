@@ -5,6 +5,7 @@ import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.core.generators.MainClassGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
+import guru.bug.austras.apt.model.ModuleModelSerializer;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
@@ -87,8 +88,26 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         this.typeUtils = processingEnv.getTypeUtils();
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
         this.componentMap = new ComponentMap();
+        readComponentMaps();
         this.stagedComponents = new ComponentMap();
         this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator);
+    }
+
+    private void readComponentMaps() {
+        try {
+            var allMaps = getClass().getClassLoader().getResources("META-INF/components.yml");
+            while (allMaps.hasMoreElements()) {
+                var map = allMaps.nextElement();
+                try (var stream = map.openStream()) {
+                    var moduleModel = ModuleModelSerializer.load(stream);
+                    for (var comp : moduleModel.getComponents()) {
+                        componentMap.addComponent(comp);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e); // TODO
+        }
     }
 
     @Override

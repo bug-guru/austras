@@ -10,6 +10,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import javax.lang.model.AnnotatedConstruct;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,15 @@ import java.util.Map;
 
 public class ModuleModelSerializer {
     private ModuleModelSerializer() {
+    }
+
+    public static ModuleModel load(InputStream inputStream) {
+        var baseConstructor = new Constructor(ModuleModel.class);
+        var yaml = new Yaml(baseConstructor);
+
+        ModuleModel mm = yaml.load(inputStream);
+
+        return mm;
     }
 
     public static void store(ModuleModel model, Writer out) throws IOException {
