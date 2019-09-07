@@ -1,5 +1,7 @@
 package guru.bug.austras.startup;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,20 +42,26 @@ public class StartupServicesStarter {
     }
 
     private class Terminator extends Thread {
-//        private final Logger log = Logger.getLogger(Terminator.class.getName());
 
         @Override
         public void run() {
-            log.info(() -> format("Stopping %d services", initializedStartupServices.size()));
+            System.out.printf("Stopping %d services\n", initializedStartupServices.size());
             initializedStartupServices.forEach(this::destroy);
+            System.out.println("Application is stopped");
         }
 
         private void destroy(StartupService startupService) {
             try {
-                log.info(() -> format("Stopping service %s", startupService.getClass()));
+                System.out.printf("Stopping service %s\n", startupService.getClass());
                 startupService.destroy();
             } catch (Exception e) {
-                log.log(Level.WARNING, "Error destroying service " + startupService.getClass(), e);
+                var buf = new StringWriter();
+                var out = new PrintWriter(buf);
+                out.printf("Error destroying service %s: ", startupService.getClass());
+                e.printStackTrace(out);
+                out.flush();
+                out.close();
+                System.out.println(buf.toString());
             }
         }
     }
