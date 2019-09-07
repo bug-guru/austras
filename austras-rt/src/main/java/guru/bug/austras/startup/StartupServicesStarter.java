@@ -40,15 +40,17 @@ public class StartupServicesStarter {
     }
 
     private class Terminator extends Thread {
-        private final Logger log = Logger.getLogger(Terminator.class.getName());
+//        private final Logger log = Logger.getLogger(Terminator.class.getName());
 
         @Override
         public void run() {
+            log.info(() -> format("Stopping %d services", initializedStartupServices.size()));
             initializedStartupServices.forEach(this::destroy);
         }
 
         private void destroy(StartupService startupService) {
             try {
+                log.info(() -> format("Stopping service %s", startupService.getClass()));
                 startupService.destroy();
             } catch (Exception e) {
                 log.log(Level.WARNING, "Error destroying service " + startupService.getClass(), e);

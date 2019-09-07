@@ -18,6 +18,7 @@ import guru.bug.austras.code.decl.TypeDecl;
 import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.provider.CollectionProvider;
+import guru.bug.austras.startup.StartupServicesStarter;
 import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -108,7 +109,9 @@ public class MainClassGenerator {
                 .addLine(genInfoLog("Application is initializing..."))
                 .addLines(generateProviderCalls(sortedComponents))
                 .addLine(CodeLine.emptyLine())
+                .addLine(genInfoLog("Starting up services..."))
                 .addLines(generateServicesCall())
+                .addLine(genInfoLog("Services are started!"))
                 .addLine(CodeLine.emptyLine())
                 .addLine(genInfoLog("Application is ready!"))
                 .build();
@@ -121,10 +124,25 @@ public class MainClassGenerator {
     }
 
     private List<CodeLine> generateServicesCall() {
-        return List.of(
-                genInfoLog("Starting up services..."),
-                genInfoLog("Services are started!")
-        );
+        var result = new ArrayList<CodeLine>();
+        var key = new ComponentKey(StartupServicesStarter.class.getName(), null);
+        var starter = componentMap.findSingleComponentModel(key);
+        var starterType = TypeSpec.of(starter.getInstantiable());
+        result.add(CodeLine.builder()
+                .print(o -> {
+                    o.print(starterType);
+                    o.space();
+                    o.print(starter.getName());
+                    o.print(" = ");
+                    o.print(starter.getProvider().getName());
+                    o.print(".get();");
+                })
+                .build());
+        result.add(CodeLine.builder()
+                .raw(starter.getName())
+                .raw(".initAll();")
+                .build());
+        return result;
     }
 
     private CodeLine genInfoLog(String msg) {
