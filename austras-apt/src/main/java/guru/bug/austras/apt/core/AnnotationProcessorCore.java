@@ -90,7 +90,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         this.componentMap = new ComponentMap();
         readComponentMaps();
         this.stagedComponents = new ComponentMap();
-        this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator);
+        this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator, modelUtils);
     }
 
     private void readComponentMaps() {

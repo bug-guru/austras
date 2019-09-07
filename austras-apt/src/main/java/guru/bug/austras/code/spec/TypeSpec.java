@@ -25,12 +25,24 @@ public class TypeSpec implements Printable {
         return new Builder();
     }
 
-    public static TypeSpec of(String qualifiedName) {
-        return of(QualifiedName.of(qualifiedName));
+    public static TypeSpec of(Class<?> clazz, TypeArg... typeArgs) {
+        return of(QualifiedName.of(clazz), typeArgs);
     }
 
-    public static TypeSpec of(QualifiedName name) {
-        return new TypeSpec(name, null, false);
+    public static TypeSpec of(String qualifiedName) {
+        // FIXME very specific case is implemented.
+        if (qualifiedName.endsWith(">")) {
+            var startParam = qualifiedName.indexOf('<');
+            var qn = qualifiedName.substring(0, startParam);
+            var tn = qualifiedName.substring(startParam + 1, qualifiedName.length() - 1);
+            return of(QualifiedName.of(qn), TypeArg.ofType(tn));
+        } else {
+            return of(QualifiedName.of(qualifiedName));
+        }
+    }
+
+    public static TypeSpec of(QualifiedName name, TypeArg... typeArgs) {
+        return new TypeSpec(name, typeArgs.length == 0 ? null : List.of(typeArgs), false);
     }
 
     public static TypeSpec voidType() {

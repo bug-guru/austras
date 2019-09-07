@@ -1,5 +1,6 @@
 package guru.bug.austras.apt.core.generators;
 
+import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
@@ -14,6 +15,7 @@ import guru.bug.austras.code.decl.ClassMemberDecl;
 import guru.bug.austras.code.decl.MethodParamDecl;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
+import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.provider.CollectionProvider;
 import org.apache.commons.text.StringEscapeUtils;
@@ -35,14 +37,16 @@ public class MainClassGenerator {
     private final ComponentMap componentMap;
     private final Elements elementUtils;
     private final String loggerVarName;
+    private final ModelUtils modelUtils;
     private ComponentModel appComponentModel;
 
-    public MainClassGenerator(ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator) {
+    public MainClassGenerator(ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator, ModelUtils modelUtils) {
         this.processingEnv = processingEnv;
         this.componentMap = componentMap;
         this.elementUtils = processingEnv.getElementUtils();
         this.uniqueNameGenerator = uniqueNameGenerator;
         this.loggerVarName = uniqueNameGenerator.findFreeVarName("log");
+        this.modelUtils = modelUtils;
     }
 
     public void setAppComponentModel(ComponentModel appComponentModel) {
@@ -103,7 +107,9 @@ public class MainClassGenerator {
         return CodeBlock.builder()
                 .addLine(genInfoLog("Application is initializing..."))
                 .addLines(generateProviderCalls(sortedComponents))
+                .addLine(CodeLine.emptyLine())
                 .addLines(generateServicesCall())
+                .addLine(CodeLine.emptyLine())
                 .addLine(genInfoLog("Application is ready!"))
                 .build();
     }
@@ -127,6 +133,7 @@ public class MainClassGenerator {
 
     private List<CodeLine> generateProviderCall(ComponentModel componentModel) {
         var result = new ArrayList<CodeLine>();
+        result.add(CodeLine.emptyLine());
         ProviderModel provider = componentModel.getProvider();
         result.add(genInfoLog("Initializing provider " + provider.getInstantiable() + " for " + componentModel.getInstantiable()));
         var initializers = provider.getDependencies().stream()
@@ -136,7 +143,20 @@ public class MainClassGenerator {
         var params = initializers.stream()
                 .map(ParamInitializer::getAsParameter)
                 .collect(Collectors.joining(", "));
-        result.add(CodeLine.raw(format("var %s = new %s(%s);", provider.getName(), provider.getInstantiable(), params)));
+        var providerType = TypeSpec.of(provider.getInstantiable());
+        result.add(CodeLine.builder()
+                .print(o -> {
+                    o.print(providerType);
+                    o.space();
+                    o.print(provider.getName());
+                    o.print(" = ");
+                    o.printNew();
+                    o.print(providerType);
+                    o.print("(");
+                    o.print(params);
+                    o.print(");");
+                })
+                .build());
         return result;
     }
 
@@ -251,10 +271,23 @@ public class MainClassGenerator {
 
         @Override
         public CodeLine init() {
-            var params = componentMap.findComponentModels(key).stream()
-                    .map(c -> c.getProvider().getName())
-                    .collect(Collectors.joining(", "));
-            return CodeLine.raw(format("var %s = new %s<>(%s);", name, CollectionProvider.class.getName(), params));
+            var varType = modelUtils.convertToParameterType(dependencyModel);
+            var params = componentMap.findComponentModels(key);
+            return CodeLine.builder()
+                    .print(o -> {
+                        o.print(varType);
+                        o.space();
+                        o.print(name);
+                        o.print(" = ");
+                        o.printNew();
+                        o.print(TypeSpec.of(CollectionProvider.class, TypeArg.diamond()));
+                        o.print("(");
+                        o.print(params.stream()
+                                .map(c -> c.getProvider().getName())
+                                .collect(Collectors.joining(", ")));
+                        o.print(");");
+                    })
+                    .build();
         }
 
         @Override

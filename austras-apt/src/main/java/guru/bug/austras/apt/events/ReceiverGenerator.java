@@ -14,7 +14,6 @@ import guru.bug.austras.code.spec.TypeArg;
 import guru.bug.austras.code.spec.TypeSpec;
 import guru.bug.austras.core.Component;
 import guru.bug.austras.events.Receiver;
-import guru.bug.austras.provider.Provider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.processing.Filer;
@@ -75,7 +74,7 @@ public class ReceiverGenerator {
     }
 
     private FieldClassMemberDecl convertToField(DependencyModel dependencyModel) {
-        return FieldClassMemberDecl.builder(calculateParameterType(dependencyModel), dependencyModel.getName())
+        return FieldClassMemberDecl.builder(modelUtils.convertToParameterType(dependencyModel), dependencyModel.getName())
                 .privateMod()
                 .finalMod()
                 .build();
@@ -111,7 +110,7 @@ public class ReceiverGenerator {
     private ClassMemberDecl convertToConstructorDecl(MessageReceiverModel model) {
         return ClassMemberDecl.constructorBuilder()
                 .publicMod()
-                .addParams(model.getDependencies().stream().map(this::convertToParametersDecl).collect(Collectors.toList()))
+                .addParams(model.getDependencies().stream().map(modelUtils::convertToParametersDecl).collect(Collectors.toList()))
                 .body(createConstructorBody(model))
                 .build();
     }
@@ -122,31 +121,6 @@ public class ReceiverGenerator {
             builder.addLine(String.format("this.%1$s = %1$s;", d.getName()));
         }
         return builder.build();
-    }
-
-    private MethodParamDecl convertToParametersDecl(DependencyModel model) {
-        return MethodParamDecl.builder()
-                .addAnnotations(modelUtils.createQualifierAnnotations(model.getQualifiers()))
-                .name(model.getName())
-                .type(calculateParameterType(model))
-                .build();
-    }
-
-    private TypeSpec calculateParameterType(DependencyModel model) {
-        var result = TypeSpec.of(model.getType());
-        if (model.isCollection()) {
-            result = TypeSpec.builder()
-                    .name(QualifiedName.of(Collection.class))
-                    .addTypeArg(TypeArg.wildcardExtends(result))
-                    .build();
-        }
-        if (model.isProvider()) {
-            result = TypeSpec.builder()
-                    .name(QualifiedName.of(Provider.class))
-                    .addTypeArg(TypeArg.wildcardExtends(result))
-                    .build();
-        }
-        return result;
     }
 
     private MessageReceiverModel createModel(ExecutableElement method) {

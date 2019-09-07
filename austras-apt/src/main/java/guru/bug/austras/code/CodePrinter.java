@@ -11,8 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class CodePrinter implements AutoCloseable {
+    private static final Logger log = Logger.getLogger(CodePrinter.class.getName());
     private final PrintWriter out;
     private final PackageName current;
     private final List<ImportDecl> imports;
@@ -27,6 +29,7 @@ public class CodePrinter implements AutoCloseable {
     }
 
     public boolean checkImported(QualifiedName type) {
+        log.finer(() -> String.format("trying to add %s to imports", type));
         if (type.getPackageName().isJavaLang()) {
             return true;
         }
@@ -328,6 +331,9 @@ public class CodePrinter implements AutoCloseable {
     }
 
     private CodePrinter print0(String str) {
+        if (str == null || str.isEmpty()) {
+            return this;
+        }
         var first = str.codePointAt(0);
         if (Character.isLetterOrDigit(first) && Character.isLetterOrDigit(lastCodePoint)) {
             space();

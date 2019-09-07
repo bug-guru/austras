@@ -13,7 +13,12 @@ public class SimpleName implements Printable {
     }
 
     public static SimpleName of(String simpleName) {
-        // TODO validation
+        if (simpleName == null
+                || simpleName.isBlank()
+                || !Character.isJavaIdentifierStart(simpleName.codePointAt(0))
+                || !simpleName.codePoints().skip(1).allMatch(cp -> Character.isJavaIdentifierPart(cp) || cp == '.')) {
+            throw new IllegalArgumentException("Invalid simpleName: " + simpleName);
+        }
         return new SimpleName(simpleName);
     }
 
