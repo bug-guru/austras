@@ -25,7 +25,9 @@ public class ComponentMap {
 
     public void addComponent(ComponentModel componentModel) {
         log.fine(() -> format("Indexing component %s", componentModel.getInstantiable()));
-        model.components().add(componentModel);
+        if (!componentModel.isImported()) {
+            model.components().add(componentModel);
+        }
         var qualifiers = componentModel.getQualifiers();
         for (var a : componentModel.getTypes()) {
             var key = new ComponentKey(a, qualifiers);

@@ -8,6 +8,7 @@ public class ComponentModel implements Comparable<ComponentModel> {
     private QualifierModel qualifiers;
     private List<String> types;
     private ProviderModel provider;
+    private boolean imported;
 
     public String getName() {
         return name;
@@ -47,6 +48,14 @@ public class ComponentModel implements Comparable<ComponentModel> {
 
     public void setProvider(ProviderModel provider) {
         this.provider = provider;
+    }
+
+    public boolean isImported() {
+        return imported;
+    }
+
+    public void setImported(boolean imported) {
+        this.imported = imported;
     }
 
     @Override

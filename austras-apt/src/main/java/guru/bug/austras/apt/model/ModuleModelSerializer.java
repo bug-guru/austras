@@ -25,7 +25,7 @@ public class ModuleModelSerializer {
         var yaml = new Yaml(baseConstructor);
 
         ModuleModel mm = yaml.load(inputStream);
-
+        mm.components().forEach(c -> c.setImported(true));
         return mm;
     }
 
@@ -37,6 +37,9 @@ public class ModuleModelSerializer {
             @Override
             protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
                 if (propertyValue == null) {
+                    return null;
+                }
+                if ("imported".equals(property.getName())) {
                     return null;
                 }
                 if (propertyValue instanceof List && ((Collection) propertyValue).isEmpty()) {
