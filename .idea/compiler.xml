@@ -7,7 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-web" />
         <module name="austras-web-apt" />
         <module name="austras-core" />
       </profile>
@@ -16,9 +15,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/guru/bug/austras/austras-core-apt/1.0-SNAPSHOT/austras-core-apt-1.0-SNAPSHOT.jar" />
+          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
         </processorPath>
-        <module name="austras-test" />
+        <module name="austras-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -29,5 +32,10 @@
       <module name="austras-web" target="11" />
       <module name="austras-web-apt" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="austras-core-apt" options="--add-exports=java.base/jdk.internal.loader=ALL-UNNAMED" />
+    </option>
   </component>
 </project>

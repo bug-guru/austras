@@ -21,6 +21,8 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -37,6 +39,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AnnotationProcessorCore extends AbstractProcessor {
     private static final Logger log = Logger.getLogger(AnnotationProcessorCore.class.getName());
+    private static final DateTimeFormatter FILENAME_DT_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
     static {
         Logger logger = Logger.getLogger("guru.bug.austras");
@@ -63,7 +66,8 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         };
         FileOutputStream out;
         try {
-            out = new FileOutputStream("austras.log");
+
+            out = new FileOutputStream("austras-" + LocalDateTime.now().format(FILENAME_DT_FORMATTER) + ".log");
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -95,12 +99,15 @@ public class AnnotationProcessorCore extends AbstractProcessor {
 
     private void readComponentMaps() {
         try {
-            var allMaps = getClass().getClassLoader().getResources("META-INF/components.yml");
+            var classLoader = this.getClass().getClassLoader();
+            var allMaps = classLoader.getResources("META-INF/components.yml");
             while (allMaps.hasMoreElements()) {
                 var map = allMaps.nextElement();
+                log.info(() -> format("Loading components from %s", map));
                 try (var stream = map.openStream()) {
                     var moduleModel = ModuleModelSerializer.load(stream);
                     for (var comp : moduleModel.getComponents()) {
+                        comp.setImported(true);
                         componentMap.addComponent(comp);
                     }
                 }
@@ -114,7 +121,6 @@ public class AnnotationProcessorCore extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
             if (roundEnv.processingOver()) {
-//                ensureAllProviderSatisfiedDependencies();
                 generateComponentMap();
                 mainClassGenerator.generateAppMain();
             } else {
@@ -194,7 +200,7 @@ public class AnnotationProcessorCore extends AbstractProcessor {
     }
 
     private void generateComponentMap() {
-        try (var out = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "", "META-INF/components.yml").openOutputStream();
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/components.yml").openOutputStream();
              var w = new PrintWriter(out)) {
             componentMap.serialize(w);
         } catch (IOException e) {
@@ -273,30 +279,6 @@ public class AnnotationProcessorCore extends AbstractProcessor {
             log.info(() -> format("<2>Component %s doesn't have a provider yet. Generating.", c.getInstantiable()));
             generateProvider(c);
         }
-    }
-
-//    private void ensureAllProviderSatisfiedDependencies() {
-//        for (var p : allProviders) {
-//            ensureProviderSatisfiedDependencies(p);
-//        }
-//    }
-
-    // TODO need to check all providers for satisfied dependencies before generating Main.
-    private boolean ensureProviderSatisfiedDependencies(ProviderModel providerModel) {
-        var result = true;
-        for (var d : providerModel.getDependencies()) {
-            var key = new ComponentKey(d.getType(), d.getQualifiers());
-            if (!componentMap.hasComponent(key)) {
-                var componentModels = stagedComponents.findAndRemoveComponentModels(key);
-                if (componentModels.isEmpty()) {
-                    result = false;
-                }
-                log.fine(() -> format("Provider %s: dependency component %s is resolved.", providerModel.getInstantiable(), key));
-                componentMap.addComponents(componentModels);
-                // FIXME AFTER THIS NO MORE CODE GENERATION IS EXECUTED, BUT PROVIDERS ARE NOT GENERATED FOR CANDIDATES
-            }
-        }
-        return result;
     }
 
     private void generateProvider(ComponentModel model) {

@@ -17,6 +17,11 @@
             <artifactId>austras-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>guru.bug.austras</groupId>
+            <artifactId>austras-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -28,6 +33,11 @@
                     <annotationProcessorPaths>
                         <path>
                             <groupId>guru.bug.austras</groupId>
+                            <artifactId>austras-web</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                        </path>
+                        <path>
+                            <groupId>guru.bug.austras</groupId>
                             <artifactId>austras-core-apt</artifactId>
                             <version>1.0-SNAPSHOT</version>
                         </path>
@@ -36,10 +46,6 @@
                         <processor>guru.bug.austras.apt.events.EventComponentsProcessor</processor>
                         <processor>guru.bug.austras.apt.core.AnnotationProcessorCore</processor>
                     </annotationProcessors>
-                    <verbose>true</verbose>
-                    <showWarnings>true</showWarnings>
-                    <debug>true</debug>
-                    <debuglevel>source</debuglevel>
                 </configuration>
             </plugin>
             <plugin>

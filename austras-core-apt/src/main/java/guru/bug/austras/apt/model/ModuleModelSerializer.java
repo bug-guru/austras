@@ -24,9 +24,7 @@ public class ModuleModelSerializer {
         var baseConstructor = new Constructor(ModuleModel.class);
         var yaml = new Yaml(baseConstructor);
 
-        ModuleModel mm = yaml.load(inputStream);
-        mm.components().forEach(c -> c.setImported(true));
-        return mm;
+        return yaml.load(inputStream);
     }
 
     public static void store(ModuleModel model, Writer out) throws IOException {
