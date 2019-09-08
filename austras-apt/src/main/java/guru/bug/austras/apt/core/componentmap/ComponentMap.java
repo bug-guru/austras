@@ -18,6 +18,7 @@ public class ComponentMap {
     private static final Logger log = Logger.getLogger(ComponentMap.class.getName());
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
     private final ModuleModel model = new ModuleModel();
+    private final List<ComponentModel> imported = new ArrayList<>();
 
     public void addComponents(Collection<ComponentModel> componentModels) {
         componentModels.forEach(this::addComponent);
@@ -25,7 +26,9 @@ public class ComponentMap {
 
     public void addComponent(ComponentModel componentModel) {
         log.fine(() -> format("Indexing component %s", componentModel.getInstantiable()));
-        if (!componentModel.isImported()) {
+        if (componentModel.isImported()) {
+            imported.add(componentModel);
+        } else {
             model.components().add(componentModel);
         }
         var qualifiers = componentModel.getQualifiers();
@@ -37,7 +40,7 @@ public class ComponentMap {
     }
 
     public Stream<ComponentModel> allComponentsStream() {
-        return model.components().stream();
+        return Stream.concat(imported.stream(), model.components().stream());
     }
 
     public Set<ComponentKey> getKeys() {
