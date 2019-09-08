@@ -17,8 +17,10 @@
     </properties>
 
     <modules>
-        <module>austras-rt</module>
-        <module>austras-apt</module>
+        <module>austras-core</module>
+        <module>austras-core-apt</module>
+        <module>austras-web</module>
+        <module>austras-web-apt</module>
         <module>austras-test</module>
     </modules>
 

@@ -1,9 +1,9 @@
 package guru.bug.austras.code;
 
+import guru.bug.austras.code.common.QualifiedName;
 import guru.bug.austras.code.decl.ImportDecl;
 import guru.bug.austras.code.decl.PackageDecl;
 import guru.bug.austras.code.decl.TypeDecl;
-import guru.bug.austras.code.common.QualifiedName;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
