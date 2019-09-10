@@ -10,6 +10,26 @@
         <module name="austras-web-apt" />
         <module name="austras-core" />
       </profile>
+      <profile name="Annotation profile for austras-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/austras-web/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.4.20.v20190813/jetty-server-9.4.20.v20190813.jar" />
+          <entry name="$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.20.v20190813/jetty-http-9.4.20.v20190813.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.20.v20190813/jetty-util-9.4.20.v20190813.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.20.v20190813/jetty-io-9.4.20.v20190813.jar" />
+          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
+        </processorPath>
+        <module name="austras-test" />
+      </profile>
       <profile name="Annotation profile for austras" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -35,7 +55,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="austras-core-apt" options="--add-exports=java.base/jdk.internal.loader=ALL-UNNAMED" />
+      <module name="austras-core-apt" options="" />
     </option>
   </component>
 </project>

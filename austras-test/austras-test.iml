@@ -2,6 +2,7 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="MavenAnnotationProcessors">
     <modules>
+      <module name="austras-web" />
       <module name="austras-core-apt" />
     </modules>
   </component>
