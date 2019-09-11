@@ -22,6 +22,7 @@
         <module>austras-web</module>
         <module>austras-web-apt</module>
         <module>austras-test</module>
+        <module>austras-convert</module>
     </modules>
 
 </project>

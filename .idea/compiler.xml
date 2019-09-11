@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="austras-convert" />
         <module name="austras-web-apt" />
         <module name="austras-core" />
       </profile>
@@ -46,6 +47,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="austras" target="11" />
+      <module name="austras-convert" target="11" />
       <module name="austras-core" target="11" />
       <module name="austras-core-apt" target="11" />
       <module name="austras-test" target="11" />
