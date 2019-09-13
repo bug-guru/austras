@@ -1,6 +1,7 @@
 package guru.bug.austras.convert.json.writer;
 
-import jz.json.utils.JsonWritingException;
+
+import guru.bug.austras.convert.json.utils.JsonWritingException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -99,7 +100,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public <T> void writeObject(String key, T object, JsonSerializer<T> objectWriterConsumer) {
+    public <T> void writeObject(String key, T object, JsonObjectSerializer<T> objectWriterConsumer) {
         write(key, () -> {
             if (object == null) {
                 tokenWriter.writeNull();
@@ -111,22 +112,22 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public <T> void writeObjectArray(String key, T[] array, JsonSerializer<T> objectWriterConsumer) {
+    public <T> void writeObjectArray(String key, T[] array, JsonObjectSerializer<T> objectWriterConsumer) {
         writeArray(key, array, (obj, writer) -> writer.writeObject(obj, objectWriterConsumer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Stream<T> stream, JsonSerializer<T> objectWriterConsumer) {
+    public <T> void writeObjectArray(String key, Stream<T> stream, JsonObjectSerializer<T> objectWriterConsumer) {
         writeArray(key, stream, (obj, writer) -> writer.writeObject(obj, objectWriterConsumer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Iterable<T> iterable, JsonSerializer<T> objectWriterConsumer) {
+    public <T> void writeObjectArray(String key, Iterable<T> iterable, JsonObjectSerializer<T> objectWriterConsumer) {
         writeArray(key, iterable, (obj, writer) -> writer.writeObject(obj, objectWriterConsumer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Iterator<T> iterator, JsonSerializer<T> objectWriterConsumer) {
+    public <T> void writeObjectArray(String key, Iterator<T> iterator, JsonObjectSerializer<T> objectWriterConsumer) {
         writeArray(key, iterator, (obj, writer) -> writer.writeObject(obj, objectWriterConsumer));
     }
 

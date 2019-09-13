@@ -2,7 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringCharConverter;
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class CharacterToStringConverter implements StringConverter<Character> {
     private final StringCharConverter stringConverter;
 

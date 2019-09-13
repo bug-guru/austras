@@ -1,7 +1,9 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringLongConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class PrimitiveLongToStringConverter implements StringLongConverter {
     @Override
     public long fromString(String value) {

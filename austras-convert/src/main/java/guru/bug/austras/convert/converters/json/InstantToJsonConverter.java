@@ -4,9 +4,11 @@ import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.core.Component;
 
 import java.time.Instant;
 
+@Component
 public class InstantToJsonConverter implements JsonConverter<Instant> {
     private final StringConverter<Instant> stringConverter;
 

@@ -19,10 +19,11 @@
     <modules>
         <module>austras-core</module>
         <module>austras-core-apt</module>
+        <module>austras-convert</module>
         <module>austras-web</module>
         <module>austras-web-apt</module>
+        <module>austras-codegen</module>
         <module>austras-test</module>
-        <module>austras-convert</module>
     </modules>
 
 </project>

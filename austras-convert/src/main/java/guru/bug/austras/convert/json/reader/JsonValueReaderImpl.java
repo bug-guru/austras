@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static jz.json.reader.TokenType.*;
+import static guru.bug.austras.convert.json.reader.TokenType.*;
 
 public class JsonValueReaderImpl implements JsonValueReader {
     private final JsonTokenReader tokenReader;

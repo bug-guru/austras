@@ -2,7 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.converters.StringLongConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class LongToStringConverter implements StringConverter<Long> {
     private final StringLongConverter stringConverter;
 

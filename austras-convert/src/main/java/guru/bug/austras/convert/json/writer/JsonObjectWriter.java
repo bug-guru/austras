@@ -89,14 +89,14 @@ public interface JsonObjectWriter {
 
     <T> void writeArray(String key, Iterator<T> stream, JsonSerializer<T> valueWriterConsumer);
 
-    <T> void writeObject(String key, T object, JsonSerializer<T> objectWriterConsumer);
+    <T> void writeObject(String key, T object, JsonObjectSerializer<T> objectWriterConsumer);
 
-    <T> void writeObjectArray(String key, T[] array, JsonSerializer<T> objectWriterConsumer);
+    <T> void writeObjectArray(String key, T[] array, JsonObjectSerializer<T> objectWriterConsumer);
 
-    <T> void writeObjectArray(String key, Stream<T> stream, JsonSerializer<T> objectWriterConsumer);
+    <T> void writeObjectArray(String key, Stream<T> stream, JsonObjectSerializer<T> objectWriterConsumer);
 
-    <T> void writeObjectArray(String key, Iterable<T> iterable, JsonSerializer<T> objectWriterConsumer);
+    <T> void writeObjectArray(String key, Iterable<T> iterable, JsonObjectSerializer<T> objectWriterConsumer);
 
-    <T> void writeObjectArray(String key, Iterator<T> iterator, JsonSerializer<T> objectWriterConsumer);
+    <T> void writeObjectArray(String key, Iterator<T> iterator, JsonObjectSerializer<T> objectWriterConsumer);
 
 }

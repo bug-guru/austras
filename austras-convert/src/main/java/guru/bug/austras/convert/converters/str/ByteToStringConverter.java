@@ -2,7 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringByteConverter;
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class ByteToStringConverter implements StringConverter<Byte> {
     private final StringByteConverter stringConverter;
 

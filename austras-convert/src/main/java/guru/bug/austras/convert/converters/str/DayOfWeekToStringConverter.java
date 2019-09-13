@@ -1,9 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.core.Component;
 
 import java.time.DayOfWeek;
 
+@Component
 public class DayOfWeekToStringConverter implements StringConverter<DayOfWeek> {
     @Override
     public DayOfWeek fromString(String value) {

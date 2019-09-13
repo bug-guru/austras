@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,7 +22,7 @@ public class HttpServerStart implements StartupService {
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
 
-    public HttpServerStart(Collection<EndpointHandler> endpoints) {
+    public HttpServerStart(Collection<? extends EndpointHandler> endpoints) {
         this.endpoints = endpoints == null ? List.of() : List.copyOf(endpoints);
     }
 
@@ -54,15 +52,16 @@ public class HttpServerStart implements StartupService {
 
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-            try {
-                var pathItems = new PathSplitter<>(Function.identity(), List.of(target)).getItems();
-                var handler =
-            } catch {
-                log.log(Level.WARNING, "Handling exception", e);
-                response.setStatusCode(e.getStatusCode());
-                response.setReasonPhrase(e.getMessage());
-                response.setContent(null);
-            }
+//              TODO finish this
+//            try {
+//                var pathItems = new PathSplitter<>(Function.identity(), List.of(target)).getItems();
+//                var handler =
+//            } catch (Exception e) {
+//                log.log(Level.WARNING, "Handling exception", e);
+//                response.setStatusCode(e.getStatusCode());
+//                response.setReasonPhrase(e.getMessage());
+//                response.setContent(null);
+//            }
         }
 
         private List<MediaType> getAcceptTypes(HttpServletRequest request) {

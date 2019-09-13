@@ -4,9 +4,11 @@ import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.core.Component;
 
 import java.util.UUID;
 
+@Component
 public class UUIDToJsonConverter implements JsonConverter<UUID> {
     private final StringConverter<UUID> stringConverter;
 

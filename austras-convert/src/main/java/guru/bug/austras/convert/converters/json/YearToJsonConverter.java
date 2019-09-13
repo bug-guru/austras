@@ -4,9 +4,11 @@ import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.core.Component;
 
 import java.time.Year;
 
+@Component
 public class YearToJsonConverter implements JsonConverter<Year> {
     private final StringConverter<Year> stringConverter;
 

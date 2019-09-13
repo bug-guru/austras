@@ -2,7 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringBooleanConverter;
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class BooleanToStringConverter implements StringConverter<Boolean> {
     private final StringBooleanConverter stringConverter;
 

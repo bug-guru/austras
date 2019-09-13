@@ -2,7 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.converters.StringDoubleConverter;
+import guru.bug.austras.core.Component;
 
+@Component
 public class DoubleToStringConverter implements StringConverter<Double> {
     private final StringDoubleConverter stringConverter;
 

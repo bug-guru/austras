@@ -1,9 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.core.Component;
 
 import java.time.ZoneOffset;
 
+@Component
 public class ZoneOffsetToStringConverter implements StringConverter<ZoneOffset> {
     @Override
     public ZoneOffset fromString(String value) {

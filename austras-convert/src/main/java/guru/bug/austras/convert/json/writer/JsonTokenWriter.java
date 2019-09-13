@@ -1,6 +1,7 @@
 package guru.bug.austras.convert.json.writer;
 
-import jz.json.utils.JsonWritingException;
+
+import guru.bug.austras.convert.json.utils.JsonWritingException;
 
 import java.io.IOException;
 import java.io.Writer;
