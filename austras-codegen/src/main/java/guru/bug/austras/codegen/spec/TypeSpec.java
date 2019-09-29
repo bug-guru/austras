@@ -4,6 +4,8 @@ import guru.bug.austras.codegen.CodePrinter;
 import guru.bug.austras.codegen.Printable;
 import guru.bug.austras.codegen.common.QualifiedName;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +119,16 @@ public class TypeSpec implements Printable {
         if (array) {
             out.print("[]");
         }
+    }
+
+    @Override
+    public String toString() {
+        var sw = new StringWriter(100);
+        var pw = new PrintWriter(sw);
+        var cp = new CodePrinter(pw);
+        print(cp);
+        pw.close();
+        return sw.toString();
     }
 
     public static class Builder {

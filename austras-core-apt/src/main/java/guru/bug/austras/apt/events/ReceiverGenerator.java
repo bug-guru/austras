@@ -13,34 +13,27 @@ import guru.bug.austras.codegen.spec.AnnotationSpec;
 import guru.bug.austras.codegen.spec.TypeArg;
 import guru.bug.austras.codegen.spec.TypeSpec;
 import guru.bug.austras.core.Component;
+import guru.bug.austras.engine.ProcessingContext;
 import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.Elements;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class ReceiverGenerator {
-    private final Elements elementUtils;
     private final ModelUtils modelUtils;
-    private final Filer filer;
 
-    public ReceiverGenerator(ProcessingEnvironment processingEnv, ModelUtils modelUtils) {
-        this.filer = processingEnv.getFiler();
-        this.elementUtils = processingEnv.getElementUtils();
+    public ReceiverGenerator(ModelUtils modelUtils) {
         this.modelUtils = modelUtils;
     }
 
-    public void generate(ExecutableElement method) throws IOException {
-        var model = createModel(method);
+    public void generate(ProcessingContext ctx, ExecutableElement method) throws IOException {
+        var model = createModel(ctx, method);
 
         var unit = CompilationUnit.builder()
                 .packageDecl(PackageDecl.of(model.getPackageName()))
@@ -60,10 +53,7 @@ public class ReceiverGenerator {
                                 .build())
                 .build();
 
-        try (var writer = filer.createSourceFile(unit.getQualifiedName()).openWriter();
-             var out = new PrintWriter(writer)) {
-            unit.print(out);
-        }
+        ctx.fileManager().createFile(unit);
 
     }
 
@@ -123,9 +113,10 @@ public class ReceiverGenerator {
         return builder.build();
     }
 
-    private MessageReceiverModel createModel(ExecutableElement method) {
+    private MessageReceiverModel createModel(ProcessingContext ctx, ExecutableElement method) {
         var result = new MessageReceiverModel();
-        var packageName = elementUtils.getPackageOf(method).getQualifiedName().toString();
+        var processingEnv = ctx.processingEnv();
+        var packageName = processingEnv.getElementUtils().getPackageOf(method).getQualifiedName().toString();
         result.setPackageName(packageName);
         var receiverClassName = method.getEnclosingElement().getSimpleName() + StringUtils.capitalize(method.getSimpleName().toString()) + "Receiver";
         result.setClassName(receiverClassName);

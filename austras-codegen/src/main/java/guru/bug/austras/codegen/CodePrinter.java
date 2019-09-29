@@ -22,6 +22,10 @@ public class CodePrinter implements AutoCloseable {
     private final Deque<Printable> printableStack = new LinkedList<>();
     private int lastCodePoint = '\n';
 
+    public CodePrinter(PrintWriter out) {
+        this(out, null, null);
+    }
+
     public CodePrinter(PrintWriter out, PackageName current, List<ImportDecl> mutableImports) {
         this.out = out;
         this.current = current;
@@ -29,6 +33,9 @@ public class CodePrinter implements AutoCloseable {
     }
 
     public boolean checkImported(QualifiedName type) {
+        if (current == null || imports == null) {
+            return false;
+        }
         log.finer(() -> String.format("trying to add %s to imports", type));
         if (type.getPackageName().isJavaLang()) {
             return true;

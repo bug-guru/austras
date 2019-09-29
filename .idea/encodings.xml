@@ -2,8 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-apt-engine" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-codegen" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-apt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert-gen" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-core" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-core-apt" charset="UTF-8" />

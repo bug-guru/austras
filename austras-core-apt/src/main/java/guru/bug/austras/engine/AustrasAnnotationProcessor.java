@@ -1,12 +1,17 @@
-package guru.bug.austras.apt.core;
+package guru.bug.austras.engine;
 
+import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.core.generators.MainClassGenerator;
+import guru.bug.austras.apt.core.logging.AustrasLogging;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
 import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.codegen.CompilationUnit;
+import guru.bug.austras.codegen.spec.TypeSpec;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
 
@@ -17,17 +22,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.logging.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -37,64 +38,36 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
-public class AnnotationProcessorCore extends AbstractProcessor {
-    private static final Logger log = Logger.getLogger(AnnotationProcessorCore.class.getName());
-    private static final DateTimeFormatter FILENAME_DT_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+public class AustrasAnnotationProcessor extends AbstractProcessor {
+    private static final Logger log = Logger.getLogger(AustrasAnnotationProcessor.class.getName());
 
     static {
-        Logger logger = Logger.getLogger("guru.bug.austras");
-        logger.setLevel(Level.ALL);
-        logger.setUseParentHandlers(false);
-        var f = new Formatter() {
-            @Override
-            public String format(LogRecord record) {
-                StringWriter sw = new StringWriter();
-                var out = new PrintWriter(sw);
-
-                String loggerName = record.getLoggerName();
-                if (loggerName.length() > 25) {
-                    loggerName = loggerName.substring(loggerName.length() - 25);
-                }
-                out.printf("[%-6s][%-25s] %s", record.getLevel(), loggerName, record.getMessage());
-                if (record.getThrown() != null) {
-                    out.print(" ");
-                    record.getThrown().printStackTrace(out);
-                }
-                out.println();
-                return sw.toString();
-            }
-        };
-        FileOutputStream out;
-        try {
-
-            out = new FileOutputStream("austras-" + LocalDateTime.now().format(FILENAME_DT_FORMATTER) + ".log");
-        } catch (FileNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
-        var h = new StreamHandler(out, f);
-        h.setLevel(Level.ALL);
-        logger.addHandler(h);
+        AustrasLogging.setup();
     }
 
     private final Queue<TypeElement> stagedProviders = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
+    private List<AustrasProcessorPlugin> plugins;
     private ModelUtils modelUtils;
+    private MainClassGenerator mainClassGenerator;
     private ComponentMap stagedComponents;
     private ComponentMap componentMap;
-    private Elements elementUtils;
-    private Types typeUtils;
-    private MainClassGenerator mainClassGenerator;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        this.elementUtils = processingEnv.getElementUtils();
-        this.typeUtils = processingEnv.getTypeUtils();
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
+
         this.componentMap = new ComponentMap();
-        readComponentMaps();
         this.stagedComponents = new ComponentMap();
+        readComponentMaps();
+        initPlugins();
         this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator, modelUtils);
+    }
+
+    private void initPlugins() {
+        var loader = ServiceLoader.load(AustrasProcessorPlugin.class, this.getClass().getClassLoader());
+        this.plugins = loader.stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
     }
 
     private void readComponentMaps() {
@@ -119,11 +92,20 @@ public class AnnotationProcessorCore extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        var pctx = new ProcessingContextImpl() {
+
+            @Override
+            public RoundEnvironment roundEnv() {
+                return roundEnv;
+            }
+        };
         try {
             if (roundEnv.processingOver()) {
                 generateComponentMap();
                 mainClassGenerator.generateAppMain();
             } else {
+                log.fine("PLUGINS");
+                processPlugins(pctx);
                 log.fine("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
@@ -136,6 +118,13 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         } catch (Exception e) {
             log.log(Level.SEVERE, "Unexpected error", e);
             throw new IllegalStateException(e);
+        }
+    }
+
+    private void processPlugins(ProcessingContext ctx) {
+        for (var p : plugins) {
+            log.fine(() -> "Processing " + p.getClass().getName());
+            p.process(ctx);
         }
     }
 
@@ -286,4 +275,143 @@ public class AnnotationProcessorCore extends AbstractProcessor {
         providerGenerator.generateProvider();
     }
 
+    private Collection<ComponentModel> findComponents(String name, QualifierModel qualifier) {
+        var key = new ComponentKey(name, qualifier);
+        var comps = stagedComponents.findAndRemoveComponentModels(key);
+        componentMap.addComponents(comps);
+        return componentMap.findComponentModels(key);
+    }
+
+    private Optional<ComponentModel> findSingleComponent(String name, QualifierModel qualifier) {
+        var key = new ComponentKey(name, qualifier);
+        var comps = stagedComponents.findAndRemoveComponentModels(key);
+        componentMap.addComponents(comps);
+        return Optional.ofNullable(componentMap.findSingleComponentModel(key));
+    }
+
+
+    private abstract class ProcessingContextImpl implements ProcessingContext {
+        private final FileManager fileManager = new FileManagerImpl();
+        private final ComponentManager componentManager = new ComponentManagerImpl();
+
+        @Override
+        public ProcessingEnvironment processingEnv() {
+            return processingEnv;
+        }
+
+        @Override
+        public ComponentManager componentManager() {
+            return componentManager;
+        }
+
+        @Override
+        public FileManager fileManager() {
+            return fileManager;
+        }
+    }
+
+    private class FileManagerImpl implements FileManager {
+
+        @Override
+        public void createFile(CompilationUnit unit) throws IOException {
+            var filer = processingEnv.getFiler();
+            try (var writer = filer.createSourceFile(unit.getQualifiedName()).openWriter();
+                 var out = new PrintWriter(writer)) {
+                unit.print(out);
+            }
+        }
+    }
+
+    private class ComponentManagerImpl implements ComponentManager {
+
+        @Override
+        public Collection<ComponentModel> findComponents(String name, QualifierModel qualifier) {
+            return AustrasAnnotationProcessor.this.findComponents(name, qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(Class<?> clazz, QualifierModel qualifier) {
+            return findComponents(clazz.getName(), qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(TypeMirror type, QualifierModel qualifier) {
+            return findComponents(type.toString(), qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(TypeElement element, QualifierModel qualifier) {
+            return findComponents(element.getQualifiedName().toString(), qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(TypeSpec spec, QualifierModel qualifier) {
+            return findComponents(spec.toString(), qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(String name) {
+            return findComponents(name, null);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(Class<?> clazz) {
+            return findComponents(clazz, null);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(TypeMirror type) {
+            return findComponents(type, null);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(TypeSpec spec) {
+            return findComponents(spec, null);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(String name, QualifierModel qualifier) {
+            return AustrasAnnotationProcessor.this.findSingleComponent(name, qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(Class<?> clazz, QualifierModel qualifier) {
+            return findSingleComponent(clazz.getName(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeMirror type, QualifierModel qualifier) {
+            return findSingleComponent(type.toString(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeElement element, QualifierModel qualifier) {
+            return findSingleComponent(element.getQualifiedName().toString(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeSpec type, QualifierModel qualifier) {
+            return findSingleComponent(type.toString(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(String name) {
+            return findSingleComponent(name, null);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(Class<?> clazz) {
+            return findSingleComponent(clazz, null);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeMirror type) {
+            return findSingleComponent(type, null);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeSpec spec) {
+            return findSingleComponent(spec, null);
+        }
+    }
 }

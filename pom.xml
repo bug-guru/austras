@@ -17,12 +17,13 @@
     </properties>
 
     <modules>
+        <module>austras-codegen</module>
         <module>austras-core</module>
         <module>austras-core-apt</module>
         <module>austras-convert</module>
+        <module>austras-convert-apt</module>
         <module>austras-web</module>
         <module>austras-web-apt</module>
-        <module>austras-codegen</module>
         <module>austras-test</module>
     </modules>
 

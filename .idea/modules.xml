@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/austras.iml" filepath="$PROJECT_DIR$/austras.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-codegen/austras-codegen.iml" filepath="$PROJECT_DIR$/austras-codegen/austras-codegen.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert/austras-convert.iml" filepath="$PROJECT_DIR$/austras-convert/austras-convert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" filepath="$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core/austras-core.iml" filepath="$PROJECT_DIR$/austras-core/austras-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core-apt/austras-core-apt.iml" filepath="$PROJECT_DIR$/austras-core-apt/austras-core-apt.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-test/austras-test.iml" filepath="$PROJECT_DIR$/austras-test/austras-test.iml" />

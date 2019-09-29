@@ -10,34 +10,26 @@ import guru.bug.austras.codegen.spec.AnnotationSpec;
 import guru.bug.austras.codegen.spec.TypeArg;
 import guru.bug.austras.codegen.spec.TypeSpec;
 import guru.bug.austras.core.Component;
+import guru.bug.austras.engine.ProcessingContext;
 import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.Elements;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 
 public class BroadcasterGenerator {
-    private final Elements elementUtils;
-    private final Filer filer;
-    private final ProcessingEnvironment processingEnv;
+
     private final ModelUtils modelUtils;
 
-    public BroadcasterGenerator(ProcessingEnvironment processingEnv, ModelUtils modelUtils) {
-        this.filer = processingEnv.getFiler();
-        this.elementUtils = processingEnv.getElementUtils();
-        this.processingEnv = processingEnv;
+    public BroadcasterGenerator(ModelUtils modelUtils) {
         this.modelUtils = modelUtils;
     }
 
-    public void generate(VariableElement e) throws IOException {
-        var model = createModel(e);
+    public void generate(ProcessingContext ctx, VariableElement e) throws IOException {
+        var model = createModel(ctx, e);
         var qualifiers = modelUtils.createQualifierAnnotations(model.getQualifier());
         var unit = CompilationUnit.builder()
                 .packageDecl(PackageDecl.of(model.getPackageName()))
@@ -53,10 +45,7 @@ public class BroadcasterGenerator {
                         .addMember(createConstructor(model))
                         .build())
                 .build();
-        try (var writer = filer.createSourceFile(unit.getQualifiedName()).openWriter();
-             var out = new PrintWriter(writer)) {
-            unit.print(out);
-        }
+        ctx.fileManager().createFile(unit);
     }
 
     private MethodClassMemberDecl createConstructor(MessageBroadcasterModel model) {
@@ -84,10 +73,10 @@ public class BroadcasterGenerator {
                 .build();
     }
 
-    private MessageBroadcasterModel createModel(VariableElement e) {
+    private MessageBroadcasterModel createModel(ProcessingContext ctx, VariableElement e) {
         var result = new MessageBroadcasterModel();
 
-        var packageName = elementUtils.getPackageOf(e).getQualifiedName().toString();
+        var packageName = ctx.processingEnv().getElementUtils().getPackageOf(e).getQualifiedName().toString();
         result.setPackageName(packageName);
         var paramType = (DeclaredType) e.asType();
         var msgType = modelUtils.extractComponentTypeFromBroadcaster(paramType);

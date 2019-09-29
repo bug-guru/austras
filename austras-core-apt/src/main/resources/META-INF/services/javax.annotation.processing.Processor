@@ -1,2 +1,1 @@
-guru.bug.austras.apt.events.EventComponentsProcessor
-guru.bug.austras.apt.core.AnnotationProcessorCore
+guru.bug.austras.engine.AustrasAnnotationProcessor
