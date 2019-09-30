@@ -4,7 +4,6 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -58,7 +57,7 @@ public class ComponentMap {
             return null;
         }
         if (comps.size() > 1) {
-            throw new IllegalArgumentException("Too many components " + key);
+            throw new IllegalArgumentException("Too many components " + key + "; components: " + comps);
         }
         return comps.stream()
                 .findFirst()
@@ -94,7 +93,8 @@ public class ComponentMap {
     }
 
     private void put(ComponentKey key, ComponentModel value) {
-        index.computeIfAbsent(key, k -> new HashSet<>()).add(value);
+        var componentModels = index.computeIfAbsent(key, k -> new HashSet<>());
+        componentModels.add(value);
     }
 
 
@@ -103,13 +103,11 @@ public class ComponentMap {
         var result = new StringWriter(512);
         try (var out = new PrintWriter(result)) {
             serialize(out);
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO better error handling
         }
         return result.toString();
     }
 
-    public void serialize(Writer out) throws IOException {
+    public void serialize(Writer out) {
         ModuleModelSerializer.store(model, out);
     }
 

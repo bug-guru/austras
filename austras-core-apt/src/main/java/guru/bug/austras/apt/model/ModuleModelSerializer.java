@@ -9,7 +9,6 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import javax.lang.model.AnnotatedConstruct;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.Collection;
@@ -21,13 +20,11 @@ public class ModuleModelSerializer {
     }
 
     public static ModuleModel load(InputStream inputStream) {
-        var baseConstructor = new Constructor(ModuleModel.class);
-        var yaml = new Yaml(baseConstructor);
-
-        return yaml.load(inputStream);
+        var yaml = new Yaml();
+        return yaml.loadAs(inputStream, ModuleModel.class);
     }
 
-    public static void store(ModuleModel model, Writer out) throws IOException {
+    public static void store(ModuleModel model, Writer out) {
         var baseConstructor = new Constructor(ModuleModel.class);
         var dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);

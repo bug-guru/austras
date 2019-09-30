@@ -11,11 +11,11 @@ import guru.bug.austras.apt.model.ModuleModelSerializer;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.apt.model.QualifierModel;
 import guru.bug.austras.codegen.CompilationUnit;
-import guru.bug.austras.codegen.spec.TypeSpec;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
 
 import javax.annotation.processing.*;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -43,6 +43,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     static {
         AustrasLogging.setup();
+        log.fine("Logger has been set up");
     }
 
     private final Queue<TypeElement> stagedProviders = new LinkedList<>();
@@ -53,8 +54,13 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private ComponentMap stagedComponents;
     private ComponentMap componentMap;
 
+    public AustrasAnnotationProcessor() {
+        log.fine("Constructing AustrasAnnotationProcessor");
+    }
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
+        log.fine("initializing AustrasAnnotationProcessor");
         super.init(processingEnv);
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
 
@@ -86,6 +92,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 }
             }
         } catch (Exception e) {
+            log.log(Level.SEVERE, "Something wrong", e);
             throw new IllegalStateException(e); // TODO
         }
     }
@@ -275,20 +282,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         providerGenerator.generateProvider();
     }
 
-    private Collection<ComponentModel> findComponents(String name, QualifierModel qualifier) {
-        var key = new ComponentKey(name, qualifier);
-        var comps = stagedComponents.findAndRemoveComponentModels(key);
-        componentMap.addComponents(comps);
-        return componentMap.findComponentModels(key);
-    }
-
-    private Optional<ComponentModel> findSingleComponent(String name, QualifierModel qualifier) {
-        var key = new ComponentKey(name, qualifier);
-        var comps = stagedComponents.findAndRemoveComponentModels(key);
-        componentMap.addComponents(comps);
-        return Optional.ofNullable(componentMap.findSingleComponentModel(key));
-    }
-
 
     private abstract class ProcessingContextImpl implements ProcessingContext {
         private final FileManager fileManager = new FileManagerImpl();
@@ -308,6 +301,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         public FileManager fileManager() {
             return fileManager;
         }
+
     }
 
     private class FileManagerImpl implements FileManager {
@@ -324,94 +318,18 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     private class ComponentManagerImpl implements ComponentManager {
 
+
         @Override
-        public Collection<ComponentModel> findComponents(String name, QualifierModel qualifier) {
-            return AustrasAnnotationProcessor.this.findComponents(name, qualifier);
+        public boolean useComponent(TypeMirror type, QualifierModel qualifier) {
+            var key = new ComponentKey(type.toString(), qualifier);
+            var comps = stagedComponents.findAndRemoveComponentModels(key);
+            componentMap.addComponents(comps);
+            return !componentMap.findComponentModels(key).isEmpty();
         }
 
         @Override
-        public Collection<ComponentModel> findComponents(Class<?> clazz, QualifierModel qualifier) {
-            return findComponents(clazz.getName(), qualifier);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(TypeMirror type, QualifierModel qualifier) {
-            return findComponents(type.toString(), qualifier);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(TypeElement element, QualifierModel qualifier) {
-            return findComponents(element.getQualifiedName().toString(), qualifier);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(TypeSpec spec, QualifierModel qualifier) {
-            return findComponents(spec.toString(), qualifier);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(String name) {
-            return findComponents(name, null);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(Class<?> clazz) {
-            return findComponents(clazz, null);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(TypeMirror type) {
-            return findComponents(type, null);
-        }
-
-        @Override
-        public Collection<ComponentModel> findComponents(TypeSpec spec) {
-            return findComponents(spec, null);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(String name, QualifierModel qualifier) {
-            return AustrasAnnotationProcessor.this.findSingleComponent(name, qualifier);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(Class<?> clazz, QualifierModel qualifier) {
-            return findSingleComponent(clazz.getName(), qualifier);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(TypeMirror type, QualifierModel qualifier) {
-            return findSingleComponent(type.toString(), qualifier);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(TypeElement element, QualifierModel qualifier) {
-            return findSingleComponent(element.getQualifiedName().toString(), qualifier);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(TypeSpec type, QualifierModel qualifier) {
-            return findSingleComponent(type.toString(), qualifier);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(String name) {
-            return findSingleComponent(name, null);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(Class<?> clazz) {
-            return findSingleComponent(clazz, null);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(TypeMirror type) {
-            return findSingleComponent(type, null);
-        }
-
-        @Override
-        public Optional<ComponentModel> findSingleComponent(TypeSpec spec) {
-            return findSingleComponent(spec, null);
+        public QualifierModel extractQualifier(AnnotatedConstruct annotated) {
+            return modelUtils.extractQualifiers(annotated);
         }
     }
 }

@@ -17,8 +17,9 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-convert-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-convert/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />

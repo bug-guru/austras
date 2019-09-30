@@ -14,7 +14,11 @@ public class AustrasLogging {
     private static final DateTimeFormatter FILENAME_DT_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
     public static void setup() {
-        Logger logger = Logger.getLogger("guru.bug.austras");
+        Logger logger = Logger.getLogger("");
+        if (isSet(logger)) {
+            logger.fine("Logger already set up");
+            return;
+        }
         logger.setLevel(Level.ALL);
         logger.setUseParentHandlers(false);
         var f = new AustrasAptLoggerFormatter();
@@ -28,5 +32,23 @@ public class AustrasLogging {
         var h = new StreamHandler(out, f);
         h.setLevel(Level.ALL);
         logger.addHandler(h);
+    }
+
+    private static boolean isSet(Logger logger) {
+        if (logger == null) return false;
+        logger.fine("Checking logger " + logger);
+        for (var h : logger.getHandlers()) {
+            logger.fine("Checking handler " + h);
+            if (h instanceof StreamHandler) {
+                var sh = (StreamHandler) h;
+                var formatter = sh.getFormatter();
+                logger.fine("Checking formater " + formatter);
+                if (formatter instanceof AustrasAptLoggerFormatter || AustrasAptLoggerFormatter.class.getName().equals(formatter.getClass().getName())) {
+                    logger.fine("Found austras log formatter");
+                    return true;
+                }
+            }
+        }
+        return isSet(logger.getParent());
     }
 }

@@ -7,6 +7,9 @@ public class ConvertersProcessorPlugin implements AustrasProcessorPlugin {
 
     @Override
     public void process(ProcessingContext ctx) {
-
+        var p = new ConvertersProcessor(ctx);
+        p.process();
     }
+
+
 }
