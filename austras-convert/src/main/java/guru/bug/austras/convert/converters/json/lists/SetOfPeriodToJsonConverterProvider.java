@@ -8,7 +8,7 @@ import java.time.Period;
 
 public class SetOfPeriodToJsonConverterProvider extends SetToJsonConverterProvider<Period> {
 
-    public SetOfPeriodToJsonConverterProvider(Provider<JsonConverter<Period>> elementConverterProvider) {
+    public SetOfPeriodToJsonConverterProvider(Provider<? extends JsonConverter<Period>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

@@ -150,6 +150,7 @@ public class MainClassGenerator {
     }
 
     private List<CodeLine> generateProviderCall(ComponentModel componentModel) {
+        log.fine(() -> "Generating provider call of model " + componentModel);
         var result = new ArrayList<CodeLine>();
         result.add(CodeLine.emptyLine());
         ProviderModel provider = componentModel.getProvider();

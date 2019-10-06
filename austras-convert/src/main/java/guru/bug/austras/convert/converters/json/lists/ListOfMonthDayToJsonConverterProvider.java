@@ -8,7 +8,7 @@ import java.time.MonthDay;
 
 public class ListOfMonthDayToJsonConverterProvider extends ListToJsonConverterProvider<MonthDay> {
 
-    public ListOfMonthDayToJsonConverterProvider(Provider<JsonConverter<MonthDay>> elementConverterProvider) {
+    public ListOfMonthDayToJsonConverterProvider(Provider<? extends JsonConverter<MonthDay>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

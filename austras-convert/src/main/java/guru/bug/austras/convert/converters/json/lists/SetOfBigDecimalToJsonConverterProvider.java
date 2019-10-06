@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public class SetOfBigDecimalToJsonConverterProvider extends SetToJsonConverterProvider<BigDecimal> {
 
-    public SetOfBigDecimalToJsonConverterProvider(Provider<JsonConverter<BigDecimal>> elementConverterProvider) {
+    public SetOfBigDecimalToJsonConverterProvider(Provider<? extends JsonConverter<BigDecimal>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

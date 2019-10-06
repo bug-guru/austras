@@ -8,7 +8,7 @@ import java.time.DayOfWeek;
 
 public class ListOfDayOfWeekToJsonConverterProvider extends ListToJsonConverterProvider<DayOfWeek> {
 
-    public ListOfDayOfWeekToJsonConverterProvider(Provider<JsonConverter<DayOfWeek>> elementConverterProvider) {
+    public ListOfDayOfWeekToJsonConverterProvider(Provider<? extends JsonConverter<DayOfWeek>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

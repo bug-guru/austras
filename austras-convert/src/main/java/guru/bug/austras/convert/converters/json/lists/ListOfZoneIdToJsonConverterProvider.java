@@ -8,7 +8,7 @@ import java.time.ZoneId;
 
 public class ListOfZoneIdToJsonConverterProvider extends ListToJsonConverterProvider<ZoneId> {
 
-    public ListOfZoneIdToJsonConverterProvider(Provider<JsonConverter<ZoneId>> elementConverterProvider) {
+    public ListOfZoneIdToJsonConverterProvider(Provider<? extends JsonConverter<ZoneId>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

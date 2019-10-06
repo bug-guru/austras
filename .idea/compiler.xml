@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-core" />
+        <module name="austras-codetempl" />
         <module name="austras-web-apt" />
         <module name="austras-codegen" />
+        <module name="austras-core" />
       </profile>
       <profile name="Annotation profile for austras-test" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -54,6 +55,7 @@
       <module name="austras" target="11" />
       <module name="austras-apt-engine" target="11" />
       <module name="austras-codegen" target="11" />
+      <module name="austras-codetempl" target="11" />
       <module name="austras-convert" target="11" />
       <module name="austras-convert-apt" target="11" />
       <module name="austras-convert-gen" target="11" />

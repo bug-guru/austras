@@ -8,7 +8,7 @@ import java.time.YearMonth;
 
 public class SetOfYearMonthToJsonConverterProvider extends SetToJsonConverterProvider<YearMonth> {
 
-    public SetOfYearMonthToJsonConverterProvider(Provider<JsonConverter<YearMonth>> elementConverterProvider) {
+    public SetOfYearMonthToJsonConverterProvider(Provider<? extends JsonConverter<YearMonth>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

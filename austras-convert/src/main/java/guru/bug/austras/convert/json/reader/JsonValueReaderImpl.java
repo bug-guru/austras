@@ -416,7 +416,6 @@ public class JsonValueReaderImpl implements JsonValueReader {
         return Optional.of(value);
     }
 
-
     @Override
     public <T> Optional<Stream<T>> readArray(JsonDeserializer<T> converter) {
         if (tokenReader.next(BEGIN_ARRAY, NULL) == NULL) {

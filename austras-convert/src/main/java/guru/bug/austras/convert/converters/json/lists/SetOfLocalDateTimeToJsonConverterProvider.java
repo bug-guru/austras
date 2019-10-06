@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class SetOfLocalDateTimeToJsonConverterProvider extends SetToJsonConverterProvider<LocalDateTime> {
 
-    public SetOfLocalDateTimeToJsonConverterProvider(Provider<JsonConverter<LocalDateTime>> elementConverterProvider) {
+    public SetOfLocalDateTimeToJsonConverterProvider(Provider<? extends JsonConverter<LocalDateTime>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

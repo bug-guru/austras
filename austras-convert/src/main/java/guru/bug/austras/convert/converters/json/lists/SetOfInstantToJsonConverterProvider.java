@@ -8,7 +8,7 @@ import java.time.Instant;
 
 public class SetOfInstantToJsonConverterProvider extends SetToJsonConverterProvider<Instant> {
 
-    public SetOfInstantToJsonConverterProvider(Provider<JsonConverter<Instant>> elementConverterProvider) {
+    public SetOfInstantToJsonConverterProvider(Provider<? extends JsonConverter<Instant>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

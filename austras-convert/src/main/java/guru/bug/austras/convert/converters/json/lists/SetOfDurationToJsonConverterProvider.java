@@ -8,7 +8,7 @@ import java.time.Duration;
 
 public class SetOfDurationToJsonConverterProvider extends SetToJsonConverterProvider<Duration> {
 
-    public SetOfDurationToJsonConverterProvider(Provider<JsonConverter<Duration>> elementConverterProvider) {
+    public SetOfDurationToJsonConverterProvider(Provider<? extends JsonConverter<Duration>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

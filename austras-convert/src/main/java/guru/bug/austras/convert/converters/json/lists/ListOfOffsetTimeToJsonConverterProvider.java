@@ -8,7 +8,7 @@ import java.time.OffsetTime;
 
 public class ListOfOffsetTimeToJsonConverterProvider extends ListToJsonConverterProvider<OffsetTime> {
 
-    public ListOfOffsetTimeToJsonConverterProvider(Provider<JsonConverter<OffsetTime>> elementConverterProvider) {
+    public ListOfOffsetTimeToJsonConverterProvider(Provider<? extends JsonConverter<OffsetTime>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

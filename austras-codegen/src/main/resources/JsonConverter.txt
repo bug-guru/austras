@@ -1,0 +1,44 @@
+package ${TARGET.PACKAGE};
+
+#{IMPORTS}
+guru.bug.austras.convert.converters.JsonConverter;
+guru.bug.austras.convert.json.reader.JsonValueReader;
+guru.bug.austras.convert.json.writer.JsonValueWriter;
+guru.bug.austras.core.Component;
+#{END}
+
+@Component
+public class ${TARGET.SIMPLE_NAME}ToJsonConverter implements JsonConverter<${IMPORT:TARGET}> {
+
+    #{LOOP CNV : CONVERTERS}
+    private ${IMPORT:CNV.TYPE} ${CNV.NAME};
+    #{END}
+
+    public FakeDtoToJsonConverter(#{LOOP CNV : CONVERTERS}${IMPORT:CNV.VALUE.TYPE} ${CNV.NAME}${CNV.IS_LAST?:", "}#{END}) {
+        #{LOOP CNV : CONVERTERS}
+        this.${CNV.VALUE.NAME} = ${CNV.VALUE.NAME};
+        #{END}
+    }
+
+    @Override
+    public void toJson(${IMPORT:TARGET} value, JsonValueWriter writer) {
+        writer.writeObject(value, (obj, out) -> {
+            #{LOOP PROP : PROPERTIES}
+            out.write("${PROP.VALUE.NAME}", obj.${PROP.VALUE.GETTER_NAME}(), ${PROP.VALUE.CONVERTER.NAME);
+            #{END}
+        });
+    }
+
+    @Override
+    public ${IMPORT:TARGET} fromJson(JsonValueReader reader) {
+        return reader.readObject(${IMPORT:TARGET}::new, (obj, key, in) -> {
+            switch (key) {
+                #{LOOP PROP : PROPERTIES}
+                case "${PROP.VALUE.NAME}":
+                    obj.${PROP.VALUE.SETTER_NAME}(r.read(${PROP.VALUE.CONVERTER.NAME}).orElse(null));
+                    break;
+                #{END}
+            }
+        }).orElse(null);
+    }
+}

@@ -6,7 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 public class ListOfFloatToJsonConverterProvider extends ListToJsonConverterProvider<Float> {
 
-    public ListOfFloatToJsonConverterProvider(Provider<JsonConverter<Float>> elementConverterProvider) {
+    public ListOfFloatToJsonConverterProvider(Provider<? extends JsonConverter<Float>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 
 public class SetOfZonedDateTimeToJsonConverterProvider extends SetToJsonConverterProvider<ZonedDateTime> {
 
-    public SetOfZonedDateTimeToJsonConverterProvider(Provider<JsonConverter<ZonedDateTime>> elementConverterProvider) {
+    public SetOfZonedDateTimeToJsonConverterProvider(Provider<? extends JsonConverter<ZonedDateTime>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

@@ -7,8 +7,8 @@ import guru.bug.austras.engine.ProcessingContext;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -19,6 +19,7 @@ class ConvertersProcessor {
     private final Types typeUtils;
     private final TypeElement jsonConverter;
     private final TypeElement stringConverter;
+    private final JsonConverterGenerator jsonConverterGenerator;
 
     ConvertersProcessor(ProcessingContext ctx) {
         this.ctx = ctx;
@@ -26,6 +27,7 @@ class ConvertersProcessor {
         var elementUtils = ctx.processingEnv().getElementUtils();
         jsonConverter = elementUtils.getTypeElement(JsonConverter.class.getName());
         stringConverter = elementUtils.getTypeElement(StringConverter.class.getName());
+        jsonConverterGenerator = new JsonConverterGenerator(ctx);
     }
 
     void process() {
@@ -59,20 +61,31 @@ class ConvertersProcessor {
         if (ctx.componentManager().useComponent(paramType, qualifier)) {
             return;
         }
-        var conversionType = args.get(0);
-        if (isJsonConverter) {
-            generateJsonConverter(conversionType);
-        } else {
-            generateStringConverter(conversionType);
+
+        var convType = args.get(0);
+        if (convType.getKind() != TypeKind.DECLARED) {
+            return;
+        }
+        var convDeclType = (DeclaredType) args.get(0);
+
+        try {
+            if (isJsonConverter) {
+                generateJsonConverter(convDeclType);
+            } else {
+                generateStringConverter(convDeclType);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e); // TODO better error handling
         }
     }
 
-    private void generateStringConverter(TypeMirror conversionType) {
+    private void generateStringConverter(DeclaredType conversionType) throws IOException {
         logger.severe("GENERATING STRING CONVERTER FOR " + conversionType);
     }
 
-    private void generateJsonConverter(TypeMirror conversionType) {
-        logger.severe("GENERATING JSON CONVERTER FOR " + conversionType);
+    private void generateJsonConverter(DeclaredType conversionType) throws IOException {
+        logger.fine("generating converter json converter for " + conversionType);
+        jsonConverterGenerator.generate(conversionType);
     }
 
     private Stream<? extends VariableElement> parametersOf(ExecutableElement executableElement) {

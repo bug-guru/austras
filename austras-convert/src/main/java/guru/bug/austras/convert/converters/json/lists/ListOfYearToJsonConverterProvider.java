@@ -8,7 +8,7 @@ import java.time.Year;
 
 public class ListOfYearToJsonConverterProvider extends ListToJsonConverterProvider<Year> {
 
-    public ListOfYearToJsonConverterProvider(Provider<JsonConverter<Year>> elementConverterProvider) {
+    public ListOfYearToJsonConverterProvider(Provider<? extends JsonConverter<Year>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

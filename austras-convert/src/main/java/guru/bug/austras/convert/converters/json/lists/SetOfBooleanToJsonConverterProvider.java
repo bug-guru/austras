@@ -6,7 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 public class SetOfBooleanToJsonConverterProvider extends SetToJsonConverterProvider<Boolean> {
 
-    public SetOfBooleanToJsonConverterProvider(Provider<JsonConverter<Boolean>> elementConverterProvider) {
+    public SetOfBooleanToJsonConverterProvider(Provider<? extends JsonConverter<Boolean>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class SetOfUUIDToJsonConverterProvider extends SetToJsonConverterProvider<UUID> {
 
-    public SetOfUUIDToJsonConverterProvider(Provider<JsonConverter<UUID>> elementConverterProvider) {
+    public SetOfUUIDToJsonConverterProvider(Provider<? extends JsonConverter<UUID>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

@@ -6,7 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 public class ListOfCharacterToJsonConverterProvider extends ListToJsonConverterProvider<Character> {
 
-    public ListOfCharacterToJsonConverterProvider(Provider<JsonConverter<Character>> elementConverterProvider) {
+    public ListOfCharacterToJsonConverterProvider(Provider<? extends JsonConverter<Character>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

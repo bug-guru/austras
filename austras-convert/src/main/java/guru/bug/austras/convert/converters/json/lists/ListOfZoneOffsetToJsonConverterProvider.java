@@ -8,7 +8,7 @@ import java.time.ZoneOffset;
 
 public class ListOfZoneOffsetToJsonConverterProvider extends ListToJsonConverterProvider<ZoneOffset> {
 
-    public ListOfZoneOffsetToJsonConverterProvider(Provider<JsonConverter<ZoneOffset>> elementConverterProvider) {
+    public ListOfZoneOffsetToJsonConverterProvider(Provider<? extends JsonConverter<ZoneOffset>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

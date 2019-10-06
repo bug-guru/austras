@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 public class ListOfLocalTimeToJsonConverterProvider extends ListToJsonConverterProvider<LocalTime> {
 
-    public ListOfLocalTimeToJsonConverterProvider(Provider<JsonConverter<LocalTime>> elementConverterProvider) {
+    public ListOfLocalTimeToJsonConverterProvider(Provider<? extends JsonConverter<LocalTime>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

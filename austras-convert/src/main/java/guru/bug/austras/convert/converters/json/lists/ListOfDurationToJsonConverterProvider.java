@@ -8,7 +8,7 @@ import java.time.Duration;
 
 public class ListOfDurationToJsonConverterProvider extends ListToJsonConverterProvider<Duration> {
 
-    public ListOfDurationToJsonConverterProvider(Provider<JsonConverter<Duration>> elementConverterProvider) {
+    public ListOfDurationToJsonConverterProvider(Provider<? extends JsonConverter<Duration>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

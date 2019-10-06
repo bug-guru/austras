@@ -6,7 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 public class SetOfShortToJsonConverterProvider extends SetToJsonConverterProvider<Short> {
 
-    public SetOfShortToJsonConverterProvider(Provider<JsonConverter<Short>> elementConverterProvider) {
+    public SetOfShortToJsonConverterProvider(Provider<? extends JsonConverter<Short>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

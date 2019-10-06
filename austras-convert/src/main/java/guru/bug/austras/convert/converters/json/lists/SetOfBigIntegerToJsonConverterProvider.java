@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 public class SetOfBigIntegerToJsonConverterProvider extends SetToJsonConverterProvider<BigInteger> {
 
-    public SetOfBigIntegerToJsonConverterProvider(Provider<JsonConverter<BigInteger>> elementConverterProvider) {
+    public SetOfBigIntegerToJsonConverterProvider(Provider<? extends JsonConverter<BigInteger>> elementConverterProvider) {
         super(elementConverterProvider);
     }
 

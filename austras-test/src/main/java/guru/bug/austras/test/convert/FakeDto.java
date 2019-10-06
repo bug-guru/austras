@@ -6,7 +6,7 @@ import java.util.UUID;
 public class FakeDto {
     private UUID id;
     private String name;
-    private int number;
+    private Integer number;
     private LocalDate dataOfBirth;
 
     public UUID getId() {
@@ -25,11 +25,11 @@ public class FakeDto {
         this.name = name;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

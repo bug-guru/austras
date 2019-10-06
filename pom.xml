@@ -25,6 +25,7 @@
         <module>austras-web</module>
         <module>austras-web-apt</module>
         <module>austras-test</module>
+        <module>austras-codetempl</module>
     </modules>
 
 </project>
