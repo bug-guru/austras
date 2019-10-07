@@ -27,18 +27,18 @@ public class Context {
     private Value get(List<String> parts) {
         var partsIter = parts.iterator();
         if (!partsIter.hasNext()) {
-            return null;
+            return Value.EMPTY;
         }
         var value = values.get(partsIter.next());
         if (value == null) {
-            return parent == null ? null : parent.get(parts);
+            return parent == null ? Value.EMPTY : parent.get(parts);
         }
 
         while (partsIter.hasNext() && value != null) {
             value = value.getValueAt(partsIter.next());
         }
 
-        return value;
+        return value == null ? Value.EMPTY : value;
     }
 
     public Builder childBuilder() {

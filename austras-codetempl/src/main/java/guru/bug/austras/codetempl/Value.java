@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class Value {
+    public static final Value EMPTY = new Value(null, null);
     private static final Pattern VALID_NAME = Pattern.compile("[A-Z][_A-Z0-9]*");
     private final Map<String, Value> children;
     private final String value;
@@ -40,15 +41,13 @@ public class Value {
     }
 
     public Value getValueAt(String key) {
-        if (children == null) {
-            return null;
-        }
-        return children.get(key);
+        return children.getOrDefault(key, Value.EMPTY);
     }
 
     public Value getValueAt(int index) {
-        if (children == null) {
-            return null;
+        var size = getValueAt("SIZE").getInteger();
+        if (children.isEmpty() || size == null || index < 0 || index >= size) {
+            return Value.EMPTY;
         }
         return children.get(Integer.toString(index));
     }
