@@ -7,10 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-codetempl" />
+        <module name="austras-core" />
         <module name="austras-web-apt" />
         <module name="austras-codegen" />
-        <module name="austras-core" />
+        <module name="austras-codetempl" />
       </profile>
       <profile name="Annotation profile for austras-test" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />

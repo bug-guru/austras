@@ -6,12 +6,18 @@ import guru.bug.austras.codetempl.expressions.Expression;
 
 import java.util.List;
 
-public class OutputBlock implements Block {
-    private final Filter filter;
+public class ExpressionBlock implements Block {
     private final Expression expression;
 
-    @Override
+    private ExpressionBlock(Expression expression) {
+        this.expression = expression;
+    }
 
+    public static ExpressionBlock of(Expression expression) {
+        return new ExpressionBlock(expression);
+    }
+
+    @Override
     public List<Printable> evaluate(Context ctx) {
         return null;
     }

@@ -1,10 +1,10 @@
 package ${TARGET.PACKAGE};
 
 #{IMPORTS}
-guru.bug.austras.convert.converters.JsonConverter;
-guru.bug.austras.convert.json.reader.JsonValueReader;
-guru.bug.austras.convert.json.writer.JsonValueWriter;
-guru.bug.austras.core.Component;
+guru.bug.austras.convert.converters.JsonConverter
+guru.bug.austras.convert.json.reader.JsonValueReader
+guru.bug.austras.convert.json.writer.JsonValueWriter
+guru.bug.austras.core.Component
 #{END}
 
 @Component
