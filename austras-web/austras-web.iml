@@ -29,4 +29,8 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.20.v20190813" level="project" />
     <orderEntry type="module" module-name="austras-core" />
   </component>
+  <component name="sonarModuleSettings">
+    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+  </component>
 </module>

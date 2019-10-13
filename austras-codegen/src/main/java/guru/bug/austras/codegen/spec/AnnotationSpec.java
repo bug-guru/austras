@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnnotationSpec implements Printable {
+    public static final String VALUE = "value";
     private final QualifiedName name;
     private final List<ElementValuePair> pairs;
 
@@ -164,12 +165,12 @@ public class AnnotationSpec implements Printable {
         }
 
         public Builder add(String value) {
-            add("value", value);
+            add(VALUE, value);
             return this;
         }
 
         public Builder add(List<String> values) {
-            add("value", values);
+            add(VALUE, values);
             return this;
         }
 
@@ -186,13 +187,13 @@ public class AnnotationSpec implements Printable {
         }
 
         public Builder add(AnnotationSpec annotationSpec) {
-            add("value", annotationSpec);
+            add(VALUE, annotationSpec);
             return this;
         }
 
         public Builder add(Collection<AnnotationSpec> annotationSpecs) {
             for (var v : annotationSpecs) {
-                add("value", v);
+                add(VALUE, v);
             }
             return this;
         }

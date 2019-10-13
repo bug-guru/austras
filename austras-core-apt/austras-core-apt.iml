@@ -17,4 +17,8 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.24" level="project" />
   </component>
+  <component name="sonarModuleSettings">
+    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+  </component>
 </module>
