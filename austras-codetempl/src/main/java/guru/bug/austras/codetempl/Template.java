@@ -10,16 +10,19 @@ public class Template {
 
     private final List<Block> blocks;
 
-    public Template(List<Block> blocks) {
+    private Template(List<Block> blocks) {
         this.blocks = blocks;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public void execute(Context global, PrintWriter out) {
         var printables = new ArrayList<Printable>();
 
         for (Block block : blocks) {
-            Context ctx = new Context(global);
-            var p = block.evaluate(ctx);
+            var p = block.evaluate(global);
             printables.addAll(p);
         }
 
@@ -29,14 +32,21 @@ public class Template {
 
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static class Builder {
+        private final List<Block> blocks = new ArrayList<>();
+
+        public Builder add(Block block) {
+            this.blocks.add(block);
+            return this;
+        }
+
+        public Builder add(List<Block> blocks) {
+            this.blocks.addAll(blocks);
+            return this;
+        }
 
         public Template build() {
-
+            return new Template(blocks);
         }
     }
 }

@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ForBlock implements Block {
+public class LoopBlock implements Block {
     private final String loopVar;
     private final String collectionVar;
     private final List<Block> body;
 
-    private ForBlock(String loopVar, String collectionVar, List<Block> body) {
+    private LoopBlock(String loopVar, String collectionVar, List<Block> body) {
         this.loopVar = loopVar;
         this.collectionVar = collectionVar;
         this.body = List.copyOf(body);
@@ -93,8 +93,8 @@ public class ForBlock implements Block {
             return this;
         }
 
-        public ForBlock build() {
-            return new ForBlock(loopVar, collectionVar, body);
+        public LoopBlock build() {
+            return new LoopBlock(loopVar, collectionVar, body);
         }
 
     }

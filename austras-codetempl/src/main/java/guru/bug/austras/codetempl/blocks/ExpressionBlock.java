@@ -19,6 +19,6 @@ public class ExpressionBlock implements Block {
 
     @Override
     public List<Printable> evaluate(Context ctx) {
-        return null;
+        return List.of(expression.evaluate(ctx));
     }
 }

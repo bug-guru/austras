@@ -1,5 +1,6 @@
 package guru.bug.austras.codetempl;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-public class Value {
+public class Value implements Printable {
     public static final Value EMPTY = new Value(null, null);
     private static final Pattern VALID_NAME = Pattern.compile("[A-Z][_A-Z0-9]*");
     private final Map<String, Value> children;
@@ -72,6 +73,14 @@ public class Value {
             return false;
         }
         return Boolean.parseBoolean(value);
+    }
+
+    @Override
+    public void print(PrintWriter out) {
+        if (value == null) {
+            return;
+        }
+        out.print(value);
     }
 
     public static class Builder {
