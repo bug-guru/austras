@@ -1,5 +1,5 @@
 package guru.bug.austras.codetempl.parser;
 
-public class CommandBlockReader implements BlockReader {
+public class CommandBlockReader {
 
 }
