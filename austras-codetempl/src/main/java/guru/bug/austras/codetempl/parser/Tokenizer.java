@@ -1,5 +1,6 @@
 package guru.bug.austras.codetempl.parser;
 
+import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
@@ -12,7 +13,8 @@ public class Tokenizer<T> {
         this.codePoints = content.codePoints();
     }
 
-    public T next(BiConsumer<Integer, ResultType>... variants) {
+    public T next(BiConsumer<Integer, StageChecker>... variants) {
+        var list = new LinkedList<BiConsumer<Integer, StageChecker>>();
 
     }
 
