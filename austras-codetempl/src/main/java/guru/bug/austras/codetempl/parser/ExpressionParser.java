@@ -11,6 +11,7 @@ class ExpressionParser {
 
     Block parse() {
         tokenize();
+        return null;
     }
 
     private void tokenize() {

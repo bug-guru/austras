@@ -43,6 +43,6 @@ public abstract class BodyParser {
     }
 
     private Block parseCmd(String value) {
-
+        return null;
     }
 }
