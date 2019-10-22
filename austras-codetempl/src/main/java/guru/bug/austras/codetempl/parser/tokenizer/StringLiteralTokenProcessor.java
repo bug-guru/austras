@@ -1,9 +1,16 @@
 package guru.bug.austras.codetempl.parser.tokenizer;
 
-class StringLiteralTokenProcessor implements TokenProcessor<String> {
+import java.util.function.Function;
+
+public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
     private final StringBuilder literal = new StringBuilder();
     private State state = State.INITIAL;
     private boolean escaped;
+    private final Function<String, T> converter;
+
+    protected StringLiteralTokenProcessor(Function<String, T> converter) {
+        this.converter = converter;
+    }
 
     @Override
     public ProcessResult process(int codePoint) {
@@ -40,14 +47,14 @@ class StringLiteralTokenProcessor implements TokenProcessor<String> {
     }
 
     @Override
-    public String complete() {
+    public T complete() {
         var result = literal.toString();
         var tmpState = state;
         literal.setLength(0);
         state = State.INITIAL;
         escaped = false;
         if (tmpState == State.COMPLETED) {
-            return result;
+            return converter.apply(result);
         } else {
             throw new IllegalStateException("Not completed");
         }

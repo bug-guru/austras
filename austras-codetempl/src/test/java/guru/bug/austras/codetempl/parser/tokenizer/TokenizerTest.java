@@ -14,7 +14,7 @@ class TokenizerTest {
     public void simpleCase() throws Exception {
         var tokenizer = new Tokenizer<String>("abc def\"xyz\"");
         var result = new ArrayList<String>();
-        tokenizer.process(result::add, new SpaceIgnoreTokenProcessor(), new StringLiteralTokenProcessor(), new LetterTokenProcessor());
+        tokenizer.process(result::add, new SpaceIgnoreTokenProcessor(), new StringLiteralTokenProcessor<>(s -> s), new LetterTokenProcessor());
 
         assertEquals(List.of("abc", "def", "xyz"), result);
     }
