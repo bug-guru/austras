@@ -2,7 +2,6 @@ package guru.bug.austras.codetempl.parser.tokenizer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,10 +11,11 @@ class TokenizerTest {
 
     @Test
     public void simpleCase() throws Exception {
-        var tokenizer = new Tokenizer<String>("abc def\"xyz\"");
-        var result = new ArrayList<String>();
-        tokenizer.process(result::add, new SpaceIgnoreTokenProcessor(), new StringLiteralTokenProcessor<>(s -> s), new LetterTokenProcessor());
-
+        var tokenizer = new Tokenizer<String>(List.of(
+                new SpaceIgnoreTokenProcessor(),
+                new StringLiteralTokenProcessor<>(s -> s),
+                new LetterTokenProcessor()));
+        var result = tokenizer.process("abc def\"xyz\"");
         assertEquals(List.of("abc", "def", "xyz"), result);
     }
 

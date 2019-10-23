@@ -21,15 +21,15 @@ class TemplateParser {
         while (tokenIterator.hasNext()) {
             var t = tokenIterator.next();
             switch (t.getType()) {
-                case TXT:
+                case TEXT:
                     templateBuilder.add(PlainTextBlock.builder()
                             .append(t.getValue())
                             .build());
                     break;
-                case EXP:
+                case EXPRESSION:
                     parseExp(t.getValue());
                     break;
-                case CMD:
+                case COMMAND:
                     parseCmd(t.getValue());
                     break;
             }

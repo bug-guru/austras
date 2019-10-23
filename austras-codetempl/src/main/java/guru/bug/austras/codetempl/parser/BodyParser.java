@@ -21,15 +21,15 @@ public abstract class BodyParser {
             var t = tokenIterator.next();
             Block block;
             switch (t.getType()) {
-                case TXT:
+                case TEXT:
                     block = PlainTextBlock.builder()
                             .append(t.getValue())
                             .build();
                     break;
-                case EXP:
+                case EXPRESSION:
                     block = parseExp(t.getValue().strip());
                     break;
-                case CMD:
+                case COMMAND:
                     block = parseCmd(t.getValue().strip());
                     break;
                 default:

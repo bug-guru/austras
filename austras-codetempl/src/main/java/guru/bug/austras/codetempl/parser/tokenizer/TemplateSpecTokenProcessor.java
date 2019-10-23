@@ -20,8 +20,8 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
 
     private ProcessResult processBody(int codePoint) {
         if (!string
-                && (type == TemplateToken.Type.CMD && codePoint == '#'
-                || type == TemplateToken.Type.EXP && codePoint == '$')) {
+                && (type == TemplateToken.Type.COMMAND && codePoint == '#'
+                || type == TemplateToken.Type.EXPRESSION && codePoint == '$')) {
             state = State.COMPLETED;
             return ProcessResult.COMPLETE;
         }
@@ -43,9 +43,9 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
 
     private ProcessResult processStart(int codePoint) {
         if (codePoint == '#') {
-            type = TemplateToken.Type.CMD;
+            type = TemplateToken.Type.COMMAND;
         } else if (codePoint == '$') {
-            type = TemplateToken.Type.EXP;
+            type = TemplateToken.Type.EXPRESSION;
         } else {
             clear();
             return ProcessResult.REJECT;

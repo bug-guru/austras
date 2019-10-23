@@ -1,21 +1,19 @@
 package guru.bug.austras.codetempl.parser.tokenizer;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Tokenizer<T> {
-    private final String content;
-    private final IntStream codePoints;
+    private final List<TokenProcessor<T>> variants;
 
-
-    public Tokenizer(String content) {
-        this.content = content;
-        this.codePoints = IntStream.concat(content.codePoints(), IntStream.of(-1));
+    public Tokenizer(List<TokenProcessor<T>> variants) {
+        this.variants = variants;
     }
 
-    public void process(Consumer<T> tokenPush, TokenProcessor<T>... variants) {
-        var variantsList = List.of(variants);
+    public List<T> process(String content) {
+        var resultTokens = new ArrayList<T>();
+        var codePoints = IntStream.concat(content.codePoints(), IntStream.of(-1));
         var holder = new Object() {
             TokenProcessor<T> forced;
             TokenProcessor<T> lastAccepted;
@@ -25,14 +23,14 @@ public class Tokenizer<T> {
                 if (holder.lastAccepted != null) {
                     T token = holder.lastAccepted.complete();
                     if (token != null) {
-                        tokenPush.accept(token);
+                        resultTokens.add(token);
                     }
                 }
             } else {
                 List<TokenProcessor<T>> toProcess;
                 boolean processed = false;
                 if (holder.forced == null) {
-                    toProcess = variantsList;
+                    toProcess = this.variants;
                 } else {
                     toProcess = List.of(holder.forced);
                     holder.forced = null;
@@ -49,7 +47,7 @@ public class Tokenizer<T> {
                             if (holder.lastAccepted != null && holder.lastAccepted != p) {
                                 T token = holder.lastAccepted.complete();
                                 if (token != null) {
-                                    tokenPush.accept(token);
+                                    resultTokens.add(token);
                                 }
                             }
                             holder.lastAccepted = p;
@@ -61,7 +59,7 @@ public class Tokenizer<T> {
                             processed = true;
                             T token = p.complete();
                             if (token != null) {
-                                tokenPush.accept(token);
+                                resultTokens.add(token);
                             }
                             break loop;
                     }
@@ -71,6 +69,7 @@ public class Tokenizer<T> {
                 }
             }
         });
+        return resultTokens;
     }
 
 

@@ -1,7 +1,7 @@
 package guru.bug.austras.codetempl.parser.tokenizer;
 
 public class TemplateToken {
-    public enum Type {TXT, CMD, EXP}
+    public enum Type {TEXT, NEW_LINE, COMMAND, EXPRESSION}
 
     private final String value;
     private final Type type;

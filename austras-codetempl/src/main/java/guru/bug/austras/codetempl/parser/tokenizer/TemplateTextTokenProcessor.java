@@ -11,7 +11,7 @@ public class TemplateTextTokenProcessor implements TokenProcessor<TemplateToken>
 
     @Override
     public TemplateToken complete() {
-        TemplateToken result = new TemplateToken(text.toString(), TemplateToken.Type.TXT);
+        TemplateToken result = new TemplateToken(text.toString(), TemplateToken.Type.TEXT);
         text.setLength(0);
         return result;
     }
