@@ -334,6 +334,21 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/TemplateSpecTokenProcessor.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/TemplateTextTokenProcessor.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/TemplateToken.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/Token.java">
           <value>
             <set />

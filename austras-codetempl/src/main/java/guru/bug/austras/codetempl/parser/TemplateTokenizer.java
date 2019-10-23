@@ -1,5 +1,7 @@
 package guru.bug.austras.codetempl.parser;
 
+import guru.bug.austras.codetempl.parser.tokenizer.TemplateToken;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +10,8 @@ import java.util.List;
 class TemplateTokenizer {
     private static final char DEFAULT_EXPR_CHAR = '$';
     private static final char DEFAULT_CMD_CHAR = '#';
-    private final List<Token> tokenLine = new ArrayList<>();
-    private final List<Token> tokens = new ArrayList<>();
+    private final List<TemplateToken> tokenLine = new ArrayList<>();
+    private final List<TemplateToken> tokens = new ArrayList<>();
     private final StringBuilder preToken = new StringBuilder(4);
     private final BufferedReader reader;
     private final char expChar;
@@ -33,7 +35,7 @@ class TemplateTokenizer {
     }
 
 
-    List<Token> tokenize() throws IOException {
+    List<TemplateToken> tokenize() throws IOException {
         var nextLine = reader.readLine();
         while (nextLine != null) {
             lineNr++;
@@ -62,7 +64,7 @@ class TemplateTokenizer {
     private abstract class TokenBuilder {
         abstract void append(int cp);
 
-        abstract Token.Type type();
+        abstract TemplateToken.Type type();
 
         abstract void forcePush();
 
@@ -70,7 +72,7 @@ class TemplateTokenizer {
             if (preToken.length() == 0) {
                 return;
             }
-            tokenLine.add(new Token(preToken.toString(), type()));
+            tokenLine.add(new TemplateToken(preToken.toString(), type()));
             preToken.setLength(0);
         }
     }
@@ -91,8 +93,8 @@ class TemplateTokenizer {
         }
 
         @Override
-        Token.Type type() {
-            return Token.Type.TXT;
+        TemplateToken.Type type() {
+            return TemplateToken.Type.TXT;
         }
 
         @Override
@@ -137,8 +139,8 @@ class TemplateTokenizer {
     private class ExpTokenBuilder extends AuxTokenBuilder {
 
         @Override
-        Token.Type type() {
-            return Token.Type.EXP;
+        TemplateToken.Type type() {
+            return TemplateToken.Type.EXP;
         }
 
         @Override
@@ -151,8 +153,8 @@ class TemplateTokenizer {
 
 
         @Override
-        Token.Type type() {
-            return Token.Type.CMD;
+        TemplateToken.Type type() {
+            return TemplateToken.Type.CMD;
         }
 
         @Override

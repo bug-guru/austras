@@ -1,12 +1,12 @@
-package guru.bug.austras.codetempl.parser;
+package guru.bug.austras.codetempl.parser.tokenizer;
 
-class Token {
-    enum Type {TXT, CMD, EXP}
+public class TemplateToken {
+    public enum Type {TXT, CMD, EXP}
 
-    final String value;
-    final Type type;
+    private final String value;
+    private final Type type;
 
-    Token(String value, Type type) {
+    public TemplateToken(String value, Type type) {
         this.value = value;
         this.type = type;
     }
