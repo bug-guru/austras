@@ -47,14 +47,14 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
         } else if (codePoint == '$') {
             type = TemplateToken.Type.EXPRESSION;
         } else {
-            clear();
             return ProcessResult.REJECT;
         }
         state = State.STARTED;
         return ProcessResult.ACCEPT_FORCE_NEXT;
     }
 
-    private void clear() {
+    @Override
+    public void reset() {
         content.setLength(0);
         type = null;
         state = State.READY;
@@ -65,11 +65,9 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
     @Override
     public TemplateToken complete() {
         if (state != State.COMPLETED) {
-            clear();
             throw new IllegalStateException("Unexpected state " + state);
         }
         String body = content.toString();
-        clear();
         return new TemplateToken(body, type);
     }
 

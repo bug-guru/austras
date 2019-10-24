@@ -18,7 +18,7 @@ public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateTok
                 if (codePoint == '\n') {
                     return ProcessResult.COMPLETE;
                 } else {
-                    return ProcessResult.COMPLETE_BACK;
+                    return ProcessResult.COMPLETE_REWIND;
                 }
         }
         throw new IllegalStateException();
@@ -26,8 +26,12 @@ public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateTok
 
     @Override
     public TemplateToken complete() {
-        state = State.READY;
         return new TemplateToken("\n", TemplateToken.Type.NEW_LINE);
+    }
+
+    @Override
+    public void reset() {
+        state = State.READY;
     }
 
     private enum State {READY, FIRST_CR}

@@ -15,4 +15,9 @@ class SpaceIgnoreTokenProcessor implements TokenProcessor<String> {
     public String complete() {
         return null;
     }
+
+    @Override
+    public void reset() {
+
+    }
 }

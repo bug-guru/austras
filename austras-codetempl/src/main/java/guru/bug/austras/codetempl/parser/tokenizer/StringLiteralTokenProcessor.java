@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
     private final StringBuilder literal = new StringBuilder();
-    private State state = State.INITIAL;
+    private State state = State.READY;
     private boolean escaped;
     private final Function<String, T> converter;
 
@@ -15,7 +15,7 @@ public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
     @Override
     public ProcessResult process(int codePoint) {
         switch (state) {
-            case INITIAL:
+            case READY:
                 return processStart(codePoint);
             case STARTED:
                 return processLiteral(codePoint);
@@ -50,9 +50,6 @@ public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
     public T complete() {
         var result = literal.toString();
         var tmpState = state;
-        literal.setLength(0);
-        state = State.INITIAL;
-        escaped = false;
         if (tmpState == State.COMPLETED) {
             return converter.apply(result);
         } else {
@@ -60,5 +57,12 @@ public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
         }
     }
 
-    private enum State {INITIAL, STARTED, COMPLETED}
+    @Override
+    public void reset() {
+        literal.setLength(0);
+        state = State.READY;
+        escaped = false;
+    }
+
+    private enum State {READY, STARTED, COMPLETED}
 }
