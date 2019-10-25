@@ -36,8 +36,12 @@ class TokenizerTest {
         @Override
         public String complete() {
             var r = result.toString();
-            result.setLength(0);
             return r;
+        }
+
+        @Override
+        public void reset() {
+            result.setLength(0);
         }
     }
 }

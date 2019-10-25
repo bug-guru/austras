@@ -26,6 +26,7 @@ public class Tokenizer<T> {
                 if (cp == -1) {
                     if (holder.lastAccepted != null) {
                         T token = holder.lastAccepted.complete();
+                        holder.lastAccepted.reset();
                         if (token != null) {
                             resultTokens.add(token);
                         }
@@ -51,6 +52,7 @@ public class Tokenizer<T> {
                             case ACCEPT:
                                 if (holder.lastAccepted != null && holder.lastAccepted != p) {
                                     T token = holder.lastAccepted.complete();
+                                    holder.lastAccepted.reset();
                                     if (token != null) {
                                         resultTokens.add(token);
                                     }
@@ -65,10 +67,10 @@ public class Tokenizer<T> {
                                 holder.lastAccepted = null;
                                 processed = true;
                                 T token = p.complete();
+                                p.reset();
                                 if (token != null) {
                                     resultTokens.add(token);
                                 }
-                                p.reset();
                                 break loop;
                         }
                     }

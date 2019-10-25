@@ -282,16 +282,7 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/TemplateFactory.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZjNAvOYQK1-KF_v" />
-                <option name="line" value="7" />
-                <option name="message" value="Add a private constructor to hide the implicit public one." />
-                <option name="ruleKey" value="squid:S1118" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/TemplateParser.java">
@@ -350,6 +341,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/TemplateToken.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codetempl/parser/tokenizer/TemplateTokenizer.java">
           <value>
             <set />
           </value>

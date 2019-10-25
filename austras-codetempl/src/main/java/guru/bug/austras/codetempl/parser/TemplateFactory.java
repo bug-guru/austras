@@ -1,6 +1,7 @@
 package guru.bug.austras.codetempl.parser;
 
 import guru.bug.austras.codetempl.Template;
+import guru.bug.austras.codetempl.parser.tokenizer.TemplateTokenizer;
 
 import java.io.*;
 
@@ -18,8 +19,10 @@ public class TemplateFactory {
     }
 
     public static Template fromBufferedReader(BufferedReader reader) throws IOException {
-        var tokenizer = new TemplateTokenizer(reader);
-        var tokens = tokenizer.tokenize();
+        var contentWriter = new StringWriter(2048);
+        reader.transferTo(contentWriter);
+        var tokenizer = new TemplateTokenizer();
+        var tokens = tokenizer.process(contentWriter.toString());
         var parser = new TemplateParser(tokens);
         return parser.parse();
     }

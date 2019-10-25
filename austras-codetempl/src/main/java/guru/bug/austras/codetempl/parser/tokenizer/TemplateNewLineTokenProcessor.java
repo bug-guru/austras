@@ -9,6 +9,7 @@ public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateTok
             case READY:
                 if (codePoint == '\r') {
                     state = State.FIRST_CR;
+                    return ProcessResult.ACCEPT_FORCE_NEXT;
                 } else if (codePoint == '\n') {
                     return ProcessResult.COMPLETE;
                 } else {
