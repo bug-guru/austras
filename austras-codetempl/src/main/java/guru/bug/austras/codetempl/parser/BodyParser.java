@@ -10,10 +10,14 @@ import java.util.List;
 
 public abstract class BodyParser {
     private final Iterator<TemplateToken> tokenIterator;
+    private final ExpressionParser expressionParser;
+    private final CommandParser commandParser;
     private final List<Block> result = new ArrayList<>();
 
     protected BodyParser(Iterator<TemplateToken> tokenIterator) {
         this.tokenIterator = tokenIterator;
+        this.expressionParser = new ExpressionParser();
+        this.commandParser = new CommandParser(tokenIterator);
     }
 
     public void parse() {
@@ -24,6 +28,11 @@ public abstract class BodyParser {
                 case TEXT:
                     block = PlainTextBlock.builder()
                             .append(t.getValue())
+                            .build();
+                    break;
+                case NEW_LINE:
+                    block = PlainTextBlock.builder()
+                            .append(System.lineSeparator())
                             .build();
                     break;
                 case EXPRESSION:
@@ -40,10 +49,10 @@ public abstract class BodyParser {
     }
 
     private Block parseExp(String value) {
-        return new ExpressionParser(value).parse();
+        return expressionParser.parse(value);
     }
 
     private Block parseCmd(String value) {
-        return null;
+        return commandParser.parse(value);
     }
 }

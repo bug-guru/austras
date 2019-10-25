@@ -6,19 +6,13 @@ import guru.bug.austras.codetempl.parser.tokenizer.TemplateTokenizer;
 import java.io.*;
 
 public class TemplateFactory {
-    public static Template fromStream(InputStream is) throws IOException {
+    public static Template read(InputStream is) throws IOException {
         try (var reader = new InputStreamReader(is)) {
-            return fromReader(reader);
+            return read(reader);
         }
     }
 
-    public static Template fromReader(Reader reader) throws IOException {
-        try (var bufReader = new BufferedReader(reader)) {
-            return fromBufferedReader(bufReader);
-        }
-    }
-
-    public static Template fromBufferedReader(BufferedReader reader) throws IOException {
+    public static Template read(Reader reader) throws IOException {
         var contentWriter = new StringWriter(2048);
         reader.transferTo(contentWriter);
         var tokenizer = new TemplateTokenizer();
@@ -26,4 +20,5 @@ public class TemplateFactory {
         var parser = new TemplateParser(tokens);
         return parser.parse();
     }
+
 }

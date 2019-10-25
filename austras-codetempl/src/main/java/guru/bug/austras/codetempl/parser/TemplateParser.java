@@ -26,6 +26,11 @@ class TemplateParser {
                             .append(t.getValue())
                             .build());
                     break;
+                case NEW_LINE:
+                    templateBuilder.add(PlainTextBlock.builder()
+                            .append(System.lineSeparator())
+                            .build());
+                    break;
                 case EXPRESSION:
                     parseExp(t.getValue());
                     break;

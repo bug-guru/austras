@@ -3,13 +3,8 @@ package guru.bug.austras.codetempl.parser;
 import guru.bug.austras.codetempl.blocks.Block;
 
 class ExpressionParser {
-    private final String value;
 
-    ExpressionParser(String value) {
-        this.value = value;
-    }
-
-    Block parse() {
+    Block parse(String expression) {
         tokenize();
         return null;
     }
