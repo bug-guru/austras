@@ -1,4 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer;
+package guru.bug.austras.codetempl.parser.tokenizer.spec;
+
+import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
+import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
 
 import java.util.function.Function;
 
@@ -8,7 +11,7 @@ public class StringLiteralTokenProcessor<T> implements TokenProcessor<T> {
     private boolean escaped;
     private final Function<String, T> converter;
 
-    protected StringLiteralTokenProcessor(Function<String, T> converter) {
+    public StringLiteralTokenProcessor(Function<String, T> converter) {
         this.converter = converter;
     }
 

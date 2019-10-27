@@ -2,25 +2,24 @@ package guru.bug.austras.codetempl.parser;
 
 import guru.bug.austras.codetempl.blocks.Block;
 import guru.bug.austras.codetempl.blocks.PlainTextBlock;
-import guru.bug.austras.codetempl.parser.tokenizer.TemplateToken;
+import guru.bug.austras.codetempl.parser.tokenizer.template.TemplateToken;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class BodyParser {
+public class BodyTokensProcessor {
     private final Iterator<TemplateToken> tokenIterator;
-    private final ExpressionParser expressionParser;
-    private final CommandParser commandParser;
-    private final List<Block> result = new ArrayList<>();
 
-    protected BodyParser(Iterator<TemplateToken> tokenIterator) {
+    public BodyTokensProcessor(Iterator<TemplateToken> tokenIterator) {
         this.tokenIterator = tokenIterator;
-        this.expressionParser = new ExpressionParser();
-        this.commandParser = new CommandParser(tokenIterator);
     }
 
-    public void parse() {
+    public List<Block> processBody() {
+        var result = new ArrayList<Block>();
+        var expressionParser = new ExpressionParser();
+        var commandParser = new CommandSwitch(this);
+        loop:
         while (tokenIterator.hasNext()) {
             var t = tokenIterator.next();
             Block block;
@@ -36,23 +35,20 @@ public abstract class BodyParser {
                             .build();
                     break;
                 case EXPRESSION:
-                    block = parseExp(t.getValue().strip());
+                    block = expressionParser.parse(t.getValue().strip());
                     break;
                 case COMMAND:
-                    block = parseCmd(t.getValue().strip());
+                    String value = t.getValue().strip();
+                    if (value.equals("END")) {
+                        break loop;
+                    }
+                    block = commandParser.parse(value);
                     break;
                 default:
                     throw new IllegalStateException("Token is not supported [" + t.getType() + "]");
             }
             result.add(block);
         }
-    }
-
-    private Block parseExp(String value) {
-        return expressionParser.parse(value);
-    }
-
-    private Block parseCmd(String value) {
-        return commandParser.parse(value);
+        return result;
     }
 }

@@ -1,4 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer;
+package guru.bug.austras.codetempl.parser.tokenizer.template;
+
+import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
+import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
 
 public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder content = new StringBuilder();
@@ -68,7 +71,7 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
             throw new IllegalStateException("Unexpected state " + state);
         }
         String body = content.toString();
-        return new TemplateToken(body, type);
+        return new TemplateToken(type, body);
     }
 
     private enum State {READY, STARTED, COMPLETED}

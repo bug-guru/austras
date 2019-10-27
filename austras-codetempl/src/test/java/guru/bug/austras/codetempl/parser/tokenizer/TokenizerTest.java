@@ -1,5 +1,7 @@
 package guru.bug.austras.codetempl.parser.tokenizer;
 
+import guru.bug.austras.codetempl.parser.tokenizer.spec.SpaceIgnoreTokenProcessor;
+import guru.bug.austras.codetempl.parser.tokenizer.spec.StringLiteralTokenProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

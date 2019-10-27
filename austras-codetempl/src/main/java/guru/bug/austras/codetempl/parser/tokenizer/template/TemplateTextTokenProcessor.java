@@ -1,4 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer;
+package guru.bug.austras.codetempl.parser.tokenizer.template;
+
+import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
+import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
 
 public class TemplateTextTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder text = new StringBuilder();
@@ -11,7 +14,7 @@ public class TemplateTextTokenProcessor implements TokenProcessor<TemplateToken>
 
     @Override
     public TemplateToken complete() {
-        return new TemplateToken(text.toString(), TemplateToken.Type.TEXT);
+        return new TemplateToken(TemplateToken.Type.TEXT, text.toString());
     }
 
     @Override

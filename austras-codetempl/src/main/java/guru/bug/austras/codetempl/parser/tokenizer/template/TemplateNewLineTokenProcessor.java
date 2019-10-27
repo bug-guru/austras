@@ -1,4 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer;
+package guru.bug.austras.codetempl.parser.tokenizer.template;
+
+import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
+import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
 
 public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateToken> {
     private State state = State.READY;
@@ -27,7 +30,7 @@ public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateTok
 
     @Override
     public TemplateToken complete() {
-        return new TemplateToken("\n", TemplateToken.Type.NEW_LINE);
+        return new TemplateToken(TemplateToken.Type.NEW_LINE, "\n");
     }
 
     @Override

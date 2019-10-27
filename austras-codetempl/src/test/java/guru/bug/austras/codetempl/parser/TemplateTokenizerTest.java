@@ -1,7 +1,7 @@
 package guru.bug.austras.codetempl.parser;
 
-import guru.bug.austras.codetempl.parser.tokenizer.TemplateToken;
-import guru.bug.austras.codetempl.parser.tokenizer.TemplateTokenizer;
+import guru.bug.austras.codetempl.parser.tokenizer.template.TemplateToken;
+import guru.bug.austras.codetempl.parser.tokenizer.template.TemplateTokenizer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
