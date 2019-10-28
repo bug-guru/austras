@@ -2,7 +2,7 @@ package guru.bug.austras.codetempl;
 
 import guru.bug.austras.codetempl.blocks.Block;
 import guru.bug.austras.codetempl.parser.BodyTokensProcessor;
-import guru.bug.austras.codetempl.parser.tokenizer.template.TemplateTokenizer;
+import guru.bug.austras.codetempl.parser.template.TemplateTokenizer;
 
 import java.io.*;
 import java.util.ArrayList;

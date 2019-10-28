@@ -1,39 +1,41 @@
-package $TARGET.PACKAGE$;
+#PACKAGE#${TARGET.PACKAGE}#END#;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
-import guru.bug.austras.core.Component;
+#IMPORTS#
+guru.bug.austras.convert.converters.JsonConverter
+guru.bug.austras.convert.json.reader.JsonValueReader
+guru.bug.austras.convert.json.writer.JsonValueWriter
+guru.bug.austras.core.Component
+#END#
 
 @Component
-public class $TARGET.SIMPLE_NAME$ToJsonConverter implements JsonConverter<$TARGET$> {
+public class ${TARGET.SIMPLE_NAME}ToJsonConverter implements JsonConverter<${IMPORT:TARGET}> {
 
     #LOOP CNV : CONVERTERS#
-    private $CNV.TYPE$ $CNV.NAME$;
+    private ${IMPORT:CNV.TYPE} $CNV.NAME;
     #END#
 
-    public FakeDtoToJsonConverter(#LOOP CNV : CONVERTERS#$CNV.VALUE.TYPE$ $CNV.NAME$$CNV.IS_LAST?:", "$#END#) {
+    public FakeDtoToJsonConverter(#PARAMS CNV : CONVERTERS#${IMPORT:CNV.TYPE} ${CNV.NAME}#END#) {
         #LOOP CNV : CONVERTERS#
-        this.$CNV.VALUE.NAME$ = $CNV.VALUE.NAME$;
+        this.${CNV.NAME} = ${CNV.NAME};
         #END#
     }
 
     @Override
-    public void toJson($TARGET$ value, JsonValueWriter writer) {
+    public void toJson(${IMPORT:TARGET} value, JsonValueWriter writer) {
         writer.writeObject(value, (obj, out) -> {
             #LOOP PROP : PROPERTIES#
-            out.write("$PROP.VALUE.NAME$", obj.$PROP.VALUE.GETTER_NAME$(), $PROP.VALUE.CONVERTER.NAME$;
+            out.write("${PROP.NAME}", obj.${PROP.GETTER_NAME}(), ${PROP.CONVERTER.NAME};
             #END#
         });
     }
 
     @Override
-    public $TARGET$ fromJson(JsonValueReader reader) {
-        return reader.readObject($TARGET$::new, (obj, key, in) -> {
+    public ${IMPORT:TARGET} fromJson(JsonValueReader reader) {
+        return reader.readObject(${IMPORT:TARGET}::new, (obj, key, in) -> {
             switch (key) {
                 #LOOP PROP : PROPERTIES#
-                case "$PROP.VALUE.NAME$":
-                    obj.$PROP.VALUE.SETTER_NAME$(r.read($PROP.VALUE.CONVERTER.NAME$).orElse(null));
+                case "${PROP.NAME}":
+                    obj.${PROP.SETTER_NAME}(r.read(${PROP.CONVERTER.NAME}).orElse(null));
                     break;
                 #END#
             }

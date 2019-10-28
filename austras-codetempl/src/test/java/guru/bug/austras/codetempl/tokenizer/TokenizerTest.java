@@ -1,7 +1,10 @@
-package guru.bug.austras.codetempl.parser.tokenizer;
+package guru.bug.austras.codetempl.tokenizer;
 
-import guru.bug.austras.codetempl.parser.tokenizer.spec.SpaceIgnoreTokenProcessor;
-import guru.bug.austras.codetempl.parser.tokenizer.spec.StringLiteralTokenProcessor;
+import guru.bug.austras.codetempl.parser.ProcessResult;
+import guru.bug.austras.codetempl.parser.TokenProcessor;
+import guru.bug.austras.codetempl.parser.Tokenizer;
+import guru.bug.austras.codetempl.parser.spec.SpaceIgnoreTokenProcessor;
+import guru.bug.austras.codetempl.parser.spec.StringLiteralTokenProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

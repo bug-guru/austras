@@ -1,14 +1,14 @@
-package guru.bug.austras.codetempl.parser.tokenizer.spec;
+package guru.bug.austras.codetempl.parser.spec;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ExpressionTokenizerTest {
+class SpecTokenizerTest {
 
     @Test
     public void basicTest() throws Exception {
-        var et = new ExpressionTokenizer();
+        var et = new SpecTokenizer();
         var result = et.process("CNV.IS_LAST?:\", \"");
         var i = 0;
         assertEquals(SpecToken.Type.NAME, result.get(i).getType());

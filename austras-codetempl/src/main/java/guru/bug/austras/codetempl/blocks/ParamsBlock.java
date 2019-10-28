@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class LoopBlock implements Block {
+public class ParamsBlock implements Block {
     private final String loopVar;
     private final String collectionVar;
     private final List<Block> body;
 
-    private LoopBlock(String loopVar, String collectionVar, List<Block> body) {
+    private ParamsBlock(String loopVar, String collectionVar, List<Block> body) {
         this.loopVar = loopVar;
         this.collectionVar = collectionVar;
         this.body = List.copyOf(body);
@@ -33,6 +33,9 @@ public class LoopBlock implements Block {
                     .put(loopVar, value)
                     .build();
             result.addAll(evaluateBody(subCtx));
+            if (i < size - 1) {
+                result.add((p) -> p.print(", "));
+            }
         }
         return result;
     }
@@ -44,7 +47,6 @@ public class LoopBlock implements Block {
         }
         return result;
     }
-
 
     public static class Builder {
         private String loopVar;
@@ -80,8 +82,8 @@ public class LoopBlock implements Block {
             return this;
         }
 
-        public LoopBlock build() {
-            return new LoopBlock(loopVar, collectionVar, body);
+        public ParamsBlock build() {
+            return new ParamsBlock(loopVar, collectionVar, body);
         }
 
     }

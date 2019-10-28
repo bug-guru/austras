@@ -1,7 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer.spec;
+package guru.bug.austras.codetempl.parser.spec;
 
-import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
-import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
+import guru.bug.austras.codetempl.parser.ProcessResult;
+import guru.bug.austras.codetempl.parser.TokenProcessor;
 
 import java.util.Set;
 import java.util.TreeSet;

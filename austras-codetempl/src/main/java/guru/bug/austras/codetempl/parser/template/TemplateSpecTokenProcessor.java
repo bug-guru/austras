@@ -1,7 +1,7 @@
-package guru.bug.austras.codetempl.parser.tokenizer.template;
+package guru.bug.austras.codetempl.parser.template;
 
-import guru.bug.austras.codetempl.parser.tokenizer.ProcessResult;
-import guru.bug.austras.codetempl.parser.tokenizer.TokenProcessor;
+import guru.bug.austras.codetempl.parser.ProcessResult;
+import guru.bug.austras.codetempl.parser.TokenProcessor;
 
 public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder content = new StringBuilder();

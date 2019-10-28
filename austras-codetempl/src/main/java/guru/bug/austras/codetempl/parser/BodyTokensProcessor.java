@@ -2,7 +2,7 @@ package guru.bug.austras.codetempl.parser;
 
 import guru.bug.austras.codetempl.blocks.Block;
 import guru.bug.austras.codetempl.blocks.PlainTextBlock;
-import guru.bug.austras.codetempl.parser.tokenizer.template.TemplateToken;
+import guru.bug.austras.codetempl.parser.template.TemplateToken;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,15 +10,16 @@ import java.util.List;
 
 public class BodyTokensProcessor {
     private final Iterator<TemplateToken> tokenIterator;
+    private final LoopCommandParser loopCommandParser;
 
     public BodyTokensProcessor(Iterator<TemplateToken> tokenIterator) {
         this.tokenIterator = tokenIterator;
+        this.loopCommandParser = new LoopCommandParser(this);
     }
 
     public List<Block> processBody() {
         var result = new ArrayList<Block>();
         var expressionParser = new ExpressionParser();
-        var commandParser = new CommandSwitch(this);
         loop:
         while (tokenIterator.hasNext()) {
             var t = tokenIterator.next();
@@ -42,7 +43,7 @@ public class BodyTokensProcessor {
                     if (value.equals("END")) {
                         break loop;
                     }
-                    block = commandParser.parse(value);
+                    block = parseCommand(value);
                     break;
                 default:
                     throw new IllegalStateException("Token is not supported [" + t.getType() + "]");
@@ -50,5 +51,16 @@ public class BodyTokensProcessor {
             result.add(block);
         }
         return result;
+    }
+
+    public Block parseCommand(String value) {
+        String cmd = value.split("\\s", 2)[0];
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (cmd) {
+            case "LOOP":
+                return loopCommandParser.parse(value);
+            default:
+                throw new IllegalArgumentException("Unknown command " + cmd);
+        }
     }
 }

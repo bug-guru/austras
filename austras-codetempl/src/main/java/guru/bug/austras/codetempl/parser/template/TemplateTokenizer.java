@@ -1,6 +1,6 @@
-package guru.bug.austras.codetempl.parser.tokenizer.template;
+package guru.bug.austras.codetempl.parser.template;
 
-import guru.bug.austras.codetempl.parser.tokenizer.Tokenizer;
+import guru.bug.austras.codetempl.parser.Tokenizer;
 
 import java.util.List;
 

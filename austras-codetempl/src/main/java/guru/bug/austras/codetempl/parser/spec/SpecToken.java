@@ -1,4 +1,4 @@
-package guru.bug.austras.codetempl.parser.tokenizer.spec;
+package guru.bug.austras.codetempl.parser.spec;
 
 public class SpecToken {
     private final Type type;

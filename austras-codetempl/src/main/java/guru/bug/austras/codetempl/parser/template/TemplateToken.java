@@ -1,4 +1,4 @@
-package guru.bug.austras.codetempl.parser.tokenizer.template;
+package guru.bug.austras.codetempl.parser.template;
 
 public class TemplateToken {
     public enum Type {TEXT, NEW_LINE, COMMAND, EXPRESSION}
