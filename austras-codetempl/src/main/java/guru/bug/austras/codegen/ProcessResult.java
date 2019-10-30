@@ -1,4 +1,4 @@
-package guru.bug.austras.codetempl.parser;
+package guru.bug.austras.codegen;
 
 public enum ProcessResult {
     REJECT,

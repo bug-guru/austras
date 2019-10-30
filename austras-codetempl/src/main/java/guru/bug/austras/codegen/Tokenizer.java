@@ -1,4 +1,4 @@
-package guru.bug.austras.codetempl.parser;
+package guru.bug.austras.codegen;
 
 import java.util.ArrayList;
 import java.util.List;

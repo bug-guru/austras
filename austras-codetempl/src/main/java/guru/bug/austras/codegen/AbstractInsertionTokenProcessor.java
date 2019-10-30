@@ -1,14 +1,15 @@
-package guru.bug.austras.codetempl.parser.template;
+package guru.bug.austras.codegen;
 
-import guru.bug.austras.codetempl.parser.ProcessResult;
-import guru.bug.austras.codetempl.parser.TokenProcessor;
-
-public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken> {
+public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder content = new StringBuilder();
-    private TemplateToken.Type type;
+    private final int symbol;
+    private final TemplateToken.Type type;
     private State state = State.READY;
-    private boolean escape = false;
-    private boolean string = false;
+
+    protected AbstractInsertionTokenProcessor(int symbol, TemplateToken.Type type) {
+        this.symbol = symbol;
+        this.type = type;
+    }
 
     @Override
     public ProcessResult process(int codePoint) {
@@ -22,47 +23,28 @@ public class TemplateSpecTokenProcessor implements TokenProcessor<TemplateToken>
     }
 
     private ProcessResult processBody(int codePoint) {
-        if (!string
-                && (type == TemplateToken.Type.COMMAND && codePoint == '#'
-                || type == TemplateToken.Type.EXPRESSION && codePoint == '$')) {
+        if (codePoint == symbol) {
             state = State.COMPLETED;
             return ProcessResult.COMPLETE;
         }
         content.appendCodePoint(codePoint);
-        if (string) {
-            if (escape) {
-                escape = false;
-            } else if (codePoint == '\\') {
-                escape = true;
-            } else if (codePoint == '"') {
-                string = false;
-            }
-        } else if (codePoint == '"') {
-            string = true;
-        }
         return ProcessResult.ACCEPT_FORCE_NEXT;
     }
 
 
     private ProcessResult processStart(int codePoint) {
-        if (codePoint == '#') {
-            type = TemplateToken.Type.COMMAND;
-        } else if (codePoint == '$') {
-            type = TemplateToken.Type.EXPRESSION;
+        if (codePoint == symbol) {
+            state = State.STARTED;
+            return ProcessResult.ACCEPT_FORCE_NEXT;
         } else {
             return ProcessResult.REJECT;
         }
-        state = State.STARTED;
-        return ProcessResult.ACCEPT_FORCE_NEXT;
     }
 
     @Override
     public void reset() {
         content.setLength(0);
-        type = null;
         state = State.READY;
-        string = false;
-        escape = false;
     }
 
     @Override

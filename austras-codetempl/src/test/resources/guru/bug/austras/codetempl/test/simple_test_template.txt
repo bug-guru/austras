@@ -1,4 +1,4 @@
-#PACKAGE#${TARGET.PACKAGE}#END#;
+package $TARGET.PACKAGE$;
 
 #IMPORTS#
 guru.bug.austras.convert.converters.JsonConverter
@@ -8,34 +8,34 @@ guru.bug.austras.core.Component
 #END#
 
 @Component
-public class ${TARGET.SIMPLE_NAME}ToJsonConverter implements JsonConverter<${IMPORT:TARGET}> {
+public class $TARGET.SIMPLE_NAME$ToJsonConverter implements JsonConverter<$TARGET$> {
 
-    #LOOP CNV : CONVERTERS#
-    private ${IMPORT:CNV.TYPE} $CNV.NAME;
+    #CONVERTERS#
+    private $CNV.TYPE$ $CNV.NAME$;
     #END#
 
-    public FakeDtoToJsonConverter(#PARAMS CNV : CONVERTERS#${IMPORT:CNV.TYPE} ${CNV.NAME}#END#) {
-        #LOOP CNV : CONVERTERS#
-        this.${CNV.NAME} = ${CNV.NAME};
+    public FakeDtoToJsonConverter(#CONVERTERS PARAMS#$CNV.TYPE$ $CNV.NAME$#END#) {
+        #CONVERTERS#
+        this.$CNV.NAME$ = $CNV.NAME$;
         #END#
     }
 
     @Override
-    public void toJson(${IMPORT:TARGET} value, JsonValueWriter writer) {
+    public void toJson($TARGET$ value, JsonValueWriter writer) {
         writer.writeObject(value, (obj, out) -> {
-            #LOOP PROP : PROPERTIES#
-            out.write("${PROP.NAME}", obj.${PROP.GETTER_NAME}(), ${PROP.CONVERTER.NAME};
+            #PROPERTIES#
+            out.write("$PROP.NAME$", obj.$PROP.GETTER_NAME$(), $PROP.CONVERTER.NAME$;
             #END#
         });
     }
 
     @Override
-    public ${IMPORT:TARGET} fromJson(JsonValueReader reader) {
-        return reader.readObject(${IMPORT:TARGET}::new, (obj, key, in) -> {
+    public $TARGET$ fromJson(JsonValueReader reader) {
+        return reader.readObject($TARGET$::new, (obj, key, in) -> {
             switch (key) {
-                #LOOP PROP : PROPERTIES#
-                case "${PROP.NAME}":
-                    obj.${PROP.SETTER_NAME}(r.read(${PROP.CONVERTER.NAME}).orElse(null));
+                #PROPERTIES#
+                case "$PROP.NAME$":
+                    obj.$PROP.SETTER_NAME$(r.read($PROP.CONVERTER.NAME$).orElse(null));
                     break;
                 #END#
             }

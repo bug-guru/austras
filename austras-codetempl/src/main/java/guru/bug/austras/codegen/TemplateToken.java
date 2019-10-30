@@ -1,7 +1,7 @@
-package guru.bug.austras.codetempl.parser.template;
+package guru.bug.austras.codegen;
 
 public class TemplateToken {
-    public enum Type {TEXT, NEW_LINE, COMMAND, EXPRESSION}
+    public enum Type {TEXT, NEW_LINE, BLOCK, VALUE}
 
     private final String value;
     private final Type type;

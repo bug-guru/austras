@@ -1,9 +1,6 @@
-package guru.bug.austras.codetempl.parser.template;
+package guru.bug.austras.codegen;
 
-import guru.bug.austras.codetempl.parser.ProcessResult;
-import guru.bug.austras.codetempl.parser.TokenProcessor;
-
-public class TemplateNewLineTokenProcessor implements TokenProcessor<TemplateToken> {
+public class NewLineTokenProcessor implements TokenProcessor<TemplateToken> {
     private State state = State.READY;
 
     @Override

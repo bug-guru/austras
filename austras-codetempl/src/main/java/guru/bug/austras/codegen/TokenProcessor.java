@@ -1,4 +1,4 @@
-package guru.bug.austras.codetempl.parser;
+package guru.bug.austras.codegen;
 
 public interface TokenProcessor<T> {
     ProcessResult process(int codePoint);
