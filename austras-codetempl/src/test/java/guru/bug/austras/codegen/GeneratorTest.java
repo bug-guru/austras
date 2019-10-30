@@ -21,17 +21,17 @@ public class GeneratorTest extends Generator {
         var out = new StringWriter(1024);
         this.generateTo(out);
         var result = out.toString();
-        Assertions.assertEquals("This is first line\n" +
-                "0.100\n" +
-                "0.101\n" +
-                "0.102\n" +
-                "1.100\n" +
-                "1.101\n" +
-                "1.102\n" +
-                "2.100\n" +
-                "2.101\n" +
-                "2.102\n" +
-                "This is last line\n", result);
+        Assertions.assertEquals("This is first line" + System.lineSeparator() +
+                "0.100" + System.lineSeparator() +
+                "0.101" + System.lineSeparator() +
+                "0.102" + System.lineSeparator() +
+                "1.100" + System.lineSeparator() +
+                "1.101" + System.lineSeparator() +
+                "1.102" + System.lineSeparator() +
+                "2.100" + System.lineSeparator() +
+                "2.101" + System.lineSeparator() +
+                "2.102" + System.lineSeparator() +
+                "This is last line" + System.lineSeparator(), result);
     }
 
     @FromTemplate("EXTERNAL LOOP")
