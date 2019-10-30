@@ -1,28 +1,30 @@
-package $TARGET.PACKAGE$;
+package $PACKAGE$;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
-import guru.bug.austras.core.Component;
+#IMPORTS#
+guru.bug.austras.convert.converters.JsonConverter
+guru.bug.austras.convert.json.reader.JsonValueReader
+guru.bug.austras.convert.json.writer.JsonValueWriter
+guru.bug.austras.core.Component
+#END#
 
 @Component
-public class $TARGET.SIMPLE_NAME$ToJsonConverter implements JsonConverter<$TARGET$> {
+public class $SIMPLE_NAME$ implements JsonConverter<$TARGET$> {
 
-    #LOOP CNV : CONVERTERS#
-    private $CNV.TYPE$ $CNV.NAME$;
+    #PROPERTIES#
+    private $CONVERTER_TYPE$ $CONVERTER_NAME$;
     #END#
 
-    public FakeDtoToJsonConverter(#LOOP CNV : CONVERTERS#$CNV.VALUE.TYPE$ $CNV.NAME$$CNV.IS_LAST?:", "$#END#) {
-        #LOOP CNV : CONVERTERS#
-        this.$CNV.VALUE.NAME$ = $CNV.VALUE.NAME$;
+    public FakeDtoToJsonConverter(#PROPERTIES PARAMS#$CONVERTER_TYPE$ $CONVERTER_NAME$#END#) {
+        #PROPERTIES#
+        this.$CONVERTER_NAME$ = $CONVERTER_NAME$;
         #END#
     }
 
     @Override
     public void toJson($TARGET$ value, JsonValueWriter writer) {
         writer.writeObject(value, (obj, out) -> {
-            #LOOP PROP : PROPERTIES#
-            out.write("$PROP.VALUE.NAME$", obj.$PROP.VALUE.GETTER_NAME$(), $PROP.VALUE.CONVERTER.NAME$;
+            #PROPERTIES#
+            out.write("$PROPERTY_NAME$", obj.$PROPERTY_GETTER_NAME$(), $CONVERTER_NAME$);
             #END#
         });
     }
@@ -31,9 +33,9 @@ public class $TARGET.SIMPLE_NAME$ToJsonConverter implements JsonConverter<$TARGE
     public $TARGET$ fromJson(JsonValueReader reader) {
         return reader.readObject($TARGET$::new, (obj, key, in) -> {
             switch (key) {
-                #LOOP PROP : PROPERTIES#
-                case "$PROP.VALUE.NAME$":
-                    obj.$PROP.VALUE.SETTER_NAME$(r.read($PROP.VALUE.CONVERTER.NAME$).orElse(null));
+                #PROPERTIES#
+                case "$PROPERTY_NAME$":
+                    obj.$PROPERTY_SETTER_NAME$(reader.read($CONVERTER_NAME$).orElse(null));
                     break;
                 #END#
             }

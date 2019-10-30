@@ -27,7 +27,11 @@ class ConvertersProcessor {
         var elementUtils = ctx.processingEnv().getElementUtils();
         jsonConverter = elementUtils.getTypeElement(JsonConverter.class.getName());
         stringConverter = elementUtils.getTypeElement(StringConverter.class.getName());
-        jsonConverterGenerator = new JsonConverterGenerator(ctx);
+        try {
+            jsonConverterGenerator = new JsonConverterGenerator(ctx);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     void process() {

@@ -25,6 +25,10 @@ public abstract class Generator {
         }
     }
 
+    public final String generateToString() {
+        return content.evaluateBody();
+    }
+
     public final void generateTo(Writer writer) throws IOException {
         String outputContent = content.evaluateBody();
         writer.write(outputContent);

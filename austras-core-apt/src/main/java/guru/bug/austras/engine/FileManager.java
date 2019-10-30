@@ -6,4 +6,6 @@ import java.io.IOException;
 
 public interface FileManager {
     void createFile(CompilationUnit compilationUnit) throws IOException;
+
+    void writeJavaClass(String qualifiedName, String content) throws IOException;
 }

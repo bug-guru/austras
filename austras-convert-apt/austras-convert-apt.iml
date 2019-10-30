@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="austras-codetempl" />
     <orderEntry type="module" module-name="austras-convert" />
     <orderEntry type="module" module-name="austras-core" />
     <orderEntry type="module" module-name="austras-core-apt" />

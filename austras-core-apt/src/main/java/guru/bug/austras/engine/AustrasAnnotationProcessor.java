@@ -314,6 +314,14 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 unit.print(out);
             }
         }
+
+        @Override
+        public void writeJavaClass(String qualifiedName, String content) throws IOException {
+            var filer = processingEnv.getFiler();
+            try (var writer = filer.createSourceFile(qualifiedName).openWriter()) {
+                writer.write(content);
+            }
+        }
     }
 
     private class ComponentManagerImpl implements ComponentManager {

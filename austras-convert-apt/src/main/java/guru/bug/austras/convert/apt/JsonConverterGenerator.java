@@ -1,188 +1,127 @@
 package guru.bug.austras.convert.apt;
 
-import guru.bug.austras.codegen.CompilationUnit;
-import guru.bug.austras.codegen.Printable;
-import guru.bug.austras.codegen.common.CodeBlock;
-import guru.bug.austras.codegen.common.CodeLine;
-import guru.bug.austras.codegen.common.QualifiedName;
-import guru.bug.austras.codegen.decl.ClassMemberDecl;
-import guru.bug.austras.codegen.decl.MethodParamDecl;
-import guru.bug.austras.codegen.decl.PackageDecl;
-import guru.bug.austras.codegen.decl.TypeDecl;
-import guru.bug.austras.codegen.spec.AnnotationSpec;
-import guru.bug.austras.codegen.spec.TypeArg;
-import guru.bug.austras.codegen.spec.TypeSpec;
+import guru.bug.austras.codegen.BodyBlock;
+import guru.bug.austras.codegen.FromTemplate;
+import guru.bug.austras.codegen.Generator;
 import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
-import guru.bug.austras.core.Component;
 import guru.bug.austras.engine.ProcessingContext;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor9;
 import java.io.IOException;
-import java.util.Collection;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class JsonConverterGenerator {
+
+@FromTemplate("/guru/bug/austras/convert/template/JsonConverter.txt")
+public class JsonConverterGenerator extends Generator {
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;
+    private List<Property> properties;
+    private String packageName;
+    private String qualifiedName;
+    private String simpleName;
+    private String targetQualifiedName;
+    private Property currentProperty;
 
-    public JsonConverterGenerator(ProcessingContext ctx) {
+    public JsonConverterGenerator(ProcessingContext ctx) throws IOException {
+        super();
         this.ctx = ctx;
     }
 
 
     public void generate(DeclaredType type) throws IOException {
-        List<Property> props = collectProps(type);
-        var pkg = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
-        var unit = CompilationUnit.builder()
-                .packageDecl(PackageDecl.of(pkg))
-                .addTypeDecl(TypeDecl.classBuilder()
-                        .simpleName(type.asElement().getSimpleName().toString() + "ToJsonConverter")
-                        .publicMod()
-                        .addAnnotation(AnnotationSpec.of(Component.class))
-                        .addSuperinterface(TypeSpec.builder()
-                                .name(QualifiedName.of(JsonConverter.class))
-                                .addTypeArg(TypeArg.ofType(type.toString()))
-                                .build())
-                        .addMembers(fields(props))
-                        .addMember(ClassMemberDecl.constructorBuilder()
-                                .publicMod()
-                                .addParams(constructorParams(props))
-                                .body(constructorBody(props))
-                                .build())
-                        .addMember(toJsonMethod(type, props))
-                        .addMember(fromJsonMethod(type, props))
-                        .build())
-                .build();
+        properties = collectProps(type);
+        packageName = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
+        simpleName = type.asElement().getSimpleName().toString() + "ToJsonConverter";
+        targetQualifiedName = ((TypeElement) type.asElement()).getQualifiedName().toString();
 
-        ctx.fileManager().createFile(unit);
+        qualifiedName = packageName + "." + simpleName;
+        ctx.fileManager().writeJavaClass(qualifiedName, generateToString());
     }
 
-    private ClassMemberDecl toJsonMethod(DeclaredType type, List<Property> props) {
-        return ClassMemberDecl.methodBuilder("toJson", TypeSpec.voidType())
-                .addAnnotation(AnnotationSpec.of(Override.class))
-                .publicMod()
-                .addParam(MethodParamDecl.builder()
-                        .name("value")
-                        .type(type.toString())
-                        .build())
-                .addParam(MethodParamDecl.builder()
-                        .name("writer")
-                        .type(TypeSpec.of(JsonValueWriter.class))
-                        .build())
-                .body(toJsonMethodBody(props))
-                .build();
+    @FromTemplate("PACKAGE")
+    public String getPackageName() {
+        return packageName;
     }
 
-    private CodeBlock toJsonMethodBody(List<Property> props) {
-        return CodeBlock.builder()
-                .addLine(CodeLine.builder()
-                        .add(out -> out.print(out.withIndent(4)
-                                        .separator("\n")
-                                        .prefix("writer.writeObject(value, (v, out) -> {\n")
-                                        .suffix("\n});"),
-                                o -> o.print(props.stream()
-                                        .map(p -> (Printable) printer -> printer.print("out.write(")
-                                                .printLiteral(p.name)
-                                                .print(", v.")
-                                                .print(p.getter.getSimpleName().toString())
-                                                .print("(), ")
-                                                .print(p.name + "Converter);"))
-                                        .collect(Collectors.toList()))))
-                        .build())
-                .build();
+    @FromTemplate("IMPORTS")
+    public void processImports(PrintWriter out, BodyBlock body) {
+        var strBody = body.evaluateBody();
+        strBody.lines()
+                .filter(s -> !s.isBlank())
+                .forEach(s -> {
+                    out.print("import ");
+                    out.print(s);
+                    out.println(";");
+                });
     }
 
-    private ClassMemberDecl fromJsonMethod(DeclaredType type, List<Property> props) {
-        return ClassMemberDecl.methodBuilder("fromJson", TypeSpec.of(type.toString()))
-                .addAnnotation(AnnotationSpec.of(Override.class))
-                .publicMod()
-                .addParam(MethodParamDecl.builder()
-                        .name("reader")
-                        .type(TypeSpec.of(JsonValueReader.class))
-                        .build())
-                .body(fromJsonMethodBody(type, props))
-                .build();
+    @FromTemplate("SIMPLE_NAME")
+    public String getSimpleName() {
+        return simpleName;
     }
 
-    private CodeBlock fromJsonMethodBody(DeclaredType type, List<Property> props) {
-        return CodeBlock.builder()
-                .addLine(CodeLine.builder()
-                        .add(out -> out.print(out.withIndent(4)
-                                        .separator("\n")
-                                        .prefix(prefixPrinter -> {
-                                            prefixPrinter.printReturn()
-                                                    .print("reader.readObject()")
-                                                    .print(QualifiedName.of(type.toString()))
-                                                    .print("::")
-                                                    .printNew()
-                                                    .print(", (v, k, r) -> {\n");
-                                            prefixPrinter.print(x -> x.withIndent(4), xo -> xo.print())
-                                        })
-                                        .suffix("\n});"),
-                                o -> o.print(props.stream()
-                                        .map(p -> (Printable) printer -> printer.print("out.write(")
-                                                .printLiteral(p.name)
-                                                .print(", v.")
-                                                .print(p.getter.getSimpleName().toString())
-                                                .print("(), ")
-                                                .print(p.name + "Converter);"))
-                                        .collect(Collectors.toList()))))
-                        .build())
-                .build();
+    @FromTemplate("TARGET")
+    public String getTarget() {
+        return targetQualifiedName;
     }
 
-    private Collection<ClassMemberDecl> fields(List<Property> props) {
-        return props.stream()
-                .map(p -> ClassMemberDecl.fieldBulder(TypeSpec.of(JsonConverter.class, TypeArg.ofType(p.type.toString())), p.name + "Converter")
-                        .privateMod()
-                        .build())
-                .collect(Collectors.toList());
+    @FromTemplate("PROPERTIES")
+    public void processConverters(PrintWriter out, BodyBlock body) {
+        for (var p : properties) {
+            this.currentProperty = p;
+            out.print(body.evaluateBody());
+        }
     }
 
-    private CodeBlock constructorBody(List<Property> props) {
-        return CodeBlock.builder()
-                .addLines(props.stream()
-                        .map(p -> CodeLine.builder()
-                                .print(o -> {
-                                    o.printThis();
-                                    o.print(".");
-                                    o.print(p.name + "Converter");
-                                    o.print(" = ");
-                                    o.print(p.name + "Converter");
-                                    o.print(";");
-                                })
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
+    @FromTemplate("PROPERTIES PARAMS")
+    public void processConvertersParams(PrintWriter out, BodyBlock body) {
+        boolean sep = false;
+        for (var p : properties) {
+            this.currentProperty = p;
+            if (sep) {
+                out.print(", ");
+            } else {
+                sep = true;
+            }
+            out.print(body.evaluateBody());
+        }
     }
 
-    private Collection<MethodParamDecl> constructorParams(List<Property> props) {
-
-        return props.stream()
-                .map(p -> {
-                    try {
-                        return MethodParamDecl.builder()
-                                .type(TypeSpec.of(JsonConverter.class, TypeArg.ofType(p.type.toString())))
-                                .name(p.name + "Converter")
-                                .build();
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("Property " + p, e);
-                    }
-                })
-                .collect(Collectors.toList());
+    @FromTemplate("CONVERTER_TYPE")
+    public String getCurrentConverterType() {
+        return JsonConverter.class.getName() + "<" + currentProperty.type.toString() + ">";
     }
 
+    @FromTemplate("CONVERTER_NAME")
+    public String getCurrentConverterName() {
+        return currentProperty.name + "Converter";
+    }
+
+    @FromTemplate("PROPERTY_NAME")
+    public String getCurrentPropertyName() {
+        return currentProperty.name;
+    }
+
+    @FromTemplate("PROPERTY_GETTER_NAME")
+    public String getCurrentPropertyGetterName() {
+        return currentProperty.getter.getSimpleName().toString();
+    }
+
+    @FromTemplate("PROPERTY_SETTER_NAME")
+    public String getCurrentPropertySetterName() {
+        return currentProperty.setter.getSimpleName().toString();
+    }
 
     private List<Property> collectProps(DeclaredType type) {
         var index = new HashMap<String, Property>();
