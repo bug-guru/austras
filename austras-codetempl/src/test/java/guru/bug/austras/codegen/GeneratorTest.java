@@ -1,9 +1,11 @@
 package guru.bug.austras.codegen;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @FromTemplate("/guru/bug/austras/codetempl/test/loop_and_var.txt")
 public class GeneratorTest extends Generator {
@@ -16,7 +18,20 @@ public class GeneratorTest extends Generator {
 
     @Test
     public void generateTest() throws IOException {
-        this.generateTo(System.out);
+        var out = new StringWriter(1024);
+        this.generateTo(out);
+        var result = out.toString();
+        Assertions.assertEquals("This is first line\n" +
+                "0.100\n" +
+                "0.101\n" +
+                "0.102\n" +
+                "1.100\n" +
+                "1.101\n" +
+                "1.102\n" +
+                "2.100\n" +
+                "2.101\n" +
+                "2.102\n" +
+                "This is last line\n", result);
     }
 
     @FromTemplate("EXTERNAL LOOP")

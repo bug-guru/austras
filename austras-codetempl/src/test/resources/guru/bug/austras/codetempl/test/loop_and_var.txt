@@ -1,7 +1,3 @@
-This is first line
-#EXTERNAL LOOP#
-#INTERNAL LOOP#
-$EXT_VALUE$.$INT_VALUE$
-#END#
-#END#
+This is first line#EXTERNAL LOOP##INTERNAL LOOP#
+$EXT_VALUE$.$INT_VALUE$#END##END#
 This is last line
