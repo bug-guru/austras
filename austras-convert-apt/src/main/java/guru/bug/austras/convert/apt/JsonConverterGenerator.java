@@ -2,7 +2,7 @@ package guru.bug.austras.convert.apt;
 
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
-import guru.bug.austras.codegen.Generator;
+import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.engine.ProcessingContext;
 
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 
 @FromTemplate("/guru/bug/austras/convert/template/JsonConverter.txt")
-public class JsonConverterGenerator extends Generator {
+public class JsonConverterGenerator extends JavaGenerator {
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;
     private List<Property> properties;
@@ -49,23 +49,6 @@ public class JsonConverterGenerator extends Generator {
         ctx.fileManager().writeJavaClass(qualifiedName, generateToString());
     }
 
-    @FromTemplate("PACKAGE")
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @FromTemplate("IMPORTS")
-    public void processImports(PrintWriter out, BodyBlock body) {
-        var strBody = body.evaluateBody();
-        strBody.lines()
-                .filter(s -> !s.isBlank())
-                .forEach(s -> {
-                    out.print("import ");
-                    out.print(s);
-                    out.println(";");
-                });
-    }
-
     @FromTemplate("SIMPLE_NAME")
     public String getSimpleName() {
         return simpleName;
@@ -73,7 +56,7 @@ public class JsonConverterGenerator extends Generator {
 
     @FromTemplate("TARGET")
     public String getTarget() {
-        return targetQualifiedName;
+        return tryImport(targetQualifiedName);
     }
 
     @FromTemplate("PROPERTIES")
@@ -100,7 +83,7 @@ public class JsonConverterGenerator extends Generator {
 
     @FromTemplate("CONVERTER_TYPE")
     public String getCurrentConverterType() {
-        return JsonConverter.class.getName() + "<" + currentProperty.type.toString() + ">";
+        return tryImport(JsonConverter.class.getName()) + "<" + tryImport(currentProperty.type.toString()) + ">";
     }
 
     @FromTemplate("CONVERTER_NAME")
@@ -181,6 +164,12 @@ public class JsonConverterGenerator extends Generator {
             o1.setter = o2.setter;
         }
         return o1;
+    }
+
+    @FromTemplate("PACKAGE_NAME")
+    @Override
+    public String getPackageName() {
+        return packageName;
     }
 
 

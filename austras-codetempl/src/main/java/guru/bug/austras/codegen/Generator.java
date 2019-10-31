@@ -19,17 +19,17 @@ public abstract class Generator {
         this.content = createContentBlock();
     }
 
-    public final void generateTo(OutputStream out) throws IOException {
+    public void generateTo(OutputStream out) throws IOException {
         try (var writer = new OutputStreamWriter(out)) {
             generateTo(writer);
         }
     }
 
-    public final String generateToString() {
+    public String generateToString() {
         return content.evaluateBody();
     }
 
-    public final void generateTo(Writer writer) throws IOException {
+    public void generateTo(Writer writer) throws IOException {
         String outputContent = content.evaluateBody();
         writer.write(outputContent);
     }

@@ -262,6 +262,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codegen/JavaGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codegen/NewLineTokenProcessor.java">
           <value>
             <set />

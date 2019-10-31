@@ -1,4 +1,4 @@
-package $PACKAGE$;
+package $PACKAGE_NAME$;
 
 #IMPORTS#
 guru.bug.austras.convert.converters.JsonConverter
