@@ -2219,6 +2219,11 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/convert/FakeDto.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/convert/WithJsonConverter.java">
           <value>
             <set>

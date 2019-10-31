@@ -7,7 +7,7 @@ public class FakeDto {
     private UUID id;
     private String name;
     private Integer number;
-    private LocalDate dataOfBirth;
+    private LocalDate dateOfBirth;
 
     public UUID getId() {
         return id;
@@ -33,11 +33,11 @@ public class FakeDto {
         this.number = number;
     }
 
-    public LocalDate getDataOfBirth() {
-        return dataOfBirth;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDataOfBirth(LocalDate dataOfBirth) {
-        this.dataOfBirth = dataOfBirth;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }
