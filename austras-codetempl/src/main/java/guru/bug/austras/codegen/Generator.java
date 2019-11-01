@@ -40,8 +40,54 @@ public abstract class Generator {
         var strContent = readContent(resourceName);
         TemplateTokenizer tokenizer = new TemplateTokenizer();
         var tokens = tokenizer.process(strContent);
+        cleanup(tokens);
+
         var tokenIterator = tokens.iterator();
         return new BlockWithBody(null, tokenIterator);
+    }
+
+    private void cleanup(List<TemplateToken> tokens) {
+        var i = tokens.listIterator();
+        int state = 1;
+        boolean hasTrailingSpaces = false;
+        boolean hasLeadingSpaces = false;
+
+        while (i.hasNext()) {
+            var t = i.next();
+            if (state == 0 && t.getType() == TemplateToken.Type.NEW_LINE) {
+                state = 1;
+                continue;
+            } else if (state == 1 && t.getType() == TemplateToken.Type.TEXT && t.getValue().isBlank()) {
+                state = 2;
+                hasLeadingSpaces = true;
+                continue;
+            } else if (state == 1 && t.getType() == TemplateToken.Type.BLOCK) {
+                state = 3;
+                continue;
+            } else if (state == 2 && t.getType() == TemplateToken.Type.BLOCK) {
+                state = 3;
+                continue;
+            } else if (state == 3 && t.getType() == TemplateToken.Type.TEXT && t.getValue().isBlank()) {
+                state = 4;
+                hasTrailingSpaces = true;
+                continue;
+            } else if ((state == 3 || state == 4) && t.getType() == TemplateToken.Type.NEW_LINE) {
+                i.remove();
+                if (hasTrailingSpaces) {
+                    i.previous();
+                    i.remove();
+                }
+                if (hasLeadingSpaces) {
+                    i.previous();
+                    i.previous();
+                    i.remove();
+                    i.next();
+                }
+            }
+            state = 0;
+            hasLeadingSpaces = false;
+            hasTrailingSpaces = false;
+        }
     }
 
     private void collectCallers() {
@@ -216,7 +262,6 @@ public abstract class Generator {
             try {
                 callerType.invocation.invoke(method, Generator.this, out, block);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace(System.err);
                 throw new IllegalStateException(e);
             }
         }

@@ -64,6 +64,7 @@ public abstract class JavaGenerator extends Generator {
         } else {
             imports.values().stream()
                     .filter(i -> isPrintableToImportPkg(i.packageName))
+                    .sorted()
                     .forEach(s -> {
                         out.print("import ");
                         out.print(s.packageName);
@@ -74,8 +75,17 @@ public abstract class JavaGenerator extends Generator {
         }
     }
 
-    private static class ImportLine {
+    private static class ImportLine implements Comparable<ImportLine> {
         String packageName;
         String className;
+
+        @Override
+        public int compareTo(ImportLine o) {
+            int result = this.packageName.compareTo(o.packageName);
+            if (result == 0) {
+                return this.className.compareTo(o.className);
+            }
+            return result;
+        }
     }
 }
