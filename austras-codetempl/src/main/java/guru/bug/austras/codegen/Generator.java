@@ -54,7 +54,7 @@ public abstract class Generator {
 
         while (i.hasNext()) {
             var t = i.next();
-            if (state == 0 && t.getType() == TemplateToken.Type.NEW_LINE) {
+            if ((state == 0 || state == 1) && t.getType() == TemplateToken.Type.NEW_LINE) {
                 state = 1;
                 continue;
             } else if (state == 1 && t.getType() == TemplateToken.Type.TEXT && t.getValue().isBlank()) {
