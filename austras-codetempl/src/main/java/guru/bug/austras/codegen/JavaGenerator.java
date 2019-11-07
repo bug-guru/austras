@@ -1,15 +1,18 @@
 package guru.bug.austras.codegen;
 
+import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class JavaGenerator extends Generator {
-    private Map<String, ImportLine> imports = new HashMap<>();
+    private final Map<String, ImportLine> imports = new HashMap<>();
+    private final Filer filer;
 
-    protected JavaGenerator() throws IOException {
+    protected JavaGenerator(Filer filer) throws IOException {
         super();
+        this.filer = filer;
     }
 
     protected final String tryImport(String qualifiedName) {
@@ -40,13 +43,17 @@ public abstract class JavaGenerator extends Generator {
         return !pkg.equals("java.lang") && !pkg.equals(getPackageName());
     }
 
-    @Override
-    public String generateToString() {
-        super.generateToString(); // ignoring result just to fill imports;
-        return super.generateToString();
+    protected final void generateJavaClass() throws IOException {
+        var qualifiedName = getPackageName() + "." + getSimpleClassName();
+        try (var out = filer.createClassFile(qualifiedName).openWriter()) {
+            super.generateToString(); // ignoring result just to fill imports;
+            super.generateTo(out);
+        }
     }
 
     public abstract String getPackageName();
+
+    public abstract String getSimpleClassName();
 
     @FromTemplate("IMPORTS")
     public final void processImports(PrintWriter out, BodyBlock body) {

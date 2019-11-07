@@ -70,7 +70,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         readComponentMaps();
         initPlugins();
         try {
-            this.mainClassGenerator = new MainClassGenerator(processingEnv);
+            this.mainClassGenerator = new MainClassGenerator(processingEnv.getFiler());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

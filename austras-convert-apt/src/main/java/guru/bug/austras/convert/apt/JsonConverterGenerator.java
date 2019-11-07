@@ -28,13 +28,12 @@ public class JsonConverterGenerator extends JavaGenerator {
     private final ProcessingContext ctx;
     private List<Property> properties;
     private String packageName;
-    private String qualifiedName;
     private String simpleName;
     private String targetQualifiedName;
     private Property currentProperty;
 
     public JsonConverterGenerator(ProcessingContext ctx) throws IOException {
-        super();
+        super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
     }
 
@@ -44,13 +43,18 @@ public class JsonConverterGenerator extends JavaGenerator {
         packageName = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
         simpleName = type.asElement().getSimpleName().toString() + "ToJsonConverter";
         targetQualifiedName = ((TypeElement) type.asElement()).getQualifiedName().toString();
+        generateJavaClass();
+    }
 
-        qualifiedName = packageName + "." + simpleName;
-        ctx.fileManager().writeJavaClass(qualifiedName, generateToString());
+    @FromTemplate("PACKAGE_NAME")
+    @Override
+    public String getPackageName() {
+        return packageName;
     }
 
     @FromTemplate("SIMPLE_NAME")
-    public String getSimpleName() {
+    @Override
+    public String getSimpleClassName() {
         return simpleName;
     }
 
@@ -164,12 +168,6 @@ public class JsonConverterGenerator extends JavaGenerator {
             o1.setter = o2.setter;
         }
         return o1;
-    }
-
-    @FromTemplate("PACKAGE_NAME")
-    @Override
-    public String getPackageName() {
-        return packageName;
     }
 
 

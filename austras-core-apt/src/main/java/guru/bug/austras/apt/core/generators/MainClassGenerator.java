@@ -10,7 +10,7 @@ import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.startup.StartupServicesStarter;
 
-import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -22,7 +22,6 @@ import static java.lang.String.format;
 @FromTemplate("Main.java.txt")
 public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = Logger.getLogger(MainClassGenerator.class.getName());
-    private final ProcessingEnvironment processingEnv;
     private ComponentMap componentMap;
     private String qualifiedClassName;
     private String simpleClassName;
@@ -32,10 +31,9 @@ public class MainClassGenerator extends JavaGenerator {
     private DependencyModel currentDependency;
     private String dependencyInitialization;
     private boolean hasMoreDependencies;
-    private ComponentModel appMainComponent;
 
-    public MainClassGenerator(ProcessingEnvironment processingEnv) throws IOException {
-        this.processingEnv = processingEnv;
+    public MainClassGenerator(Filer filer) throws IOException {
+        super(filer);
     }
 
     @FromTemplate("PACKAGE_NAME")
@@ -50,6 +48,7 @@ public class MainClassGenerator extends JavaGenerator {
     }
 
     @FromTemplate("SIMPLE_CLASS_NAME")
+    @Override
     public String getSimpleClassName() {
         return simpleClassName;
     }
@@ -226,16 +225,13 @@ public class MainClassGenerator extends JavaGenerator {
             return;
         }
         this.componentMap = componentMap;
-        this.appMainComponent = appMainComponent;
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";
         var lastDotIndex = qualifiedClassName.lastIndexOf('.');
         this.simpleClassName = qualifiedClassName.substring(lastDotIndex + 1);
         this.packageName = qualifiedClassName.substring(0, lastDotIndex);
         var key = new ComponentKey(StartupServicesStarter.class.getName(), null);
         this.starterComponent = componentMap.findSingleComponentModel(key);
-        try (var out = processingEnv.getFiler().createSourceFile(getQualifiedClassName()).openWriter()) {
-            super.generateTo(out);
-        }
+        generateJavaClass();
     }
 
 }
