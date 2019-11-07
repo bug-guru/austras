@@ -53,6 +53,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private MainClassGenerator mainClassGenerator;
     private ComponentMap stagedComponents;
     private ComponentMap componentMap;
+    private ComponentModel appMainComponent;
 
     public AustrasAnnotationProcessor() {
         log.fine("Constructing AustrasAnnotationProcessor");
@@ -68,7 +69,11 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         this.stagedComponents = new ComponentMap();
         readComponentMaps();
         initPlugins();
-        this.mainClassGenerator = new MainClassGenerator(processingEnv, componentMap, uniqueNameGenerator, modelUtils);
+        try {
+            this.mainClassGenerator = new MainClassGenerator(processingEnv);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void initPlugins() {
@@ -109,7 +114,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         try {
             if (roundEnv.processingOver()) {
                 generateComponentMap();
-                mainClassGenerator.generateAppMain();
+                mainClassGenerator.generateAppMain(appMainComponent, componentMap);
             } else {
                 log.fine("PLUGINS");
                 processPlugins(pctx);
@@ -172,7 +177,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             componentMap.addComponent(model);
         }
         if (applicationAnnotation.length > 0) {
-            mainClassGenerator.setAppComponentModel(model);
+            this.appMainComponent = model;
         }
     }
 

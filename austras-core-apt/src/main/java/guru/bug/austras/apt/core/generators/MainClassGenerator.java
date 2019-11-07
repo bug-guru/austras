@@ -1,28 +1,16 @@
 package guru.bug.austras.apt.core.generators;
 
-import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
-import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.ProviderModel;
-import guru.bug.austras.codegen.CompilationUnit;
-import guru.bug.austras.codegen.common.CodeBlock;
-import guru.bug.austras.codegen.common.CodeLine;
-import guru.bug.austras.codegen.common.QualifiedName;
-import guru.bug.austras.codegen.decl.ClassMemberDecl;
-import guru.bug.austras.codegen.decl.MethodParamDecl;
-import guru.bug.austras.codegen.decl.PackageDecl;
-import guru.bug.austras.codegen.decl.TypeDecl;
-import guru.bug.austras.codegen.spec.TypeArg;
-import guru.bug.austras.codegen.spec.TypeSpec;
-import guru.bug.austras.provider.CollectionProvider;
+import guru.bug.austras.codegen.BodyBlock;
+import guru.bug.austras.codegen.FromTemplate;
+import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.startup.StartupServicesStarter;
-import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.util.Elements;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -31,152 +19,178 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-public class MainClassGenerator {
+@FromTemplate("Main.java.txt")
+public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = Logger.getLogger(MainClassGenerator.class.getName());
-    private final UniqueNameGenerator uniqueNameGenerator;
     private final ProcessingEnvironment processingEnv;
-    private final ComponentMap componentMap;
-    private final Elements elementUtils;
-    private final String loggerVarName;
-    private final ModelUtils modelUtils;
-    private ComponentModel appComponentModel;
+    private ComponentMap componentMap;
+    private String qualifiedClassName;
+    private String simpleClassName;
+    private String packageName;
+    private ComponentModel currentComponent;
+    private ComponentModel starterComponent;
+    private DependencyModel currentDependency;
+    private String dependencyInitialization;
+    private boolean hasMoreDependencies;
+    private ComponentModel appMainComponent;
 
-    public MainClassGenerator(ProcessingEnvironment processingEnv, ComponentMap componentMap, UniqueNameGenerator uniqueNameGenerator, ModelUtils modelUtils) {
+    public MainClassGenerator(ProcessingEnvironment processingEnv) throws IOException {
         this.processingEnv = processingEnv;
-        this.componentMap = componentMap;
-        this.elementUtils = processingEnv.getElementUtils();
-        this.uniqueNameGenerator = uniqueNameGenerator;
-        this.loggerVarName = uniqueNameGenerator.findFreeVarName("log");
-        this.modelUtils = modelUtils;
     }
 
-    public void setAppComponentModel(ComponentModel appComponentModel) {
-        if (this.appComponentModel != null) {
-            throw new IllegalStateException("Application already defined");
-        }
-        this.appComponentModel = appComponentModel;
+    @FromTemplate("PACKAGE_NAME")
+    @Override
+    public String getPackageName() {
+        return packageName;
     }
 
-    public void generateAppMain() throws IOException {
-        if (appComponentModel == null) {
-            log.fine("No application component");
-            return;
-        }
-        var sortedComponents = sortComponents();
-        var appInstantiable = appComponentModel.getInstantiable();
-        var mainClassQualifiedName = appInstantiable + "Main";
-        var lastDotIndex = mainClassQualifiedName.lastIndexOf('.');
-        var mainClassSimpleName = mainClassQualifiedName.substring(lastDotIndex + 1);
-        var packageName = mainClassQualifiedName.substring(0, lastDotIndex);
+    @FromTemplate("QUALIFIED_CLASS_NAME")
+    public String getQualifiedClassName() {
+        return qualifiedClassName;
+    }
 
-        var unit = CompilationUnit.builder()
-                .packageDecl(PackageDecl.of(packageName))
-                .addTypeDecl(TypeDecl.classBuilder()
-                        .publicMod()
-                        .simpleName(mainClassSimpleName)
-                        .addMember(ClassMemberDecl.fieldBulder(TypeSpec.of(QualifiedName.of(Logger.class)), loggerVarName)
-                                .publicMod()
-                                .staticMod()
-                                .finalMod()
-                                .initializer(CodeBlock.builder()
-                                        .addLine(format("java.util.logging.Logger.getLogger(\"%s\")", mainClassQualifiedName))
-                                        .build())
-                                .build())
-                        .addMember(ClassMemberDecl.methodBuilder("main", TypeSpec.voidType())
-                                .publicMod()
-                                .staticMod()
-                                .addParam(MethodParamDecl.builder()
-                                        .type(TypeSpec.builder()
-                                                .name(QualifiedName.of(String.class))
-                                                .array()
-                                                .build())
-                                        .name("args")
-                                        .build())
-                                .body(createMainBody(sortedComponents))
-                                .build())
-                        .build())
-                .build();
+    @FromTemplate("SIMPLE_CLASS_NAME")
+    public String getSimpleClassName() {
+        return simpleClassName;
+    }
 
-
-        try (var file = processingEnv.getFiler().createSourceFile(unit.getQualifiedName()).openWriter();
-             var out = new PrintWriter(file)) {
-            unit.print(out);
+    @FromTemplate("COMPONENTS")
+    public void componentsLoop(PrintWriter out, BodyBlock bodyBlock) {
+        for (var c : sortComponents()) {
+            this.currentComponent = c;
+            out.print(bodyBlock.evaluateBody());
         }
     }
 
-    private CodeBlock createMainBody(List<ComponentModel> sortedComponents) {
-        return CodeBlock.builder()
-                .addLine(genInfoLog("Application is initializing..."))
-                .addLines(generateProviderCalls(sortedComponents))
-                .addLine(CodeLine.emptyLine())
-                .addLine(genInfoLog("Starting up services..."))
-                .addLines(generateServicesCall())
-                .addLine(genInfoLog("Services are started!"))
-                .addLine(CodeLine.emptyLine())
-                .addLine(genInfoLog("Application is ready!"))
-                .build();
+    @FromTemplate("COMPONENT_PROVIDER_NAME")
+    public String getCurrentComponentProviderName() {
+        return currentComponent.getProvider().getName();
     }
 
-    private Collection<CodeLine> generateProviderCalls(List<ComponentModel> sortedComponents) {
-        return sortedComponents.stream()
-                .flatMap(m -> generateProviderCall(m).stream())
-                .collect(Collectors.toList());
+    @FromTemplate("COMPONENT_PROVIDER_CLASS")
+    public String getCurrentComponentProviderClass() {
+        return tryImport(currentComponent.getProvider().getInstantiable());
     }
 
-    private List<CodeLine> generateServicesCall() {
-        var result = new ArrayList<CodeLine>();
-        var key = new ComponentKey(StartupServicesStarter.class.getName(), null);
-        var starter = componentMap.findSingleComponentModel(key);
-        var starterType = TypeSpec.of(starter.getInstantiable());
-        result.add(CodeLine.builder()
-                .print(o -> {
-                    o.print(starterType);
-                    o.space();
-                    o.print(starter.getName());
-                    o.print(" = ");
-                    o.print(starter.getProvider().getName());
-                    o.print(".get();");
-                })
-                .build());
-        result.add(CodeLine.builder()
-                .raw(starter.getName())
-                .raw(".initAll();")
-                .build());
-        return result;
+    @FromTemplate("COMPONENT_PROVIDER_VAR")
+    public String getCurrentComponentProviderVar() {
+        return currentComponent.getProvider().getName();
     }
 
-    private CodeLine genInfoLog(String msg) {
-        return CodeLine.raw(format("%s.info(\"%s\");", loggerVarName, StringEscapeUtils.escapeJava(msg)));
+    @FromTemplate("COMPONENT_NAME")
+    public String getCurrentComponentName() {
+        return currentComponent.getName();
     }
 
-    private List<CodeLine> generateProviderCall(ComponentModel componentModel) {
-        log.fine(() -> "Generating provider call of model " + componentModel);
-        var result = new ArrayList<CodeLine>();
-        result.add(CodeLine.emptyLine());
-        ProviderModel provider = componentModel.getProvider();
-        result.add(genInfoLog("Initializing provider " + provider.getInstantiable() + " for " + componentModel.getInstantiable()));
-        var initializers = provider.getDependencies().stream()
-                .map(this::createInitializer)
-                .peek(i -> result.add(i.init()))
-                .collect(Collectors.toList());
-        var params = initializers.stream()
-                .map(ParamInitializer::getAsParameter)
-                .collect(Collectors.joining(", "));
-        var providerType = TypeSpec.of(provider.getInstantiable());
-        result.add(CodeLine.builder()
-                .print(o -> {
-                    o.print(providerType);
-                    o.space();
-                    o.print(provider.getName());
-                    o.print(" = ");
-                    o.printNew();
-                    o.print(providerType);
-                    o.print("(");
-                    o.print(params);
-                    o.print(");");
-                })
-                .build());
-        return result;
+    @FromTemplate("WITH_DEPENDENCIES")
+    public void withDependencies(PrintWriter out, BodyBlock bodyBlock) {
+        if (!currentComponent.getProvider().getDependencies().isEmpty()) {
+            out.print(bodyBlock.evaluateBody());
+        }
+    }
+
+    @FromTemplate("WITHOUT_DEPENDENCIES")
+    public void withoutDependencies(PrintWriter out, BodyBlock bodyBlock) {
+        if (currentComponent.getProvider().getDependencies().isEmpty()) {
+            out.print(bodyBlock.evaluateBody());
+        }
+    }
+
+    @FromTemplate("COMPONENT_PROVIDER_DEPENDENCIES")
+    public void currentComponentCollectionsInitializers(PrintWriter out, BodyBlock bodyBlock) {
+
+        Iterator<DependencyModel> dependencies = currentComponent.getProvider().getDependencies().iterator();
+        while (dependencies.hasNext()) {
+            this.currentDependency = dependencies.next();
+            this.hasMoreDependencies = dependencies.hasNext();
+            out.print(bodyBlock.evaluateBody());
+        }
+    }
+
+    @FromTemplate("OPTIONAL_COMMA_SEPARATOR")
+    public String dependenciesSeparator() {
+        if (this.hasMoreDependencies) {
+            return ",";
+        } else {
+            return "";
+        }
+    }
+
+    @FromTemplate("COLLECTION_DEPENDENCY")
+    public void collectionDependency(PrintWriter out, BodyBlock bodyBlock) {
+        if (currentDependency.isCollection() && currentDependency.isProvider()) {
+            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
+            var params = componentMap.findComponentModels(key);
+            dependencyInitialization = params.stream()
+                    .map(p -> p.getProvider().getName())
+                    .collect(Collectors.joining(", "));
+            out.print(bodyBlock.evaluateBody());
+            dependencyInitialization = null;
+        }
+    }
+
+    @FromTemplate("UNWRAPPED_COLLECTION_DEPENDENCY")
+    public void unwrappedCollectionDependency(PrintWriter out, BodyBlock bodyBlock) {
+        if (currentDependency.isCollection() && !currentDependency.isProvider()) {
+            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
+            var params = componentMap.findComponentModels(key);
+            dependencyInitialization = params.stream()
+                    .map(p -> p.getProvider().getName() + ".get()")
+                    .collect(Collectors.joining(", "));
+            out.print(bodyBlock.evaluateBody());
+            dependencyInitialization = null;
+        }
+    }
+
+    @FromTemplate("STANDARD_DEPENDENCY")
+    public void standardDependency(PrintWriter out, BodyBlock bodyBlock) {
+        if (!currentDependency.isCollection() && currentDependency.isProvider()) {
+            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
+            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
+            if (singleComponentModel == null) {
+                throw new IllegalStateException("Component " + key + " not found"); // TODO
+            }
+            ProviderModel provider = singleComponentModel.getProvider();
+            if (provider == null) {
+                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
+            }
+            dependencyInitialization = provider.getName();
+            out.print(bodyBlock.evaluateBody());
+            dependencyInitialization = null;
+        }
+    }
+
+    @FromTemplate("UNWRAPPED_STANDARD_DEPENDENCY")
+    public void unwrappedStandardDependency(PrintWriter out, BodyBlock bodyBlock) {
+        if (!currentDependency.isCollection() && !currentDependency.isProvider()) {
+            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
+            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
+            if (singleComponentModel == null) {
+                throw new IllegalStateException("Component " + key + " not found"); // TODO
+            }
+            ProviderModel provider = singleComponentModel.getProvider();
+            if (provider == null) {
+                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
+            }
+            dependencyInitialization = provider.getName() + ".get()";
+            out.print(bodyBlock.evaluateBody());
+            dependencyInitialization = null;
+        }
+    }
+
+    @FromTemplate("DEPENDENCY_INITIALIZATION")
+    public String getDependencyInitialization() {
+        return dependencyInitialization;
+    }
+
+    @FromTemplate("STARTER_NAME")
+    public String getStarterName() {
+        return starterComponent.getName();
+    }
+
+    @FromTemplate("STARTER_PROVIDER_NAME")
+    public String getStarterProviderName() {
+        return starterComponent.getProvider().getName();
     }
 
     private List<ComponentModel> sortComponents() {
@@ -206,112 +220,21 @@ public class MainClassGenerator {
         return result;
     }
 
-
-    private ParamInitializer createInitializer(DependencyModel model) {
-        ParamInitializer result;
-        if (model.isCollection()) {
-            result = new CollectionParamInitializer(model);
-        } else {
-            result = new StandardParamInitializer(model);
+    public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) throws IOException {
+        if (appMainComponent == null) {
+            log.fine("No application component");
+            return;
         }
-        if (!model.isProvider()) {
-            result = new ProviderUnwrappedParamInitializer(result);
-        }
-        return result;
-    }
-
-    private interface ParamInitializer {
-        CodeLine init();
-
-        String getAsParameter();
-    }
-
-    private class ProviderUnwrappedParamInitializer implements ParamInitializer {
-        private final ParamInitializer initializer;
-
-        ProviderUnwrappedParamInitializer(ParamInitializer initializer) {
-            this.initializer = initializer;
-        }
-
-        @Override
-        public CodeLine init() {
-            return initializer.init();
-        }
-
-        @Override
-        public String getAsParameter() {
-            return initializer.getAsParameter() + ".get()";
-        }
-    }
-
-    private abstract class AbstractParamInitializer implements ParamInitializer {
-        final DependencyModel dependencyModel;
-        final ComponentKey key;
-
-        AbstractParamInitializer(DependencyModel dependencyModel) {
-            this.dependencyModel = dependencyModel;
-            this.key = new ComponentKey(dependencyModel.getType(), dependencyModel.getQualifiers());
-        }
-
-        @Override
-        public CodeLine init() {
-            return null;
-        }
-
-    }
-
-    private class StandardParamInitializer extends AbstractParamInitializer {
-
-        StandardParamInitializer(DependencyModel dependencyModel) {
-            super(dependencyModel);
-        }
-
-        @Override
-        public String getAsParameter() {
-            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
-            if (singleComponentModel == null) {
-                throw new IllegalStateException("Component " + key + " not found"); // TODO
-            }
-            ProviderModel provider = singleComponentModel.getProvider();
-            if (provider == null) {
-                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
-            }
-            return provider.getName();
-        }
-    }
-
-    private class CollectionParamInitializer extends AbstractParamInitializer {
-        final String name;
-
-        CollectionParamInitializer(DependencyModel dependencyModel) {
-            super(dependencyModel);
-            this.name = uniqueNameGenerator.findFreeVarName(dependencyModel.getName() + "Collection");
-        }
-
-        @Override
-        public CodeLine init() {
-            var varType = modelUtils.convertToParameterType(dependencyModel);
-            var params = componentMap.findComponentModels(key);
-            return CodeLine.builder()
-                    .print(o -> {
-                        o.print(varType);
-                        o.space();
-                        o.print(name);
-                        o.print(" = ");
-                        o.printNew();
-                        o.print(TypeSpec.of(CollectionProvider.class, TypeArg.diamond()));
-                        o.print("(");
-                        o.print(params.stream()
-                                .map(c -> c.getProvider().getName())
-                                .collect(Collectors.joining(", ")));
-                        o.print(");");
-                    })
-                    .build();
-        }
-
-        @Override
-        public String getAsParameter() {
-            return name;
+        this.componentMap = componentMap;
+        this.appMainComponent = appMainComponent;
+        this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";
+        var lastDotIndex = qualifiedClassName.lastIndexOf('.');
+        this.simpleClassName = qualifiedClassName.substring(lastDotIndex + 1);
+        this.packageName = qualifiedClassName.substring(0, lastDotIndex);
+        var key = new ComponentKey(StartupServicesStarter.class.getName(), null);
+        this.starterComponent = componentMap.findSingleComponentModel(key);
+        try (var out = processingEnv.getFiler().createSourceFile(getQualifiedClassName()).openWriter()) {
+            super.generateTo(out);
         }
     }
 

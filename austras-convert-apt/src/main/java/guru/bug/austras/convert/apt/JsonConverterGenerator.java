@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-@FromTemplate("/guru/bug/austras/convert/template/JsonConverter.txt")
+@FromTemplate("JsonConverter.java.txt")
 public class JsonConverterGenerator extends JavaGenerator {
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;

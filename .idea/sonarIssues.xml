@@ -1204,6 +1204,16 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/target/generated-sources/annotations/guru/bug/austras/convert/converters/str/YearToStringConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/ModelUtils.java">
           <value>
             <set>
@@ -1406,48 +1416,7 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/MainClassGenerator.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ9TAvOYQK1-KGBX" />
-                <option name="line" value="160" />
-                <option name="message" value="Remove this use of &quot;Stream.peek&quot;." />
-                <option name="ruleKey" value="squid:S3864" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ9TAvOYQK1-KGBa" />
-                <option name="line" value="277" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ9TAvOYQK1-KGBY" />
-                <option name="line" value="186" />
-                <option name="message" value="Refactor the code to remove this label and the need for it." />
-                <option name="ruleKey" value="squid:LabelsShouldNotBeUsedCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ9TAvOYQK1-KGBZ" />
-                <option name="line" value="273" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ9TAvOYQK1-KGBb" />
-                <option name="line" value="39" />
-                <option name="message" value="Remove this unused &quot;elementUtils&quot; private field." />
-                <option name="ruleKey" value="squid:S1068" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/NoCacheProviderGenerator.java">
@@ -1706,27 +1675,20 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/engine/AustrasAnnotationProcessor.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaAoAvOYQK1-KGBz" />
-                <option name="line" value="233" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaAoAvOYQK1-KGBx" />
-                <option name="line" value="96" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/engine/FileManager.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/core/generators/Main.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/core/generators/Main.txt">
           <value>
             <set />
           </value>
@@ -2302,6 +2264,11 @@
                 <option name="severity" value="BLOCKER" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/target/generated-sources/annotations/guru/bug/austras/test/MyAppMain.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/target/generated-sources/annotations/guru/bug/austras/test/convert/FakeDtoToJsonConverter.java">

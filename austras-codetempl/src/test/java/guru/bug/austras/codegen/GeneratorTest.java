@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-@FromTemplate("/guru/bug/austras/codetempl/test/loop_and_var.txt")
+@FromTemplate("loop_and_var.txt")
 public class GeneratorTest extends Generator {
     private int externalVar;
     private int internalVar;

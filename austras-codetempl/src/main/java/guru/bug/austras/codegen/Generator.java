@@ -30,7 +30,7 @@ public abstract class Generator {
     }
 
     public void generateTo(Writer writer) throws IOException {
-        String outputContent = content.evaluateBody();
+        String outputContent = generateToString();
         writer.write(outputContent);
     }
 
@@ -40,13 +40,14 @@ public abstract class Generator {
         var strContent = readContent(resourceName);
         TemplateTokenizer tokenizer = new TemplateTokenizer();
         var tokens = tokenizer.process(strContent);
-        cleanup(tokens);
+        cleanupSpaces(tokens);
+        cleanupNewLines(tokens);
 
         var tokenIterator = tokens.iterator();
         return new BlockWithBody(null, tokenIterator);
     }
 
-    private void cleanup(List<TemplateToken> tokens) {
+    private void cleanupSpaces(List<TemplateToken> tokens) {
         var i = tokens.listIterator();
         int state = 1;
         boolean hasTrailingSpaces = false;
@@ -83,10 +84,32 @@ public abstract class Generator {
                     i.remove();
                     i.next();
                 }
+                state = 1;
+            } else {
+                state = 0;
             }
-            state = 0;
             hasLeadingSpaces = false;
             hasTrailingSpaces = false;
+        }
+    }
+
+    private void cleanupNewLines(List<TemplateToken> tokens) {
+        var i = tokens.listIterator();
+        var state = 0;
+        while (i.hasNext()) {
+            var t = i.next();
+            if (state == 0 && t.getType() == TemplateToken.Type.BLOCK) {
+                state = 1;
+                continue;
+            } else if (state == 1 && t.getType() == TemplateToken.Type.NEW_LINE) {
+                state = 2;
+                continue;
+            } else if (state == 2 && t.getType() == TemplateToken.Type.BLOCK) {
+                i.previous();
+                i.remove();
+                i.next();
+            }
+            state = 0;
         }
     }
 

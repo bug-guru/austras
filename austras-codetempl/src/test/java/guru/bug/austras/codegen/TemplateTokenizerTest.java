@@ -17,7 +17,7 @@ class TemplateTokenizerTest {
 
     @BeforeEach
     void init() throws Exception {
-        try (var is = getClass().getResourceAsStream("/guru/bug/austras/codetempl/test/simple_test_template.txt");
+        try (var is = getClass().getResourceAsStream("simple_test_template.txt");
              var r = new InputStreamReader(is);
              var br = new BufferedReader(r)) {
             var str = new StringWriter(2048);
@@ -173,7 +173,7 @@ class TemplateTokenizerTest {
     @Test
     @Disabled
     void printTokens() throws Exception {
-        try (var is = getClass().getResourceAsStream("/guru/bug/austras/codetempl/test/simple_test_template.txt");
+        try (var is = getClass().getResourceAsStream("/guru/bug/austras/codegen/simple_test_template.txt");
              var r = new InputStreamReader(is);
              var br = new BufferedReader(r)) {
             TemplateTokenizer tt = new TemplateTokenizer();
