@@ -10,7 +10,6 @@ import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
 import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.apt.model.QualifierModel;
-import guru.bug.austras.codegen.CompilationUnit;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
 
@@ -289,7 +288,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
 
     private abstract class ProcessingContextImpl implements ProcessingContext {
-        private final FileManager fileManager = new FileManagerImpl();
         private final ComponentManager componentManager = new ComponentManagerImpl();
 
         @Override
@@ -302,31 +300,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             return componentManager;
         }
 
-        @Override
-        public FileManager fileManager() {
-            return fileManager;
-        }
-
-    }
-
-    private class FileManagerImpl implements FileManager {
-
-        @Override
-        public void createFile(CompilationUnit unit) throws IOException {
-            var filer = processingEnv.getFiler();
-            try (var writer = filer.createSourceFile(unit.getQualifiedName()).openWriter();
-                 var out = new PrintWriter(writer)) {
-                unit.print(out);
-            }
-        }
-
-        @Override
-        public void writeJavaClass(String qualifiedName, String content) throws IOException {
-            var filer = processingEnv.getFiler();
-            try (var writer = filer.createSourceFile(qualifiedName).openWriter()) {
-                writer.write(content);
-            }
-        }
     }
 
     private class ComponentManagerImpl implements ComponentManager {

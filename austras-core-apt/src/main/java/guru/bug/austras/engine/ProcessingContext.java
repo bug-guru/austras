@@ -10,6 +10,4 @@ public interface ProcessingContext {
 
     ComponentManager componentManager();
 
-    FileManager fileManager();
-
 }
