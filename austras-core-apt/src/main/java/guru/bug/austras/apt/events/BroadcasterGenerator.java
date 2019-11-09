@@ -43,7 +43,7 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     @FromTemplate("MESSAGE_TYPE")
     public String getMessageType() {
-        return messageBroadcasterModel.getType();
+        return tryImport(messageBroadcasterModel.getType());
     }
 
     @FromTemplate("QUALIFIERS")
