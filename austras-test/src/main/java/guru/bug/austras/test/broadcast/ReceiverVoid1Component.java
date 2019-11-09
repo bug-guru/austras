@@ -7,7 +7,7 @@ import guru.bug.austras.test.ServiceExecutor;
 
 public class ReceiverVoid1Component {
 
-    @Qualifier(name = "void")
+    @Qualifier(name = "void-qualifier")
     @Message
     public void receive(ComponentA componentA, ServiceExecutor serviceExecutor) {
         System.out.println("ReceiverVoid1: received notification");

@@ -2,75 +2,76 @@ package guru.bug.austras.apt.events;
 
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
-import guru.bug.austras.codegen.CompilationUnit;
-import guru.bug.austras.codegen.common.CodeBlock;
-import guru.bug.austras.codegen.common.QualifiedName;
-import guru.bug.austras.codegen.decl.*;
-import guru.bug.austras.codegen.spec.AnnotationSpec;
-import guru.bug.austras.codegen.spec.TypeArg;
-import guru.bug.austras.codegen.spec.TypeSpec;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.codegen.FromTemplate;
+import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.engine.ProcessingContext;
-import guru.bug.austras.events.Broadcaster;
-import guru.bug.austras.events.Receiver;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.stream.Collectors;
 
-public class BroadcasterGenerator {
+@FromTemplate("Broadcaster.java.txt")
+public class BroadcasterGenerator extends JavaGenerator {
 
     private final ModelUtils modelUtils;
+    private MessageBroadcasterModel messageBroadcasterModel;
 
-    public BroadcasterGenerator(ModelUtils modelUtils) {
+    public BroadcasterGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException {
+        super(ctx.processingEnv().getFiler());
         this.modelUtils = modelUtils;
     }
 
     public void generate(ProcessingContext ctx, VariableElement e) throws IOException {
-        var model = createModel(ctx, e);
-        var qualifiers = modelUtils.createQualifierAnnotations(model.getQualifier());
-        var unit = CompilationUnit.builder()
-                .packageDecl(PackageDecl.of(model.getPackageName()))
-                .addTypeDecl(TypeDecl.classBuilder()
-                        .publicMod()
-                        .addAnnotation(AnnotationSpec.of(Component.class))
-                        .addAnnotations(qualifiers)
-                        .simpleName(model.getSimpleName())
-                        .superclass(TypeSpec.builder()
-                                .name(QualifiedName.of(Broadcaster.class))
-                                .addTypeArg(TypeArg.ofType(model.getType()))
-                                .build())
-                        .addMember(createConstructor(model))
-                        .build())
-                .build();
-        ctx.fileManager().createFile(unit);
+        messageBroadcasterModel = createModel(ctx, e);
+        super.generateJavaClass();
     }
 
-    private MethodClassMemberDecl createConstructor(MessageBroadcasterModel model) {
-        var qualifiers = modelUtils.createQualifierAnnotations(model.getQualifier());
-        return ClassMemberDecl.constructorBuilder()
-                .publicMod()
-                .addParam(MethodParamDecl.builder()
-                        .name("receivers")
-                        .addAnnotations(qualifiers)
-                        .type(TypeSpec.builder()
-                                .name(QualifiedName.of(Collection.class))
-                                .addTypeArg(TypeArg.wildcardExtends(TypeSpec.builder()
-                                        .name(QualifiedName.of(Receiver.class))
-                                        .addTypeArg(TypeArg.ofType(model.getType()))
-                                        .build()))
-                                .build())
-                        .build())
-                .body(createConstructorBody())
-                .build();
+    @Override
+    @FromTemplate("PACKAGE_NAME")
+    public String getPackageName() {
+        return messageBroadcasterModel.getPackageName();
     }
 
-    private CodeBlock createConstructorBody() {
-        return CodeBlock.builder()
-                .addLine("super(receivers);")
-                .build();
+    @Override
+    @FromTemplate("SIMPLE_CLASS_NAME")
+    public String getSimpleClassName() {
+        return messageBroadcasterModel.getSimpleName();
+    }
+
+    @FromTemplate("MESSAGE_TYPE")
+    public String getMessageType() {
+        return messageBroadcasterModel.getType();
+    }
+
+    @FromTemplate("QUALIFIERS")
+    public String qualifiers() {
+        var result = new StringBuilder(512);
+        result.setLength(0);
+        messageBroadcasterModel.getQualifier().forEach((qualifierName, properties) -> {
+            result.append("@")
+                    .append(Qualifier.class.getSimpleName())
+                    .append("(name = \"")
+                    .append(qualifierName)
+                    .append("\"");
+            if (!properties.isEmpty()) {
+                result.append(", properties = ");
+                if (properties.size() > 1) {
+                    result.append("{");
+                }
+                result.append(properties.stream()
+                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
+                        .collect(Collectors.joining(", "))
+                );
+                if (properties.size() > 1) {
+                    result.append("}");
+                }
+            }
+            result.append(") ");
+        });
+        return result.toString();
     }
 
     private MessageBroadcasterModel createModel(ProcessingContext ctx, VariableElement e) {

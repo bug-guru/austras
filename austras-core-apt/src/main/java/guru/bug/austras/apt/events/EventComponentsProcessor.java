@@ -25,7 +25,11 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
     public void process(ProcessingContext ctx) {
         modelUtils = new ModelUtils(uniqueNameGenerator, ctx.processingEnv());
         receiverGenerator = new ReceiverGenerator(modelUtils);
-        broadcasterGenerator = new BroadcasterGenerator(modelUtils);
+        try {
+            broadcasterGenerator = new BroadcasterGenerator(ctx, modelUtils);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         ctx.roundEnv().getElementsAnnotatedWith(Message.class)
                 .forEach(e -> e.accept(msgVisitor, ctx));
     }

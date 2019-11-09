@@ -7,7 +7,7 @@ import guru.bug.austras.events.Message;
 public class SenderVoidComponent {
     private final Broadcaster<Void> broadcaster;
 
-    public SenderVoidComponent(@Qualifier(name = "void") @Message Broadcaster<Void> broadcaster) {
+    public SenderVoidComponent(@Qualifier(name = "void-qualifier") @Message Broadcaster<Void> broadcaster) {
         this.broadcaster = broadcaster;
     }
 

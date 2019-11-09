@@ -6,7 +6,7 @@ import guru.bug.austras.test.ComponentE;
 
 public class ReceiverVoid2Component {
 
-    @Qualifier(name = "void")
+    @Qualifier(name = "void-qualifier")
     @Message
     public void receive(ComponentE componentE) {
         System.out.println("ReceiverVoid2: received notification");

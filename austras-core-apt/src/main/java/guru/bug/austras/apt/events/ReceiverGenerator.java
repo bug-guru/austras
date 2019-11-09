@@ -22,6 +22,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,10 @@ public class ReceiverGenerator {
                                 .build())
                 .build();
 
-        ctx.fileManager().createFile(unit);
-
+        try (var out = ctx.processingEnv().getFiler().createSourceFile(unit.getQualifiedName()).openWriter();
+             var pw = new PrintWriter(out)) {
+            unit.print(pw);
+        }
     }
 
     private Collection<ClassMemberDecl> createFields(MessageReceiverModel model) {

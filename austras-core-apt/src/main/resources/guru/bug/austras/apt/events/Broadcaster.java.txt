@@ -1,0 +1,17 @@
+package $PACKAGE_NAME$;
+
+#IMPORTS#
+guru.bug.austras.core.Component
+guru.bug.austras.core.Qualifier
+guru.bug.austras.events.Broadcaster
+java.util.Collection
+guru.bug.austras.events.Receiver
+#END#
+
+@Component
+$QUALIFIERS$
+public class $SIMPLE_CLASS_NAME$ extends Broadcaster<$MESSAGE_TYPE$> {
+    public $SIMPLE_CLASS_NAME$($QUALIFIERS$ Collection<? extends Receiver<$MESSAGE_TYPE$>> receivers) {
+        super(receivers);
+    }
+}

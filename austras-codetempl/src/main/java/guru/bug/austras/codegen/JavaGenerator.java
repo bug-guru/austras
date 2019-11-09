@@ -45,7 +45,7 @@ public abstract class JavaGenerator extends Generator {
 
     protected final void generateJavaClass() throws IOException {
         var qualifiedName = getPackageName() + "." + getSimpleClassName();
-        try (var out = filer.createClassFile(qualifiedName).openWriter()) {
+        try (var out = filer.createSourceFile(qualifiedName).openWriter()) {
             super.generateToString(); // ignoring result just to fill imports;
             super.generateTo(out);
         }

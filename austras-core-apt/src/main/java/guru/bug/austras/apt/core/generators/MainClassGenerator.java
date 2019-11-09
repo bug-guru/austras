@@ -31,6 +31,7 @@ public class MainClassGenerator extends JavaGenerator {
     private DependencyModel currentDependency;
     private String dependencyInitialization;
     private boolean hasMoreDependencies;
+    private List<ComponentModel> sortedComponents;
 
     public MainClassGenerator(Filer filer) throws IOException {
         super(filer);
@@ -55,7 +56,7 @@ public class MainClassGenerator extends JavaGenerator {
 
     @FromTemplate("COMPONENTS")
     public void componentsLoop(PrintWriter out, BodyBlock bodyBlock) {
-        for (var c : sortComponents()) {
+        for (var c : sortedComponents) {
             this.currentComponent = c;
             out.print(bodyBlock.evaluateBody());
         }
@@ -225,6 +226,7 @@ public class MainClassGenerator extends JavaGenerator {
             return;
         }
         this.componentMap = componentMap;
+        this.sortedComponents = sortComponents();
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";
         var lastDotIndex = qualifiedClassName.lastIndexOf('.');
         this.simpleClassName = qualifiedClassName.substring(lastDotIndex + 1);
