@@ -18,14 +18,14 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
     private ModelUtils modelUtils;
     private UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
-    private ReceiverGenerator receiverGenerator;
+    private DispatcherGenerator dispatcherGenerator;
     private BroadcasterGenerator broadcasterGenerator;
 
     @Override
     public void process(ProcessingContext ctx) {
         modelUtils = new ModelUtils(uniqueNameGenerator, ctx.processingEnv());
-        receiverGenerator = new ReceiverGenerator(modelUtils);
         try {
+            dispatcherGenerator = new DispatcherGenerator(ctx, modelUtils);
             broadcasterGenerator = new BroadcasterGenerator(ctx, modelUtils);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -41,7 +41,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
                 .count();
 
         if (annotatedCount > 1) {
-            logError(ctx, method, "Expecting only single receiver parameter per method, but there are " + annotatedCount); // TODO Better error handling
+            logError(ctx, method, "Expecting zero or one message receiver parameter per method, but there are " + annotatedCount); // TODO Better error handling
             return false;
         }
 
@@ -85,19 +85,19 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
 
     private void generateBroadcaster(ProcessingContext ctx, VariableElement e) {
         try {
-            broadcasterGenerator.generate(ctx, e);
+            broadcasterGenerator.generate(e);
         } catch (IOException ex) {
             logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
         }
     }
 
-    private void generateReceiver(ProcessingContext ctx, VariableElement e) {
-        generateReceiver(ctx, (ExecutableElement) e.getEnclosingElement());
+    private void generateDispatcher(ProcessingContext ctx, VariableElement e) {
+        generateDispatcher(ctx, (ExecutableElement) e.getEnclosingElement());
     }
 
-    private void generateReceiver(ProcessingContext ctx, ExecutableElement e) {
+    private void generateDispatcher(ProcessingContext ctx, ExecutableElement e) {
         try {
-            receiverGenerator.generate(ctx, e);
+            dispatcherGenerator.generate(e);
         } catch (IOException ex) {
             logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
         }
@@ -113,7 +113,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
 
         @Override
         public Void visitType(TypeElement e, ProcessingContext ctx) {
-            // ignoring Message annotation on class, as it is already generated receiver
+            // ignoring Message annotation on class, as it is already generated dispatcher
             return null;
         }
 
@@ -131,7 +131,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
             if (modelUtils.isBroadcaster(e.asType())) {
                 generateBroadcaster(ctx, e);
             } else {
-                generateReceiver(ctx, e);
+                generateDispatcher(ctx, e);
             }
 
             return null;
@@ -141,7 +141,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
         @Override
         public Void visitExecutable(ExecutableElement e, ProcessingContext ctx) {
             if (isValidReceiver(ctx, e)) {
-                generateReceiver(ctx, e);
+                generateDispatcher(ctx, e);
             }
 
             return null;

@@ -1,7 +1,7 @@
 package guru.bug.austras.events;
 
-public interface Receiver<M> {
+public interface Dispatcher<M> {
     String MESSAGE_QUALIFIER_NAME = "austras.Message";
 
-    void receive(M message);
+    void dispatch(M message);
 }

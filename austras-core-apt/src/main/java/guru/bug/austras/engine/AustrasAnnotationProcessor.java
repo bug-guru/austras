@@ -115,8 +115,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 generateComponentMap();
                 mainClassGenerator.generateAppMain(appMainComponent, componentMap);
             } else {
-                log.fine("PLUGINS");
-                processPlugins(pctx);
                 log.fine("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
@@ -124,6 +122,8 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 linkProviders();
                 log.fine("RESOLVE AND GENERATE");
                 resolveAndGenerateProviders();
+                log.fine("PLUGINS");
+                processPlugins(pctx);
             }
             return false;
         } catch (Exception e) {
@@ -304,13 +304,17 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     private class ComponentManagerImpl implements ComponentManager {
 
-
         @Override
         public boolean useComponent(TypeMirror type, QualifierModel qualifier) {
+            return !useAndGetComponents(type, qualifier).isEmpty();
+        }
+
+        @Override
+        public Collection<ComponentModel> useAndGetComponents(TypeMirror type, QualifierModel qualifier) {
             var key = new ComponentKey(type.toString(), qualifier);
             var comps = stagedComponents.findAndRemoveComponentModels(key);
             componentMap.addComponents(comps);
-            return !componentMap.findComponentModels(key).isEmpty();
+            return componentMap.findComponentModels(key);
         }
 
         @Override

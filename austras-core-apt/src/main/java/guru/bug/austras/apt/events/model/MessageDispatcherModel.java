@@ -6,7 +6,7 @@ import guru.bug.austras.apt.model.QualifierModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageReceiverModel {
+public class MessageDispatcherModel {
     private String packageName;
     private String className;
     private List<DependencyModel> dependencies;
@@ -62,7 +62,7 @@ public class MessageReceiverModel {
         parameters.add(parameter);
     }
 
-    public QualifierModel getQualifiers() {
+    public QualifierModel getQualifier() {
         return qualifiers;
     }
 

@@ -1,0 +1,33 @@
+package $PACKAGE_NAME$;
+
+#IMPORTS#
+guru.bug.austras.core.Component
+guru.bug.austras.core.Qualifier
+java.util.Collection
+guru.bug.austras.events.Dispatcher
+#END#
+
+@Component
+$QUALIFIERS$
+public class $SIMPLE_CLASS_NAME$ implements Dispatcher<$MESSAGE_TYPE$> {
+    #DEPENDENCIES#
+    private final $DEPENDENCY_PROVIDER_CLASS$ $TARGET_PROVIDER_NAME$;
+    #END#
+
+    public $SIMPLE_CLASS_NAME$(
+    #DEPENDENCIES#
+        $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_PROVIDER_CLASS$ $TARGET_PROVIDER_NAME$$OPTIONAL_COMMA$
+    #END#
+    ) {
+        #DEPENDENCIES#
+        this.$TARGET_PROVIDER_NAME$ = $TARGET_PROVIDER_NAME$;
+        #END#
+    }
+
+    @Override
+    public void dispatch($MESSAGE_TYPE$ $MESSAGE_PARAM_NAME$) {
+        for (var r : $RECEIVERS_DEPENDENCY_PROVIDER_NAME$.get()) {
+            r.$RECEIVER_METHOD_NAME$($RECEIVER_METHOD_PARAMS$);
+        }
+    }
+}

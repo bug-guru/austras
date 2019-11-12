@@ -4,17 +4,17 @@ import java.util.Collection;
 import java.util.List;
 
 public abstract class Broadcaster<M> {
-    private final List<Receiver<M>> receivers;
+    private final List<Dispatcher<M>> dispatchers;
 
-    public Broadcaster(Collection<? extends Receiver<M>> receivers) {
-        this.receivers = List.copyOf(receivers);
+    public Broadcaster(Collection<? extends Dispatcher<M>> dispatchers) {
+        this.dispatchers = List.copyOf(dispatchers);
     }
 
     public void send(M message) {
-        receivers.forEach(r -> {
+        dispatchers.forEach(r -> {
             try {
 
-                r.receive(message);
+                r.dispatch(message);
 
             } catch (RuntimeException e) {
                 throw e;

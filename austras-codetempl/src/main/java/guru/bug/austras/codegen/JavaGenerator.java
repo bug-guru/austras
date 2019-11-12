@@ -48,6 +48,8 @@ public abstract class JavaGenerator extends Generator {
         try (var out = filer.createSourceFile(qualifiedName).openWriter()) {
             super.generateToString(); // ignoring result just to fill imports;
             super.generateTo(out);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 

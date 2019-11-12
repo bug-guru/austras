@@ -4,28 +4,28 @@ import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
-import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.engine.ProcessingContext;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 @FromTemplate("Broadcaster.java.txt")
 public class BroadcasterGenerator extends JavaGenerator {
 
+    private final ProcessingContext ctx;
     private final ModelUtils modelUtils;
     private MessageBroadcasterModel messageBroadcasterModel;
 
     public BroadcasterGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException {
         super(ctx.processingEnv().getFiler());
+        this.ctx = ctx;
         this.modelUtils = modelUtils;
     }
 
-    public void generate(ProcessingContext ctx, VariableElement e) throws IOException {
-        messageBroadcasterModel = createModel(ctx, e);
+    public void generate(VariableElement e) throws IOException {
+        messageBroadcasterModel = createModel(e);
         super.generateJavaClass();
     }
 
@@ -48,33 +48,10 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     @FromTemplate("QUALIFIERS")
     public String qualifiers() {
-        var result = new StringBuilder(512);
-        result.setLength(0);
-        messageBroadcasterModel.getQualifier().forEach((qualifierName, properties) -> {
-            result.append("@")
-                    .append(Qualifier.class.getSimpleName())
-                    .append("(name = \"")
-                    .append(qualifierName)
-                    .append("\"");
-            if (!properties.isEmpty()) {
-                result.append(", properties = ");
-                if (properties.size() > 1) {
-                    result.append("{");
-                }
-                result.append(properties.stream()
-                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
-                        .collect(Collectors.joining(", "))
-                );
-                if (properties.size() > 1) {
-                    result.append("}");
-                }
-            }
-            result.append(") ");
-        });
-        return result.toString();
+        return modelUtils.qualifierToString(messageBroadcasterModel.getQualifier());
     }
 
-    private MessageBroadcasterModel createModel(ProcessingContext ctx, VariableElement e) {
+    private MessageBroadcasterModel createModel(VariableElement e) {
         var result = new MessageBroadcasterModel();
 
         var packageName = ctx.processingEnv().getElementUtils().getPackageOf(e).getQualifiedName().toString();

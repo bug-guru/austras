@@ -294,8 +294,7 @@ public class ModelUtils {
 
         var paramType = (DeclaredType) paramElement.asType();
         var varName = paramElement.getSimpleName().toString();
-        var result = createDependencyModel(varName, paramType, paramElement);
-        return result;
+        return createDependencyModel(varName, paramType, paramElement);
     }
 
     public boolean isBroadcaster(TypeMirror type) {
@@ -354,5 +353,31 @@ public class ModelUtils {
                     .build();
         }
         return result;
+    }
+
+    public String qualifierToString(QualifierModel qualifierModel) {
+        var result = new StringBuilder(512);
+        qualifierModel.forEach((qualifierName, properties) -> {
+            result.append("@")
+                    .append(Qualifier.class.getSimpleName())
+                    .append("(name = \"")
+                    .append(qualifierName)
+                    .append("\"");
+            if (!properties.isEmpty()) {
+                result.append(", properties = ");
+                if (properties.size() > 1) {
+                    result.append("{");
+                }
+                result.append(properties.stream()
+                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
+                        .collect(Collectors.joining(", "))
+                );
+                if (properties.size() > 1) {
+                    result.append("}");
+                }
+            }
+            result.append(") ");
+        });
+        return result.toString();
     }
 }
