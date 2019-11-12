@@ -84,7 +84,7 @@ public class DispatcherGenerator extends JavaGenerator {
             dispatcherModel.setMessageType(Void.class.getName());
             dispatcherModel.setQualifiers(modelUtils.extractQualifiers(method));
             var mp = new MessageCallParamModel();
-            mp.setName("aVoid");
+            mp.setName("_aVoid");
             mp.setType(Void.class.getName());
             dispatcherModel.setMessageParam(mp);
         } else {
@@ -98,7 +98,7 @@ public class DispatcherGenerator extends JavaGenerator {
         var componentElement = (TypeElement) method.getEnclosingElement();
         DeclaredType componentType = (DeclaredType) componentElement.asType();
         // TODO varName must be unique
-        var componentDependency = modelUtils.createDependencyModel("receiverComponentProvider", componentType, componentElement);
+        var componentDependency = modelUtils.createDependencyModel("_receiverComponentsProvider", componentType, componentElement);
         componentDependency.setProvider(true);
         componentDependency.setCollection(true);
         return componentDependency;

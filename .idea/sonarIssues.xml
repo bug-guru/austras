@@ -1954,16 +1954,8 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuDAvOYQK1-KGAW" />
-                <option name="line" value="10" />
-                <option name="message" value="Remove these unused method parameters." />
-                <option name="ruleKey" value="squid:S1172" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZuDAvOYQK1-KGAX" />
-                <option name="line" value="11" />
+                <option name="line" value="13" />
                 <option name="message" value="Replace this use of System.out or System.err by a logger." />
                 <option name="ruleKey" value="squid:S106" />
                 <option name="severity" value="MAJOR" />

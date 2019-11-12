@@ -26,8 +26,14 @@ public class $SIMPLE_CLASS_NAME$ implements Dispatcher<$MESSAGE_TYPE$> {
 
     @Override
     public void dispatch($MESSAGE_TYPE$ $MESSAGE_PARAM_NAME$) {
-        for (var r : $RECEIVERS_DEPENDENCY_PROVIDER_NAME$.get()) {
-            r.$RECEIVER_METHOD_NAME$($RECEIVER_METHOD_PARAMS$);
+        for (var _receiverComponent : $RECEIVERS_DEPENDENCY_PROVIDER_NAME$.get()) {
+            try {
+                _receiverComponent.$RECEIVER_METHOD_NAME$($RECEIVER_METHOD_PARAMS$);
+            } catch (RuntimeException _ex) {
+                throw _ex;
+            } catch (Exception _ex) {
+                throw new IllegalStateException(_ex);
+            }
         }
     }
 }
