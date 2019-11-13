@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 public class NewLineTokenProcessor implements TokenProcessor<TemplateToken> {
     private State state = State.READY;

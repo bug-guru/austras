@@ -2,8 +2,8 @@ package guru.bug.austras.apt.events;
 
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
-import guru.bug.austras.codegen.FromTemplate;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codetempl.FromTemplate;
+import guru.bug.austras.codetempl.JavaGenerator;
 import guru.bug.austras.engine.ProcessingContext;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 public interface BodyBlock {
     String evaluateBody();

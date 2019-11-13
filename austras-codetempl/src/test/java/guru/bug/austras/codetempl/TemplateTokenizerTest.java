@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

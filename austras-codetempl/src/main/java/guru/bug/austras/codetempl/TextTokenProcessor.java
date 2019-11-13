@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 public class TextTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder text = new StringBuilder();

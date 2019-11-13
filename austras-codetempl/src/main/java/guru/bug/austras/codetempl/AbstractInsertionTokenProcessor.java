@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder content = new StringBuilder();

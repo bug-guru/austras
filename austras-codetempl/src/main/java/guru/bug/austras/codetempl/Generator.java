@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

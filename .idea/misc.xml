@@ -9,6 +9,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/austras-apt-engine/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-codegen/pom.xml" />
         <option value="$PROJECT_DIR$/austras-convert-gen/pom.xml" />
       </set>
     </option>

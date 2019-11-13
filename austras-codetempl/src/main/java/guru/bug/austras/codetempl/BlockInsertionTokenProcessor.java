@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 public class BlockInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
     public BlockInsertionTokenProcessor() {

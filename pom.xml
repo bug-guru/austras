@@ -17,7 +17,6 @@
     </properties>
 
     <modules>
-        <module>austras-codegen</module>
         <module>austras-core</module>
         <module>austras-core-apt</module>
         <module>austras-convert</module>

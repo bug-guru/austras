@@ -1,4 +1,4 @@
-package guru.bug.austras.codegen;
+package guru.bug.austras.codetempl;
 
 import javax.annotation.processing.Filer;
 import java.io.IOException;

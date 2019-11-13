@@ -8,11 +8,6 @@ import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
-import guru.bug.austras.codegen.common.QualifiedName;
-import guru.bug.austras.codegen.decl.MethodParamDecl;
-import guru.bug.austras.codegen.spec.AnnotationSpec;
-import guru.bug.austras.codegen.spec.TypeArg;
-import guru.bug.austras.codegen.spec.TypeSpec;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
@@ -311,48 +306,6 @@ public class ModelUtils {
 
     public boolean isProvider(Element element) {
         return isProvider(element.asType());
-    }
-
-    public List<AnnotationSpec> createQualifierAnnotations(QualifierModel qualifierModel) {
-        var result = new ArrayList<AnnotationSpec>();
-        qualifierModel.forEach((qualifierName, properties) -> {
-            var qualifierBuilder = AnnotationSpec.builder().typeName(Qualifier.class)
-                    .add("name", qualifierName);
-            properties.forEach(prop ->
-                    qualifierBuilder.add("properties",
-                            AnnotationSpec.builder()
-                                    .typeName(QualifierProperty.class)
-                                    .add("name", prop.getKey())
-                                    .add("value", prop.getValue())
-                                    .build()));
-            result.add(qualifierBuilder.build());
-        });
-        return result;
-    }
-
-    public MethodParamDecl convertToParametersDecl(DependencyModel model) {
-        return MethodParamDecl.builder()
-                .addAnnotations(createQualifierAnnotations(model.getQualifiers()))
-                .name(model.getName())
-                .type(convertToParameterType(model))
-                .build();
-    }
-
-    public TypeSpec convertToParameterType(DependencyModel model) {
-        var result = TypeSpec.of(model.getType());
-        if (model.isCollection()) {
-            result = TypeSpec.builder()
-                    .name(QualifiedName.of(Collection.class))
-                    .addTypeArg(TypeArg.wildcardExtends(result))
-                    .build();
-        }
-        if (model.isProvider()) {
-            result = TypeSpec.builder()
-                    .name(QualifiedName.of(Provider.class))
-                    .addTypeArg(TypeArg.wildcardExtends(result))
-                    .build();
-        }
-        return result;
     }
 
     public String qualifierToString(QualifierModel qualifierModel) {

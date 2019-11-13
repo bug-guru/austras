@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/austras.iml" filepath="$PROJECT_DIR$/austras.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-codegen/austras-codegen.iml" filepath="$PROJECT_DIR$/austras-codegen/austras-codegen.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-codetempl/austras-codetempl.iml" filepath="$PROJECT_DIR$/austras-codetempl/austras-codetempl.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert/austras-convert.iml" filepath="$PROJECT_DIR$/austras-convert/austras-convert.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" filepath="$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" />
