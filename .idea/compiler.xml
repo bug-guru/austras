@@ -7,8 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-codetempl" />
         <module name="austras-web-apt" />
+        <module name="austras-codegen" />
         <module name="austras-core" />
       </profile>
       <profile name="Annotation profile for austras-test" enabled="true">
@@ -17,17 +17,18 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-convert-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codetempl/target/classes" />
+          <entry name="$MAVEN_REPOSITORY$/guru/bug/austras/austras-codetempl/1.0-SNAPSHOT/austras-codetempl-1.0-SNAPSHOT.jar" />
           <entry name="$PROJECT_DIR$/austras-convert/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
           <entry name="$PROJECT_DIR$/austras-web-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codetempl/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
@@ -41,7 +42,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codetempl/target/classes" />
+          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.24/snakeyaml-1.24.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
@@ -54,7 +55,6 @@
       <module name="austras" target="11" />
       <module name="austras-apt-engine" target="11" />
       <module name="austras-codegen" target="11" />
-      <module name="austras-codetempl" target="11" />
       <module name="austras-convert" target="11" />
       <module name="austras-convert-apt" target="11" />
       <module name="austras-convert-gen" target="11" />

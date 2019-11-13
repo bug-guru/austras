@@ -1,8 +1,8 @@
 package guru.bug.austras.convert.apt;
 
-import guru.bug.austras.codetempl.BodyBlock;
-import guru.bug.austras.codetempl.FromTemplate;
-import guru.bug.austras.codetempl.JavaGenerator;
+import guru.bug.austras.codegen.BodyBlock;
+import guru.bug.austras.codegen.FromTemplate;
+import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.engine.ProcessingContext;
 
