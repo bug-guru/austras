@@ -1516,6 +1516,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/core/generators/EagerSingletonProvider.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/core/generators/Main.java.txt">
           <value>
             <set />

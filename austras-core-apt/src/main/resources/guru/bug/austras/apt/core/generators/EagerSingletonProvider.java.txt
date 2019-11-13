@@ -1,0 +1,31 @@
+package $PACKAGE_NAME$;
+
+#IMPORTS#
+guru.bug.austras.core.Qualifier
+guru.bug.austras.provider.Provider
+java.util.Collection
+#END#
+
+$QUALIFIERS$
+public class $PROVIDER_SIMPLE_CLASS_NAME$ implements Provider<$COMPONENT_CLASS_NAME$> {
+
+	private final $COMPONENT_CLASS_NAME$ $COMPONENT_NAME$;
+
+	public ReceiverStr1ComponentReceiveDispatcherProvider(
+	    #DEPENDENCIES#
+	    Provider<? extends#DEPENDENCY_IS_COLLECTION# Collection<? extends#END# $DEPENDENCY_COMPONENT_CLASS_NAME$>#DEPENDENCY_IS_COLLECTION#>#END# $DEPENDENCY_PROVIDER_NAME$$OPTIONAL_COMMA$
+	    #END#
+	) {
+		this.$COMPONENT_NAME$ = new $COMPONENT_CLASS_NAME$(
+		    #DEPENDENCIES#
+		    $DEPENDENCY_PROVIDER_NAME$#SHOULD_RESOLVE#.get()#END#$OPTIONAL_COMMA$
+		    #END#
+		);
+	}
+
+	@Override
+	public $COMPONENT_CLASS_NAME$ get() {
+		return this.$COMPONENT_NAME$;
+	}
+
+}
