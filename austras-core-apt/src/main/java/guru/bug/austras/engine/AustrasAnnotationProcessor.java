@@ -4,12 +4,10 @@ import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.ComponentKey;
 import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
+import guru.bug.austras.apt.core.generators.DefaultProviderGenerator;
 import guru.bug.austras.apt.core.generators.MainClassGenerator;
 import guru.bug.austras.apt.core.logging.AustrasLogging;
-import guru.bug.austras.apt.model.ComponentModel;
-import guru.bug.austras.apt.model.ModuleModelSerializer;
-import guru.bug.austras.apt.model.ProviderModel;
-import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.apt.model.*;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
 
@@ -50,6 +48,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private List<AustrasProcessorPlugin> plugins;
     private ModelUtils modelUtils;
     private MainClassGenerator mainClassGenerator;
+    private DefaultProviderGenerator defaultProviderGenerator;
     private ComponentMap stagedComponents;
     private ComponentMap componentMap;
     private ComponentModel appMainComponent;
@@ -70,6 +69,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         initPlugins();
         try {
             this.mainClassGenerator = new MainClassGenerator(processingEnv.getFiler());
+            this.defaultProviderGenerator = new DefaultProviderGenerator(processingEnv.getFiler());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -256,14 +256,15 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void resolveAndGenerateProviders() {
+    private void resolveAndGenerateProviders() throws IOException {
         var toAdd = new ArrayList<ComponentModel>();
+        var toGenerate = new ArrayList<ComponentModel>();
         componentMap.allComponentsStream()
                 .forEach(cm -> {
                     var provider = cm.getProvider();
                     if (provider == null) {
-                        log.info(() -> format("<1>Component %s doesn't have a provider yet. Generating.", cm.getInstantiable()));
-                        generateProvider(cm);
+                        log.info(() -> format("Component %s doesn't have a provider yet. Will be generated.", cm.getInstantiable()));
+                        toGenerate.add(cm);
                     } else {
                         log.info(() -> format("Resolving dependencies of provider %s (component %s)", provider.getInstantiable(), cm.getInstantiable()));
                         for (var d : provider.getDependencies()) {
@@ -275,15 +276,17 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                     }
                 });
         componentMap.addComponents(toAdd);
-        for (var c : toAdd) {
-            log.info(() -> format("<2>Component %s doesn't have a provider yet. Generating.", c.getInstantiable()));
+        toGenerate.addAll(toAdd);
+        for (var c : toGenerate) {
+            log.info(() -> format("Generating provider for component %s.", c.getInstantiable()));
             generateProvider(c);
         }
     }
 
-    private void generateProvider(ComponentModel model) {
-        var providerGenerator = modelUtils.createProviderGeneratorFor(model);
-        providerGenerator.generateProvider();
+    private void generateProvider(ComponentModel model) throws IOException {
+        TypeElement componentElement = processingEnv.getElementUtils().getTypeElement(model.getInstantiable());
+        List<DependencyModel> dependencies = modelUtils.collectConstructorParams(componentElement);
+        defaultProviderGenerator.generate(componentElement, dependencies);
     }
 
 

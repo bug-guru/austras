@@ -1,10 +1,6 @@
 package guru.bug.austras.apt.core;
 
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.core.generators.CacheProviderGenerator;
-import guru.bug.austras.apt.core.generators.EagerSingletonProviderGenerator;
-import guru.bug.austras.apt.core.generators.NoCacheProviderGenerator;
-import guru.bug.austras.apt.core.generators.ProviderGenerator;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.apt.model.QualifierModel;
@@ -12,13 +8,14 @@ import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.provider.Provider;
-import guru.bug.austras.scopes.Cache;
-import guru.bug.austras.scopes.NoCache;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.*;
-import javax.lang.model.type.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
@@ -42,7 +39,6 @@ public class ModelUtils {
     private final Types typeUtils;
     private final Elements elementUtils;
     private final ProcessingEnvironment processingEnv;
-    private final String componentCacheVarName;
     private final TypeElement collectionInterfaceElement;
     private final DeclaredType collectionInterfaceType;
     private final TypeElement providerInterfaceElement;
@@ -55,7 +51,6 @@ public class ModelUtils {
         this.processingEnv = processingEnv;
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
-        this.componentCacheVarName = uniqueNameGenerator.findFreeVarName("componentCache");
         this.collectionInterfaceElement = elementUtils.getTypeElement(Collection.class.getName());
         this.collectionInterfaceType = typeUtils.getDeclaredType(collectionInterfaceElement);
         this.providerInterfaceElement = elementUtils.getTypeElement(Provider.class.getName());
@@ -84,34 +79,6 @@ public class ModelUtils {
         model.setTypes(ancestors);
 
         return model;
-    }
-
-    public ProviderGenerator createProviderGeneratorFor(ComponentModel componentModel) {
-        TypeElement componentElement = elementUtils.getTypeElement(componentModel.getInstantiable());
-        var cachedAnnotation = componentElement.getAnnotation(Cache.class);
-        var cacheType = extractValueFromCachedAnnotation(cachedAnnotation);
-        var noCachedAnnotation = componentElement.getAnnotation(NoCache.class);
-        List<DependencyModel> dependencies = collectConstructorParams(componentElement);
-        if (cachedAnnotation == null && noCachedAnnotation == null) {
-            return new EagerSingletonProviderGenerator(processingEnv, componentModel, dependencies);
-        } else if (noCachedAnnotation != null) {
-            return new NoCacheProviderGenerator(processingEnv, componentModel, dependencies);
-        } else {
-            return new CacheProviderGenerator(processingEnv, componentModel, dependencies, cacheType, componentCacheVarName);
-        }
-    }
-
-    private String extractValueFromCachedAnnotation(Cache cacheAnnotation) {
-        if (cacheAnnotation != null) {
-            try {
-                cacheAnnotation.value();
-            } catch (MirroredTypeException e) {
-                var declaredType = (DeclaredType) e.getTypeMirror();
-                var typeElement = (TypeElement) declaredType.asElement();
-                return typeElement.getQualifiedName().toString();
-            }
-        }
-        return null;
     }
 
     public QualifierModel extractQualifiers(AnnotatedConstruct element) {

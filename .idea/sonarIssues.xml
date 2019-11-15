@@ -1283,6 +1283,11 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/DefaultProviderGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/EagerSingletonProviderGenerator.java">
           <value>
             <set>
@@ -1603,8 +1608,24 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB9" />
-                <option name="line" value="57" />
+                <option name="key" value="AW3GyaDVAvOYQK1-KGB5" />
+                <option name="line" value="50" />
+                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
+                <option name="ruleKey" value="squid:S3457" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyaDWAvOYQK1-KGB6" />
+                <option name="line" value="50" />
+                <option name="message" value="Replace this use of System.out or System.err by a logger." />
+                <option name="ruleKey" value="squid:S106" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyaDWAvOYQK1-KGB-" />
+                <option name="line" value="66" />
                 <option name="message" value="Replace this use of System.out or System.err by a logger." />
                 <option name="ruleKey" value="squid:S106" />
                 <option name="severity" value="MAJOR" />
@@ -1619,14 +1640,6 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB6" />
-                <option name="line" value="50" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyaDWAvOYQK1-KGB8" />
                 <option name="line" value="57" />
                 <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
@@ -1635,24 +1648,8 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDVAvOYQK1-KGB5" />
-                <option name="line" value="50" />
-                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
-                <option name="ruleKey" value="squid:S3457" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDVAvOYQK1-KGB4" />
-                <option name="line" value="37" />
-                <option name="message" value="Either log this exception and handle it, or rethrow it with some contextual information." />
-                <option name="ruleKey" value="squid:S2139" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB-" />
-                <option name="line" value="66" />
+                <option name="key" value="AW3GyaDWAvOYQK1-KGB9" />
+                <option name="line" value="57" />
                 <option name="message" value="Replace this use of System.out or System.err by a logger." />
                 <option name="ruleKey" value="squid:S106" />
                 <option name="severity" value="MAJOR" />
@@ -1822,6 +1819,16 @@
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ConfigStringParameter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/DeepInheritanceGenericImpl.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/Service1.java">
