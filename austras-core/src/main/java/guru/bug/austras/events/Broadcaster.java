@@ -12,15 +12,7 @@ public abstract class Broadcaster<M> {
 
     public void send(M message) {
         dispatchers.forEach(r -> {
-            try {
-
-                r.dispatch(message);
-
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new RuntimeException(e);// TODO
-            }
+            r.dispatch(message);
         });
     }
 }

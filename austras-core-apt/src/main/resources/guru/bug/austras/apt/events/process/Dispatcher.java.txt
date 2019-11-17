@@ -5,11 +5,14 @@ guru.bug.austras.core.Component
 guru.bug.austras.core.Qualifier
 java.util.Collection
 guru.bug.austras.events.Dispatcher
+org.slf4j.Logger
+org.slf4j.LoggerFactory
 #END#
 
 @Component
 $QUALIFIERS$
 public class $SIMPLE_CLASS_NAME$ implements Dispatcher<$MESSAGE_TYPE$> {
+    private static final Logger _log = LoggerFactory.getLogger($SIMPLE_CLASS_NAME$.class);
     #DEPENDENCIES#
     private final $DEPENDENCY_PROVIDER_CLASS$ $TARGET_PROVIDER_NAME$;
     #END#
@@ -29,10 +32,8 @@ public class $SIMPLE_CLASS_NAME$ implements Dispatcher<$MESSAGE_TYPE$> {
         for (var _receiverComponent : $RECEIVERS_DEPENDENCY_PROVIDER_NAME$.get()) {
             try {
                 _receiverComponent.$RECEIVER_METHOD_NAME$($RECEIVER_METHOD_PARAMS$);
-            } catch (RuntimeException _ex) {
-                throw _ex;
             } catch (Exception _ex) {
-                throw new IllegalStateException(_ex);
+                _log.error("Exception while dispatching a message", _ex);
             }
         }
     }
