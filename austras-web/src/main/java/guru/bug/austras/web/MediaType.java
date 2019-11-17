@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class MediaType {
     public static final String APPLICATION_JSON = "application/json";
     public static final String WILDCARD = "*/*";
-    private static final Pattern MEDIA_TYPE_REGEX = Pattern.compile("(.+)/([^;]+)(;.+)?");
+    private static final Pattern MEDIA_TYPE_REGEX = Pattern.compile("(\\w+)/([^;]+)(;\\w+)?");
     public static final MediaType APPLICATION_JSON_TYPE = valueOf(APPLICATION_JSON);
     public static final MediaType WILDCARD_TYPE = valueOf(WILDCARD);
     public static final List<MediaType> WILDCARD_LIST = Collections.singletonList(WILDCARD_TYPE);
