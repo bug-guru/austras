@@ -147,15 +147,7 @@ public class MainClassGenerator extends JavaGenerator {
     @FromTemplate("STANDARD_DEPENDENCY")
     public void standardDependency(PrintWriter out, BodyBlock bodyBlock) {
         if (!currentDependency.isCollection() && currentDependency.isProvider()) {
-            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
-            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
-            if (singleComponentModel == null) {
-                throw new IllegalStateException("Component " + key + " not found"); // TODO
-            }
-            ProviderModel provider = singleComponentModel.getProvider();
-            if (provider == null) {
-                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
-            }
+            var provider = findProviderModel();
             dependencyInitialization = provider.getName();
             out.print(bodyBlock.evaluateBody());
             dependencyInitialization = null;
@@ -165,19 +157,24 @@ public class MainClassGenerator extends JavaGenerator {
     @FromTemplate("UNWRAPPED_STANDARD_DEPENDENCY")
     public void unwrappedStandardDependency(PrintWriter out, BodyBlock bodyBlock) {
         if (!currentDependency.isCollection() && !currentDependency.isProvider()) {
-            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
-            ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
-            if (singleComponentModel == null) {
-                throw new IllegalStateException("Component " + key + " not found"); // TODO
-            }
-            ProviderModel provider = singleComponentModel.getProvider();
-            if (provider == null) {
-                throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
-            }
+            var provider = findProviderModel();
             dependencyInitialization = provider.getName() + ".get()";
             out.print(bodyBlock.evaluateBody());
             dependencyInitialization = null;
         }
+    }
+
+    public ProviderModel findProviderModel() {
+        var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
+        ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
+        if (singleComponentModel == null) {
+            throw new IllegalStateException("Component " + key + " not found"); // TODO
+        }
+        ProviderModel provider = singleComponentModel.getProvider();
+        if (provider == null) {
+            throw new IllegalStateException("Provider not found for component " + key + " not found"); // TODO
+        }
+        return provider;
     }
 
     @FromTemplate("DEPENDENCY_INITIALIZATION")
