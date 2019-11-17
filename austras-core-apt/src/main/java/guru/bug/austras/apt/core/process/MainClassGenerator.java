@@ -1,10 +1,10 @@
-package guru.bug.austras.apt.core.generators;
+package guru.bug.austras.apt.core.process;
 
-import guru.bug.austras.apt.core.componentmap.ComponentKey;
-import guru.bug.austras.apt.core.componentmap.ComponentMap;
-import guru.bug.austras.apt.model.ComponentModel;
-import guru.bug.austras.apt.model.DependencyModel;
-import guru.bug.austras.apt.model.ProviderModel;
+import guru.bug.austras.apt.core.ComponentMap;
+import guru.bug.austras.apt.core.model.ComponentKey;
+import guru.bug.austras.apt.core.model.ComponentModel;
+import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.model.ProviderModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;

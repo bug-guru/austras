@@ -1,12 +1,12 @@
 package guru.bug.austras.engine;
 
+import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
-import guru.bug.austras.apt.core.componentmap.ComponentKey;
-import guru.bug.austras.apt.core.componentmap.ComponentMap;
-import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
-import guru.bug.austras.apt.core.generators.DefaultProviderGenerator;
-import guru.bug.austras.apt.core.generators.MainClassGenerator;
-import guru.bug.austras.apt.model.*;
+import guru.bug.austras.apt.core.UniqueNameGenerator;
+import guru.bug.austras.apt.core.model.*;
+import guru.bug.austras.apt.core.process.DefaultProviderGenerator;
+import guru.bug.austras.apt.core.process.MainClassGenerator;
+import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;

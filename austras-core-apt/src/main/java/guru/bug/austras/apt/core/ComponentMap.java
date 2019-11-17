@@ -1,8 +1,9 @@
-package guru.bug.austras.apt.core.componentmap;
+package guru.bug.austras.apt.core;
 
-import guru.bug.austras.apt.model.ComponentModel;
-import guru.bug.austras.apt.model.ModuleModel;
-import guru.bug.austras.apt.model.ModuleModelSerializer;
+import guru.bug.austras.apt.core.model.ComponentKey;
+import guru.bug.austras.apt.core.model.ComponentModel;
+import guru.bug.austras.apt.core.model.ModuleModel;
+import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

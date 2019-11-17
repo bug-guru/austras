@@ -1,6 +1,4 @@
-package guru.bug.austras.apt.core.componentmap;
-
-import guru.bug.austras.apt.model.QualifierModel;
+package guru.bug.austras.apt.core.model;
 
 import java.util.Objects;
 

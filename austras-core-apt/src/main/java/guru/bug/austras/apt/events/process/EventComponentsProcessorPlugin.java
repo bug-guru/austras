@@ -1,7 +1,7 @@
-package guru.bug.austras.apt.events;
+package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.ModelUtils;
-import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
+import guru.bug.austras.apt.core.UniqueNameGenerator;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.engine.AustrasProcessorPlugin;
 import guru.bug.austras.engine.ProcessingContext;
@@ -14,8 +14,8 @@ import javax.lang.model.util.SimpleElementVisitor9;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 
-public class EventComponentsProcessor implements AustrasProcessorPlugin {
-    private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessor.class);
+public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
+    private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessorPlugin.class);
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
     private ModelUtils modelUtils;
     private UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();

@@ -1,10 +1,10 @@
-package guru.bug.austras.apt.events;
+package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.ModelUtils;
+import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.events.model.CallParamModel;
 import guru.bug.austras.apt.events.model.MessageCallParamModel;
 import guru.bug.austras.apt.events.model.MessageDispatcherModel;
-import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;

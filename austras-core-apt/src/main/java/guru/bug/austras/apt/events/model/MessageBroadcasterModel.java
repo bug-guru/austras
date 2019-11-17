@@ -1,6 +1,6 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.apt.core.model.QualifierModel;
 
 public class MessageBroadcasterModel {
     private String type;

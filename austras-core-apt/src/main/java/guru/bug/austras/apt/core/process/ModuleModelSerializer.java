@@ -1,5 +1,6 @@
-package guru.bug.austras.apt.model;
+package guru.bug.austras.apt.core.process;
 
+import guru.bug.austras.apt.core.model.ModuleModel;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;

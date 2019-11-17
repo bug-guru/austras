@@ -1,7 +1,7 @@
 package guru.bug.austras.engine;
 
-import guru.bug.austras.apt.model.ComponentModel;
-import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.apt.core.model.ComponentModel;
+import guru.bug.austras.apt.core.model.QualifierModel;
 
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.type.TypeMirror;

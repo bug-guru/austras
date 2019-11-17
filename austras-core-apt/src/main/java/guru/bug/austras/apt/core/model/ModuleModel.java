@@ -1,4 +1,4 @@
-package guru.bug.austras.apt.model;
+package guru.bug.austras.apt.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.model.DependencyModel;
-import guru.bug.austras.apt.model.QualifierModel;
+import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.model.QualifierModel;
 
 import java.util.ArrayList;
 import java.util.List;

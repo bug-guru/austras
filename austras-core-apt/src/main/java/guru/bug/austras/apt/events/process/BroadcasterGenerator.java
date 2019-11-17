@@ -1,4 +1,4 @@
-package guru.bug.austras.apt.events;
+package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;

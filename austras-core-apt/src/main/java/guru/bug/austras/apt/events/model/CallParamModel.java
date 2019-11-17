@@ -1,6 +1,6 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.model.DependencyModel;
+import guru.bug.austras.apt.core.model.DependencyModel;
 
 public class CallParamModel {
     private String name;
