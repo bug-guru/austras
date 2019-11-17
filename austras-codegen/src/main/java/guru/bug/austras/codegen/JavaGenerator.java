@@ -26,12 +26,12 @@ public abstract class JavaGenerator extends Generator {
                 throw new IllegalArgumentException("wrong type " + typeName);
             }
             var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx));
-            return type + "<" + param + ">";
+            return type + '<' + param + '>';
         }
     }
 
     private String tryImport0(String qualifiedName) {
-        var idx = qualifiedName.lastIndexOf(".");
+        var idx = qualifiedName.lastIndexOf('.');
         var pkg = qualifiedName.substring(0, idx);
         var cls = qualifiedName.substring(idx + 1);
         var imp = imports.get(cls);
@@ -49,7 +49,7 @@ public abstract class JavaGenerator extends Generator {
     }
 
     private boolean isPrintableToImports(String qualifiedName) {
-        var idx = qualifiedName.lastIndexOf(".");
+        var idx = qualifiedName.lastIndexOf('.');
         var pkg = qualifiedName.substring(0, idx);
         return isPrintableToImportPkg(pkg);
     }
@@ -59,9 +59,10 @@ public abstract class JavaGenerator extends Generator {
     }
 
     protected final void generateJavaClass() throws IOException {
-        var qualifiedName = getPackageName() + "." + getSimpleClassName();
+        imports.clear();
+        var qualifiedName = getPackageName() + '.' + getSimpleClassName();
         try (var out = filer.createSourceFile(qualifiedName).openWriter()) {
-            super.generateToString(); // ignoring result just to fill imports;
+            super.generateToString(); // ignoring result just to fill imports
             super.generateTo(out);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -83,7 +84,7 @@ public abstract class JavaGenerator extends Generator {
                         tryImport(s);
                         out.print("import ");
                         out.print(s);
-                        out.println(";");
+                        out.println(';');
                     });
         } else {
             imports.values().stream()
@@ -92,9 +93,9 @@ public abstract class JavaGenerator extends Generator {
                     .forEach(s -> {
                         out.print("import ");
                         out.print(s.packageName);
-                        out.print(".");
+                        out.print('.');
                         out.print(s.className);
-                        out.println(";");
+                        out.println(';');
                     });
         }
     }
@@ -102,6 +103,24 @@ public abstract class JavaGenerator extends Generator {
     private static class ImportLine implements Comparable<ImportLine> {
         String packageName;
         String className;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ImportLine that = (ImportLine) o;
+
+            if (!packageName.equals(that.packageName)) return false;
+            return className.equals(that.className);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = packageName.hashCode();
+            result = 31 * result + className.hashCode();
+            return result;
+        }
 
         @Override
         public int compareTo(ImportLine o) {

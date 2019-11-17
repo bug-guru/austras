@@ -130,19 +130,11 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj4FWLNuwUjKJIvl" />
-                <option name="line" value="64" />
-                <option name="message" value="This block of commented-out lines of code should be removed." />
-                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj4FWLNuwUjKJIvj" />
-                <option name="line" value="52" />
-                <option name="message" value="Put single-quotes around '.' to use the faster &quot;lastIndexOf(char)&quot; method." />
-                <option name="ruleKey" value="squid:S3027" />
-                <option name="severity" value="MAJOR" />
+                <option name="key" value="AW57Vj4FWLNuwUjKJIvk" />
+                <option name="line" value="126" />
+                <option name="message" value="Override &quot;equals(Object obj)&quot; to comply with the contract of the &quot;compareTo(T o)&quot; method." />
+                <option name="ruleKey" value="squid:S1210" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -151,14 +143,6 @@
                 <option name="message" value="Put single-quotes around '.' to use the faster &quot;lastIndexOf(char)&quot; method." />
                 <option name="ruleKey" value="squid:S3027" />
                 <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj4FWLNuwUjKJIvk" />
-                <option name="line" value="107" />
-                <option name="message" value="Override &quot;equals(Object obj)&quot; to comply with the contract of the &quot;compareTo(T o)&quot; method." />
-                <option name="ruleKey" value="squid:S1210" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -1439,6 +1423,11 @@
                 <option name="severity" value="INFO" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/target/generated-sources/annotations/guru/bug/austras/convert/converters/json/BooleanToJsonConverterProvider.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/target/generated-sources/annotations/guru/bug/austras/convert/converters/json/MonthDayToJsonConverterProvider.java">
