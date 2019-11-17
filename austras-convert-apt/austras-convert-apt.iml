@@ -14,7 +14,6 @@
     <orderEntry type="library" name="Maven: guru.bug.austras:austras-codetempl:1.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="austras-convert" />
     <orderEntry type="module" module-name="austras-core" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.28" level="project" />
     <orderEntry type="module" module-name="austras-core-apt" />
     <orderEntry type="module" module-name="austras-codegen" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.24" level="project" />
@@ -22,6 +21,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.28" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
