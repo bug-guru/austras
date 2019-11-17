@@ -6,10 +6,12 @@ import guru.bug.austras.apt.core.componentmap.ComponentMap;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
 import guru.bug.austras.apt.core.generators.DefaultProviderGenerator;
 import guru.bug.austras.apt.core.generators.MainClassGenerator;
-import guru.bug.austras.apt.core.logging.AustrasLogging;
 import guru.bug.austras.apt.model.*;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.AnnotatedConstruct;
@@ -24,8 +26,6 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -36,12 +36,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
-    private static final Logger log = Logger.getLogger(AustrasAnnotationProcessor.class.getName());
-
-    static {
-        AustrasLogging.setup();
-        log.fine("Logger has been set up");
-    }
+    private static final Logger log = LoggerFactory.getLogger(AustrasAnnotationProcessor.class);
 
     private final Queue<TypeElement> stagedProviders = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
@@ -54,12 +49,12 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private ComponentModel appMainComponent;
 
     public AustrasAnnotationProcessor() {
-        log.fine("Constructing AustrasAnnotationProcessor");
+        log.debug("Constructing AustrasAnnotationProcessor");
     }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
-        log.fine("initializing AustrasAnnotationProcessor");
+        log.debug("initializing AustrasAnnotationProcessor");
         super.init(processingEnv);
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
 
@@ -69,8 +64,8 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         initPlugins();
         try {
             this.mainClassGenerator = new MainClassGenerator(processingEnv.getFiler());
-            this.defaultProviderGenerator = new DefaultProviderGenerator(processingEnv.getFiler());
-        } catch (IOException e) {
+            this.defaultProviderGenerator = new DefaultProviderGenerator(processingEnv);
+        } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -86,7 +81,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             var allMaps = classLoader.getResources("META-INF/components.yml");
             while (allMaps.hasMoreElements()) {
                 var map = allMaps.nextElement();
-                log.info(() -> format("Loading components from %s", map));
+                log.info("Loading components from {}", map);
                 try (var stream = map.openStream()) {
                     var moduleModel = ModuleModelSerializer.load(stream);
                     for (var comp : moduleModel.getComponents()) {
@@ -96,7 +91,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 }
             }
         } catch (Exception e) {
-            log.log(Level.SEVERE, "Something wrong", e);
+            log.error("Something wrong", e);
             throw new IllegalStateException(e); // TODO
         }
     }
@@ -115,26 +110,26 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 generateComponentMap();
                 mainClassGenerator.generateAppMain(appMainComponent, componentMap);
             } else {
-                log.fine("SCAN");
+                log.debug("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
-                log.fine("LINK");
+                log.debug("LINK");
                 linkProviders();
-                log.fine("RESOLVE AND GENERATE");
+                log.debug("RESOLVE AND GENERATE");
                 resolveAndGenerateProviders();
-                log.fine("PLUGINS");
+                log.debug("PLUGINS");
                 processPlugins(pctx);
             }
             return false;
         } catch (Exception e) {
-            log.log(Level.SEVERE, "Unexpected error", e);
+            log.error("Unexpected error", e);
             throw new IllegalStateException(e);
         }
     }
 
     private void processPlugins(ProcessingContext ctx) {
         for (var p : plugins) {
-            log.fine(() -> "Processing " + p.getClass().getName());
+            log.debug("Processing {}", p.getClass().getName());
             p.process(ctx);
         }
     }
@@ -142,23 +137,23 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private void scanRootElements(Set<? extends Element> rootElements) {
         for (var element : rootElements) {
             if (element.getKind() != CLASS) {
-                log.fine(() -> format("IGNORE: root element isn't a class: %s", element));
+                log.debug("IGNORE: root element isn't a class: {}", element);
                 continue;
             }
             TypeElement typeElement = (TypeElement) element;
             if (!checkIsPublicNonAbstractClass(typeElement)) {
-                log.info(() -> format("IGNORE: Found abstract or non-public class %s", element));
+                log.info("IGNORE: Found abstract or non-public class {}", element);
                 continue;
             }
             if (!checkUsableConstructor(typeElement)) {
-                log.info(() -> format("IGNORE: No default constructor or multiple public constructors in class %s", element));
+                log.info("IGNORE: No default constructor or multiple public constructors in class {}", element);
                 continue;
             }
             if (modelUtils.isProvider(element)) {
-                log.info(() -> format("PROCESS: Found provider class %s.", element));
+                log.info("PROCESS: Found provider class {}.", element);
                 stagedProviders.add(typeElement);
             } else {
-                log.info(() -> format("PROCESS: Found component class %s.", element));
+                log.info("PROCESS: Found component class {}.", element);
                 scanComponent(typeElement);
             }
         }
@@ -169,10 +164,10 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
         var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
         if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
-            log.fine(() -> format("PROCESS: Adding component to staging: %s", typeElement));
+            log.debug("PROCESS: Adding component to staging: {}", typeElement);
             stagedComponents.addComponent(model);
         } else {
-            log.fine(() -> format("PROCESS: Adding component to index: %s", typeElement));
+            log.debug("PROCESS: Adding component to index: {}", typeElement);
             componentMap.addComponent(model);
         }
         if (applicationAnnotation.length > 0) {
@@ -213,12 +208,12 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             log.info("No providers found for linking");
             return;
         } else {
-            log.fine(() -> format("Linking %d providers", stagedProviders.size()));
+            log.debug("Linking {} providers", stagedProviders.size());
         }
         while (!stagedProviders.isEmpty()) {
-            log.info(() -> format("%d providers yet to link", stagedProviders.size()));
+            log.info("{} providers yet to link", stagedProviders.size());
             var providerElement = stagedProviders.remove();
-            log.info(() -> format("Link provider %s", providerElement));
+            log.info("Link provider {}", providerElement);
             DeclaredType providerType = (DeclaredType) providerElement.asType();
             var componentType = modelUtils.extractComponentTypeFromProvider(providerType);
             var qualifiers = modelUtils.extractQualifiers(providerElement);
@@ -233,7 +228,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                         providerElement,
                         componentModel.getInstantiable(),
                         componentModel.getProvider().getInstantiable());
-                log.log(Level.SEVERE, msg);
+                log.error(msg);
                 throw new IllegalStateException(msg); // TODO better error handling
             }
             var name = uniqueNameGenerator.findFreeVarName(providerType);
@@ -246,12 +241,12 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             providerModel.setDependencies(dependencies);
 
             if (componentModel == null) {
-                log.fine(() -> format("Provider %s provides non existing component of %s. Creating ComponentModel", providerModel.getInstantiable(), key));
+                log.debug("Provider {} provides non existing component of {}. Creating ComponentModel", providerModel.getInstantiable(), key);
                 componentModel = modelUtils.createComponentModel(componentType, providerType);
                 componentModel.setQualifiers(qualifiers);
                 componentMap.addComponent(componentModel);
             }
-            log.info(() -> format("Assigning provider %s for component %s", providerElement, componentType));
+            log.info("Assigning provider {} for component {}", providerElement, componentType);
             componentModel.setProvider(providerModel);
         }
     }
@@ -263,12 +258,12 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 .forEach(cm -> {
                     var provider = cm.getProvider();
                     if (provider == null) {
-                        log.info(() -> format("Component %s doesn't have a provider yet. Will be generated.", cm.getInstantiable()));
+                        log.info("Component {} doesn't have a provider yet. Will be generated.", cm.getInstantiable());
                         toGenerate.add(cm);
                     } else {
-                        log.info(() -> format("Resolving dependencies of provider %s (component %s)", provider.getInstantiable(), cm.getInstantiable()));
+                        log.info("Resolving dependencies of provider {} (component {})", provider.getInstantiable(), cm.getInstantiable());
                         for (var d : provider.getDependencies()) {
-                            log.fine(() -> format("resolving %s of type %s", d.getName(), d.getType()));
+                            log.debug("resolving {} of type {}}", d.getName(), d.getType());
                             var k = new ComponentKey(d.getType(), d.getQualifiers());
                             var components = stagedComponents.findAndRemoveComponentModels(k);
                             toAdd.addAll(components);
@@ -278,7 +273,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         componentMap.addComponents(toAdd);
         toGenerate.addAll(toAdd);
         for (var c : toGenerate) {
-            log.info(() -> format("Generating provider for component %s.", c.getInstantiable()));
+            log.info("Generating provider for component {}.", c.getInstantiable());
             generateProvider(c);
         }
     }
@@ -286,7 +281,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private void generateProvider(ComponentModel model) throws IOException {
         TypeElement componentElement = processingEnv.getElementUtils().getTypeElement(model.getInstantiable());
         List<DependencyModel> dependencies = modelUtils.collectConstructorParams(componentElement);
-        defaultProviderGenerator.generate(componentElement, dependencies);
+        defaultProviderGenerator.generate(model, componentElement, dependencies);
     }
 
 

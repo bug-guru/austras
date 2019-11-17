@@ -1,8 +1,11 @@
 package guru.bug.austras.convert.apt;
 
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.engine.ProcessingContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
@@ -10,11 +13,10 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 class ConvertersProcessor {
-    private final Logger logger = Logger.getLogger(ConvertersProcessor.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(ConvertersProcessor.class);
     private final ProcessingContext ctx;
     private final Types typeUtils;
     private final TypeElement jsonConverter;
@@ -29,7 +31,7 @@ class ConvertersProcessor {
         stringConverter = elementUtils.getTypeElement(StringConverter.class.getName());
         try {
             jsonConverterGenerator = new JsonConverterGenerator(ctx);
-        } catch (IOException e) {
+        } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -84,11 +86,11 @@ class ConvertersProcessor {
     }
 
     private void generateStringConverter(DeclaredType conversionType) throws IOException {
-        logger.severe("GENERATING STRING CONVERTER FOR " + conversionType);
+        logger.info("GENERATING STRING CONVERTER FOR " + conversionType);
     }
 
     private void generateJsonConverter(DeclaredType conversionType) throws IOException {
-        logger.fine("generating converter json converter for " + conversionType);
+        logger.info("generating converter json converter for " + conversionType);
         jsonConverterGenerator.generate(conversionType);
     }
 

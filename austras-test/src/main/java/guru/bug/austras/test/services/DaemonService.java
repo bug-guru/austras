@@ -1,15 +1,18 @@
 package guru.bug.austras.test.services;
 
 import guru.bug.austras.startup.StartupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DaemonService implements StartupService {
+    private static final Logger log = LoggerFactory.getLogger(DaemonService.class);
     @Override
     public void initialize() {
-        System.out.println("DAEMON SERVICE INITIALIZED!");
+        log.info("DAEMON SERVICE INITIALIZED!");
     }
 
     @Override
     public void destroy() {
-        System.out.println("DAEMON SERVICE DESTROYED!");
+        log.info("DAEMON SERVICE DESTROYED!");
     }
 }

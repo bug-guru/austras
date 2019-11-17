@@ -7,6 +7,8 @@ import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.provider.Provider;
 import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
@@ -15,11 +17,10 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class BaseProviderGenerator implements ProviderGenerator {
-    private static final Logger log = Logger.getLogger(BaseProviderGenerator.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(BaseProviderGenerator.class);
     protected final ProcessingEnvironment processingEnv;
     protected final ComponentModel componentModel;
     protected final List<Dependency> providerDependencies;
@@ -43,7 +44,7 @@ public abstract class BaseProviderGenerator implements ProviderGenerator {
     }
 
     public final void generateProvider() {
-        log.fine(() -> String.format("Generating provider %s for component %s", providerQualifiedName, componentModel));
+        log.debug("Generating provider {} for component {}", providerQualifiedName, componentModel);
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(providerQualifiedName);
             try (var oos = sourceFile.openOutputStream();

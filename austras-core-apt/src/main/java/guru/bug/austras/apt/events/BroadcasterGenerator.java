@@ -4,6 +4,7 @@ import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.engine.ProcessingContext;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,7 +19,7 @@ public class BroadcasterGenerator extends JavaGenerator {
     private final ModelUtils modelUtils;
     private MessageBroadcasterModel messageBroadcasterModel;
 
-    public BroadcasterGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException {
+    public BroadcasterGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
         this.modelUtils = modelUtils;
@@ -48,7 +49,7 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     @FromTemplate("QUALIFIERS")
     public String qualifiers() {
-        return modelUtils.qualifierToString(messageBroadcasterModel.getQualifier());
+        return ModelUtils.qualifierToString(messageBroadcasterModel.getQualifier());
     }
 
     private MessageBroadcasterModel createModel(VariableElement e) {

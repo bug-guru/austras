@@ -8,6 +8,7 @@ import guru.bug.austras.apt.model.DependencyModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.engine.ProcessingContext;
 import guru.bug.austras.events.Dispatcher;
 import guru.bug.austras.provider.Provider;
@@ -30,7 +31,7 @@ public class DispatcherGenerator extends JavaGenerator {
     private DependencyModel currentDependency;
     private String optionalComma;
 
-    public DispatcherGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException {
+    public DispatcherGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
         this.modelUtils = modelUtils;
@@ -118,7 +119,7 @@ public class DispatcherGenerator extends JavaGenerator {
 
     @FromTemplate("QUALIFIERS")
     public String qualifiers() {
-        return modelUtils.qualifierToString(dispatcherModel.getQualifier());
+        return ModelUtils.qualifierToString(dispatcherModel.getQualifier());
     }
 
 
@@ -160,7 +161,7 @@ public class DispatcherGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        return modelUtils.qualifierToString(currentDependency.getQualifiers());
+        return ModelUtils.qualifierToString(currentDependency.getQualifiers());
     }
 
     @FromTemplate("TARGET_PROVIDER_NAME")

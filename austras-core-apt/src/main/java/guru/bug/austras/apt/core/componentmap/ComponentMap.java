@@ -3,18 +3,17 @@ package guru.bug.austras.apt.core.componentmap;
 import guru.bug.austras.apt.model.ComponentModel;
 import guru.bug.austras.apt.model.ModuleModel;
 import guru.bug.austras.apt.model.ModuleModelSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
-
 public class ComponentMap {
-    private static final Logger log = Logger.getLogger(ComponentMap.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ComponentMap.class);
     private final Map<ComponentKey, HashSet<ComponentModel>> index = new HashMap<>();
     private final ModuleModel model = new ModuleModel();
     private final List<ComponentModel> imported = new ArrayList<>();
@@ -24,7 +23,7 @@ public class ComponentMap {
     }
 
     public void addComponent(ComponentModel componentModel) {
-        log.fine(() -> format("Indexing component %s", componentModel.getInstantiable()));
+        log.debug("Indexing component {}", componentModel.getInstantiable());
         if (componentModel.isImported()) {
             imported.add(componentModel);
         } else {
@@ -33,7 +32,7 @@ public class ComponentMap {
         var qualifiers = componentModel.getQualifiers();
         for (var a : componentModel.getTypes()) {
             var key = new ComponentKey(a, qualifiers);
-            log.finer(() -> format("--- key %s", key));
+            log.debug("--- key {}", key);
             put(key, componentModel);
         }
     }

@@ -8,6 +8,8 @@ import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
 import guru.bug.austras.provider.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
@@ -21,14 +23,13 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
 import javax.lang.model.util.Types;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
-    private static final Logger log = Logger.getLogger(ModelUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ModelUtils.class);
     private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
         @Override
         protected String defaultAction(Object o, Void aVoid) {
@@ -68,7 +69,7 @@ public class ModelUtils {
                 .map(TypeMirror::toString)
                 .collect(Collectors.toList());
         ancestors.add(type.toString());
-        log.fine(() -> String.format("All superclasses and interfaces: %s", ancestors));
+        log.debug("All superclasses and interfaces: {}", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
         var model = new ComponentModel();
@@ -139,26 +140,26 @@ public class ModelUtils {
         var toCheck = new LinkedList<TypeMirror>(typeUtils.directSupertypes(componentType));
         while (!toCheck.isEmpty()) {
             var cur = toCheck.remove();
-            log.fine(() -> String.format("Checking %s", cur));
+            log.debug("Checking {}", cur);
             if (checked.contains(cur)) {
-                log.fine("Already checked");
+                log.debug("Already checked");
                 continue;
             }
             checked.add(cur);
             if (cur.getKind() != TypeKind.DECLARED) {
-                log.fine(() -> String.format("%s is not a declared type", cur));
+                log.debug("{} is not a declared type", cur);
                 continue;
             }
             var curType = ((DeclaredType) cur);
             var curElem = curType.asElement();
             if (curElem.getKind() != ElementKind.CLASS && curElem.getKind() != ElementKind.INTERFACE) {
-                log.fine(() -> String.format("%s is not an interface or class", curElem));
+                log.debug("{} is not an interface or class", curElem);
                 continue;
             }
             var curDeclElem = (TypeElement) curElem;
             result.add(curType);
             var supertypes = typeUtils.directSupertypes(curType);
-            log.fine(() -> String.format("adding supertypes to check-queue: %s", supertypes));
+            log.debug("adding supertypes to check-queue: {}", supertypes);
             toCheck.addAll(supertypes);
         }
         return result;
@@ -205,7 +206,7 @@ public class ModelUtils {
                 return (DeclaredType) t.getExtendsBound();
             }
         }, null);
-        log.fine(() -> String.format("Wrapper %s wraps component: %s", wrapperType, componentType));
+        log.debug("Wrapper {} wraps component: {}", wrapperType, componentType);
         return componentType;
     }
 
@@ -253,7 +254,6 @@ public class ModelUtils {
     }
 
     public DependencyModel createDependencyModel(VariableElement paramElement) {
-
         var paramType = (DeclaredType) paramElement.asType();
         var varName = paramElement.getSimpleName().toString();
         return createDependencyModel(varName, paramType, paramElement);
@@ -275,7 +275,7 @@ public class ModelUtils {
         return isProvider(element.asType());
     }
 
-    public String qualifierToString(QualifierModel qualifierModel) {
+    public static String qualifierToString(QualifierModel qualifierModel) {
         var result = new StringBuilder(512);
         qualifierModel.forEach((qualifierName, properties) -> {
             result.append("@")

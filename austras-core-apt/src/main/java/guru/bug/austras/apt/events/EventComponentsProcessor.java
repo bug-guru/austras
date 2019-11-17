@@ -2,19 +2,20 @@ package guru.bug.austras.apt.events;
 
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.componentmap.UniqueNameGenerator;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.engine.AustrasProcessorPlugin;
 import guru.bug.austras.engine.ProcessingContext;
 import guru.bug.austras.events.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.*;
 import javax.lang.model.util.SimpleElementVisitor9;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EventComponentsProcessor implements AustrasProcessorPlugin {
-    private static final Logger log = Logger.getLogger(EventComponentsProcessor.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessor.class);
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
     private ModelUtils modelUtils;
     private UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
@@ -27,7 +28,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
         try {
             dispatcherGenerator = new DispatcherGenerator(ctx, modelUtils);
             broadcasterGenerator = new BroadcasterGenerator(ctx, modelUtils);
-        } catch (IOException e) {
+        } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
         ctx.roundEnv().getElementsAnnotatedWith(Message.class)
@@ -79,7 +80,7 @@ public class EventComponentsProcessor implements AustrasProcessorPlugin {
 
     private void logError(ProcessingContext ctx, Element e, String reason, Throwable t) {
         String msg = "Cannot process " + e + (reason == null ? "" : ": " + reason);
-        log.log(Level.SEVERE, msg, t);
+        log.error(msg, t);
         ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
 

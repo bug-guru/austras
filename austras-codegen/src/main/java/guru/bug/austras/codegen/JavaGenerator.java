@@ -10,12 +10,27 @@ public abstract class JavaGenerator extends Generator {
     private final Map<String, ImportLine> imports = new HashMap<>();
     private final Filer filer;
 
-    protected JavaGenerator(Filer filer) throws IOException {
+    protected JavaGenerator(Filer filer) throws IOException, TemplateException {
         super();
         this.filer = filer;
     }
 
-    protected final String tryImport(String qualifiedName) {
+    protected final String tryImport(String typeName) {
+        var tpFirstIdx = typeName.indexOf('<');
+        if (tpFirstIdx == -1) {
+            return tryImport0(typeName);
+        } else {
+            var type = tryImport0(typeName.substring(0, tpFirstIdx));
+            var tpLastIdx = typeName.lastIndexOf('>');
+            if (tpLastIdx == -1) {
+                throw new IllegalArgumentException("wrong type " + typeName);
+            }
+            var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx));
+            return type + "<" + param + ">";
+        }
+    }
+
+    private String tryImport0(String qualifiedName) {
         var idx = qualifiedName.lastIndexOf(".");
         var pkg = qualifiedName.substring(0, idx);
         var cls = qualifiedName.substring(idx + 1);

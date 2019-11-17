@@ -1,12 +1,12 @@
 package guru.bug.austras.test.services;
 
 import guru.bug.austras.startup.StartupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ForegroundService implements StartupService, Runnable {
-    private static final Logger log = Logger.getLogger(ForegroundService.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ForegroundService.class);
     private final Thread thread = new Thread(this);
     private volatile boolean interrupt = false;
 
@@ -24,7 +24,7 @@ public class ForegroundService implements StartupService, Runnable {
         try {
             thread.join();
         } catch (InterruptedException e) {
-            log.log(Level.WARNING, "Stopping service unsuccessful", e);
+            log.warn("Stopping service unsuccessful", e);
         }
         log.info("Foreground service is stopped");
     }
@@ -36,7 +36,7 @@ public class ForegroundService implements StartupService, Runnable {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.warn("interrupted", e);
             }
         }
     }

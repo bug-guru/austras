@@ -8,20 +8,22 @@ import guru.bug.austras.apt.model.ProviderModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.startup.StartupServicesStarter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
 @FromTemplate("Main.java.txt")
 public class MainClassGenerator extends JavaGenerator {
-    private static final Logger log = Logger.getLogger(MainClassGenerator.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
     private ComponentMap componentMap;
     private String qualifiedClassName;
     private String simpleClassName;
@@ -33,7 +35,7 @@ public class MainClassGenerator extends JavaGenerator {
     private boolean hasMoreDependencies;
     private List<ComponentModel> sortedComponents;
 
-    public MainClassGenerator(Filer filer) throws IOException {
+    public MainClassGenerator(Filer filer) throws IOException, TemplateException {
         super(filer);
     }
 
@@ -222,7 +224,7 @@ public class MainClassGenerator extends JavaGenerator {
 
     public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) throws IOException {
         if (appMainComponent == null) {
-            log.fine("No application component");
+            log.debug("No application component");
             return;
         }
         this.componentMap = componentMap;

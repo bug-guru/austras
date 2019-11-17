@@ -3,6 +3,7 @@ package guru.bug.austras.convert.apt;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.engine.ProcessingContext;
 
@@ -32,7 +33,7 @@ public class JsonConverterGenerator extends JavaGenerator {
     private String targetQualifiedName;
     private Property currentProperty;
 
-    public JsonConverterGenerator(ProcessingContext ctx) throws IOException {
+    public JsonConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
     }

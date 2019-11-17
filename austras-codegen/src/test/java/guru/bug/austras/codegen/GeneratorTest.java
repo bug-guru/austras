@@ -12,7 +12,7 @@ public class GeneratorTest extends Generator {
     private int externalVar;
     private int internalVar;
 
-    public GeneratorTest() throws IOException {
+    public GeneratorTest() throws IOException, TemplateException {
         super();
     }
 

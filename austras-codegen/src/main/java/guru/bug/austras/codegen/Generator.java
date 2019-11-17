@@ -14,7 +14,7 @@ public abstract class Generator {
     private final BlockWithBody content;
     private final HashMap<String, Caller> callers = new HashMap<>();
 
-    protected Generator() throws IOException {
+    protected Generator() throws IOException, TemplateException {
         collectCallers();
         this.content = createContentBlock();
     }
@@ -34,8 +34,11 @@ public abstract class Generator {
         writer.write(outputContent);
     }
 
-    private BlockWithBody createContentBlock() throws IOException {
+    private BlockWithBody createContentBlock() throws IOException, TemplateException {
         var fromTemplate = getClass().getAnnotation(FromTemplate.class);
+        if (fromTemplate == null) {
+            throw new TemplateException("Annotation @FromTemplate not found on class " + getClass().getName());
+        }
         var resourceName = fromTemplate.value();
         var strContent = readContent(resourceName);
         TemplateTokenizer tokenizer = new TemplateTokenizer();
@@ -123,12 +126,16 @@ public abstract class Generator {
         }
     }
 
-    private String readContent(String resourceName) throws IOException {
-        try (var is = getClass().getResourceAsStream(resourceName);
-             var reader = new InputStreamReader(is)) {
-            var writer = new StringWriter(2048);
-            reader.transferTo(writer);
-            return writer.toString();
+    private String readContent(String resourceName) throws IOException, TemplateException {
+        try (var is = getClass().getResourceAsStream(resourceName)) {
+            if (is == null) {
+                throw new TemplateException(resourceName + " not found for " + getClass().getName());
+            }
+            try (var reader = new InputStreamReader(is)) {
+                var writer = new StringWriter(2048);
+                reader.transferTo(writer);
+                return writer.toString();
+            }
         }
     }
 

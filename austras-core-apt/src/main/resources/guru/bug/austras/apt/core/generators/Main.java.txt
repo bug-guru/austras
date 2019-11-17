@@ -1,7 +1,8 @@
 package $PACKAGE_NAME$;
 
 #IMPORTS#
-java.util.logging.Logger
+org.slf4j.Logger
+org.slf4j.LoggerFactory
 guru.bug.austras.provider.Provider
 java.util.Collection
 guru.bug.austras.provider.CollectionProvider
@@ -10,13 +11,13 @@ guru.bug.austras.startup.StartupServicesStarter
 #END#
 
 public class $SIMPLE_CLASS_NAME$ {
-    public static final Logger LOGGER = Logger.getLogger("$QUALIFIED_CLASS_NAME$");
+    public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
 
     public static void main(String[] args) {
         LOGGER.info("Application is initializing...");
         #COMPONENTS#
 
-        LOGGER.config("Initializing provider for $COMPONENT_NAME$");
+        LOGGER.info("Initializing provider for $COMPONENT_NAME$");
         #WITH_DEPENDENCIES#
         var $COMPONENT_PROVIDER_VAR$ = new $COMPONENT_PROVIDER_CLASS$(
             #COMPONENT_PROVIDER_DEPENDENCIES#
