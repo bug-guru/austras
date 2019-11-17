@@ -58,7 +58,7 @@
                     </annotationProcessorPaths>
                     <annotationProcessors>
                         <processor>guru.bug.austras.web.apt.RestServicesProcessor</processor>
-                        <processor>guru.bug.austras.engine.AustrasAnnotationProcessor</processor>
+                        <processor>guru.bug.austras.apt.core.engine.AustrasAnnotationProcessor</processor>
                     </annotationProcessors>
                 </configuration>
             </plugin>

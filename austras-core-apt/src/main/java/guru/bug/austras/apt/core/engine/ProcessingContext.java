@@ -1,4 +1,4 @@
-package guru.bug.austras.engine;
+package guru.bug.austras.apt.core.engine;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -9,5 +9,4 @@ public interface ProcessingContext {
     RoundEnvironment roundEnv();
 
     ComponentManager componentManager();
-
 }

@@ -1,11 +1,11 @@
 package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.ModelUtils;
+import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.engine.ProcessingContext;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.VariableElement;

@@ -1305,6 +1305,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/engine/ProcessingContext.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/BaseProviderGenerator.java">
           <value>
             <set />
@@ -1567,6 +1572,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/BroadcasterGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/DispatcherGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/EventComponentsProcessor.java">
           <value>
             <set />
@@ -1607,6 +1622,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/engine/ProcessingContext.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/META-INF/services/javax.annotation.processing.Processor">
           <value>
             <set />
           </value>

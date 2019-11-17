@@ -1,6 +1,7 @@
 package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.ModelUtils;
+import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.events.model.CallParamModel;
 import guru.bug.austras.apt.events.model.MessageCallParamModel;
@@ -9,7 +10,6 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.engine.ProcessingContext;
 import guru.bug.austras.events.Dispatcher;
 import guru.bug.austras.provider.Provider;
 import org.apache.commons.lang3.StringUtils;

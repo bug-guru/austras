@@ -1,4 +1,4 @@
-package guru.bug.austras.engine;
+package guru.bug.austras.apt.core.engine;
 
 import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
