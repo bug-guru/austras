@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.PARAMETER, ElementType.METHOD})
-@Qualifier(name = Dispatcher.MESSAGE_QUALIFIER_NAME)
+@Qualifier(name = "austras.message")
 public @interface Message {
 }

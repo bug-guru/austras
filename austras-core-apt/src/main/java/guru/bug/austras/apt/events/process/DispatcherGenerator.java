@@ -10,7 +10,6 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.events.Dispatcher;
 import guru.bug.austras.provider.Provider;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 
 @FromTemplate("Dispatcher.java.txt")
 public class DispatcherGenerator extends JavaGenerator {
+    private static final String MESSAGE_QUALIFIER_NAME = "austras.message";
     private final ProcessingContext ctx;
     private final ModelUtils modelUtils;
     private MessageDispatcherModel dispatcherModel;
@@ -61,7 +61,7 @@ public class DispatcherGenerator extends JavaGenerator {
             var paramQualifiers = modelUtils.extractQualifiers(p);
             if (messageParamElement == null
                     && !modelUtils.isBroadcaster(p.asType())
-                    && paramQualifiers.contains(Dispatcher.MESSAGE_QUALIFIER_NAME)) {
+                    && paramQualifiers.contains(MESSAGE_QUALIFIER_NAME)) {
                 dispatcherModel.setQualifiers(paramQualifiers);
                 messageParamElement = p;
                 var d = new MessageCallParamModel();

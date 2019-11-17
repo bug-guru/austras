@@ -12,5 +12,6 @@ public class ComponentCImpl implements ComponentC {
 
     @Override
     public void doSomething() {
+
     }
 }

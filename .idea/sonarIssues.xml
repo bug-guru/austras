@@ -63,9 +63,161 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/Generator.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5LWLNuwUjKJIvv" />
+                <option name="line" value="239" />
+                <option name="message" value="Refactor the code to remove this label and the need for it." />
+                <option name="ruleKey" value="squid:LabelsShouldNotBeUsedCheck" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5LWLNuwUjKJIvu" />
+                <option name="line" value="238" />
+                <option name="message" value="Replace the type specification in this constructor call with the diamond operator (&quot;&lt;&gt;&quot;)." />
+                <option name="ruleKey" value="squid:S2293" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5LWLNuwUjKJIvw" />
+                <option name="line" value="142" />
+                <option name="message" value="Move this method into &quot;BlockWithBody&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5LWLNuwUjKJIvt" />
+                <option name="line" value="71" />
+                <option name="message" value="This branch's code block is the same as the block for the branch on line 68." />
+                <option name="ruleKey" value="squid:S1871" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5KWLNuwUjKJIvq" />
+                <option name="line" value="59" />
+                <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
+                <option name="ruleKey" value="squid:S135" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5KWLNuwUjKJIvr" />
+                <option name="line" value="102" />
+                <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
+                <option name="ruleKey" value="squid:S135" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5LWLNuwUjKJIvs" />
+                <option name="line" value="53" />
+                <option name="message" value="Refactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed." />
+                <option name="ruleKey" value="squid:S3776" />
+                <option name="severity" value="CRITICAL" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/JavaGenerator.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4FWLNuwUjKJIvl" />
+                <option name="line" value="64" />
+                <option name="message" value="This block of commented-out lines of code should be removed." />
+                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4FWLNuwUjKJIvj" />
+                <option name="line" value="52" />
+                <option name="message" value="Put single-quotes around '.' to use the faster &quot;lastIndexOf(char)&quot; method." />
+                <option name="ruleKey" value="squid:S3027" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4FWLNuwUjKJIvi" />
+                <option name="line" value="34" />
+                <option name="message" value="Put single-quotes around '.' to use the faster &quot;lastIndexOf(char)&quot; method." />
+                <option name="ruleKey" value="squid:S3027" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4FWLNuwUjKJIvk" />
+                <option name="line" value="107" />
+                <option name="message" value="Override &quot;equals(Object obj)&quot; to comply with the contract of the &quot;compareTo(T o)&quot; method." />
+                <option name="ruleKey" value="squid:S1210" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/NewLineTokenProcessor.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj5lWLNuwUjKJIvx" />
+                <option name="line" value="8" />
+                <option name="message" value="Replace this &quot;switch&quot; statement by &quot;if&quot; statements to increase readability." />
+                <option name="ruleKey" value="squid:S1301" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/Printable.java">
           <value>
             <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/Tokenizer.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4qWLNuwUjKJIvp" />
+                <option name="line" value="50" />
+                <option name="message" value="End this switch case with an unconditional break, return or throw statement." />
+                <option name="ruleKey" value="squid:S128" />
+                <option name="severity" value="BLOCKER" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4qWLNuwUjKJIvn" />
+                <option name="line" value="43" />
+                <option name="message" value="Refactor the code to remove this label and the need for it." />
+                <option name="ruleKey" value="squid:LabelsShouldNotBeUsedCheck" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4qWLNuwUjKJIvo" />
+                <option name="line" value="63" />
+                <option name="message" value="End this switch case with an unconditional break, return or throw statement." />
+                <option name="ruleKey" value="squid:S128" />
+                <option name="severity" value="BLOCKER" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Vj4qWLNuwUjKJIvm" />
+                <option name="line" value="14" />
+                <option name="message" value="Refactor this method to reduce its Cognitive Complexity from 55 to the 15 allowed." />
+                <option name="ruleKey" value="squid:S3776" />
+                <option name="severity" value="CRITICAL" />
+              </SonarIssue>
+            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/common/TypeVarName.java">
@@ -811,43 +963,81 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaEIAvOYQK1-KGB_" />
-                <option name="line" value="83" />
-                <option name="message" value="Use the built-in formatting to construct this argument." />
-                <option name="ruleKey" value="squid:S2629" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaEIAvOYQK1-KGCD" />
-                <option name="line" value="19" />
+                <option name="key" value="AW57VkJ2WLNuwUjKJIxE" />
+                <option name="line" value="21" />
                 <option name="message" value="Remove this unused &quot;typeUtils&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaEIAvOYQK1-KGCA" />
-                <option name="line" value="87" />
-                <option name="message" value="Use the built-in formatting to construct this argument." />
-                <option name="ruleKey" value="squid:S2629" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaEIAvOYQK1-KGCC" />
-                <option name="line" value="82" />
+                <option name="key" value="AW57VkJ1WLNuwUjKJIxB" />
+                <option name="line" value="88" />
                 <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
                 <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
                 <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaEIAvOYQK1-KGCB" />
-                <option name="line" value="78" />
+                <option name="key" value="AW57VkJ1WLNuwUjKJIxA" />
+                <option name="line" value="84" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkJ2WLNuwUjKJIxD" />
+                <option name="line" value="93" />
+                <option name="message" value="Format specifiers should be used instead of string concatenation." />
+                <option name="ruleKey" value="squid:S3457" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkJ1WLNuwUjKJIw_" />
+                <option name="line" value="93" />
+                <option name="message" value="Use the built-in formatting to construct this argument." />
+                <option name="ruleKey" value="squid:S2629" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkJ2WLNuwUjKJIxC" />
+                <option name="line" value="89" />
+                <option name="message" value="Format specifiers should be used instead of string concatenation." />
+                <option name="ruleKey" value="squid:S3457" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkJ1WLNuwUjKJIw-" />
+                <option name="line" value="89" />
+                <option name="message" value="Use the built-in formatting to construct this argument." />
+                <option name="ruleKey" value="squid:S2629" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/java/guru/bug/austras/convert/apt/JsonConverterGenerator.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkKOWLNuwUjKJIxF" />
+                <option name="line" value="194" />
+                <option name="message" value="This class has 6 parents which is greater than 5 authorized." />
+                <option name="ruleKey" value="squid:MaximumInheritanceDepth" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkKOWLNuwUjKJIxG" />
+                <option name="line" value="134" />
+                <option name="message" value="Remove this unused method parameter &quot;ctx&quot;." />
+                <option name="ruleKey" value="squid:S1172" />
+                <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
           </value>
@@ -862,7 +1052,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZX-AvOYQK1-KF_G" />
+                <option name="key" value="AW57VjprWLNuwUjKJIu5" />
                 <option name="line" value="11" />
                 <option name="message" value="Replace the type specification in this constructor call with the diamond operator (&quot;&lt;&gt;&quot;)." />
                 <option name="ruleKey" value="squid:S2293" />
@@ -876,7 +1066,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZcKAvOYQK1-KF_H" />
+                <option name="key" value="AW57Vjx7WLNuwUjKJIu7" />
                 <option name="line" value="18" />
                 <option name="message" value="Null is returned but a &quot;Boolean&quot; is expected." />
                 <option name="ruleKey" value="squid:S2447" />
@@ -890,7 +1080,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZc_AvOYQK1-KF_I" />
+                <option name="key" value="AW57VjxcWLNuwUjKJIu6" />
                 <option name="line" value="6" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -904,7 +1094,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_u" />
+                <option name="key" value="AW57Vj3DWLNuwUjKJIvg" />
                 <option name="line" value="150" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -912,7 +1102,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_t" />
+                <option name="key" value="AW57Vj3DWLNuwUjKJIvf" />
                 <option name="line" value="146" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -920,7 +1110,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_s" />
+                <option name="key" value="AW57Vj3DWLNuwUjKJIve" />
                 <option name="line" value="132" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -928,7 +1118,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_r" />
+                <option name="key" value="AW57Vj3DWLNuwUjKJIvd" />
                 <option name="line" value="127" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -936,7 +1126,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_q" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvc" />
                 <option name="line" value="122" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -944,7 +1134,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_p" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvb" />
                 <option name="line" value="117" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -952,7 +1142,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_o" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIva" />
                 <option name="line" value="113" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -960,7 +1150,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_n" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvZ" />
                 <option name="line" value="108" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -968,7 +1158,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_m" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvY" />
                 <option name="line" value="103" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -976,7 +1166,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_l" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvX" />
                 <option name="line" value="98" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -984,7 +1174,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_k" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvW" />
                 <option name="line" value="93" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -992,7 +1182,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_j" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvV" />
                 <option name="line" value="89" />
                 <option name="message" value="Extract the assignment out of this expression." />
                 <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
@@ -1000,7 +1190,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_i" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvU" />
                 <option name="line" value="35" />
                 <option name="message" value="Define a constant instead of duplicating this literal &quot;. Expected tokens: [&quot; 3 times." />
                 <option name="ruleKey" value="squid:S1192" />
@@ -1008,7 +1198,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZiMAvOYQK1-KF_h" />
+                <option name="key" value="AW57Vj3CWLNuwUjKJIvT" />
                 <option name="line" value="35" />
                 <option name="message" value="Define a constant instead of duplicating this literal &quot;Unexpected token &quot; 4 times." />
                 <option name="ruleKey" value="squid:S1192" />
@@ -1022,7 +1212,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZh8AvOYQK1-KF_f" />
+                <option name="key" value="AW57Vj2IWLNuwUjKJIvQ" />
                 <option name="line" value="332" />
                 <option name="message" value="Define a constant instead of duplicating this literal &quot;Char was expecting&quot; 3 times." />
                 <option name="ruleKey" value="squid:S1192" />
@@ -1030,7 +1220,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZh8AvOYQK1-KF_g" />
+                <option name="key" value="AW57Vj2JWLNuwUjKJIvR" />
                 <option name="line" value="32" />
                 <option name="message" value="Null is returned but a &quot;Boolean&quot; is expected." />
                 <option name="ruleKey" value="squid:S2447" />
@@ -1044,7 +1234,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZgnAvOYQK1-KF_b" />
+                <option name="key" value="AW57Vj2iWLNuwUjKJIvS" />
                 <option name="line" value="26" />
                 <option name="message" value="Define a constant instead of duplicating this literal &quot;Number expected&quot; 3 times." />
                 <option name="ruleKey" value="squid:S1192" />
@@ -1058,7 +1248,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZhdAvOYQK1-KF_e" />
+                <option name="key" value="AW57Vj1cWLNuwUjKJIvP" />
                 <option name="line" value="6" />
                 <option name="message" value="Make &quot;position&quot; transient or serializable." />
                 <option name="ruleKey" value="squid:S1948" />
@@ -1066,7 +1256,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZhdAvOYQK1-KF_d" />
+                <option name="key" value="AW57Vj1cWLNuwUjKJIvO" />
                 <option name="line" value="5" />
                 <option name="message" value="This class has 6 parents which is greater than 5 authorized." />
                 <option name="ruleKey" value="squid:MaximumInheritanceDepth" />
@@ -1080,7 +1270,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZg3AvOYQK1-KF_c" />
+                <option name="key" value="AW57Vj3lWLNuwUjKJIvh" />
                 <option name="line" value="28" />
                 <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
                 <option name="ruleKey" value="squid:S135" />
@@ -1094,7 +1284,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_Z" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvK" />
                 <option name="line" value="387" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1102,7 +1292,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_Y" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvJ" />
                 <option name="line" value="382" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1110,7 +1300,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_X" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvI" />
                 <option name="line" value="377" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1118,7 +1308,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_W" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvH" />
                 <option name="line" value="372" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1126,7 +1316,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_V" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvG" />
                 <option name="line" value="367" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1134,7 +1324,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_U" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvF" />
                 <option name="line" value="362" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1142,7 +1332,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_T" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvE" />
                 <option name="line" value="357" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1150,7 +1340,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_S" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvD" />
                 <option name="line" value="98" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1158,7 +1348,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_R" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvC" />
                 <option name="line" value="93" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1166,7 +1356,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_Q" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvB" />
                 <option name="line" value="88" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1174,7 +1364,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_P" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvA" />
                 <option name="line" value="83" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1182,7 +1372,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_O" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIu_" />
                 <option name="line" value="78" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1190,7 +1380,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_N" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIu-" />
                 <option name="line" value="73" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1198,7 +1388,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_M" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIu9" />
                 <option name="line" value="68" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1206,7 +1396,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_L" />
+                <option name="key" value="AW57VjzGWLNuwUjKJIu8" />
                 <option name="line" value="63" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1214,7 +1404,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZfTAvOYQK1-KF_a" />
+                <option name="key" value="AW57VjzHWLNuwUjKJIvL" />
                 <option name="line" value="56" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -1228,7 +1418,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZeOAvOYQK1-KF_J" />
+                <option name="key" value="AW57Vj0GWLNuwUjKJIvM" />
                 <option name="line" value="0" />
                 <option name="message" value="2 duplicated blocks of code must be removed." />
                 <option name="ruleKey" value="common-java:DuplicatedBlocks" />
@@ -1242,7 +1432,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZekAvOYQK1-KF_K" />
+                <option name="key" value="AW57Vj0kWLNuwUjKJIvN" />
                 <option name="line" value="362" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -1286,67 +1476,67 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBt" />
-                <option name="line" value="196" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwk" />
+                <option name="line" value="158" />
                 <option name="message" value="Remove this unused &quot;curDeclElem&quot; local variable." />
                 <option name="ruleKey" value="squid:S1481" />
                 <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBs" />
-                <option name="line" value="196" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwj" />
+                <option name="line" value="158" />
                 <option name="message" value="Remove this useless assignment to local variable &quot;curDeclElem&quot;." />
                 <option name="ruleKey" value="squid:S1854" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBn" />
-                <option name="line" value="178" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwf" />
+                <option name="line" value="140" />
                 <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
                 <option name="ruleKey" value="squid:S135" />
                 <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBu" />
-                <option name="line" value="170" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwl" />
+                <option name="line" value="132" />
                 <option name="message" value="Remove this unused private &quot;collectAllAncestor&quot; method." />
                 <option name="ruleKey" value="squid:UnusedPrivateMethod" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBr" />
-                <option name="line" value="40" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwm" />
+                <option name="line" value="41" />
+                <option name="message" value="Remove this unused &quot;processingEnv&quot; private field." />
+                <option name="ruleKey" value="squid:S1068" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwi" />
+                <option name="line" value="32" />
                 <option name="message" value="Reorder the modifiers to comply with the Java Language Specification." />
                 <option name="ruleKey" value="squid:ModifiersOrderCheck" />
                 <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBp" />
-                <option name="line" value="40" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwg" />
+                <option name="line" value="32" />
                 <option name="message" value="This class has 6 parents which is greater than 5 authorized." />
                 <option name="ruleKey" value="squid:MaximumInheritanceDepth" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBq" />
-                <option name="line" value="235" />
+                <option name="key" value="AW57VkGSWLNuwUjKJIwh" />
+                <option name="line" value="197" />
                 <option name="message" value="This class has 7 parents which is greater than 5 authorized." />
                 <option name="ruleKey" value="squid:MaximumInheritanceDepth" />
                 <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ_rAvOYQK1-KGBo" />
-                <option name="line" value="297" />
-                <option name="message" value="Immediately return this expression instead of assigning it to the temporary variable &quot;result&quot;." />
-                <option name="ruleKey" value="squid:S1488" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -1359,6 +1549,52 @@
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/componentmap/UniqueNameGenerator.java">
           <value>
             <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/engine/AustrasAnnotationProcessor.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
+                <option name="line" value="232" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwa" />
+                <option name="line" value="138" />
+                <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
+                <option name="ruleKey" value="squid:S135" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
+                <option name="line" value="95" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwd" />
+                <option name="line" value="124" />
+                <option name="message" value="Either log this exception and handle it, or rethrow it with some contextual information." />
+                <option name="ruleKey" value="squid:S2139" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwb" />
+                <option name="line" value="93" />
+                <option name="message" value="Either log this exception and handle it, or rethrow it with some contextual information." />
+                <option name="ruleKey" value="squid:S2139" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/generators/BaseProviderGenerator.java">
@@ -1568,6 +1804,50 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/model/ComponentModel.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkE4WLNuwUjKJIwW" />
+                <option name="line" value="62" />
+                <option name="message" value="Override &quot;equals(Object obj)&quot; to comply with the contract of the &quot;compareTo(T o)&quot; method." />
+                <option name="ruleKey" value="squid:S1210" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/MainClassGenerator.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFTWLNuwUjKJIwZ" />
+                <option name="line" value="174" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFTWLNuwUjKJIwY" />
+                <option name="line" value="170" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkFTWLNuwUjKJIwX" />
+                <option name="line" value="29" />
+                <option name="message" value="Remove the &quot;starterKey&quot; field and declare it as a local variable in the relevant methods." />
+                <option name="ruleKey" value="squid:S1450" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/BroadcasterGenerator.java">
           <value>
             <set />
@@ -1593,9 +1873,133 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/DispatcherGenerator.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkGrWLNuwUjKJIwn" />
+                <option name="line" value="102" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57Xd0_WLNuwUjKJLRD" />
+                <option name="line" value="13" />
+                <option name="message" value="Remove this unused import 'guru.bug.austras.events.Dispatcher'." />
+                <option name="ruleKey" value="squid:UselessImportCheck" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/EventComponentsProcessor.java">
           <value>
             <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/EventComponentsProcessorPlugin.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIww" />
+                <option name="line" value="59" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwt" />
+                <option name="line" value="124" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwo" />
+                <option name="line" value="107" />
+                <option name="message" value="This class has 6 parents which is greater than 5 authorized." />
+                <option name="ruleKey" value="squid:MaximumInheritanceDepth" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIws" />
+                <option name="line" value="103" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwr" />
+                <option name="line" value="91" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwz" />
+                <option name="line" value="87" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwu" />
+                <option name="line" value="73" />
+                <option name="message" value="Remove this unused private &quot;logError&quot; method." />
+                <option name="ruleKey" value="squid:UnusedPrivateMethod" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwx" />
+                <option name="line" value="69" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
+                <option name="line" value="52" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwv" />
+                <option name="line" value="38" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwy" />
+                <option name="line" value="95" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
+                <option name="line" value="45" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/model/ComponentModel.java">
@@ -1672,24 +2076,30 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/events/ApplicationEvents.java">
+          <value>
+            <set>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkDVWLNuwUjKJIwS" />
+                <option name="line" value="3" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+            </set>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/events/Broadcaster.java">
           <value>
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaBcAvOYQK1-KGB1" />
-                <option name="line" value="22" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaBcAvOYQK1-KGB0" />
-                <option name="line" value="22" />
-                <option name="message" value="Define and throw a dedicated exception instead of using a generic one." />
-                <option name="ruleKey" value="squid:S00112" />
-                <option name="severity" value="MAJOR" />
+                <option name="key" value="AW57VkDqWLNuwUjKJIwT" />
+                <option name="line" value="14" />
+                <option name="message" value="Remove useless curly braces around statement" />
+                <option name="ruleKey" value="squid:S1602" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -1732,58 +2142,10 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDVAvOYQK1-KGB4" />
-                <option name="line" value="37" />
+                <option name="key" value="AW57VkEcWLNuwUjKJIwV" />
+                <option name="line" value="36" />
                 <option name="message" value="Either log this exception and handle it, or rethrow it with some contextual information." />
                 <option name="ruleKey" value="squid:S2139" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB-" />
-                <option name="line" value="66" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB7" />
-                <option name="line" value="52" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB6" />
-                <option name="line" value="50" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDVAvOYQK1-KGB5" />
-                <option name="line" value="50" />
-                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
-                <option name="ruleKey" value="squid:S3457" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB9" />
-                <option name="line" value="57" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyaDWAvOYQK1-KGB8" />
-                <option name="line" value="57" />
-                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
-                <option name="ruleKey" value="squid:S3457" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
@@ -1794,7 +2156,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZx6AvOYQK1-KGAk" />
+                <option name="key" value="AW57VkARWLNuwUjKJIwI" />
                 <option name="line" value="3" />
                 <option name="message" value="Remove this empty class, write its code or make it an &quot;interface&quot;." />
                 <option name="ruleKey" value="squid:S2094" />
@@ -1808,7 +2170,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZzeAvOYQK1-KGAs" />
+                <option name="key" value="AW57VkB7WLNuwUjKJIwO" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;componentA&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1822,7 +2184,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ0UAvOYQK1-KGAu" />
+                <option name="key" value="AW57Vj-lWLNuwUjKJIwC" />
                 <option name="line" value="14" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1830,7 +2192,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ0UAvOYQK1-KGAw" />
+                <option name="key" value="AW57Vj-lWLNuwUjKJIwE" />
                 <option name="line" value="6" />
                 <option name="message" value="Remove this unused &quot;b&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1838,7 +2200,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ0UAvOYQK1-KGAv" />
+                <option name="key" value="AW57Vj-lWLNuwUjKJIwD" />
                 <option name="line" value="5" />
                 <option name="message" value="Remove this unused &quot;a&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1852,7 +2214,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZyQAvOYQK1-KGAm" />
+                <option name="key" value="AW57VkArWLNuwUjKJIwK" />
                 <option name="line" value="7" />
                 <option name="message" value="Remove this unused &quot;bProvider&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1860,7 +2222,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZyQAvOYQK1-KGAl" />
+                <option name="key" value="AW57VkArWLNuwUjKJIwJ" />
                 <option name="line" value="6" />
                 <option name="message" value="Remove this unused &quot;aProvider&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1874,7 +2236,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZwWAvOYQK1-KGAg" />
+                <option name="key" value="AW57Vj88WLNuwUjKJIv-" />
                 <option name="line" value="5" />
                 <option name="message" value="Remove this unused &quot;a&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1888,7 +2250,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ2hAvOYQK1-KGA1" />
+                <option name="key" value="AW57VkClWLNuwUjKJIwQ" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;c&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1902,7 +2264,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZw8AvOYQK1-KGAi" />
+                <option name="key" value="AW57Vj-JWLNuwUjKJIwB" />
                 <option name="line" value="8" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1916,7 +2278,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ0zAvOYQK1-KGAx" />
+                <option name="key" value="AW57Vj-8WLNuwUjKJIwF" />
                 <option name="line" value="5" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1930,7 +2292,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ1DAvOYQK1-KGAy" />
+                <option name="key" value="AW57Vj_bWLNuwUjKJIwG" />
                 <option name="line" value="7" />
                 <option name="message" value="Remove this unused &quot;t&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1944,7 +2306,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZz1AvOYQK1-KGAt" />
+                <option name="key" value="AW57VkCRWLNuwUjKJIwP" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;t&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -1958,7 +2320,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ14AvOYQK1-KGA0" />
+                <option name="key" value="AW57VkA_WLNuwUjKJIwL" />
                 <option name="line" value="5" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1972,7 +2334,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZwsAvOYQK1-KGAh" />
+                <option name="key" value="AW57Vj9uWLNuwUjKJIwA" />
                 <option name="line" value="5" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -1986,7 +2348,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ29AvOYQK1-KGA2" />
+                <option name="key" value="AW57VkC5WLNuwUjKJIwR" />
                 <option name="line" value="5" />
                 <option name="message" value="Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation." />
                 <option name="ruleKey" value="squid:S1186" />
@@ -2000,19 +2362,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuTAvOYQK1-KGAZ" />
-                <option name="line" value="11" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
+                <option name="key" value="AW57Vj8oWLNuwUjKJIv9" />
+                <option name="line" value="15" />
+                <option name="message" value="Remove these unused method parameters." />
+                <option name="ruleKey" value="squid:S1172" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuTAvOYQK1-KGAY" />
-                <option name="line" value="10" />
-                <option name="message" value="Remove these unused method parameters." />
-                <option name="ruleKey" value="squid:S1172" />
-                <option name="severity" value="MAJOR" />
+                <option name="key" value="AW57Vj8oWLNuwUjKJIv8" />
+                <option name="line" value="15" />
+                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
+                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -2022,47 +2384,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuDAvOYQK1-KGAX" />
-                <option name="line" value="11" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuDAvOYQK1-KGAW" />
-                <option name="line" value="10" />
+                <option name="key" value="AW57Vj8SWLNuwUjKJIv7" />
+                <option name="line" value="15" />
                 <option name="message" value="Remove these unused method parameters." />
                 <option name="ruleKey" value="squid:S1172" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverVoid1Component.java">
-          <value>
-            <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZtOAvOYQK1-KGAU" />
-                <option name="line" value="13" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverVoid2Component.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZtkAvOYQK1-KGAV" />
-                <option name="line" value="12" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
+                <option name="key" value="AW57Vj8SWLNuwUjKJIv6" />
+                <option name="line" value="15" />
+                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
+                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -2072,7 +2406,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZvnAvOYQK1-KGAd" />
+                <option name="key" value="AW57Vj73WLNuwUjKJIv5" />
                 <option name="line" value="3" />
                 <option name="message" value="Remove this empty class, write its code or make it an &quot;interface&quot;." />
                 <option name="ruleKey" value="squid:S2094" />
@@ -2086,7 +2420,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZvCAvOYQK1-KGAb" />
+                <option name="key" value="AW57Vj7BWLNuwUjKJIv2" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;chain0&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2100,7 +2434,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZvXAvOYQK1-KGAc" />
+                <option name="key" value="AW57Vj7TWLNuwUjKJIv3" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;chain1&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2114,7 +2448,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZv3AvOYQK1-KGAe" />
+                <option name="key" value="AW57Vj6eWLNuwUjKJIv0" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;chain2&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2128,7 +2462,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZwGAvOYQK1-KGAf" />
+                <option name="key" value="AW57Vj7kWLNuwUjKJIv4" />
                 <option name="line" value="4" />
                 <option name="message" value="Remove this unused &quot;chain3&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2142,7 +2476,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZuyAvOYQK1-KGAa" />
+                <option name="key" value="AW57Vj6wWLNuwUjKJIv1" />
                 <option name="line" value="7" />
                 <option name="message" value="Remove this unused &quot;chain4&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2156,7 +2490,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZxbAvOYQK1-KGAj" />
+                <option name="key" value="AW57Vj9XWLNuwUjKJIv_" />
                 <option name="line" value="9" />
                 <option name="message" value="Remove this unused &quot;items&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
@@ -2170,32 +2504,10 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ1ZAvOYQK1-KGAz" />
+                <option name="key" value="AW57Vj_2WLNuwUjKJIwH" />
                 <option name="line" value="6" />
                 <option name="message" value="Remove this unused &quot;fakeDtoJsonConverter&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/services/DaemonService.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZywAvOYQK1-KGAo" />
-                <option name="line" value="13" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZywAvOYQK1-KGAn" />
-                <option name="line" value="8" />
-                <option name="message" value="Replace this use of System.out or System.err by a logger." />
-                <option name="ruleKey" value="squid:S106" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
@@ -2206,24 +2518,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZy_AvOYQK1-KGAp" />
-                <option name="line" value="39" />
-                <option name="message" value="Use a logger to log this exception." />
-                <option name="ruleKey" value="squid:S1148" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZy_AvOYQK1-KGAr" />
-                <option name="line" value="38" />
+                <option name="key" value="AW57VkBfWLNuwUjKJIwN" />
+                <option name="line" value="50" />
                 <option name="message" value="Either re-interrupt this method or rethrow the &quot;InterruptedException&quot;." />
                 <option name="ruleKey" value="squid:S2142" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZy_AvOYQK1-KGAq" />
-                <option name="line" value="26" />
+                <option name="key" value="AW57VkBfWLNuwUjKJIwM" />
+                <option name="line" value="37" />
                 <option name="message" value="Either re-interrupt this method or rethrow the &quot;InterruptedException&quot;." />
                 <option name="ruleKey" value="squid:S2142" />
                 <option name="severity" value="MAJOR" />
@@ -2360,7 +2664,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAP" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw5" />
                 <option name="line" value="47" />
                 <option name="message" value="Define and throw a dedicated exception instead of using a generic one." />
                 <option name="ruleKey" value="squid:S00112" />
@@ -2368,7 +2672,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAO" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw4" />
                 <option name="line" value="38" />
                 <option name="message" value="Define and throw a dedicated exception instead of using a generic one." />
                 <option name="ruleKey" value="squid:S00112" />
@@ -2376,7 +2680,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAR" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw7" />
                 <option name="line" value="78" />
                 <option name="message" value="Remove this unused private &quot;findHandler&quot; method." />
                 <option name="ruleKey" value="squid:UnusedPrivateMethod" />
@@ -2384,7 +2688,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAT" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw9" />
                 <option name="line" value="59" />
                 <option name="message" value="This block of commented-out lines of code should be removed." />
                 <option name="ruleKey" value="squid:CommentedOutCodeLine" />
@@ -2392,7 +2696,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAS" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw8" />
                 <option name="line" value="56" />
                 <option name="message" value="This block of commented-out lines of code should be removed." />
                 <option name="ruleKey" value="squid:CommentedOutCodeLine" />
@@ -2400,7 +2704,7 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsuAvOYQK1-KGAQ" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw6" />
                 <option name="line" value="55" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -2414,25 +2718,11 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZsfAvOYQK1-KGAN" />
+                <option name="key" value="AW57VkIvWLNuwUjKJIw3" />
                 <option name="line" value="12" />
                 <option name="message" value="Make sure that using a regular expression is safe here." />
                 <option name="ruleKey" value="squid:S4784" />
                 <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/errors/AustrasHttpException.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZr_AvOYQK1-KGAM" />
-                <option name="line" value="4" />
-                <option name="message" value="Make this &quot;statusCode&quot; field final." />
-                <option name="ruleKey" value="squid:S1165" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -2442,7 +2732,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZrpAvOYQK1-KGAL" />
+                <option name="key" value="AW57VkIUWLNuwUjKJIw2" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -2456,7 +2746,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZrKAvOYQK1-KGAK" />
+                <option name="key" value="AW57VkH_WLNuwUjKJIw1" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -2470,7 +2760,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZq6AvOYQK1-KGAJ" />
+                <option name="key" value="AW57VkHqWLNuwUjKJIw0" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
