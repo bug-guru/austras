@@ -1879,18 +1879,10 @@
               <SonarIssue>
                 <option name="isNew" value="false" />
                 <option name="key" value="AW57VkGrWLNuwUjKJIwn" />
-                <option name="line" value="102" />
+                <option name="line" value="101" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Xd0_WLNuwUjKJLRD" />
-                <option name="line" value="13" />
-                <option name="message" value="Remove this unused import 'guru.bug.austras.events.Dispatcher'." />
-                <option name="ruleKey" value="squid:UselessImportCheck" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
