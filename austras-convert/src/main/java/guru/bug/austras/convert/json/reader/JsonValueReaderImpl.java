@@ -13,6 +13,7 @@ import java.util.stream.StreamSupport;
 import static guru.bug.austras.convert.json.reader.TokenType.*;
 
 public class JsonValueReaderImpl implements JsonValueReader {
+    public static final String CHAR_WAS_EXPECTING = "Char was expecting";
     private final JsonTokenReader tokenReader;
 
     JsonValueReaderImpl(JsonTokenReader tokenReader) {
@@ -29,7 +30,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
     public Boolean readNullableBoolean() {
         var tt = tokenReader.next(TRUE, FALSE, NULL);
         if (tt == NULL) {
-            return null;
+            return null; //NOSONAR reading null from json is OK
         }
         return tt == TRUE;
     }
@@ -329,7 +330,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
         tokenReader.next(STRING);
         var str = tokenReader.getValue();
         if (str.length() > 1) {
-            throw tokenReader.createParsingException("Char was expecting");
+            throw tokenReader.createParsingException(CHAR_WAS_EXPECTING);
         }
         return str.charAt(0);
     }
@@ -341,7 +342,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
         }
         var str = tokenReader.getValue();
         if (str.length() > 1) {
-            throw tokenReader.createParsingException("Char was expecting");
+            throw tokenReader.createParsingException(CHAR_WAS_EXPECTING);
         }
         return str.charAt(0);
     }
@@ -353,7 +354,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
         }
         var str = tokenReader.getValue();
         if (str.length() > 1) {
-            throw tokenReader.createParsingException("Char was expecting");
+            throw tokenReader.createParsingException(CHAR_WAS_EXPECTING);
         }
         return Optional.of(str.charAt(0));
     }

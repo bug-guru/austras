@@ -125,28 +125,6 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/JavaGenerator.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj4FWLNuwUjKJIvk" />
-                <option name="line" value="126" />
-                <option name="message" value="Override &quot;equals(Object obj)&quot; to comply with the contract of the &quot;compareTo(T o)&quot; method." />
-                <option name="ruleKey" value="squid:S1210" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj4FWLNuwUjKJIvi" />
-                <option name="line" value="34" />
-                <option name="message" value="Put single-quotes around '.' to use the faster &quot;lastIndexOf(char)&quot; method." />
-                <option name="ruleKey" value="squid:S3027" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/NewLineTokenProcessor.java">
           <value>
             <set>
@@ -382,6 +360,11 @@
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/test/java/guru/bug/austras/codegen/TemplateTokenizerTest.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-codetempl/src/main/java/guru/bug/austras/codegen/AbstractInsertionTokenProcessor.java">
@@ -1045,20 +1028,6 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/str/BooleanToStringConverter.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vjx7WLNuwUjKJIu7" />
-                <option name="line" value="18" />
-                <option name="message" value="Null is returned but a &quot;Boolean&quot; is expected." />
-                <option name="ruleKey" value="squid:S2447" />
-                <option name="severity" value="CRITICAL" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/str/StringToStringConverter.java">
           <value>
             <set>
@@ -1078,137 +1047,11 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3DWLNuwUjKJIvg" />
-                <option name="line" value="150" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3DWLNuwUjKJIvf" />
-                <option name="line" value="146" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3DWLNuwUjKJIve" />
-                <option name="line" value="132" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3DWLNuwUjKJIvd" />
-                <option name="line" value="127" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvc" />
-                <option name="line" value="122" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvb" />
-                <option name="line" value="117" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIva" />
-                <option name="line" value="113" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvZ" />
-                <option name="line" value="108" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvY" />
-                <option name="line" value="103" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvX" />
-                <option name="line" value="98" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvW" />
-                <option name="line" value="93" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvV" />
-                <option name="line" value="89" />
-                <option name="message" value="Extract the assignment out of this expression." />
-                <option name="ruleKey" value="squid:AssignmentInSubExpressionCheck" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvU" />
-                <option name="line" value="35" />
-                <option name="message" value="Define a constant instead of duplicating this literal &quot;. Expected tokens: [&quot; 3 times." />
-                <option name="ruleKey" value="squid:S1192" />
-                <option name="severity" value="CRITICAL" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3CWLNuwUjKJIvT" />
-                <option name="line" value="35" />
-                <option name="message" value="Define a constant instead of duplicating this literal &quot;Unexpected token &quot; 4 times." />
-                <option name="ruleKey" value="squid:S1192" />
-                <option name="severity" value="CRITICAL" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReaderImpl.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj2IWLNuwUjKJIvQ" />
-                <option name="line" value="332" />
-                <option name="message" value="Define a constant instead of duplicating this literal &quot;Char was expecting&quot; 3 times." />
-                <option name="ruleKey" value="squid:S1192" />
-                <option name="severity" value="CRITICAL" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj2JWLNuwUjKJIvR" />
-                <option name="line" value="32" />
-                <option name="message" value="Null is returned but a &quot;Boolean&quot; is expected." />
-                <option name="ruleKey" value="squid:S2447" />
-                <option name="severity" value="CRITICAL" />
+                <option name="key" value="AW57wcMIWLNuwUjKJMNp" />
+                <option name="line" value="4" />
+                <option name="message" value="Remove this unused import 'java.util.Arrays'." />
+                <option name="ruleKey" value="squid:UselessImportCheck" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
           </value>
@@ -2489,28 +2332,6 @@
                 <option name="line" value="6" />
                 <option name="message" value="Remove this unused &quot;fakeDtoJsonConverter&quot; private field." />
                 <option name="ruleKey" value="squid:S1068" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/services/ForegroundService.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkBfWLNuwUjKJIwN" />
-                <option name="line" value="50" />
-                <option name="message" value="Either re-interrupt this method or rethrow the &quot;InterruptedException&quot;." />
-                <option name="ruleKey" value="squid:S2142" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkBfWLNuwUjKJIwM" />
-                <option name="line" value="37" />
-                <option name="message" value="Either re-interrupt this method or rethrow the &quot;InterruptedException&quot;." />
-                <option name="ruleKey" value="squid:S2142" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>

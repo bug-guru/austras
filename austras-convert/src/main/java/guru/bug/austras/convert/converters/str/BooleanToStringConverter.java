@@ -15,7 +15,7 @@ public class BooleanToStringConverter implements StringConverter<Boolean> {
     @Override
     public Boolean fromString(String value) {
         if (value == null) {
-            return null;
+            return null; //NOSONAR as it is library method - should behave as supposed for all converters
         }
         return stringConverter.fromString(value);
     }

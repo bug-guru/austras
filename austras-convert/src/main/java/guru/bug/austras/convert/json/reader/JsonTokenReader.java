@@ -1,7 +1,9 @@
 package guru.bug.austras.convert.json.reader;
 
 import java.io.Reader;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,7 +34,7 @@ public class JsonTokenReader {
         if (expected == tokenType) {
             return tokenType;
         } else {
-            throw createParsingException("Unexpected token " + tokenType + ". Expected tokens: [" + expected + "]");
+            throw createUnexpectedTokenException(tokenType, expected);
         }
     }
 
@@ -43,7 +45,7 @@ public class JsonTokenReader {
         if (expected1 == tokenType || expected2 == tokenType) {
             return tokenType;
         } else {
-            throw createParsingException("Unexpected token " + tokenType + ". Expected tokens: [" + expected1 + ", " + expected2 + "]");
+            throw createUnexpectedTokenException(tokenType, expected1, expected2);
         }
     }
 
@@ -55,7 +57,7 @@ public class JsonTokenReader {
         if (expected1 == tokenType || expected2 == tokenType || expected3 == tokenType) {
             return tokenType;
         } else {
-            throw createParsingException("Unexpected token " + tokenType + ". Expected tokens: [" + expected1 + ", " + expected2 + "]");
+            throw createUnexpectedTokenException(tokenType, expected1, expected2, expected3);
         }
     }
 
@@ -65,7 +67,7 @@ public class JsonTokenReader {
         if (expected.contains(tokenType)) {
             return tokenType;
         } else {
-            throw createParsingException("Unexpected token " + tokenType + ". Expected tokens: " + expected);
+            throw createUnexpectedTokenException(tokenType, expected);
         }
     }
 
@@ -86,50 +88,60 @@ public class JsonTokenReader {
             case '"':
                 value = stringTokenParser.continueReadString();
                 index++;
-                return type = TokenType.STRING;
+                type = TokenType.STRING;
+                return type;
             case ':':
                 value = ":";
                 index++;
-                return type = TokenType.COLON;
+                type = TokenType.COLON;
+                return type;
             case '{':
                 value = "{";
                 index++;
                 level++;
-                return type = TokenType.BEGIN_OBJECT;
+                type = TokenType.BEGIN_OBJECT;
+                return type;
             case '}':
                 value = "}";
                 index++;
                 level--;
-                return type = TokenType.END_OBJECT;
+                type = TokenType.END_OBJECT;
+                return type;
             case '[':
                 value = "[";
                 index++;
                 level++;
-                return type = TokenType.BEGIN_ARRAY;
+                type = TokenType.BEGIN_ARRAY;
+                return type;
             case ']':
                 value = "]";
                 index++;
                 level--;
-                return type = TokenType.END_ARRAY;
+                type = TokenType.END_ARRAY;
+                return type;
             case ',':
                 value = ",";
                 index++;
-                return type = TokenType.COMMA;
+                type = TokenType.COMMA;
+                return type;
             case 'n':
                 continueRead(NULL);
                 value = "null";
                 index++;
-                return type = TokenType.NULL;
+                type = TokenType.NULL;
+                return type;
             case 't':
                 continueRead(TRUE);
                 value = "true";
                 index++;
-                return type = TokenType.TRUE;
+                type = TokenType.TRUE;
+                return type;
             case 'f':
                 continueRead(FALSE);
                 value = "false";
                 index++;
-                return type = TokenType.FALSE;
+                type = TokenType.FALSE;
+                return type;
             case '-':
             case '0':
             case '1':
@@ -143,11 +155,13 @@ public class JsonTokenReader {
             case '9':
                 value = numberTokenParser.continueReadNumber(ch);
                 index++;
-                return type = TokenType.NUMBER;
+                type = TokenType.NUMBER;
+                return type;
             case '\u0000':
                 value = null;
                 index++;
-                return type = TokenType.EOF;
+                type = TokenType.EOF;
+                return type;
             default:
                 throw createParsingException();
         }
@@ -194,6 +208,20 @@ public class JsonTokenReader {
     public int getLevel() {
         return level;
     }
+
+    public ParsingException createUnexpectedTokenException(TokenType actual, TokenType... expected) {
+        return createUnexpectedTokenException(actual, List.of(expected));
+    }
+
+    public ParsingException createUnexpectedTokenException(TokenType actual, Collection<TokenType> expected) {
+        if (expected.isEmpty()) {
+            return createParsingException(String.format("Unexpected token [%s]", actual));
+        } else {
+            return createParsingException(String.format("Unexpected token [%s]. Expected tokens: %s", actual, expected));
+        }
+    }
+
+
 
     public ParsingException createParsingException(String message) {
         return reader.createParsingException(message);

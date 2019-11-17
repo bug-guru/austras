@@ -36,6 +36,7 @@ public class ForegroundService implements StartupService, Runnable {
             thread.join();
         } catch (InterruptedException e) {
             log.warn("Stopping service unsuccessful", e);
+            Thread.currentThread().interrupt();
         }
         log.info("Foreground service is stopped");
     }
@@ -50,6 +51,7 @@ public class ForegroundService implements StartupService, Runnable {
             } catch (InterruptedException e) {
                 log.warn("interrupted", e);
                 interrupt = true;
+                Thread.currentThread().interrupt();
             }
         }
     }

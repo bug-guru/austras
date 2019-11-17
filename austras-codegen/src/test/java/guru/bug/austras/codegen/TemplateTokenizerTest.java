@@ -1,7 +1,6 @@
 package guru.bug.austras.codegen;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -168,23 +167,6 @@ class TemplateTokenizerTest {
         assertNextToken(TemplateToken.Type.TEXT, "    }");
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.TEXT, "}");
-    }
-
-    @Test
-    @Disabled
-    void printTokens() throws Exception {
-        try (var is = getClass().getResourceAsStream("/guru/bug/austras/codegen/simple_test_template.txt");
-             var r = new InputStreamReader(is);
-             var br = new BufferedReader(r)) {
-            TemplateTokenizer tt = new TemplateTokenizer();
-            var str = new StringWriter(2048);
-            br.transferTo(str);
-            var idx = -1;
-            for (var t : tt.process(str.toString())) {
-                System.out.printf("assertEquals(\"%s\", tokens.get(%d).getValue());\n", escape(t.getValue()), idx);
-                System.out.printf("assertEquals(Token.Type.%s, tokens.get(%d).getType());\n", t.getType(), idx);
-            }
-        }
     }
 
     private String escape(String value) {
