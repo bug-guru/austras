@@ -42,6 +42,9 @@ public class StartupServicesStarter {
     }
 
     private class Terminator extends Thread {
+        public Terminator() {
+            super(StartupServicesStarter.class.getSimpleName() + "-shutdown-hook");
+        }
 
         @Override
         public void run() {
