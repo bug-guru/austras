@@ -81,4 +81,7 @@ public class DependencyModel {
     }
 
 
+    public ComponentKey asComponentKey() {
+        return new ComponentKey(type, qualifiers);
+    }
 }

@@ -19,8 +19,6 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @FromTemplate("Main.java.txt")
 public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
@@ -28,8 +26,9 @@ public class MainClassGenerator extends JavaGenerator {
     private String qualifiedClassName;
     private String simpleClassName;
     private String packageName;
-    private ComponentModel currentComponent;
+    private ComponentKey starterKey;
     private ComponentModel starterComponent;
+    private ComponentModel currentComponent;
     private DependencyModel currentDependency;
     private String dependencyInitialization;
     private boolean hasMoreDependencies;
@@ -194,29 +193,39 @@ public class MainClassGenerator extends JavaGenerator {
 
     private List<ComponentModel> sortComponents() {
         var result = new ArrayList<ComponentModel>();
-        var unresolved = new LinkedList<>(componentMap.getKeys());
         var resolved = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
-        outer:
-        while (!unresolved.isEmpty()) {
-            var key = unresolved.remove();
-            var components = Collections.<ComponentModel>newSetFromMap(new IdentityHashMap<>());
-            components.addAll(componentMap.findComponentModels(key));
-            for (var comp : components) {
-                ProviderModel provider = Objects.requireNonNull(comp.getProvider(), () -> format("Component %s doesn't have a provider", comp));
-                List<DependencyModel> dependencies = Objects.requireNonNull(provider.getDependencies());
-                var hasUnresolved = dependencies.stream()
-                        .map(d -> new ComponentKey(d.getType(), d.getQualifiers()))
-                        .anyMatch(unresolved::contains);
-                if (hasUnresolved) {
-                    unresolved.add(key);
-                    continue outer;
-                }
+        var queue = findRequiredComponents();
+        while (!queue.isEmpty()) {
+            var ref = queue.remove();
+            if (ref.dependencies.isEmpty() || resolved.containsAll(ref.dependencies)) {
+                resolved.add(ref.component);
+                result.add(ref.component);
+            } else {
+                queue.add(ref);
             }
-            components.removeAll(resolved);
-            resolved.addAll(components);
-            result.addAll(components);
         }
         return result;
+    }
+
+
+    private Queue<ComponentModelRef> findRequiredComponents() {
+        var result = new IdentityHashMap<ComponentModel, ComponentModelRef>();
+
+        Queue<ComponentModel> resolveQueue = new LinkedList<>();
+        resolveQueue.add(starterComponent);
+
+        while (!resolveQueue.isEmpty()) {
+            var comp = resolveQueue.remove();
+            if (result.containsKey(comp)) {
+                continue;
+            }
+
+            var ref = new ComponentModelRef(comp);
+            resolveQueue.addAll(ref.dependencies);
+            result.put(comp, ref);
+        }
+
+        return new ArrayDeque<>(result.values());
     }
 
     public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) throws IOException {
@@ -225,14 +234,28 @@ public class MainClassGenerator extends JavaGenerator {
             return;
         }
         this.componentMap = componentMap;
+        this.starterKey = new ComponentKey(StartupServicesStarter.class.getName(), null);
+        this.starterComponent = componentMap.findSingleComponentModel(starterKey);
         this.sortedComponents = sortComponents();
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";
         var lastDotIndex = qualifiedClassName.lastIndexOf('.');
         this.simpleClassName = qualifiedClassName.substring(lastDotIndex + 1);
         this.packageName = qualifiedClassName.substring(0, lastDotIndex);
-        var key = new ComponentKey(StartupServicesStarter.class.getName(), null);
-        this.starterComponent = componentMap.findSingleComponentModel(key);
         generateJavaClass();
     }
+
+    private class ComponentModelRef {
+        final ComponentModel component;
+        final List<ComponentModel> dependencies;
+
+        private ComponentModelRef(ComponentModel component) {
+            this.component = component;
+            this.dependencies = component.getProvider().getDependencies().stream()
+                    .map(DependencyModel::asComponentKey)
+                    .flatMap(k -> componentMap.findComponentModels(k).stream())
+                    .collect(Collectors.toList());
+        }
+    }
+
 
 }
