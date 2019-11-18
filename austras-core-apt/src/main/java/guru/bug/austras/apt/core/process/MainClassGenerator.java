@@ -26,7 +26,6 @@ public class MainClassGenerator extends JavaGenerator {
     private String qualifiedClassName;
     private String simpleClassName;
     private String packageName;
-    private ComponentKey starterKey;
     private ComponentModel starterComponent;
     private ComponentModel currentComponent;
     private DependencyModel currentDependency;
@@ -234,7 +233,7 @@ public class MainClassGenerator extends JavaGenerator {
             return;
         }
         this.componentMap = componentMap;
-        this.starterKey = new ComponentKey(StartupServicesStarter.class.getName(), null);
+        var starterKey = new ComponentKey(StartupServicesStarter.class.getName(), null);
         this.starterComponent = componentMap.findSingleComponentModel(starterKey);
         this.sortedComponents = sortComponents();
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";

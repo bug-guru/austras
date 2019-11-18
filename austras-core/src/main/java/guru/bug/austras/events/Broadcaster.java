@@ -11,8 +11,6 @@ public abstract class Broadcaster<M> {
     }
 
     public void send(M message) {
-        dispatchers.forEach(r -> {
-            r.dispatch(message);
-        });
+        dispatchers.forEach(r -> r.dispatch(message));
     }
 }

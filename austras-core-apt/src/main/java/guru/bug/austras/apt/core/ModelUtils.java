@@ -38,7 +38,6 @@ public class ModelUtils {
     private final UniqueNameGenerator uniqueNameGenerator;
     private final Types typeUtils;
     private final Elements elementUtils;
-    private final ProcessingEnvironment processingEnv;
     private final TypeElement collectionInterfaceElement;
     private final DeclaredType collectionInterfaceType;
     private final TypeElement providerInterfaceElement;
@@ -48,7 +47,6 @@ public class ModelUtils {
 
     public ModelUtils(UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.uniqueNameGenerator = uniqueNameGenerator;
-        this.processingEnv = processingEnv;
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
         this.collectionInterfaceElement = elementUtils.getTypeElement(Collection.class.getName());
@@ -194,7 +192,7 @@ public class ModelUtils {
         if (tmp.size() != 1) {
             throw new IllegalArgumentException("Not expected count of type parameters: " + tmp);
         }
-        var componentType = tmp.get(0).accept(new TypeKindVisitor9<DeclaredType, Void>() {
+        var componentType = tmp.get(0).accept(new TypeKindVisitor9<DeclaredType, Void>() { // NOSONAR TypeKindVisitor9 has deep inheritance. Nothing I can do
             @Override
             public DeclaredType visitDeclared(DeclaredType t, Void aVoid) {
                 return t;

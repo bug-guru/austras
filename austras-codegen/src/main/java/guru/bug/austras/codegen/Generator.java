@@ -43,78 +43,12 @@ public abstract class Generator {
         var strContent = readContent(resourceName);
         TemplateTokenizer tokenizer = new TemplateTokenizer();
         var tokens = tokenizer.process(strContent);
-        cleanupSpaces(tokens);
-        cleanupNewLines(tokens);
+        TemplateCleaner.cleanup(tokens);
 
         var tokenIterator = tokens.iterator();
         return new BlockWithBody(null, tokenIterator);
     }
 
-    private void cleanupSpaces(List<TemplateToken> tokens) {
-        var i = tokens.listIterator();
-        int state = 1;
-        boolean hasTrailingSpaces = false;
-        boolean hasLeadingSpaces = false;
-
-        while (i.hasNext()) {
-            var t = i.next();
-            if ((state == 0 || state == 1) && t.getType() == TemplateToken.Type.NEW_LINE) {
-                state = 1;
-                continue;
-            } else if (state == 1 && t.getType() == TemplateToken.Type.TEXT && t.getValue().isBlank()) {
-                state = 2;
-                hasLeadingSpaces = true;
-                continue;
-            } else if (state == 1 && t.getType() == TemplateToken.Type.BLOCK) {
-                state = 3;
-                continue;
-            } else if (state == 2 && t.getType() == TemplateToken.Type.BLOCK) {
-                state = 3;
-                continue;
-            } else if (state == 3 && t.getType() == TemplateToken.Type.TEXT && t.getValue().isBlank()) {
-                state = 4;
-                hasTrailingSpaces = true;
-                continue;
-            } else if ((state == 3 || state == 4) && t.getType() == TemplateToken.Type.NEW_LINE) {
-                i.remove();
-                if (hasTrailingSpaces) {
-                    i.previous();
-                    i.remove();
-                }
-                if (hasLeadingSpaces) {
-                    i.previous();
-                    i.previous();
-                    i.remove();
-                    i.next();
-                }
-                state = 1;
-            } else {
-                state = 0;
-            }
-            hasLeadingSpaces = false;
-            hasTrailingSpaces = false;
-        }
-    }
-
-    private void cleanupNewLines(List<TemplateToken> tokens) {
-        var i = tokens.listIterator();
-        var state = 0;
-        while (i.hasNext()) {
-            var t = i.next();
-            if (state == 0 && t.getType() == TemplateToken.Type.BLOCK) {
-                state = 1;
-                continue;
-            } else if (state == 1 && t.getType() == TemplateToken.Type.NEW_LINE) {
-                state = 2;
-                continue;
-            } else if (state == 2 && t.getType() == TemplateToken.Type.BLOCK) {
-                i.previous();
-                i.remove();
-                i.next();
-            }
-            state = 0;
-        }
-    }
 
     private void collectCallers() {
         for (var m : getClass().getMethods()) {
@@ -137,14 +71,6 @@ public abstract class Generator {
                 return writer.toString();
             }
         }
-    }
-
-    private Caller findCaller(TemplateToken t) {
-        var result = callers.get(t.getValue());
-        if (result == null) {
-            throw new IllegalArgumentException("Caller for template " + t + " not found");
-        }
-        return result;
     }
 
     private enum CallerType {
@@ -195,7 +121,7 @@ public abstract class Generator {
         void writeTo(PrintWriter out);
     }
 
-    private class TextBlock implements Block {
+    private static class TextBlock implements Block {
         private final String text;
 
         private TextBlock(String text) {
@@ -208,7 +134,7 @@ public abstract class Generator {
         }
     }
 
-    private class NewLineBlock implements Block {
+    private static class NewLineBlock implements Block {
 
         @Override
         public void writeTo(PrintWriter out) {
@@ -216,7 +142,7 @@ public abstract class Generator {
         }
     }
 
-    private class ValueBlock implements Block {
+    private static class ValueBlock implements Block {
         private final Caller caller;
 
         private ValueBlock(Caller caller) {
@@ -235,8 +161,11 @@ public abstract class Generator {
 
         private BlockWithBody(Caller caller, Iterator<TemplateToken> tokenIterator) {
             this.caller = caller;
-            this.blocks = new ArrayList<Block>();
-            loop:
+            this.blocks = collectBlocks(tokenIterator);
+        }
+
+        private List<Block> collectBlocks(Iterator<TemplateToken> tokenIterator) {
+            var result = new ArrayList<Block>();
             while (tokenIterator.hasNext()) {
                 Block block;
                 var t = tokenIterator.next();
@@ -252,15 +181,18 @@ public abstract class Generator {
                         break;
                     case BLOCK:
                         if ("END".equals(t.getValue())) {
-                            break loop;
+                            result.trimToSize();
+                            return result;
                         }
                         block = new BlockWithBody(findCaller(t), tokenIterator);
                         break;
                     default:
                         throw new IllegalStateException("Unsupported token " + t.getType());
                 }
-                this.blocks.add(block);
+                result.add(block);
             }
+            result.trimToSize();
+            return result;
         }
 
         @Override
@@ -277,6 +209,15 @@ public abstract class Generator {
             }
             return result.toString();
         }
+
+        private Caller findCaller(TemplateToken t) {
+            var result = callers.get(t.getValue());
+            if (result == null) {
+                throw new IllegalArgumentException("Caller for template " + t + " not found");
+            }
+            return result;
+        }
+
     }
 
     private class Caller {
@@ -296,5 +237,4 @@ public abstract class Generator {
             }
         }
     }
-
 }

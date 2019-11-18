@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -18,14 +17,12 @@ import java.util.stream.Stream;
 class ConvertersProcessor {
     private final Logger logger = LoggerFactory.getLogger(ConvertersProcessor.class);
     private final ProcessingContext ctx;
-    private final Types typeUtils;
     private final TypeElement jsonConverter;
     private final TypeElement stringConverter;
     private final JsonConverterGenerator jsonConverterGenerator;
 
     ConvertersProcessor(ProcessingContext ctx) {
         this.ctx = ctx;
-        typeUtils = ctx.processingEnv().getTypeUtils();
         var elementUtils = ctx.processingEnv().getElementUtils();
         jsonConverter = elementUtils.getTypeElement(JsonConverter.class.getName());
         stringConverter = elementUtils.getTypeElement(StringConverter.class.getName());
@@ -86,11 +83,11 @@ class ConvertersProcessor {
     }
 
     private void generateStringConverter(DeclaredType conversionType) throws IOException {
-        logger.info("GENERATING STRING CONVERTER FOR " + conversionType);
+        logger.info("GENERATING STRING CONVERTER FOR {}", conversionType);
     }
 
     private void generateJsonConverter(DeclaredType conversionType) throws IOException {
-        logger.info("generating converter json converter for " + conversionType);
+        logger.info("generating json converter for {}", conversionType);
         jsonConverterGenerator.generate(conversionType);
     }
 
