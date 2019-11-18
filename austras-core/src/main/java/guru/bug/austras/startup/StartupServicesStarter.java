@@ -34,8 +34,7 @@ public class StartupServicesStarter {
             startupService.initialize();
             initializedStartupServices.add(startupService);
         } catch (Exception e) {
-            var msg = format("Error initializing service %s", startupService.getClass().getName());
-            log.error(msg, e);
+            log.error(format("Error initializing service %s", startupService.getClass().getName()), e);
             System.exit(1);
         }
     }
