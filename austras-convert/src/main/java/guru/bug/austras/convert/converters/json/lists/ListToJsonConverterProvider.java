@@ -8,7 +8,7 @@ public abstract class ListToJsonConverterProvider<T> implements Provider<ListToJ
     private final ListToJsonConverter<T> instance;
 
     public ListToJsonConverterProvider(Provider<? extends JsonConverter<T>> elementConverterProvider) {
-        instance = new ListToJsonConverter<T>(elementConverterProvider.get());
+        instance = new ListToJsonConverter<>(elementConverterProvider.get());
     }
 
     @Override

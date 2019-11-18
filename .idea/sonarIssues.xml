@@ -852,28 +852,9 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/java/guru/bug/austras/convert/apt/JsonConverterGenerator.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
           <value>
             <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListToJsonConverterProvider.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VjprWLNuwUjKJIu5" />
-                <option name="line" value="11" />
-                <option name="message" value="Replace the type specification in this constructor call with the diamond operator (&quot;&lt;&gt;&quot;)." />
-                <option name="ruleKey" value="squid:S2293" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/str/StringToStringConverter.java">
@@ -888,11 +869,6 @@
                 <option name="severity" value="INFO" />
               </SonarIssue>
             </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/ParsingException.java">
-          <value>
-            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/StringTokenParser.java">
@@ -956,28 +932,6 @@
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/DefaultProviderGenerator.java">
           <value>
             <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/ModelUtils.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkGSWLNuwUjKJIwj" />
-                <option name="line" value="153" />
-                <option name="message" value="Remove this useless assignment to local variable &quot;curDeclElem&quot;." />
-                <option name="ruleKey" value="squid:S1854" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkGSWLNuwUjKJIwk" />
-                <option name="line" value="153" />
-                <option name="message" value="Remove this unused &quot;curDeclElem&quot; local variable." />
-                <option name="ruleKey" value="squid:S1481" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/componentmap/ComponentMap.java">
@@ -1290,56 +1244,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwt" />
-                <option name="line" value="82" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwz" />
-                <option name="line" value="44" />
-                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
-                <option name="ruleKey" value="squid:S3398" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwy" />
-                <option name="line" value="52" />
-                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
-                <option name="ruleKey" value="squid:S3398" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwu" />
-                <option name="line" value="38" />
-                <option name="message" value="Remove this unused private &quot;logError&quot; method." />
-                <option name="ruleKey" value="squid:UnusedPrivateMethod" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
-                <option name="line" value="116" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
-                <option name="line" value="123" />
+                <option name="line" value="117" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwr" />
-                <option name="line" value="48" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwt" />
+                <option name="line" value="76" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1347,7 +1261,31 @@
               <SonarIssue>
                 <option name="isNew" value="false" />
                 <option name="key" value="AW57VkHBWLNuwUjKJIws" />
-                <option name="line" value="60" />
+                <option name="line" value="54" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
+                <option name="line" value="110" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwy" />
+                <option name="line" value="46" />
+                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
+                <option name="ruleKey" value="squid:S3398" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW6Ac5w5WLNuwUjKJSbg" />
+                <option name="line" value="145" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1476,67 +1414,14 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/startup/StartupServicesStarter.java">
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr1Component.java">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr1Component.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj8oWLNuwUjKJIv9" />
-                <option name="line" value="15" />
-                <option name="message" value="Remove these unused method parameters." />
-                <option name="ruleKey" value="squid:S1172" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj8oWLNuwUjKJIv8" />
-                <option name="line" value="15" />
-                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
-                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr2Component.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj8SWLNuwUjKJIv7" />
-                <option name="line" value="15" />
-                <option name="message" value="Remove these unused method parameters." />
-                <option name="ruleKey" value="squid:S1172" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj8SWLNuwUjKJIv6" />
-                <option name="line" value="15" />
-                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
-                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/collection/ForEachComponent.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj9XWLNuwUjKJIv_" />
-                <option name="line" value="9" />
-                <option name="message" value="Remove this unused &quot;items&quot; private field." />
-                <option name="ruleKey" value="squid:S1068" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/convert/WithJsonConverter.java">
@@ -1682,10 +1567,18 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw4" />
-                <option name="line" value="38" />
-                <option name="message" value="Define and throw a dedicated exception instead of using a generic one." />
-                <option name="ruleKey" value="squid:S00112" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw7" />
+                <option name="line" value="78" />
+                <option name="message" value="Remove this unused private &quot;findHandler&quot; method." />
+                <option name="ruleKey" value="squid:UnusedPrivateMethod" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW57VkJNWLNuwUjKJIw9" />
+                <option name="line" value="59" />
+                <option name="message" value="This block of commented-out lines of code should be removed." />
+                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
@@ -1703,30 +1596,6 @@
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw9" />
-                <option name="line" value="59" />
-                <option name="message" value="This block of commented-out lines of code should be removed." />
-                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw5" />
-                <option name="line" value="47" />
-                <option name="message" value="Define and throw a dedicated exception instead of using a generic one." />
-                <option name="ruleKey" value="squid:S00112" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw7" />
-                <option name="line" value="78" />
-                <option name="message" value="Remove this unused private &quot;findHandler&quot; method." />
-                <option name="ruleKey" value="squid:UnusedPrivateMethod" />
-                <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
           </value>

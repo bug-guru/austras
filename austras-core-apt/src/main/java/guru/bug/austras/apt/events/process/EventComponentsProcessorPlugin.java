@@ -41,13 +41,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, msg, e);
     }
 
-    private void generateBroadcaster(ProcessingContext ctx, VariableElement e) {
-        try {
-            broadcasterGenerator.generate(e);
-        } catch (IOException ex) {
-            logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
-        }
-    }
+
 
     private void generateDispatcher(ProcessingContext ctx, VariableElement e) {
         generateDispatcher(ctx, (ExecutableElement) e.getEnclosingElement());
@@ -142,6 +136,14 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
 
         private void logError(ProcessingContext ctx, Element e) {
             EventComponentsProcessorPlugin.this.logError(ctx, e, null, null);
+        }
+
+        private void generateBroadcaster(ProcessingContext ctx, VariableElement e) {
+            try {
+                broadcasterGenerator.generate(e);
+            } catch (IOException ex) {
+                EventComponentsProcessorPlugin.this.logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
+            }
         }
     }
 }

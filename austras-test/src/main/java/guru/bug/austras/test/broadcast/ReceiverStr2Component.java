@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ReceiverStr2Component {
     private static final Logger log = LoggerFactory.getLogger(ReceiverStr2Component.class);
 
-    public void receive(@Qualifier(name = "hello") @Message String msg, ComponentC componentC, CompChain4 cc4) throws IOException {
+    public void receive(@Qualifier(name = "hello") @Message String msg, ComponentC componentC, CompChain4 cc4) throws IOException { //NOSONAR this is for testing purposes only
         log.info("ReceiverStr2: received [{}]", msg);
     }
 

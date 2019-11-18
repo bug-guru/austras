@@ -30,7 +30,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 public class ModelUtils {
     private static final Logger log = LoggerFactory.getLogger(ModelUtils.class);
     @SuppressWarnings("squid:MaximumInheritanceDepth")
-    private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
+    private static final AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
         @Override
         protected String defaultAction(Object o, Void aVoid) {
             return Objects.toString(o);
@@ -56,6 +56,32 @@ public class ModelUtils {
         this.providerInterfaceType = typeUtils.getDeclaredType(providerInterfaceElement);
         this.broadcasterInterfaceElement = elementUtils.getTypeElement(Broadcaster.class.getName());
         this.broadcasterInterfaceType = typeUtils.getDeclaredType(broadcasterInterfaceElement);
+    }
+
+    public static String qualifierToString(QualifierModel qualifierModel) {
+        var result = new StringBuilder(512);
+        qualifierModel.forEach((qualifierName, properties) -> {
+            result.append("@")
+                    .append(Qualifier.class.getSimpleName())
+                    .append("(name = \"")
+                    .append(qualifierName)
+                    .append("\"");
+            if (!properties.isEmpty()) {
+                result.append(", properties = ");
+                if (properties.size() > 1) {
+                    result.append("{");
+                }
+                result.append(properties.stream()
+                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
+                        .collect(Collectors.joining(", "))
+                );
+                if (properties.size() > 1) {
+                    result.append("}");
+                }
+            }
+            result.append(") ");
+        });
+        return result.toString();
     }
 
     public ComponentModel createComponentModel(TypeElement type) {
@@ -134,28 +160,23 @@ public class ModelUtils {
         var toCheck = new LinkedList<TypeMirror>(typeUtils.directSupertypes(componentType));
         while (!toCheck.isEmpty()) {
             var cur = toCheck.remove();
-            log.debug("Checking {}", cur);
-            if (checked.contains(cur)) {
-                log.debug("Already checked");
-                continue;
+            if (isClassOrInterface(cur) && checked.add(cur)) {
+                var curType = (DeclaredType) cur;
+                result.add(curType);
+                var supertypes = typeUtils.directSupertypes(curType);
+                log.trace("Adding supertypes to check-queue: {}", supertypes);
+                toCheck.addAll(supertypes);
             }
-            checked.add(cur);
-            if (cur.getKind() != TypeKind.DECLARED) {
-                log.debug("{} is not a declared type", cur);
-                continue;
-            }
-            var curType = ((DeclaredType) cur);
-            var curElem = curType.asElement();
-            if (curElem.getKind() != ElementKind.CLASS && curElem.getKind() != ElementKind.INTERFACE) {
-                log.debug("{} is not an interface or class", curElem);
-                continue;
-            }
-            result.add(curType);
-            var supertypes = typeUtils.directSupertypes(curType);
-            log.debug("adding supertypes to check-queue: {}", supertypes);
-            toCheck.addAll(supertypes);
         }
         return result;
+    }
+
+    private boolean isClassOrInterface(TypeMirror type) {
+        if (type.getKind() != TypeKind.DECLARED) {
+            return false;
+        }
+        var elem = ((DeclaredType) type).asElement();
+        return elem.getKind() == ElementKind.CLASS || elem.getKind() == ElementKind.INTERFACE;
     }
 
     public DeclaredType extractComponentTypeFromProvider(DeclaredType providerType) {
@@ -202,7 +223,6 @@ public class ModelUtils {
         log.debug("Wrapper {} wraps component: {}", wrapperType, componentType);
         return componentType;
     }
-
 
     public List<DependencyModel> collectConstructorParams(TypeElement type) {
         return collectConstructorParams((DeclaredType) type.asType());
@@ -266,31 +286,5 @@ public class ModelUtils {
 
     public boolean isProvider(Element element) {
         return isProvider(element.asType());
-    }
-
-    public static String qualifierToString(QualifierModel qualifierModel) {
-        var result = new StringBuilder(512);
-        qualifierModel.forEach((qualifierName, properties) -> {
-            result.append("@")
-                    .append(Qualifier.class.getSimpleName())
-                    .append("(name = \"")
-                    .append(qualifierName)
-                    .append("\"");
-            if (!properties.isEmpty()) {
-                result.append(", properties = ");
-                if (properties.size() > 1) {
-                    result.append("{");
-                }
-                result.append(properties.stream()
-                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
-                        .collect(Collectors.joining(", "))
-                );
-                if (properties.size() > 1) {
-                    result.append("}");
-                }
-            }
-            result.append(") ");
-        });
-        return result.toString();
     }
 }
