@@ -118,7 +118,7 @@ public class JsonConverterGenerator extends JavaGenerator {
             if (prop == null) {
                 continue;
             }
-            index.compute(prop.name, (k, v) -> merge(prop, v, ctx));
+            index.compute(prop.name, (k, v) -> merge(prop, v));
         }
         return index.values().stream().filter(this::isValid).collect(Collectors.toList());
     }
@@ -131,7 +131,7 @@ public class JsonConverterGenerator extends JavaGenerator {
     }
 
 
-    private Property merge(Property o1, Property o2, ProcessingContext ctx) {
+    private Property merge(Property o1, Property o2) {
         if (o2 == null && o1 == null) {
             throw new IllegalArgumentException("Properties are null");
         }
@@ -191,6 +191,7 @@ public class JsonConverterGenerator extends JavaGenerator {
         }
     }
 
+    @SuppressWarnings("squid:MaximumInheritanceDepth")
     private static class PropExtractor extends SimpleElementVisitor9<Property, ProcessingContext> {
         @Override
         public Property visitVariable(VariableElement e, ProcessingContext ctx) {

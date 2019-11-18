@@ -1,4 +1,4 @@
 package guru.bug.austras.test;
 
-public class ComponentA {
+public class ComponentA { //NOSONAR for testing purposes only
 }

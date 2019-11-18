@@ -2,6 +2,7 @@ package guru.bug.austras.convert.json.reader;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.nio.CharBuffer;
 
 class JsonBufferedReader {
@@ -113,7 +114,8 @@ class JsonBufferedReader {
         return new ParsingException(pos);
     }
 
-    static class Position {
+    static class Position implements Serializable {
+        private static final long serialVersionUID = 1L;
         private int row = 1;
         private int col = 0;
 

@@ -6,6 +6,6 @@ import guru.bug.austras.core.Qualifier;
 public class ComponentEImpl1 implements ComponentE {
     @Override
     public void doit() {
-
+        //NOSONAR only for testing
     }
 }

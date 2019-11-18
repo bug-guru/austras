@@ -14,78 +14,106 @@ public class Tokenizer<T> {
     public List<T> process(String content) {
         var resultTokens = new ArrayList<T>();
         var codePoints = IntStream.concat(content.codePoints(), IntStream.of(-1));
-        var holder = new Object() {
-            TokenProcessor<T> forced;
-            TokenProcessor<T> lastAccepted;
-        };
+        var holder = new StateHolder<T>();
         resetVariants();
-        codePoints.forEach(cp -> {
-            boolean repeat;
-            do {
-                repeat = false;
-                if (cp == -1) {
-                    if (holder.lastAccepted != null) {
-                        T token = holder.lastAccepted.complete();
-                        holder.lastAccepted.reset();
-                        if (token != null) {
-                            resultTokens.add(token);
-                        }
-                    }
-                } else {
-                    List<TokenProcessor<T>> toProcess;
-                    boolean processed = false;
-                    if (holder.forced == null) {
-                        toProcess = this.variants;
-                    } else {
-                        toProcess = List.of(holder.forced);
-                        holder.forced = null;
-                    }
-                    loop:
-                    for (var p : toProcess) {
-                        var result = p.process(cp);
-                        switch (result) {
-                            case REJECT:
-                                p.reset();
-                                break;
-                            case ACCEPT_FORCE_NEXT:
-                                holder.forced = p;
-                            case ACCEPT:
-                                if (holder.lastAccepted != null && holder.lastAccepted != p) {
-                                    T token = holder.lastAccepted.complete();
-                                    holder.lastAccepted.reset();
-                                    if (token != null) {
-                                        resultTokens.add(token);
-                                    }
-                                }
-                                holder.lastAccepted = p;
-                                processed = true;
-                                break loop;
-                            case COMPLETE_REWIND:
-                                repeat = true;
-                            case COMPLETE:
-                                holder.forced = null;
-                                holder.lastAccepted = null;
-                                processed = true;
-                                T token = p.complete();
-                                p.reset();
-                                if (token != null) {
-                                    resultTokens.add(token);
-                                }
-                                break loop;
-                        }
-                    }
-                    if (!processed) {
-                        throw new IllegalStateException("token not processed " + Character.toString(cp));
-                    }
-                }
-            } while (repeat);
-        });
+        codePoints.forEach(cp -> processCodepoint(cp, resultTokens, holder));
         resetVariants();
         return resultTokens;
     }
 
+    private void processCodepoint(int cp, ArrayList<T> resultTokens, StateHolder<T> holder) {
+        do {
+            holder.repeat = false;
+            if (cp == -1) {
+                processEOF(resultTokens, holder);
+            } else {
+                holder.processed = false;
+                List<TokenProcessor<T>> toProcess = whatToProcess(holder);
+                processAll(toProcess, cp, resultTokens, holder);
+                if (!holder.processed) {
+                    throw new IllegalStateException("token not processed " + Character.toString(cp));
+                }
+            }
+        } while (holder.repeat);
+    }
+
+    private void processAll(List<TokenProcessor<T>> processors, int cp, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
+        for (var processor : processors) {
+            var result = processor.process(cp);
+            switch (result) {
+                case REJECT:
+                    processor.reset();
+                    break;
+                case ACCEPT_FORCE_NEXT:
+                    stateHolder.forced = processor;
+                    accept(processor, resultTokens, stateHolder);
+                    return;
+                case ACCEPT:
+                    accept(processor, resultTokens, stateHolder);
+                    return;
+                case COMPLETE_REWIND:
+                    stateHolder.repeat = true;
+                    complete(processor, resultTokens, stateHolder);
+                    return;
+                case COMPLETE:
+                    complete(processor, resultTokens, stateHolder);
+                    return;
+            }
+        }
+    }
+
+    private void accept(TokenProcessor<T> processor, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
+        if (stateHolder.lastAccepted != null && stateHolder.lastAccepted != processor) {
+            T token = stateHolder.lastAccepted.complete();
+            stateHolder.lastAccepted.reset();
+            if (token != null) {
+                resultTokens.add(token);
+            }
+        }
+        stateHolder.lastAccepted = processor;
+        stateHolder.processed = true;
+    }
+
+    private void complete(TokenProcessor<T> processor, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
+        stateHolder.forced = null;
+        stateHolder.lastAccepted = null;
+        stateHolder.processed = true;
+        T token = processor.complete();
+        processor.reset();
+        if (token != null) {
+            resultTokens.add(token);
+        }
+    }
+
+    private List<TokenProcessor<T>> whatToProcess(StateHolder<T> holder) {
+        if (holder.forced == null) {
+            return this.variants;
+        } else {
+            var result = List.of(holder.forced);
+            holder.forced = null;
+            return result;
+        }
+    }
+
+    private void processEOF(ArrayList<T> resultTokens, StateHolder<T> holder) {
+        if (holder.lastAccepted != null) {
+            T token = holder.lastAccepted.complete();
+            holder.lastAccepted.reset();
+            if (token != null) {
+                resultTokens.add(token);
+            }
+        }
+    }
+
     private void resetVariants() {
         variants.forEach(TokenProcessor::reset);
+    }
+
+    private static class StateHolder<T> {
+        TokenProcessor<T> forced;
+        TokenProcessor<T> lastAccepted;
+        boolean processed;
+        boolean repeat;
     }
 
 

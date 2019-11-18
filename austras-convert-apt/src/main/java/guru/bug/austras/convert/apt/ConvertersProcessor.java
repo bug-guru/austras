@@ -82,8 +82,9 @@ class ConvertersProcessor {
         }
     }
 
-    private void generateStringConverter(DeclaredType conversionType) throws IOException {
+    private void generateStringConverter(DeclaredType conversionType) throws IOException { //NOSONAR not yet finished
         logger.info("GENERATING STRING CONVERTER FOR {}", conversionType);
+        // TODO
     }
 
     private void generateJsonConverter(DeclaredType conversionType) throws IOException {

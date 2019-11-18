@@ -2,6 +2,7 @@ package guru.bug.austras.convert.json.reader;
 
 import guru.bug.austras.convert.json.utils.JsonReadingException;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth") // this happens with exceptions
 public class ParsingException extends JsonReadingException {
     private final JsonBufferedReader.Position position;
 

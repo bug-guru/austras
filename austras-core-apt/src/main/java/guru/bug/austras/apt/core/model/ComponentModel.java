@@ -59,6 +59,21 @@ public class ComponentModel implements Comparable<ComponentModel> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ComponentModel that = (ComponentModel) o;
+
+        return instantiable.equals(that.instantiable);
+    }
+
+    @Override
+    public int hashCode() {
+        return instantiable.hashCode();
+    }
+
+    @Override
     public int compareTo(ComponentModel o) {
         return instantiable.compareTo(o.instantiable);
     }

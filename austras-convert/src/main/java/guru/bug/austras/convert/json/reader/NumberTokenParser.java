@@ -1,6 +1,7 @@
 package guru.bug.austras.convert.json.reader;
 
 class NumberTokenParser {
+    public static final String NUMBER_EXPECTED = "Number expected";
     private final JsonBufferedReader reader;
     private final StringBuilder valueBuilder;
 
@@ -23,7 +24,7 @@ class NumberTokenParser {
             valueBuilder.append(ch);
             readOptionalDigitsOrFracOrExp();
         } else {
-            throw reader.createParsingException("Number expected");
+            throw reader.createParsingException(NUMBER_EXPECTED);
         }
         return valueBuilder.toString();
     }
@@ -60,7 +61,7 @@ class NumberTokenParser {
             valueBuilder.append(ch);
             ch = readOptionalDigits();
         } else {
-            throw reader.createParsingException("Number expected");
+            throw reader.createParsingException(NUMBER_EXPECTED);
         }
         if (ch == 'e' || ch == 'E') {
             valueBuilder.append(ch);
@@ -81,7 +82,7 @@ class NumberTokenParser {
             readOptionalDigits();
             reader.back();
         } else {
-            throw reader.createParsingException("Number expected");
+            throw reader.createParsingException(NUMBER_EXPECTED);
         }
     }
 

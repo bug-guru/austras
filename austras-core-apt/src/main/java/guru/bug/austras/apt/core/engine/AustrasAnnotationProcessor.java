@@ -91,7 +91,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 }
             }
         } catch (Exception e) {
-            log.error("Something wrong", e);
             throw new IllegalStateException(e); // TODO
         }
     }
@@ -122,7 +121,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             }
             return false;
         } catch (Exception e) {
-            log.error("Unexpected error", e);
             throw new IllegalStateException(e);
         }
     }
@@ -136,19 +134,10 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     private void scanRootElements(Set<? extends Element> rootElements) {
         for (var element : rootElements) {
-            if (element.getKind() != CLASS) {
-                log.debug("IGNORE: root element isn't a class: {}", element);
+            if (shouldBeIgnored(element)) {
                 continue;
             }
             TypeElement typeElement = (TypeElement) element;
-            if (!checkIsPublicNonAbstractClass(typeElement)) {
-                log.info("IGNORE: Found abstract or non-public class {}", element);
-                continue;
-            }
-            if (!checkUsableConstructor(typeElement)) {
-                log.info("IGNORE: No default constructor or multiple public constructors in class {}", element);
-                continue;
-            }
             if (modelUtils.isProvider(element)) {
                 log.info("PROCESS: Found provider class {}.", element);
                 stagedProviders.add(typeElement);
@@ -157,6 +146,23 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 scanComponent(typeElement);
             }
         }
+    }
+
+    private boolean shouldBeIgnored(Element element) {
+        if (element.getKind() != CLASS) {
+            log.debug("IGNORE: root element isn't a class: {}", element);
+            return true;
+        }
+        TypeElement typeElement = (TypeElement) element;
+        if (!checkIsPublicNonAbstractClass(typeElement)) {
+            log.info("IGNORE: Found abstract or non-public class {}", element);
+            return true;
+        }
+        if (!checkUsableConstructor(typeElement)) {
+            log.info("IGNORE: No default constructor or multiple public constructors in class {}", element);
+            return true;
+        }
+        return false;
     }
 
     private void scanComponent(TypeElement typeElement) {

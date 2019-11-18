@@ -29,6 +29,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 
 public class ModelUtils {
     private static final Logger log = LoggerFactory.getLogger(ModelUtils.class);
+    @SuppressWarnings("squid:MaximumInheritanceDepth")
     private final static AnnotationValueVisitor<String, Void> annotationToStringVisitor = new SimpleAnnotationValueVisitor9<>() {
         @Override
         protected String defaultAction(Object o, Void aVoid) {
@@ -127,10 +128,6 @@ public class ModelUtils {
         return annotationValue.accept(annotationToStringVisitor, null);
     }
 
-    private Set<DeclaredType> collectAllAncestor(TypeElement componentElement) {
-        return collectAllAncestor((DeclaredType) componentElement.asType());
-    }
-
     private Set<DeclaredType> collectAllAncestor(DeclaredType componentType) {
         var result = new HashSet<DeclaredType>();
         var checked = new HashSet<TypeMirror>();
@@ -153,7 +150,6 @@ public class ModelUtils {
                 log.debug("{} is not an interface or class", curElem);
                 continue;
             }
-            var curDeclElem = (TypeElement) curElem;
             result.add(curType);
             var supertypes = typeUtils.directSupertypes(curType);
             log.debug("adding supertypes to check-queue: {}", supertypes);

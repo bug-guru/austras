@@ -35,7 +35,7 @@ public class HttpServerStart implements StartupService {
         try {
             server.start();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -44,7 +44,7 @@ public class HttpServerStart implements StartupService {
         try {
             server.stop();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

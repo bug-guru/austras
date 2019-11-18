@@ -35,49 +35,6 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
                 .forEach(e -> e.accept(msgVisitor, ctx));
     }
 
-    private boolean isValidReceiver(ProcessingContext ctx, ExecutableElement method) {
-        var annotatedCount = method.getParameters().stream()
-                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                .filter(p -> !modelUtils.isBroadcaster(p.asType()))
-                .count();
-
-        if (annotatedCount > 1) {
-            logError(ctx, method, "Expecting zero or one message receiver parameter per method, but there are " + annotatedCount); // TODO Better error handling
-            return false;
-        }
-
-        boolean annotatedMethod = method.getAnnotationsByType(Message.class).length > 0;
-
-        if (annotatedMethod && annotatedCount > 0) {
-            logError(ctx, method, "Message annotation on method and on parameter together not supported"); // TODO Better error handling
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isValidBroadcaster(ExecutableElement method) {
-        var annotatedCount = method.getParameters().stream()
-                .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                .filter(p -> modelUtils.isBroadcaster(p.asType()))
-                .count();
-
-        return annotatedCount >= 1;
-    }
-
-
-    private void logError(ProcessingContext ctx, Element e) {
-        logError(ctx, e, null, null);
-    }
-
-    private void logError(ProcessingContext ctx, Element e, Throwable t) {
-        logError(ctx, e, null, t);
-    }
-
-    private void logError(ProcessingContext ctx, Element e, String reason) {
-        logError(ctx, e, reason, null);
-    }
-
     private void logError(ProcessingContext ctx, Element e, String reason, Throwable t) {
         String msg = "Cannot process " + e + (reason == null ? "" : ": " + reason);
         log.error(msg, t);
@@ -104,6 +61,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         }
     }
 
+    @SuppressWarnings("squid:MaximumInheritanceDepth")
     private class ElementWithMessageVisitor extends SimpleElementVisitor9<Void, ProcessingContext> {
 
         @Override
@@ -146,6 +104,44 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
             }
 
             return null;
+        }
+
+        private boolean isValidReceiver(ProcessingContext ctx, ExecutableElement method) {
+            var annotatedCount = method.getParameters().stream()
+                    .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
+                    .filter(p -> !modelUtils.isBroadcaster(p.asType()))
+                    .count();
+
+            if (annotatedCount > 1) {
+                logError(ctx, method, "Expecting zero or one message receiver parameter per method, but there are " + annotatedCount); // TODO Better error handling
+                return false;
+            }
+
+            boolean annotatedMethod = method.getAnnotationsByType(Message.class).length > 0;
+
+            if (annotatedMethod && annotatedCount > 0) {
+                logError(ctx, method, "Message annotation on method and on parameter together not supported"); // TODO Better error handling
+                return false;
+            }
+
+            return true;
+        }
+
+        private boolean isValidBroadcaster(ExecutableElement method) {
+            var annotatedCount = method.getParameters().stream()
+                    .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
+                    .filter(p -> modelUtils.isBroadcaster(p.asType()))
+                    .count();
+
+            return annotatedCount >= 1;
+        }
+
+        private void logError(ProcessingContext ctx, Element e, String reason) {
+            EventComponentsProcessorPlugin.this.logError(ctx, e, reason, null);
+        }
+
+        private void logError(ProcessingContext ctx, Element e) {
+            EventComponentsProcessorPlugin.this.logError(ctx, e, null, null);
         }
     }
 }

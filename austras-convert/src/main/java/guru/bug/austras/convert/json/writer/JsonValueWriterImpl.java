@@ -359,8 +359,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
         if (object == null) {
             tokenWriter.writeNull();
         } else {
-            // TODO think of JsonObjectWriter pool
-            var objWriter = new JsonObjectWriterImpl(tokenWriter);
+            var objWriter = new JsonObjectWriterImpl(tokenWriter, this);
             objWriter.writeBegin();
             objectWriterConsumer.toJson(object, objWriter);
             objWriter.writeEnd();

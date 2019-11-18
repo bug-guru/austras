@@ -37,12 +37,11 @@ public class StartupServicesStarter {
             var msg = format("Error initializing service %s", startupService.getClass().getName());
             log.error(msg, e);
             System.exit(1);
-            throw new IllegalStateException(msg, e);
         }
     }
 
     private class Terminator extends Thread {
-        public Terminator() {
+        private Terminator() {
             super(StartupServicesStarter.class.getSimpleName() + "-shutdown-hook");
         }
 

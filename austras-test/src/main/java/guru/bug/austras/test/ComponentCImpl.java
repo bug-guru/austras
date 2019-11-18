@@ -2,8 +2,8 @@ package guru.bug.austras.test;
 
 public class ComponentCImpl implements ComponentC {
 
-    private final ComponentA a;
-    private final ComponentB b;
+    private final ComponentA a; //NOSONAR only for testing
+    private final ComponentB b; //NOSONAR only for testing
 
     public ComponentCImpl(ComponentA a, ComponentB b) {
         this.a = a;
@@ -12,6 +12,6 @@ public class ComponentCImpl implements ComponentC {
 
     @Override
     public void doSomething() {
-
+        //NOSONAR only for testing
     }
 }
