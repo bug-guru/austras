@@ -871,11 +871,6 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReaderImpl.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/StringTokenParser.java">
           <value>
             <set>
@@ -954,16 +949,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
-                <option name="line" value="90" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
+                <option name="line" value="234" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
-                <option name="line" value="234" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
+                <option name="line" value="90" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1417,36 +1412,6 @@
                 <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentC.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentE.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/DeepInheritanceGeneric.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/Service.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr1Component.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr2Component.java">
-          <value>
-            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/test/java/guru/bug/austras/test/BeanComponentForTest.java">

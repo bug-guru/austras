@@ -106,8 +106,8 @@ class JsonBufferedReader {
         return new ParsingException(pos, cause);
     }
 
-    ParsingException createParsingException(String message, Throwable cause) {
-        return new ParsingException(message, pos, cause);
+    ParsingException unicodeExpected(Throwable cause) {
+        return new ParsingException("unicode expected", pos, cause);
     }
 
     ParsingException createParsingException() {

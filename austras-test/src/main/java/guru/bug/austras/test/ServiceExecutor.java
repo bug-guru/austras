@@ -2,6 +2,7 @@ package guru.bug.austras.test;
 
 import java.util.Collection;
 
+@SuppressWarnings("ALL")
 public class ServiceExecutor {
     private final Collection<? extends Service> services;
 

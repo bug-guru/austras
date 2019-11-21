@@ -28,7 +28,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Boolean readNullableBoolean() {
-        var tt = tokenReader.next(TRUE, FALSE, NULL);
+        var tt = tokenReader.nextBoolean(TRUE, FALSE, NULL);
         if (tt == NULL) {
             return null; //NOSONAR reading null from json is OK
         }
@@ -37,7 +37,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Boolean> readOptionalBoolean() {
-        var tt = tokenReader.next(TRUE, FALSE, NULL);
+        var tt = tokenReader.nextBoolean(TRUE, FALSE, NULL);
         if (tt == NULL) {
             return Optional.empty();
         }

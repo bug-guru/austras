@@ -71,7 +71,7 @@ class StringTokenParser {
             }
             return (char) result;
         } catch (IllegalArgumentException e) {
-            throw reader.createParsingException("unicode expected", e);
+            throw reader.unicodeExpected(e);
         }
     }
 }

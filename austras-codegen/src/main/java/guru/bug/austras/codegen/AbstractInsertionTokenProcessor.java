@@ -6,7 +6,7 @@ public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<
     private final TemplateToken.Type type;
     private State state = State.READY;
 
-    protected AbstractInsertionTokenProcessor(int symbol, TemplateToken.Type type) {
+    AbstractInsertionTokenProcessor(int symbol, TemplateToken.Type type) {
         this.symbol = symbol;
         this.type = type;
     }

@@ -7,6 +7,7 @@ import guru.bug.austras.test.ServiceExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("ALL")
 public class ReceiverVoid1Component {
     private static final Logger log = LoggerFactory.getLogger(ReceiverVoid1Component.class);
 

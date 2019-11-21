@@ -49,15 +49,12 @@ public class JsonTokenReader {
         }
     }
 
-    TokenType next(TokenType expected1, TokenType expected2, TokenType expected3) {
-        requireNonNull(expected1);
-        requireNonNull(expected2);
-        requireNonNull(expected3);
+    TokenType nextBoolean() {
         var tokenType = next();
-        if (expected1 == tokenType || expected2 == tokenType || expected3 == tokenType) {
+        if (TokenType.TRUE == tokenType || TokenType.FALSE == tokenType || TokenType.NULL == tokenType) {
             return tokenType;
         } else {
-            throw createUnexpectedTokenException(tokenType, expected1, expected2, expected3);
+            throw createUnexpectedTokenException(tokenType, TokenType.TRUE, TokenType.FALSE, TokenType.NULL);
         }
     }
 

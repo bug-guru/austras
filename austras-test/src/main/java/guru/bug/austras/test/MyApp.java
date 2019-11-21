@@ -3,6 +3,7 @@ package guru.bug.austras.test;
 
 import guru.bug.austras.core.Application;
 
+@SuppressWarnings("ALL")
 @Application
 public class MyApp {
 
