@@ -2,6 +2,7 @@ package guru.bug.austras.test.convert;
 
 import guru.bug.austras.convert.converters.JsonConverter;
 
+@SuppressWarnings("ALL") // this class is for testing only
 public class WithJsonConverter {
     private final JsonConverter<FakeDto> fakeDtoJsonConverter; //NOSONAR this is for testing purposes only
 

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@SuppressWarnings("ALL") // this class is for testing only
 public class ReceiverStr2Component {
     private static final Logger log = LoggerFactory.getLogger(ReceiverStr2Component.class);
 

@@ -48,10 +48,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private ComponentMap componentMap;
     private ComponentModel appMainComponent;
 
-    public AustrasAnnotationProcessor() {
-        log.debug("Constructing AustrasAnnotationProcessor");
-    }
-
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         log.debug("initializing AustrasAnnotationProcessor");

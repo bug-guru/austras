@@ -214,19 +214,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZpWAvOYQK1-KGAD" />
-                <option name="line" value="43" />
-                <option name="message" value="Convert the abstract class &quot;Bound&quot; into an interface." />
-                <option name="ruleKey" value="squid:S1610" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZpWAvOYQK1-KGAF" />
                 <option name="line" value="44" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZpWAvOYQK1-KGAD" />
+                <option name="line" value="43" />
+                <option name="message" value="Convert the abstract class &quot;Bound&quot; into an interface." />
+                <option name="ruleKey" value="squid:S1610" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -871,6 +871,11 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReaderImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/StringTokenParser.java">
           <value>
             <set>
@@ -949,16 +954,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
-                <option name="line" value="238" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
+                <option name="line" value="90" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
-                <option name="line" value="94" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
+                <option name="line" value="234" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1054,19 +1059,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ8rAvOYQK1-KGBV" />
-                <option name="line" value="32" />
-                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
-                <option name="ruleKey" value="squid:S3457" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ8rAvOYQK1-KGBU" />
                 <option name="line" value="31" />
                 <option name="message" value="Remove useless curly braces around statement" />
                 <option name="ruleKey" value="squid:S1602" />
                 <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ8rAvOYQK1-KGBV" />
+                <option name="line" value="32" />
+                <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
+                <option name="ruleKey" value="squid:S3457" />
+                <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -1092,18 +1097,18 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ7DAvOYQK1-KGBJ" />
-                <option name="line" value="22" />
-                <option name="message" value="A &quot;NullPointerException&quot; could be thrown; &quot;logger&quot; is nullable here." />
-                <option name="ruleKey" value="squid:S2259" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ6nAvOYQK1-KGBG" />
                 <option name="line" value="39" />
                 <option name="message" value="Use the built-in formatting to construct this argument." />
                 <option name="ruleKey" value="squid:S2629" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ7DAvOYQK1-KGBJ" />
+                <option name="line" value="22" />
+                <option name="message" value="A &quot;NullPointerException&quot; could be thrown; &quot;logger&quot; is nullable here." />
+                <option name="ruleKey" value="squid:S2259" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
@@ -1124,19 +1129,19 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ7DAvOYQK1-KGBH" />
-                <option name="line" value="41" />
-                <option name="message" value="Use the built-in formatting to construct this argument." />
-                <option name="ruleKey" value="squid:S2629" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ7DAvOYQK1-KGBL" />
                 <option name="line" value="22" />
                 <option name="message" value="Make sure that this logger's configuration is safe." />
                 <option name="ruleKey" value="squid:S4792" />
                 <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ7DAvOYQK1-KGBH" />
+                <option name="line" value="41" />
+                <option name="message" value="Use the built-in formatting to construct this argument." />
+                <option name="ruleKey" value="squid:S2629" />
+                <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -1414,6 +1419,26 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentC.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentE.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/DeepInheritanceGeneric.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/Service.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr1Component.java">
           <value>
             <set />
@@ -1422,20 +1447,6 @@
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr2Component.java">
           <value>
             <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/convert/WithJsonConverter.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj_2WLNuwUjKJIwH" />
-                <option name="line" value="6" />
-                <option name="message" value="Remove this unused &quot;fakeDtoJsonConverter&quot; private field." />
-                <option name="ruleKey" value="squid:S1068" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/test/java/guru/bug/austras/test/BeanComponentForTest.java">
@@ -1560,44 +1571,6 @@
         <entry key="$PROJECT_DIR$/austras-test/target/generated-sources/annotations/guru/bug/austras/test/services/ForegroundServiceProvider.java">
           <value>
             <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/HttpServerStart.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw7" />
-                <option name="line" value="78" />
-                <option name="message" value="Remove this unused private &quot;findHandler&quot; method." />
-                <option name="ruleKey" value="squid:UnusedPrivateMethod" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw9" />
-                <option name="line" value="59" />
-                <option name="message" value="This block of commented-out lines of code should be removed." />
-                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw8" />
-                <option name="line" value="56" />
-                <option name="message" value="This block of commented-out lines of code should be removed." />
-                <option name="ruleKey" value="squid:CommentedOutCodeLine" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJNWLNuwUjKJIw6" />
-                <option name="line" value="55" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/MediaType.java">

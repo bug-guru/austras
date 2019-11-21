@@ -2,6 +2,7 @@ package guru.bug.austras.test;
 
 import guru.bug.austras.provider.Provider;
 
+@SuppressWarnings("ALL") // this class is for testing only
 public class ComponentCImplProvider implements Provider<ComponentCImpl> {
     private final Provider<ComponentA> aProvider; //NOSONAR for testing purposes only
     private final Provider<ComponentB> bProvider; //NOSONAR for testing purposes only

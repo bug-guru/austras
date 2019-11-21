@@ -427,7 +427,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
             return Optional.of(Stream.empty());
         }
         tokenReader.rewind();
-        Stream<T> stream = StreamSupport.stream(new JsonArraySpliterator<T>(converter), false);
+        Stream<T> stream = StreamSupport.stream(new JsonArraySpliterator<>(converter), false);
         return Optional.of(stream);
     }
 

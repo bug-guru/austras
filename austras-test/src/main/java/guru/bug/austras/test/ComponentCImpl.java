@@ -1,5 +1,6 @@
 package guru.bug.austras.test;
 
+@SuppressWarnings("ALL") // this class is for testing only
 public class ComponentCImpl implements ComponentC {
 
     private final ComponentA a; //NOSONAR only for testing

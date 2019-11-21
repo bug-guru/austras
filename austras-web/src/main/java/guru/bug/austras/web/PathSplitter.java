@@ -1,24 +1,34 @@
 package guru.bug.austras.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class PathSplitter<T> {
-    private final List<T> items;
+final class PathSplitter {
+    private PathSplitter() {
+    }
 
-    public PathSplitter(Function<String, T> mapper, List<String> fragments) {
-        items = List.copyOf(
-                fragments.stream()
-                        .flatMap(this::split)
+    public static <T> List<T> split(Function<String, T> mapper, String path) {
+        return List.copyOf(
+                split(path).stream()
                         .map(mapper)
                         .collect(Collectors.toList())
         );
     }
 
-    private Stream<String> split(String path) {
+    public static <T> List<T> split(Function<String, T> mapper, List<String> fragments) {
+        return List.copyOf(
+                fragments.stream()
+                        .map(PathSplitter::split)
+                        .flatMap(Collection::stream)
+                        .map(mapper)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private static List<String> split(String path) {
         var result = new ArrayList<String>();
         int idx;
         int lastIdx = 0;
@@ -33,10 +43,7 @@ public class PathSplitter<T> {
             var p = path.substring(lastIdx);
             result.add(p);
         }
-        return result.stream();
+        return result;
     }
 
-    public List<T> getItems() {
-        return items;
-    }
 }

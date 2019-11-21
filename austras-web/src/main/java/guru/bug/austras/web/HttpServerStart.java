@@ -6,18 +6,23 @@ import guru.bug.austras.web.errors.*;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
 public class HttpServerStart implements StartupService {
-    public static final String ACCEPT_HEADER = "Accept";
+    private static final String ACCEPT_HEADER = "Accept";
+    private static final Logger log = LoggerFactory.getLogger(HttpServerStart.class);
     private final List<EndpointHandler> endpoints;
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
@@ -48,20 +53,43 @@ public class HttpServerStart implements StartupService {
         }
     }
 
+    private static class Filter implements Predicate<EndpointHandler> {
+        final Predicate<EndpointHandler> predicate;
+        boolean passed;
+
+        private Filter(Predicate<EndpointHandler> predicate) {
+            this.predicate = predicate;
+        }
+
+        @Override
+        public boolean test(EndpointHandler h) {
+            var result = predicate.test(h);
+            if (result) {
+                passed = true;
+            }
+            return result;
+        }
+
+        void throwIfNotPassed(Runnable exceptionProducer) {
+            if (!passed) {
+                exceptionProducer.run();
+            }
+        }
+    }
+
     private class JettyHandler extends AbstractHandler {
 
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//              TODO finish this
-//            try {
-//                var pathItems = new PathSplitter<>(Function.identity(), List.of(target)).getItems();
-//                var handler =
-//            } catch (Exception e) {
-//                log.log(Level.WARNING, "Handling exception", e);
-//                response.setStatusCode(e.getStatusCode());
-//                response.setReasonPhrase(e.getMessage());
-//                response.setContent(null);
-//            }
+            try {
+                var pathItems = PathSplitter.split(Function.identity(), target);
+                var handler = findHandler(request, pathItems);
+                handler.handle(request, response);
+            } catch (AustrasHttpException e) {
+                log.error("Handling exception", e);
+                response.setStatus(e.getStatusCode());
+                response.sendError(e.getStatusCode(), e.getMessage());
+            }
         }
 
         private List<MediaType> getAcceptTypes(HttpServletRequest request) {
@@ -76,16 +104,37 @@ public class HttpServerStart implements StartupService {
         }
 
         private EndpointHandler findHandler(HttpServletRequest request, List<String> pathItems) {
-            List<EndpointHandler> candidates = endpoints;
-            candidates = getHandlersFilteredByPath(candidates, pathItems);
-            candidates = getHandlersFilteredByMethod(candidates, request.getMethod());
-            candidates = getHandlersFilteredByContentType(candidates, request.getContentType());
-            candidates = getHandlersFilteredByAccept(candidates, getAcceptTypes(request));
+            var method = request.getMethod();
+            var contentType = request.getContentType();
+            var acceptTypes = getAcceptTypes(request);
+
+            var byMethodFilter = new Filter(c -> byMethod(c, method));
+            var byContentFilter = new Filter(c -> byContentType(c, contentType));
+            var byPathFilter = new Filter(c -> byPath(c, pathItems));
+            var byAcceptFilter = new Filter(c -> byAccept(c, acceptTypes));
+
+            var candidates = endpoints.stream()
+                    .filter(byMethodFilter)
+                    .filter(byContentFilter)
+                    .filter(byPathFilter)
+                    .filter(byAcceptFilter)
+                    .collect(Collectors.toList());
             if (candidates.size() > 1) {
                 throw new MultipleChoicesException();
             }
             if (candidates.isEmpty()) {
-                throw new NotFoundException();
+                byMethodFilter.throwIfNotPassed(() -> {
+                    throw new MethodNotAllowedException();
+                });
+                byContentFilter.throwIfNotPassed(() -> {
+                    throw new UnsupportedMediaTypeException();
+                });
+                byPathFilter.throwIfNotPassed(() -> {
+                    throw new NotFoundException();
+                });
+                byAcceptFilter.throwIfNotPassed(() -> {
+                    throw new NotAcceptableException();
+                });
             }
             return candidates.get(0);
         }
@@ -103,52 +152,29 @@ public class HttpServerStart implements StartupService {
             return !resPathIterator.hasNext() && !requestPathIterator.hasNext();
         }
 
-        private List<EndpointHandler> getHandlersFilteredByPath(List<EndpointHandler> candidates, List<String> requestPath) {
-            candidates = candidates.stream()
-                    .filter(h -> h.getPath().size() == requestPath.size())
-                    .filter(h -> acceptedPath(h.getPath(), requestPath))
-                    .collect(Collectors.toList());
-            if (candidates.isEmpty()) {
-                throw new NotFoundException();
-            }
-            return candidates;
+        private boolean byPath(EndpointHandler candidate, List<String> requestPath) {
+            return candidate.getPath().size() == requestPath.size()
+                    && acceptedPath(candidate.getPath(), requestPath);
         }
 
-        private List<EndpointHandler> getHandlersFilteredByMethod(List<EndpointHandler> candidates, String method) {
-            candidates = candidates.stream()
-                    .filter(h -> h.getMethod().equals(method))
-                    .collect(Collectors.toList());
-            if (candidates.isEmpty()) {
-                throw new MethodNotAllowedException();
+        private boolean byMethod(EndpointHandler candidate, String method) {
+            return candidate.getMethod().equals(method);
+        }
+
+        private boolean byContentType(EndpointHandler candidate, String contentType) {
+            if (contentType == null) {
+                return true;
             }
-            return candidates;
+            var targetMT = MediaType.valueOf(contentType);
+            return acceptTypes(targetMT, candidate.getConsumedTypes());
+        }
+
+        private boolean byAccept(EndpointHandler candidate, List<MediaType> acceptTypes) {
+            return acceptTypes(acceptTypes, candidate.getProducedTypes());
         }
 
         private boolean acceptTypes(MediaType requestedType, List<MediaType> targetTypes) {
             return targetTypes.stream().anyMatch(requestedType::isCompatible);
-        }
-
-        private List<EndpointHandler> getHandlersFilteredByContentType(List<EndpointHandler> candidates, String contentType) {
-            List<EndpointHandler> result = Optional.ofNullable(contentType)
-                    .map(MediaType::valueOf)
-                    .map(ct -> candidates.stream()
-                            .filter(h -> acceptTypes(ct, h.getConsumedTypes()))
-                            .collect(Collectors.toList()))
-                    .orElse(candidates);
-            if (result.isEmpty()) {
-                throw new UnsupportedMediaTypeException();
-            }
-            return result;
-        }
-
-        private List<EndpointHandler> getHandlersFilteredByAccept(List<EndpointHandler> candidates, List<MediaType> acceptTypes) {
-            candidates = candidates.stream()
-                    .filter(h -> acceptTypes(acceptTypes, h.getProducedTypes()))
-                    .collect(Collectors.toList());
-            if (candidates.isEmpty()) {
-                throw new NotAcceptableException();
-            }
-            return candidates;
         }
 
         private boolean acceptTypes(List<MediaType> requestedTypes, List<MediaType> targetTypes) {

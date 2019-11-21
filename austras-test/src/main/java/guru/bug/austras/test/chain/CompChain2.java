@@ -1,5 +1,7 @@
 package guru.bug.austras.test.chain;
 
+
+@SuppressWarnings("ALL") // this class is for testing only
 public class CompChain2 {
     private final CompChain1 chain1; //NOSONAR for testing purposes only
 
