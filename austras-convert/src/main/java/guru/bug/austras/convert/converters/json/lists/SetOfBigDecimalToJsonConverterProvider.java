@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.math.BigDecimal;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfBigDecimalToJsonConverterProvider extends SetToJsonConverterProvider<BigDecimal> {
 
     public SetOfBigDecimalToJsonConverterProvider(Provider<? extends JsonConverter<BigDecimal>> elementConverterProvider) {

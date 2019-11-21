@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.util.UUID;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfUUIDToJsonConverterProvider extends ListToJsonConverterProvider<UUID> {
 
     public ListOfUUIDToJsonConverterProvider(Provider<? extends JsonConverter<UUID>> elementConverterProvider) {

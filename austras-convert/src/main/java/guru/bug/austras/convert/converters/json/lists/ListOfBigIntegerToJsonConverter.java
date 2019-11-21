@@ -6,6 +6,7 @@ import guru.bug.austras.core.Component;
 import java.math.BigInteger;
 
 @Component
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfBigIntegerToJsonConverter extends ListToJsonConverter<BigInteger> {
 
     public ListOfBigIntegerToJsonConverter(JsonConverter<BigInteger> elementConverter) {

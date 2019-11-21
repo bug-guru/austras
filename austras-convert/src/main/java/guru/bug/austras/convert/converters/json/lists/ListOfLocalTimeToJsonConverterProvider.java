@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.LocalTime;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfLocalTimeToJsonConverterProvider extends ListToJsonConverterProvider<LocalTime> {
 
     public ListOfLocalTimeToJsonConverterProvider(Provider<? extends JsonConverter<LocalTime>> elementConverterProvider) {

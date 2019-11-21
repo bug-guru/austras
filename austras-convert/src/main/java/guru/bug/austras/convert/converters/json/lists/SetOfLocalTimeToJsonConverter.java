@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.LocalTime;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfLocalTimeToJsonConverter extends SetToJsonConverter<LocalTime> {
 

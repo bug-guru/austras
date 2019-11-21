@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.Period;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfPeriodToJsonConverterProvider extends SetToJsonConverterProvider<Period> {
 
     public SetOfPeriodToJsonConverterProvider(Provider<? extends JsonConverter<Period>> elementConverterProvider) {

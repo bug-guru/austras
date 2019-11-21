@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.ZoneOffset;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfZoneOffsetToJsonConverter extends SetToJsonConverter<ZoneOffset> {
 

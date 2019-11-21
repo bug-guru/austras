@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.YearMonth;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfYearMonthToJsonConverterProvider extends ListToJsonConverterProvider<YearMonth> {
 
     public ListOfYearMonthToJsonConverterProvider(Provider<? extends JsonConverter<YearMonth>> elementConverterProvider) {

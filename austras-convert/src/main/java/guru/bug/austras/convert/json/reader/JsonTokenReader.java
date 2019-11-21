@@ -7,7 +7,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class JsonTokenReader {
+class JsonTokenReader {
     private static final char[] NULL = {'u', 'l', 'l'};
     private static final char[] FALSE = {'a', 'l', 's', 'e'};
     private static final char[] TRUE = {'r', 'u', 'e'};
@@ -20,7 +20,7 @@ public class JsonTokenReader {
     private int index = -1;
     private int level;
 
-    public JsonTokenReader(Reader reader) {
+    JsonTokenReader(Reader reader) {
         requireNonNull(reader);
         this.reader = new JsonBufferedReader(reader);
         StringBuilder valueBuilder = new StringBuilder();
@@ -165,7 +165,7 @@ public class JsonTokenReader {
     }
 
 
-    void continueRead(char[] expected) {
+    private void continueRead(char[] expected) {
         for (char c : expected) {
             char actCh = reader.next();
             if (actCh != c) {
@@ -175,7 +175,7 @@ public class JsonTokenReader {
     }
 
 
-    char skipWhitespaces() {
+    private char skipWhitespaces() {
         for (; ; ) {
             char ch = reader.next();
             switch (ch) {
@@ -198,7 +198,7 @@ public class JsonTokenReader {
         return type;
     }
 
-    public int getIndex() {
+    int getIndex() {
         return index;
     }
 
@@ -206,11 +206,11 @@ public class JsonTokenReader {
         return level;
     }
 
-    public ParsingException createUnexpectedTokenException(TokenType actual, TokenType... expected) {
+    private ParsingException createUnexpectedTokenException(TokenType actual, TokenType... expected) {
         return createUnexpectedTokenException(actual, List.of(expected));
     }
 
-    public ParsingException createUnexpectedTokenException(TokenType actual, Collection<TokenType> expected) {
+    private ParsingException createUnexpectedTokenException(TokenType actual, Collection<TokenType> expected) {
         if (expected.isEmpty()) {
             return createParsingException(String.format("Unexpected token [%s]", actual));
         } else {
@@ -219,12 +219,11 @@ public class JsonTokenReader {
     }
 
 
-
-    public ParsingException createParsingException(String message) {
+    ParsingException createParsingException(String message) {
         return reader.createParsingException(message);
     }
 
-    public ParsingException createParsingException() {
+    private ParsingException createParsingException() {
         return reader.createParsingException();
     }
 }

@@ -14,6 +14,7 @@ public abstract class Generator {
     private final BlockWithBody content;
     private final HashMap<String, Caller> callers = new HashMap<>();
 
+    @SuppressWarnings("WeakerAccess")
     protected Generator() throws IOException, TemplateException {
         collectCallers();
         this.content = createContentBlock();
@@ -25,11 +26,13 @@ public abstract class Generator {
         }
     }
 
-    public String generateToString() {
+    @SuppressWarnings("WeakerAccess")
+    protected String generateToString() {
         return content.evaluateBody();
     }
 
-    public void generateTo(Writer writer) throws IOException {
+    @SuppressWarnings("WeakerAccess")
+    protected void generateTo(Writer writer) throws IOException {
         String outputContent = generateToString();
         writer.write(outputContent);
     }

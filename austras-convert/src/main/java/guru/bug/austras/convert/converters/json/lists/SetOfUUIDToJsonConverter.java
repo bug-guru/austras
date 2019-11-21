@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.util.UUID;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfUUIDToJsonConverter extends SetToJsonConverter<UUID> {
 

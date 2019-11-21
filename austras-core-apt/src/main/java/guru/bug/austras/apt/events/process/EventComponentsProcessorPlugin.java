@@ -1,7 +1,5 @@
 package guru.bug.austras.apt.events.process;
 
-import guru.bug.austras.apt.core.ModelUtils;
-import guru.bug.austras.apt.core.UniqueNameGenerator;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.TemplateException;
@@ -17,17 +15,16 @@ import java.io.IOException;
 public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
     private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessorPlugin.class);
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
-    private ModelUtils modelUtils;
-    private UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
+    private ProcessingContext ctx;
     private DispatcherGenerator dispatcherGenerator;
     private BroadcasterGenerator broadcasterGenerator;
 
     @Override
     public void process(ProcessingContext ctx) {
-        modelUtils = new ModelUtils(uniqueNameGenerator, ctx.processingEnv());
+        this.ctx = ctx;
         try {
-            dispatcherGenerator = new DispatcherGenerator(ctx, modelUtils);
-            broadcasterGenerator = new BroadcasterGenerator(ctx, modelUtils);
+            dispatcherGenerator = new DispatcherGenerator(ctx);
+            broadcasterGenerator = new BroadcasterGenerator(ctx);
         } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
@@ -42,17 +39,12 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
     }
 
 
-
     private void generateDispatcher(ProcessingContext ctx, VariableElement e) {
         generateDispatcher(ctx, (ExecutableElement) e.getEnclosingElement());
     }
 
     private void generateDispatcher(ProcessingContext ctx, ExecutableElement e) {
-        try {
-            dispatcherGenerator.generate(e);
-        } catch (IOException ex) {
-            logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
-        }
+        dispatcherGenerator.generate(e);
     }
 
     @SuppressWarnings("squid:MaximumInheritanceDepth")
@@ -81,7 +73,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
                 return null;
             }
 
-            if (modelUtils.isBroadcaster(e.asType())) {
+            if (ctx.modelUtils().isBroadcaster(e.asType())) {
                 generateBroadcaster(ctx, e);
             } else {
                 generateDispatcher(ctx, e);
@@ -103,7 +95,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         private boolean isValidReceiver(ProcessingContext ctx, ExecutableElement method) {
             var annotatedCount = method.getParameters().stream()
                     .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                    .filter(p -> !modelUtils.isBroadcaster(p.asType()))
+                    .filter(p -> !ctx.modelUtils().isBroadcaster(p.asType()))
                     .count();
 
             if (annotatedCount > 1) {
@@ -124,7 +116,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         private boolean isValidBroadcaster(ExecutableElement method) {
             var annotatedCount = method.getParameters().stream()
                     .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                    .filter(p -> modelUtils.isBroadcaster(p.asType()))
+                    .filter(p -> ctx.modelUtils().isBroadcaster(p.asType()))
                     .count();
 
             return annotatedCount >= 1;
@@ -139,11 +131,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         }
 
         private void generateBroadcaster(ProcessingContext ctx, VariableElement e) {
-            try {
-                broadcasterGenerator.generate(e);
-            } catch (IOException ex) {
-                EventComponentsProcessorPlugin.this.logError(ctx, e, "Code generation exception", ex); // TODO Better error handling
-            }
+            broadcasterGenerator.generate(e);
         }
     }
 }

@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.LocalDate;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfLocalDateToJsonConverterProvider extends SetToJsonConverterProvider<LocalDate> {
 
     public SetOfLocalDateToJsonConverterProvider(Provider<? extends JsonConverter<LocalDate>> elementConverterProvider) {

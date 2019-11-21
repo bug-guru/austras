@@ -2,14 +2,14 @@ package guru.bug.austras.convert.json.utils;
 
 public class JsonReadingException extends JsonException {
 
-    public JsonReadingException() {
+    protected JsonReadingException() {
     }
 
     public JsonReadingException(String message) {
         super(message);
     }
 
-    public JsonReadingException(String message, Throwable cause) {
+    protected JsonReadingException(String message, Throwable cause) {
         super(message, cause);
     }
 

@@ -1,7 +1,7 @@
 package guru.bug.austras.codegen;
 
-public class ValueInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
-    public ValueInsertionTokenProcessor() {
+class ValueInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
+    ValueInsertionTokenProcessor() {
         super('$', TemplateToken.Type.VALUE);
     }
 }

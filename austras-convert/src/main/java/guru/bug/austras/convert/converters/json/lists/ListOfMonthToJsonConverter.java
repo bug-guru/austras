@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.Month;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class ListOfMonthToJsonConverter extends ListToJsonConverter<Month> {
 

@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.ZoneId;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfZoneIdToJsonConverterProvider extends SetToJsonConverterProvider<ZoneId> {
 
     public SetOfZoneIdToJsonConverterProvider(Provider<? extends JsonConverter<ZoneId>> elementConverterProvider) {

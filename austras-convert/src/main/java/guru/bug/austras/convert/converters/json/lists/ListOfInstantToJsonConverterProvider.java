@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.Instant;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfInstantToJsonConverterProvider extends ListToJsonConverterProvider<Instant> {
 
     public ListOfInstantToJsonConverterProvider(Provider<? extends JsonConverter<Instant>> elementConverterProvider) {

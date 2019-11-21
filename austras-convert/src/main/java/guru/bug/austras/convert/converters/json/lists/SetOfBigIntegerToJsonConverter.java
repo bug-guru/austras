@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.math.BigInteger;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfBigIntegerToJsonConverter extends SetToJsonConverter<BigInteger> {
 

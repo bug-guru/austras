@@ -7,6 +7,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListToJsonConverter<T> implements JsonConverter<List<T>> {
     private final JsonConverter<T> elementConverter;
 

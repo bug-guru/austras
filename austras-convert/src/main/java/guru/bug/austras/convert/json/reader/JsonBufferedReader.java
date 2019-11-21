@@ -78,7 +78,7 @@ class JsonBufferedReader {
         }
     }
 
-    char next0() {
+    private char next0() {
         try {
             if (!buffer.hasRemaining()) {
                 buffer.clear();
@@ -102,7 +102,7 @@ class JsonBufferedReader {
         return new ParsingException(message, pos);
     }
 
-    ParsingException createParsingException(Throwable cause) {
+    private ParsingException createParsingException(Throwable cause) {
         return new ParsingException(pos, cause);
     }
 
@@ -128,11 +128,11 @@ class JsonBufferedReader {
             col++;
         }
 
-        public int getRow() {
+        int getRow() {
             return row;
         }
 
-        public int getCol() {
+        int getCol() {
             return col;
         }
     }

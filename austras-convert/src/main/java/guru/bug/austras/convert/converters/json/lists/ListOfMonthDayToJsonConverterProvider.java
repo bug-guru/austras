@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.MonthDay;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfMonthDayToJsonConverterProvider extends ListToJsonConverterProvider<MonthDay> {
 
     public ListOfMonthDayToJsonConverterProvider(Provider<? extends JsonConverter<MonthDay>> elementConverterProvider) {

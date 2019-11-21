@@ -186,7 +186,7 @@ public class ModelUtils {
         return unwrap(providerType, providerInterfaceElement);
     }
 
-    public DeclaredType extractComponentTypeFromCollection(DeclaredType collectionType) {
+    private DeclaredType extractComponentTypeFromCollection(DeclaredType collectionType) {
         if (!isCollection(collectionType)) {
             throw new IllegalArgumentException(collectionType + " isn't a collection");
         }
@@ -276,11 +276,11 @@ public class ModelUtils {
         return typeUtils.isAssignable(type, broadcasterInterfaceType);
     }
 
-    public boolean isCollection(DeclaredType type) {
+    private boolean isCollection(DeclaredType type) {
         return typeUtils.isAssignable(type, collectionInterfaceType);
     }
 
-    public boolean isProvider(TypeMirror type) {
+    private boolean isProvider(TypeMirror type) {
         return typeUtils.isAssignable(type, providerInterfaceType);
     }
 

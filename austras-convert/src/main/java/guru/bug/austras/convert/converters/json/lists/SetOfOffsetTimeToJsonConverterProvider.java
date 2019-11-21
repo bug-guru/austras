@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.OffsetTime;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfOffsetTimeToJsonConverterProvider extends SetToJsonConverterProvider<OffsetTime> {
 
     public SetOfOffsetTimeToJsonConverterProvider(Provider<? extends JsonConverter<OffsetTime>> elementConverterProvider) {

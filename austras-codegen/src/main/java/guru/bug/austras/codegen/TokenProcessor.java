@@ -1,6 +1,6 @@
 package guru.bug.austras.codegen;
 
-public interface TokenProcessor<T> {
+interface TokenProcessor<T> {
     ProcessResult process(int codePoint);
 
     T complete();

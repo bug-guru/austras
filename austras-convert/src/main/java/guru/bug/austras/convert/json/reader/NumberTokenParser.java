@@ -1,7 +1,7 @@
 package guru.bug.austras.convert.json.reader;
 
 class NumberTokenParser {
-    public static final String NUMBER_EXPECTED = "Number expected";
+    private static final String NUMBER_EXPECTED = "Number expected";
     private final JsonBufferedReader reader;
     private final StringBuilder valueBuilder;
 
@@ -29,12 +29,12 @@ class NumberTokenParser {
         return valueBuilder.toString();
     }
 
-    void readOptionalDigitsOrFracOrExp() {
+    private void readOptionalDigitsOrFracOrExp() {
         char ch = readOptionalDigits();
         readOptionalFracOrExp(ch);
     }
 
-    char readOptionalDigits() {
+    private char readOptionalDigits() {
         char ch = reader.next();
         while (ch >= '0' && ch <= '9') {
             valueBuilder.append(ch);
@@ -43,7 +43,7 @@ class NumberTokenParser {
         return ch;
     }
 
-    void readOptionalFracOrExp(char ch) {
+    private void readOptionalFracOrExp(char ch) {
         if (ch == '.') {
             valueBuilder.append(ch);
             readDigitsAndOptionalExp();
@@ -55,7 +55,7 @@ class NumberTokenParser {
         }
     }
 
-    void readDigitsAndOptionalExp() {
+    private void readDigitsAndOptionalExp() {
         char ch = reader.next();
         if (ch >= '0' && ch <= '9') {
             valueBuilder.append(ch);
@@ -71,7 +71,7 @@ class NumberTokenParser {
         }
     }
 
-    void readExp() {
+    private void readExp() {
         char ch = reader.next();
         if (ch == '+' || ch == '-') {
             valueBuilder.append(ch);

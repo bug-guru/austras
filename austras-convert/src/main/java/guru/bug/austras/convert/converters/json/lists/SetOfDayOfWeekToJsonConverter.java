@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.DayOfWeek;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfDayOfWeekToJsonConverter extends SetToJsonConverter<DayOfWeek> {
 

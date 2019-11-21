@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.ZonedDateTime;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class SetOfZonedDateTimeToJsonConverter extends SetToJsonConverter<ZonedDateTime> {
 

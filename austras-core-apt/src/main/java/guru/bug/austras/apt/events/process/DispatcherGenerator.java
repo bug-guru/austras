@@ -26,18 +26,16 @@ import java.util.stream.Collectors;
 public class DispatcherGenerator extends JavaGenerator {
     private static final String MESSAGE_QUALIFIER_NAME = "austras.message";
     private final ProcessingContext ctx;
-    private final ModelUtils modelUtils;
     private MessageDispatcherModel dispatcherModel;
     private DependencyModel currentDependency;
     private String optionalComma;
 
-    public DispatcherGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException, TemplateException {
+    DispatcherGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
-        this.modelUtils = modelUtils;
     }
 
-    public void generate(ExecutableElement method) throws IOException {
+    void generate(ExecutableElement method) {
         createModel(method);
         super.generateJavaClass();
     }
@@ -58,9 +56,9 @@ public class DispatcherGenerator extends JavaGenerator {
         dispatcherModel.addDependency(componentDependency);
 
         for (var p : method.getParameters()) {
-            var paramQualifiers = modelUtils.extractQualifiers(p);
+            var paramQualifiers = ctx.modelUtils().extractQualifiers(p);
             if (messageParamElement == null
-                    && !modelUtils.isBroadcaster(p.asType())
+                    && !ctx.modelUtils().isBroadcaster(p.asType())
                     && paramQualifiers.contains(MESSAGE_QUALIFIER_NAME)) {
                 dispatcherModel.setQualifiers(paramQualifiers);
                 messageParamElement = p;
@@ -70,7 +68,7 @@ public class DispatcherGenerator extends JavaGenerator {
                 dispatcherModel.addParameter(d);
                 dispatcherModel.setMessageParam(d);
             } else {
-                var origDep = modelUtils.createDependencyModel(p);
+                var origDep = ctx.modelUtils().createDependencyModel(p);
                 var dependency = origDep.copyAsProvider();
                 var callParam = new CallParamModel();
                 callParam.setResolveProvider(!origDep.isProvider());
@@ -83,7 +81,7 @@ public class DispatcherGenerator extends JavaGenerator {
         }
         if (messageParamElement == null) {
             dispatcherModel.setMessageType(Void.class.getName());
-            dispatcherModel.setQualifiers(modelUtils.extractQualifiers(method));
+            dispatcherModel.setQualifiers(ctx.modelUtils().extractQualifiers(method));
             var mp = new MessageCallParamModel();
             mp.setName("_aVoid");
             mp.setType(Void.class.getName());
@@ -99,7 +97,7 @@ public class DispatcherGenerator extends JavaGenerator {
         var componentElement = (TypeElement) method.getEnclosingElement();
         DeclaredType componentType = (DeclaredType) componentElement.asType();
         // TODO varName must be unique
-        var componentDependency = modelUtils.createDependencyModel("_receiverComponentsProvider", componentType, componentElement);
+        var componentDependency = ctx.modelUtils().createDependencyModel("_receiverComponentsProvider", componentType, componentElement);
         componentDependency.setProvider(true);
         componentDependency.setCollection(true);
         return componentDependency;

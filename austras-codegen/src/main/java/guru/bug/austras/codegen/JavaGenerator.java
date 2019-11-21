@@ -58,7 +58,7 @@ public abstract class JavaGenerator extends Generator {
         return !pkg.equals("java.lang") && !pkg.equals(getPackageName());
     }
 
-    protected final void generateJavaClass() throws IOException {
+    protected final void generateJavaClass() {
         imports.clear();
         var qualifiedName = getPackageName() + '.' + getSimpleClassName();
         try (var out = filer.createSourceFile(qualifiedName).openWriter()) {
@@ -69,8 +69,11 @@ public abstract class JavaGenerator extends Generator {
         }
     }
 
+
+    @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
     public abstract String getPackageName();
 
+    @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
     public abstract String getSimpleClassName();
 
     @FromTemplate("IMPORTS")

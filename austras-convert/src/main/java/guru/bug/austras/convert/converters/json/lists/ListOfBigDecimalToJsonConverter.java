@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.math.BigDecimal;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class ListOfBigDecimalToJsonConverter extends ListToJsonConverter<BigDecimal> {
 

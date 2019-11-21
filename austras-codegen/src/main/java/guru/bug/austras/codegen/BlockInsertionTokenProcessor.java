@@ -1,7 +1,7 @@
 package guru.bug.austras.codegen;
 
-public class BlockInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
-    public BlockInsertionTokenProcessor() {
+class BlockInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
+    BlockInsertionTokenProcessor() {
         super('#', TemplateToken.Type.BLOCK);
     }
 }

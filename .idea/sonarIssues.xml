@@ -68,6 +68,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/JavaGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/NewLineTokenProcessor.java">
           <value>
             <set>
@@ -237,6 +242,11 @@
                 <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/package-info.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/spec/AnnotationSpec.java">
@@ -1220,6 +1230,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/BroadcasterGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/DispatcherGenerator.java">
           <value>
             <set>
@@ -1244,16 +1259,8 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
-                <option name="line" value="117" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwt" />
-                <option name="line" value="76" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
+                <option name="line" value="106" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1261,31 +1268,23 @@
               <SonarIssue>
                 <option name="isNew" value="false" />
                 <option name="key" value="AW57VkHBWLNuwUjKJIws" />
-                <option name="line" value="54" />
+                <option name="line" value="50" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
-                <option name="line" value="110" />
+                <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
+                <option name="line" value="113" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwy" />
-                <option name="line" value="46" />
-                <option name="message" value="Move this method into &quot;ElementWithMessageVisitor&quot;." />
-                <option name="ruleKey" value="squid:S3398" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
                 <option name="key" value="AW6Ac5w5WLNuwUjKJSbg" />
-                <option name="line" value="145" />
+                <option name="line" value="137" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />

@@ -7,6 +7,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetToJsonConverter<T> implements JsonConverter<Set<T>> {
     private final JsonConverter<T> elementConverter;
 

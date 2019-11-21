@@ -5,6 +5,7 @@ import guru.bug.austras.core.Component;
 
 import java.time.Year;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 @Component
 public class ListOfYearToJsonConverter extends ListToJsonConverter<Year> {
 

@@ -6,6 +6,7 @@ import guru.bug.austras.provider.Provider;
 
 import java.time.DayOfWeek;
 
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class SetOfDayOfWeekToJsonConverterProvider extends SetToJsonConverterProvider<DayOfWeek> {
 
     public SetOfDayOfWeekToJsonConverterProvider(Provider<? extends JsonConverter<DayOfWeek>> elementConverterProvider) {

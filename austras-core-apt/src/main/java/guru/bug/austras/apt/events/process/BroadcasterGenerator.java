@@ -16,16 +16,14 @@ import java.io.IOException;
 public class BroadcasterGenerator extends JavaGenerator {
 
     private final ProcessingContext ctx;
-    private final ModelUtils modelUtils;
     private MessageBroadcasterModel messageBroadcasterModel;
 
-    public BroadcasterGenerator(ProcessingContext ctx, ModelUtils modelUtils) throws IOException, TemplateException {
+    BroadcasterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
-        this.modelUtils = modelUtils;
     }
 
-    public void generate(VariableElement e) throws IOException {
+    void generate(VariableElement e) {
         messageBroadcasterModel = createModel(e);
         super.generateJavaClass();
     }
@@ -58,11 +56,11 @@ public class BroadcasterGenerator extends JavaGenerator {
         var packageName = ctx.processingEnv().getElementUtils().getPackageOf(e).getQualifiedName().toString();
         result.setPackageName(packageName);
         var paramType = (DeclaredType) e.asType();
-        var msgType = modelUtils.extractComponentTypeFromBroadcaster(paramType);
+        var msgType = ctx.modelUtils().extractComponentTypeFromBroadcaster(paramType);
 
         result.setType(msgType.toString());
 
-        var qualifier = modelUtils.extractQualifiers(e);
+        var qualifier = ctx.modelUtils().extractQualifiers(e);
         result.setQualifier(qualifier);
 
         var method = e.getEnclosingElement();

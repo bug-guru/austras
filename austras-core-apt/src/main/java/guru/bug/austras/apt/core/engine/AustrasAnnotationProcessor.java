@@ -300,6 +300,10 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             return componentManager;
         }
 
+        @Override
+        public ModelUtils modelUtils() {
+            return modelUtils;
+        }
     }
 
     private class ComponentManagerImpl implements ComponentManager {

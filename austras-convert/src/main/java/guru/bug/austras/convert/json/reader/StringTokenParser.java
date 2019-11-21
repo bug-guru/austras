@@ -9,7 +9,7 @@ class StringTokenParser {
         this.valueBuilder = valueBuilder;
     }
 
-    static int convertHexToDec(char c) {
+    private static int convertHexToDec(char c) {
         if (c >= '0' && c <= '9') {
             return c - '0';
         }
@@ -40,7 +40,7 @@ class StringTokenParser {
         return valueBuilder.toString();
     }
 
-    char readEscape() {
+    private char readEscape() {
         char ch = reader.next();
         switch (ch) {
             case '"':
@@ -62,7 +62,7 @@ class StringTokenParser {
         }
     }
 
-    char readUnicode() {
+    private char readUnicode() {
         try {
             int result = 0;
             for (int i = 0; i < 4; i++) {

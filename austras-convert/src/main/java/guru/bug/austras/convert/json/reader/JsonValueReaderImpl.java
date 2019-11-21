@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 import static guru.bug.austras.convert.json.reader.TokenType.*;
 
 public class JsonValueReaderImpl implements JsonValueReader {
-    public static final String CHAR_WAS_EXPECTING = "Char was expecting";
+    private static final String CHAR_WAS_EXPECTING = "Char was expecting";
     private final JsonTokenReader tokenReader;
 
     JsonValueReaderImpl(JsonTokenReader tokenReader) {
@@ -28,7 +28,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Boolean readNullableBoolean() {
-        var tt = tokenReader.nextBoolean(TRUE, FALSE, NULL);
+        var tt = tokenReader.nextBoolean();
         if (tt == NULL) {
             return null; //NOSONAR reading null from json is OK
         }
@@ -37,7 +37,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Boolean> readOptionalBoolean() {
-        var tt = tokenReader.nextBoolean(TRUE, FALSE, NULL);
+        var tt = tokenReader.nextBoolean();
         if (tt == NULL) {
             return Optional.empty();
         }

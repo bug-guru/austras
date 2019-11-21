@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Tokenizer<T> {
+class Tokenizer<T> {
     private final List<TokenProcessor<T>> variants;
 
-    public Tokenizer(List<TokenProcessor<T>> variants) {
+    Tokenizer(List<TokenProcessor<T>> variants) {
         this.variants = variants;
     }
 

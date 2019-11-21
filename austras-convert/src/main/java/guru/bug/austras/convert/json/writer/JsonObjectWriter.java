@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 public interface JsonObjectWriter {
 
     void write(String key, byte value);
