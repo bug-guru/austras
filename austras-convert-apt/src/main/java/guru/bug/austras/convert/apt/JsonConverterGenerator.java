@@ -33,13 +33,13 @@ public class JsonConverterGenerator extends JavaGenerator {
     private String targetQualifiedName;
     private Property currentProperty;
 
-    public JsonConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
+    JsonConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
     }
 
 
-    public void generate(DeclaredType type) throws IOException {
+    void generate(DeclaredType type) {
         properties = collectProps(type);
         packageName = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
         simpleName = type.asElement().getSimpleName().toString() + "ToJsonConverter";

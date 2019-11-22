@@ -253,7 +253,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void resolveAndGenerateProviders() throws IOException {
+    private void resolveAndGenerateProviders() {
         var toAdd = new ArrayList<ComponentModel>();
         var toGenerate = new ArrayList<ComponentModel>();
         componentMap.allComponentsStream()
@@ -280,7 +280,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void generateProvider(ComponentModel model) throws IOException {
+    private void generateProvider(ComponentModel model) {
         TypeElement componentElement = processingEnv.getElementUtils().getTypeElement(model.getInstantiable());
         List<DependencyModel> dependencies = modelUtils.collectConstructorParams(componentElement);
         defaultProviderGenerator.generate(model, componentElement, dependencies);

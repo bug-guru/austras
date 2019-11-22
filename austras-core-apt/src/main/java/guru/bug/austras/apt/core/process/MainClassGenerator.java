@@ -162,7 +162,7 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    public ProviderModel findProviderModel() {
+    private ProviderModel findProviderModel() {
         var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
         ComponentModel singleComponentModel = componentMap.findSingleComponentModel(key);
         if (singleComponentModel == null) {
@@ -227,7 +227,7 @@ public class MainClassGenerator extends JavaGenerator {
         return new ArrayDeque<>(result.values());
     }
 
-    public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) throws IOException {
+    public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) {
         if (appMainComponent == null) {
             log.debug("No application component");
             return;

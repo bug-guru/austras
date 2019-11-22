@@ -194,7 +194,7 @@ class JsonTokenReader {
         return value;
     }
 
-    public TokenType getType() {
+    TokenType getType() {
         return type;
     }
 
@@ -202,7 +202,7 @@ class JsonTokenReader {
         return index;
     }
 
-    public int getLevel() {
+    int getLevel() {
         return level;
     }
 
@@ -211,11 +211,7 @@ class JsonTokenReader {
     }
 
     private ParsingException createUnexpectedTokenException(TokenType actual, Collection<TokenType> expected) {
-        if (expected.isEmpty()) {
-            return createParsingException(String.format("Unexpected token [%s]", actual));
-        } else {
-            return createParsingException(String.format("Unexpected token [%s]. Expected tokens: %s", actual, expected));
-        }
+        return createParsingException(String.format("Unexpected token [%s]. Expected tokens: %s" , actual, expected));
     }
 
 

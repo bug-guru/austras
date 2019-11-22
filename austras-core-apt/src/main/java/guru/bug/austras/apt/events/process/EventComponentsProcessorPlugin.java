@@ -32,21 +32,6 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
                 .forEach(e -> e.accept(msgVisitor, ctx));
     }
 
-    private void logError(ProcessingContext ctx, Element e, String reason, Throwable t) {
-        String msg = "Cannot process " + e + (reason == null ? "" : ": " + reason);
-        log.error(msg, t);
-        ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, msg, e);
-    }
-
-
-    private void generateDispatcher(ProcessingContext ctx, VariableElement e) {
-        generateDispatcher(ctx, (ExecutableElement) e.getEnclosingElement());
-    }
-
-    private void generateDispatcher(ProcessingContext ctx, ExecutableElement e) {
-        dispatcherGenerator.generate(e);
-    }
-
     @SuppressWarnings("squid:MaximumInheritanceDepth")
     private class ElementWithMessageVisitor extends SimpleElementVisitor9<Void, ProcessingContext> {
 
@@ -74,9 +59,9 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
             }
 
             if (ctx.modelUtils().isBroadcaster(e.asType())) {
-                generateBroadcaster(ctx, e);
+                generateBroadcaster(e);
             } else {
-                generateDispatcher(ctx, e);
+                generateDispatcher(e);
             }
 
             return null;
@@ -86,7 +71,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         @Override
         public Void visitExecutable(ExecutableElement e, ProcessingContext ctx) {
             if (isValidReceiver(ctx, e)) {
-                generateDispatcher(ctx, e);
+                generateDispatcher(e);
             }
 
             return null;
@@ -123,15 +108,25 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         }
 
         private void logError(ProcessingContext ctx, Element e, String reason) {
-            EventComponentsProcessorPlugin.this.logError(ctx, e, reason, null);
+            String msg = "Cannot process " + e + (reason == null ? "" : ": " + reason);
+            log.error(msg);
+            ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, msg, e);
         }
 
         private void logError(ProcessingContext ctx, Element e) {
-            EventComponentsProcessorPlugin.this.logError(ctx, e, null, null);
+            logError(ctx, e, null);
         }
 
-        private void generateBroadcaster(ProcessingContext ctx, VariableElement e) {
+        private void generateBroadcaster(VariableElement e) {
             broadcasterGenerator.generate(e);
+        }
+
+        private void generateDispatcher(VariableElement e) {
+            generateDispatcher((ExecutableElement) e.getEnclosingElement());
+        }
+
+        private void generateDispatcher(ExecutableElement e) {
+            dispatcherGenerator.generate(e);
         }
     }
 }

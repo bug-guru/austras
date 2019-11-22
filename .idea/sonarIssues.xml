@@ -68,25 +68,6 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/JavaGenerator.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/NewLineTokenProcessor.java">
-          <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj5lWLNuwUjKJIvx" />
-                <option name="line" value="8" />
-                <option name="message" value="Replace this &quot;switch&quot; statement by &quot;if&quot; statements to increase readability." />
-                <option name="ruleKey" value="squid:S1301" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-codegen/src/main/java/guru/bug/austras/codegen/Printable.java">
           <value>
             <set />
@@ -845,16 +826,8 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW5_5qCtWLNuwUjKJSZr" />
-                <option name="line" value="87" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJ1WLNuwUjKJIxA" />
-                <option name="line" value="81" />
+                <option name="key" value="AW6U_-m1txF_EzPpKMHd" />
+                <option name="line" value="83" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -862,12 +835,12 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
+        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/java/guru/bug/austras/convert/apt/JsonConverterGenerator.java">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/pom.xml">
+        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
           <value>
             <set />
           </value>
@@ -877,7 +850,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VjxcWLNuwUjKJIu6" />
+                <option name="key" value="AW6U_-YWtxF_EzPpKMGU" />
                 <option name="line" value="6" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -886,18 +859,9 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/StringTokenParser.java">
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonTokenReader.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj3lWLNuwUjKJIvh" />
-                <option name="line" value="28" />
-                <option name="message" value="Reduce the total number of break and continue statements in this loop to use at most one." />
-                <option name="ruleKey" value="squid:S135" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonTokenWriter.java">
@@ -905,7 +869,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57Vj0GWLNuwUjKJIvM" />
+                <option name="key" value="AW6U_-a_txF_EzPpKMGV" />
                 <option name="line" value="0" />
                 <option name="message" value="2 duplicated blocks of code must be removed." />
                 <option name="ruleKey" value="common-java:DuplicatedBlocks" />
@@ -914,12 +878,12 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonValueWriterImpl.java">
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonTokenReaderTest.java">
           <value>
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonTokenReaderTest.java">
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonValueReaderFactoryTest.java">
           <value>
             <set />
           </value>
@@ -999,16 +963,24 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
-                <option name="line" value="90" />
+                <option name="key" value="AW6U_-g6txF_EzPpKMHO" />
+                <option name="line" value="234" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
-                <option name="line" value="234" />
+                <option name="key" value="AW6VFUpltxF_EzPpKPk7" />
+                <option name="line" value="256" />
+                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
+                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
+                <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW6U_-g6txF_EzPpKMHN" />
+                <option name="line" value="90" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1223,21 +1195,26 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/DefaultProviderGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/MainClassGenerator.java">
           <value>
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFTWLNuwUjKJIwZ" />
-                <option name="line" value="173" />
+                <option name="key" value="AW6U_-f8txF_EzPpKMHJ" />
+                <option name="line" value="169" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFTWLNuwUjKJIwY" />
-                <option name="line" value="169" />
+                <option name="key" value="AW6U_-f8txF_EzPpKMHK" />
+                <option name="line" value="173" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1270,18 +1247,13 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/BroadcasterGenerator.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/DispatcherGenerator.java">
           <value>
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkGrWLNuwUjKJIwn" />
-                <option name="line" value="101" />
+                <option name="key" value="AW6U_-iFtxF_EzPpKMHW" />
+                <option name="line" value="99" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1299,32 +1271,24 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwp" />
-                <option name="line" value="106" />
+                <option name="key" value="AW6U_-hntxF_EzPpKMHQ" />
+                <option name="line" value="53" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW6Ac5w5WLNuwUjKJSbg" />
-                <option name="line" value="137" />
+                <option name="key" value="AW6U_-hntxF_EzPpKMHS" />
+                <option name="line" value="94" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIws" />
-                <option name="line" value="50" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
-                <option name="line" value="113" />
+                <option name="key" value="AW6U_-hntxF_EzPpKMHR" />
+                <option name="line" value="87" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1411,7 +1375,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkDVWLNuwUjKJIwS" />
+                <option name="key" value="AW6U_-l5txF_EzPpKMHb" />
                 <option name="line" value="3" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -1582,7 +1546,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkIvWLNuwUjKJIw3" />
+                <option name="key" value="AW6U_-jotxF_EzPpKMHa" />
                 <option name="line" value="12" />
                 <option name="message" value="Make sure that using a regular expression is safe here." />
                 <option name="ruleKey" value="squid:S4784" />
@@ -1596,7 +1560,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkIUWLNuwUjKJIw2" />
+                <option name="key" value="AW6U_-jCtxF_EzPpKMHZ" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -1610,7 +1574,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkH_WLNuwUjKJIw1" />
+                <option name="key" value="AW6U_-iutxF_EzPpKMHY" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
@@ -1624,7 +1588,7 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkHqWLNuwUjKJIw0" />
+                <option name="key" value="AW6U_-ihtxF_EzPpKMHX" />
                 <option name="line" value="4" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />

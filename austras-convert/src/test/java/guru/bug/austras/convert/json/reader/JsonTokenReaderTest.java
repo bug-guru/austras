@@ -312,6 +312,11 @@ class JsonTokenReaderTest {
     }
 
     @Test
+    void testNextTokenUnexpectedBoolean() {
+        assertThrows(ParsingException.class, () -> new JsonTokenReader(new StringReader("{}")).nextBoolean());
+    }
+
+    @Test
     void testNextTokenExpectedSetParam() {
         StringReader reader = new StringReader("{}[]");
         JsonTokenReader json = new JsonTokenReader(reader);

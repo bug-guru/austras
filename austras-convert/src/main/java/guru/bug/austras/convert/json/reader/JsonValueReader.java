@@ -1,5 +1,6 @@
 package guru.bug.austras.convert.json.reader;
 
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -7,6 +8,11 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface JsonValueReader {
+
+    static JsonValueReader newInstance(Reader reader) {
+        var tokenReader = new JsonTokenReader(reader);
+        return new JsonValueReaderImpl(tokenReader);
+    }
 
     /* BOOLEAN */
 

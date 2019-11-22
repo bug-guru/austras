@@ -30,7 +30,7 @@ public class DefaultProviderGenerator extends JavaGenerator {
         this.processingEnv = processingEnv;
     }
 
-    public void generate(ComponentModel componentModel, TypeElement element, List<DependencyModel> dependencies) throws IOException {
+    public void generate(ComponentModel componentModel, TypeElement element, List<DependencyModel> dependencies) {
         this.componentModel = componentModel;
         this.providerPackageName = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName().toString();
         this.providerSimpleClassName = element.getSimpleName() + "Provider";
@@ -120,11 +120,11 @@ public class DefaultProviderGenerator extends JavaGenerator {
         }
     }
 
-    protected static class Dependency {
-        protected final DependencyModel componentDependency;
-        protected final DependencyModel providerDependency;
+    static class Dependency {
+        final DependencyModel componentDependency;
+        final DependencyModel providerDependency;
 
-        public Dependency(DependencyModel componentDependency) {
+        Dependency(DependencyModel componentDependency) {
             this.componentDependency = componentDependency;
             this.providerDependency = componentDependency.copyAsProvider();
         }

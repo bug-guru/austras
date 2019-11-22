@@ -29,13 +29,11 @@ class StringTokenParser {
             if (ch == '\\') {
                 ch = readEscape();
                 valueBuilder.append(ch);
-                continue;
-            }
-            if (ch >= '\u0020') {
+            } else if (ch >= '\u0020') {
                 valueBuilder.append(ch);
-                continue;
+            } else {
+                throw reader.createParsingException("Illegal string");
             }
-            throw reader.createParsingException("Illegal string");
         }
         return valueBuilder.toString();
     }

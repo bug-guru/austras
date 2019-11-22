@@ -71,24 +71,20 @@ class ConvertersProcessor {
         }
         var convDeclType = (DeclaredType) args.get(0);
 
-        try {
-            if (isJsonConverter) {
-                generateJsonConverter(convDeclType);
-            } else {
-                generateStringConverter(convDeclType);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e); // TODO better error handling
+        if (isJsonConverter) {
+            generateJsonConverter(convDeclType);
+        } else {
+            generateStringConverter(convDeclType);
         }
     }
 
-    private void generateStringConverter(DeclaredType conversionType) throws IOException { //NOSONAR not yet finished
-        logger.info("GENERATING STRING CONVERTER FOR {}", conversionType);
+    private void generateStringConverter(DeclaredType conversionType) { //NOSONAR not yet finished
+        logger.info("GENERATING STRING CONVERTER FOR {}" , conversionType);
         // TODO
     }
 
-    private void generateJsonConverter(DeclaredType conversionType) throws IOException {
-        logger.info("generating json converter for {}", conversionType);
+    private void generateJsonConverter(DeclaredType conversionType) {
+        logger.info("generating json converter for {}" , conversionType);
         jsonConverterGenerator.generate(conversionType);
     }
 
