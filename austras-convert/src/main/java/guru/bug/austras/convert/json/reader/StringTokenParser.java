@@ -9,7 +9,7 @@ class StringTokenParser {
         this.valueBuilder = valueBuilder;
     }
 
-    private static int convertHexToDec(char c) {
+    static int convertHexToDec(char c) {
         if (c >= '0' && c <= '9') {
             return c - '0';
         }

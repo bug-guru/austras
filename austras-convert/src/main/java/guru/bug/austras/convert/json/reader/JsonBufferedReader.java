@@ -78,7 +78,7 @@ class JsonBufferedReader {
         }
     }
 
-    private char next0() {
+    char next0() {
         try {
             if (!buffer.hasRemaining()) {
                 buffer.clear();

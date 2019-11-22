@@ -219,19 +219,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZpWAvOYQK1-KGAF" />
-                <option name="line" value="44" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZpWAvOYQK1-KGAD" />
                 <option name="line" value="43" />
                 <option name="message" value="Convert the abstract class &quot;Bound&quot; into an interface." />
                 <option name="ruleKey" value="squid:S1610" />
                 <option name="severity" value="MINOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZpWAvOYQK1-KGAF" />
+                <option name="line" value="44" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -845,16 +845,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkJ1WLNuwUjKJIxA" />
-                <option name="line" value="81" />
+                <option name="key" value="AW5_5qCtWLNuwUjKJSZr" />
+                <option name="line" value="87" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW5_5qCtWLNuwUjKJSZr" />
-                <option name="line" value="87" />
+                <option name="key" value="AW57VkJ1WLNuwUjKJIxA" />
+                <option name="line" value="81" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -863,6 +863,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/pom.xml">
           <value>
             <set />
           </value>
@@ -907,6 +912,41 @@
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonValueWriterImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonTokenReaderTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/StringTokenParserTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterImplTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonTokenWriterTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonValueWriterFactoryTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonValueWriterImplTest.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/target/generated-sources/annotations/guru/bug/austras/convert/converters/json/BooleanToJsonConverterProvider.java">
@@ -959,16 +999,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
-                <option name="line" value="234" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
+                <option name="line" value="90" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW57VkFzWLNuwUjKJIwc" />
-                <option name="line" value="90" />
+                <option name="key" value="AW57VkFzWLNuwUjKJIwe" />
+                <option name="line" value="234" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1064,19 +1104,19 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ8rAvOYQK1-KGBU" />
-                <option name="line" value="31" />
-                <option name="message" value="Remove useless curly braces around statement" />
-                <option name="ruleKey" value="squid:S1602" />
-                <option name="severity" value="MINOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ8rAvOYQK1-KGBV" />
                 <option name="line" value="32" />
                 <option name="message" value="%n should be used in place of \n to produce the platform-specific line separator." />
                 <option name="ruleKey" value="squid:S3457" />
                 <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ8rAvOYQK1-KGBU" />
+                <option name="line" value="31" />
+                <option name="message" value="Remove useless curly braces around statement" />
+                <option name="ruleKey" value="squid:S1602" />
+                <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -1102,18 +1142,18 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ6nAvOYQK1-KGBG" />
-                <option name="line" value="39" />
-                <option name="message" value="Use the built-in formatting to construct this argument." />
-                <option name="ruleKey" value="squid:S2629" />
-                <option name="severity" value="MAJOR" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ7DAvOYQK1-KGBJ" />
                 <option name="line" value="22" />
                 <option name="message" value="A &quot;NullPointerException&quot; could be thrown; &quot;logger&quot; is nullable here." />
                 <option name="ruleKey" value="squid:S2259" />
+                <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ6nAvOYQK1-KGBG" />
+                <option name="line" value="39" />
+                <option name="message" value="Use the built-in formatting to construct this argument." />
+                <option name="ruleKey" value="squid:S2629" />
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
               <SonarIssue>
@@ -1134,19 +1174,19 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW3GyZ7DAvOYQK1-KGBL" />
-                <option name="line" value="22" />
-                <option name="message" value="Make sure that this logger's configuration is safe." />
-                <option name="ruleKey" value="squid:S4792" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
                 <option name="key" value="AW3GyZ7DAvOYQK1-KGBH" />
                 <option name="line" value="41" />
                 <option name="message" value="Use the built-in formatting to construct this argument." />
                 <option name="ruleKey" value="squid:S2629" />
                 <option name="severity" value="MAJOR" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
+                <option name="key" value="AW3GyZ7DAvOYQK1-KGBL" />
+                <option name="line" value="22" />
+                <option name="message" value="Make sure that this logger's configuration is safe." />
+                <option name="ruleKey" value="squid:S4792" />
+                <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -1267,6 +1307,14 @@
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
+                <option name="key" value="AW6Ac5w5WLNuwUjKJSbg" />
+                <option name="line" value="137" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
                 <option name="key" value="AW57VkHBWLNuwUjKJIws" />
                 <option name="line" value="50" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
@@ -1277,14 +1325,6 @@
                 <option name="isNew" value="false" />
                 <option name="key" value="AW57VkHBWLNuwUjKJIwq" />
                 <option name="line" value="113" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6Ac5w5WLNuwUjKJSbg" />
-                <option name="line" value="137" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />

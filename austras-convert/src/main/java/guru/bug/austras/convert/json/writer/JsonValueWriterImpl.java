@@ -397,12 +397,12 @@ class JsonValueWriterImpl implements JsonValueWriter {
 
     @Override
     public <T> void writeArray(Stream<T> stream, JsonSerializer<T> valueWriterConsumer) {
-        writeArray(stream.iterator(), valueWriterConsumer);
+        writeArray(stream == null ? null : stream.iterator(), valueWriterConsumer);
     }
 
     @Override
     public <T> void writeArray(Iterable<T> iterable, JsonSerializer<T> valueWriterConsumer) {
-        writeArray(iterable.iterator(), valueWriterConsumer);
+        writeArray(iterable == null ? null : iterable.iterator(), valueWriterConsumer);
     }
 
     @Override
