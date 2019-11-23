@@ -359,32 +359,53 @@ class JsonValueReaderTest {
 
     @Test
     void readBigIntegerArray() {
-        assertEquals(Arrays.asList(null, 0, 10, 1000),
-                reader("[null, 0, 10, 1000]").readIntegerArray().orElseThrow().collect(Collectors.toList()));
-        assertEquals(0, reader("[]").readIntegerArray().orElseThrow().count());
-        assertTrue(reader("null").readIntegerArray().isEmpty());
+        assertEquals(Arrays.asList(null, BigInteger.ZERO, BigInteger.TEN, BigInteger.valueOf(1000)),
+                reader("[null, 0, 10, 1000]").readBigIntegerArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readBigIntegerArray().orElseThrow().count());
+        assertTrue(reader("null").readBigIntegerArray().isEmpty());
         assertThrows(ParsingException.class,
-                () -> reader("[0,").readIntegerArray().orElseThrow().forEach(this::noop));
+                () -> reader("[0,").readBigIntegerArray().orElseThrow().forEach(this::noop));
         assertThrows(ParsingException.class,
-                () -> reader("[true, 2]").readIntegerArray().orElseThrow().forEach(this::noop));
-        assertThrows(ParsingException.class, () -> reader("{0,").readIntegerArray());
+                () -> reader("[true, 2]").readBigIntegerArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readBigIntegerArray());
     }
-
 
     @Test
     void readBigDecimal() {
+        assertEquals(BigDecimal.ZERO, reader("0").readBigDecimal());
+        assertEquals(BigDecimal.valueOf(-2_147_483_648.345), reader("-2147483648.345").readBigDecimal());
+        assertEquals(BigDecimal.valueOf(2_147_483_647.556677), reader("2147483647.556677").readBigDecimal());
+        assertThrows(ParsingException.class, () -> reader("null").readBigDecimal());
     }
 
     @Test
     void readNullableBigDecimal() {
+        assertEquals(BigDecimal.ZERO, reader("0").readNullableBigDecimal());
+        assertEquals(BigDecimal.valueOf(-2_147_483_648), reader("-2147483648").readNullableBigDecimal());
+        assertEquals(BigDecimal.valueOf(2_147_483_647), reader("2147483647").readNullableBigDecimal());
+        assertNull(reader("null").readNullableBigDecimal());
     }
+
 
     @Test
     void readOptionalBigDecimal() {
+        assertEquals(BigDecimal.ZERO, reader("0").readOptionalBigDecimal().orElseThrow());
+        assertEquals(BigDecimal.valueOf(-2_147_483_648), reader("-2147483648").readOptionalBigDecimal().orElseThrow());
+        assertEquals(BigDecimal.valueOf(2_147_483_647), reader("2147483647").readOptionalBigDecimal().orElseThrow());
+        assertTrue(reader("null").readOptionalBigDecimal().isEmpty());
     }
 
     @Test
     void readBigDecimalArray() {
+        assertEquals(Arrays.asList(null, BigDecimal.ZERO, BigDecimal.TEN, BigDecimal.valueOf(1000)),
+                reader("[null, 0, 10, 1000]").readBigDecimalArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readBigDecimalArray().orElseThrow().count());
+        assertTrue(reader("null").readBigDecimalArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readBigDecimalArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readBigDecimalArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readBigDecimalArray());
     }
 
     @Test
