@@ -3,6 +3,8 @@ package guru.bug.austras.convert.json.reader;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -144,66 +146,189 @@ class JsonValueReaderTest {
 
     @Test
     void readInt() {
+        assertEquals(0, reader("0").readInt());
+        assertEquals(-2_147_483_648, reader("-2147483648").readInt());
+        assertEquals(2_147_483_647, reader("2147483647").readInt());
+        assertThrows(ParsingException.class, () -> reader("null").readInt());
+        assertThrows(NumberFormatException.class, () -> reader("-2147483649").readInt());
+        assertThrows(NumberFormatException.class, () -> reader("2147483648").readInt());
     }
 
     @Test
     void readNullableInt() {
+        assertEquals(10, reader("10").readNullableInt());
+        assertEquals(-2_147_483_648, reader("-2147483648").readNullableInt());
+        assertEquals(2_147_483_647, reader("2147483647").readNullableInt());
+        assertNull(reader("null").readNullableInt());
+        assertThrows(NumberFormatException.class, () -> reader("-2147483649").readInt());
+        assertThrows(NumberFormatException.class, () -> reader("2147483648").readInt());
     }
 
     @Test
-    void readOptionalInteger() {
+    void readOptionalInt() {
+        assertEquals(-12_300, reader("-12300").readOptionalInteger().orElseThrow());
+        assertEquals(-2_147_483_648, reader("-2147483648").readOptionalInteger().orElseThrow());
+        assertEquals(2_147_483_647, reader("2147483647").readOptionalInteger().orElseThrow());
+        assertTrue(reader("null").readOptionalInteger().isEmpty());
+        assertThrows(NumberFormatException.class, () -> reader("-2147483649").readOptionalInteger());
+        assertThrows(NumberFormatException.class, () -> reader("2147483648").readOptionalInteger());
     }
 
     @Test
-    void readIntegerArray() {
+    void readIntArray() {
+        assertEquals(Arrays.asList(null, 0, 10, 1000),
+                reader("[null, 0, 10, 1000]").readIntegerArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readIntegerArray().orElseThrow().count());
+        assertTrue(reader("null").readIntegerArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readIntegerArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readIntegerArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readIntegerArray());
     }
 
     @Test
     void readLong() {
+        assertEquals(0, reader("0").readLong());
+        assertEquals(-9_223_372_036_854_775_808L, reader("-9223372036854775808").readLong());
+        assertEquals(9_223_372_036_854_775_807L, reader("9223372036854775807").readLong());
+        assertThrows(ParsingException.class, () -> reader("null").readLong());
+        assertThrows(NumberFormatException.class, () -> reader("-9223372036854775809").readLong());
+        assertThrows(NumberFormatException.class, () -> reader("9223372036854775808").readLong());
     }
 
     @Test
     void readNullableLong() {
+        assertEquals(10, reader("10").readNullableLong());
+        assertEquals(-9_223_372_036_854_775_808L, reader("-9223372036854775808").readNullableLong());
+        assertEquals(9_223_372_036_854_775_807L, reader("9223372036854775807").readNullableLong());
+        assertNull(reader("null").readNullableLong());
+        assertThrows(NumberFormatException.class, () -> reader("-9223372036854775809").readLong());
+        assertThrows(NumberFormatException.class, () -> reader("9223372036854775808").readLong());
     }
 
     @Test
     void readOptionalLong() {
+        assertEquals(-12_300, reader("-12300").readOptionalLong().orElseThrow());
+        assertEquals(-9_223_372_036_854_775_808L, reader("-9223372036854775808").readOptionalLong().orElseThrow());
+        assertEquals(9_223_372_036_854_775_807L, reader("9223372036854775807").readOptionalLong().orElseThrow());
+        assertTrue(reader("null").readOptionalLong().isEmpty());
+        assertThrows(NumberFormatException.class, () -> reader("-9223372036854775809").readOptionalLong());
+        assertThrows(NumberFormatException.class, () -> reader("9223372036854775808").readOptionalLong());
     }
 
     @Test
     void readLongArray() {
+        assertEquals(Arrays.asList(null, 0L, 10L, 1000L),
+                reader("[null, 0, 10, 1000]").readLongArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readLongArray().orElseThrow().count());
+        assertTrue(reader("null").readLongArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readLongArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readLongArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readLongArray());
     }
 
     @Test
     void readFloat() {
+        assertEquals(0, reader("0").readFloat());
+        assertEquals(-123_456.7F, reader("-123456.7").readFloat());
+        assertEquals(76_543.21F, reader("76543.21").readFloat());
+        assertEquals(Float.MIN_VALUE, reader(Float.toString(Float.MIN_VALUE)).readFloat());
+        assertEquals(Float.MAX_VALUE, reader(Float.toString(Float.MAX_VALUE)).readFloat());
+        assertThrows(ParsingException.class, () -> reader("null").readFloat());
+        assertThrows(ParsingException.class, () -> reader("[").readFloat());
+        assertTrue(Float.isInfinite(reader(Double.toString(Double.MAX_VALUE)).readFloat()));
+        assertEquals(0F, reader(Double.toString(Double.MIN_VALUE)).readFloat());
     }
 
     @Test
     void readNullableFloat() {
+        assertEquals(-123_456.7F, reader("-123456.7").readNullableFloat());
+        assertEquals(76_543.21F, reader("76543.21").readNullableFloat());
+        assertEquals(Float.MIN_VALUE, reader(Float.toString(Float.MIN_VALUE)).readNullableFloat());
+        assertEquals(Float.MAX_VALUE, reader(Float.toString(Float.MAX_VALUE)).readNullableFloat());
+        assertNull(reader("null").readNullableFloat());
+        assertThrows(ParsingException.class, () -> reader("[").readNullableFloat());
+        assertTrue(Float.isInfinite(reader(Double.toString(Double.MAX_VALUE)).readNullableFloat()));
+        assertEquals(0F, reader(Double.toString(Double.MIN_VALUE)).readNullableFloat());
     }
 
     @Test
     void readOptionalFloat() {
+        assertEquals(-123_456.7F, reader("-123456.7").readOptionalFloat().orElseThrow());
+        assertEquals(76_543.21F, reader("76543.21").readOptionalFloat().orElseThrow());
+        assertEquals(Float.MIN_VALUE, reader(Float.toString(Float.MIN_VALUE)).readOptionalFloat().orElseThrow());
+        assertEquals(Float.MAX_VALUE, reader(Float.toString(Float.MAX_VALUE)).readOptionalFloat().orElseThrow());
+        assertTrue(reader("null").readOptionalFloat().isEmpty());
+        assertThrows(ParsingException.class, () -> reader("[").readOptionalFloat().orElseThrow());
+        assertTrue(Float.isInfinite(reader(Double.toString(Double.MAX_VALUE)).readOptionalFloat().orElseThrow()));
+        assertEquals(0F, reader(Double.toString(Double.MIN_VALUE)).readOptionalFloat().orElseThrow());
     }
 
     @Test
     void readFloatArray() {
+        assertEquals(Arrays.asList(null, 0F, 10F, 1000F),
+                reader("[null, 0, 10, 1000]").readFloatArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readFloatArray().orElseThrow().count());
+        assertTrue(reader("null").readFloatArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readFloatArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readFloatArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readFloatArray());
     }
 
     @Test
     void readDouble() {
+        assertEquals(0.0, reader("0").readDouble());
+        assertEquals(0.0, reader("0.0").readDouble());
+        assertEquals(-123_456.7, reader("-123456.7").readDouble());
+        assertEquals(76_543.21, reader("76543.21").readDouble());
+        assertEquals(Double.MIN_VALUE, reader(Double.toString(Double.MIN_VALUE)).readDouble());
+        assertEquals(Double.MAX_VALUE, reader(Double.toString(Double.MAX_VALUE)).readDouble());
+        assertThrows(ParsingException.class, () -> reader("null").readDouble());
+        assertThrows(ParsingException.class, () -> reader("[").readDouble());
+        assertTrue(Double.isInfinite(reader(new BigDecimal(Double.MAX_VALUE).multiply(BigDecimal.TEN).toString()).readDouble()));
+        assertEquals(0.0, reader(new BigDecimal(Double.MIN_VALUE).divide(BigDecimal.TEN, RoundingMode.HALF_UP).toString()).readDouble());
     }
 
     @Test
     void readNullableDouble() {
+        assertEquals(-123_456.7, reader("-123456.7").readNullableDouble());
+        assertEquals(76_543.21, reader("76543.21").readNullableDouble());
+        assertEquals(Double.MIN_VALUE, reader(Double.toString(Double.MIN_VALUE)).readNullableDouble());
+        assertEquals(Double.MAX_VALUE, reader(Double.toString(Double.MAX_VALUE)).readNullableDouble());
+        assertNull(reader("null").readNullableDouble());
+        assertThrows(ParsingException.class, () -> reader("[").readNullableDouble());
+        assertTrue(Double.isInfinite(reader(new BigDecimal(Double.MAX_VALUE).multiply(BigDecimal.TEN).toString()).readNullableDouble()));
+        assertEquals(0.0, reader(new BigDecimal(Double.MIN_VALUE).divide(BigDecimal.TEN, RoundingMode.HALF_UP).toString()).readNullableDouble());
     }
 
     @Test
     void readOptionalDouble() {
+        assertEquals(-123_456.7, reader("-123456.7").readOptionalDouble().orElseThrow());
+        assertEquals(76_543.21, reader("76543.21").readOptionalDouble().orElseThrow());
+        assertEquals(Double.MIN_VALUE, reader(Double.toString(Double.MIN_VALUE)).readOptionalDouble().orElseThrow());
+        assertEquals(Double.MAX_VALUE, reader(Double.toString(Double.MAX_VALUE)).readOptionalDouble().orElseThrow());
+        assertTrue(reader("null").readOptionalDouble().isEmpty());
+        assertThrows(ParsingException.class, () -> reader("[").readOptionalDouble().orElseThrow());
+        assertTrue(Double.isInfinite(reader(new BigDecimal(Double.MAX_VALUE).multiply(BigDecimal.TEN).toString()).readOptionalDouble().orElseThrow()));
+        assertEquals(0.0, reader(new BigDecimal(Double.MIN_VALUE).divide(BigDecimal.TEN, RoundingMode.HALF_UP).toString()).readOptionalDouble().orElseThrow());
     }
 
     @Test
     void readDoubleArray() {
+        assertEquals(Arrays.asList(null, 0.0, 10.0, 1000.0),
+                reader("[null, 0, 10, 1000]").readDoubleArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readDoubleArray().orElseThrow().count());
+        assertTrue(reader("null").readDoubleArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readDoubleArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readDoubleArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readDoubleArray());
     }
 
     @Test
