@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -333,19 +334,42 @@ class JsonValueReaderTest {
 
     @Test
     void readBigInteger() {
+        assertEquals(BigInteger.ZERO, reader("0").readBigInteger());
+        assertEquals(BigInteger.valueOf(-2_147_483_648), reader("-2147483648").readBigInteger());
+        assertEquals(BigInteger.valueOf(2_147_483_647), reader("2147483647").readBigInteger());
+        assertThrows(ParsingException.class, () -> reader("null").readBigInteger());
     }
 
     @Test
     void readNullableBigInteger() {
+        assertEquals(BigInteger.ZERO, reader("0").readNullableBigInteger());
+        assertEquals(BigInteger.valueOf(-2_147_483_648), reader("-2147483648").readNullableBigInteger());
+        assertEquals(BigInteger.valueOf(2_147_483_647), reader("2147483647").readNullableBigInteger());
+        assertNull(reader("null").readNullableBigInteger());
     }
+
 
     @Test
     void readOptionalBigInteger() {
+        assertEquals(BigInteger.ZERO, reader("0").readOptionalBigInteger().orElseThrow());
+        assertEquals(BigInteger.valueOf(-2_147_483_648), reader("-2147483648").readOptionalBigInteger().orElseThrow());
+        assertEquals(BigInteger.valueOf(2_147_483_647), reader("2147483647").readOptionalBigInteger().orElseThrow());
+        assertTrue(reader("null").readOptionalBigInteger().isEmpty());
     }
 
     @Test
     void readBigIntegerArray() {
+        assertEquals(Arrays.asList(null, 0, 10, 1000),
+                reader("[null, 0, 10, 1000]").readIntegerArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readIntegerArray().orElseThrow().count());
+        assertTrue(reader("null").readIntegerArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readIntegerArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readIntegerArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readIntegerArray());
     }
+
 
     @Test
     void readBigDecimal() {
