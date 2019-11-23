@@ -26,7 +26,7 @@ public class ListToJsonConverter<T> implements JsonConverter<List<T>> {
 
     @Override
     public List<T> fromJson(JsonValueReader reader) {
-        return reader.readArray(elementConverter)
+        return reader.readOptionalArray(elementConverter)
                 .map(s -> s.collect(Collectors.toList()))
                 .orElse(null);
     }

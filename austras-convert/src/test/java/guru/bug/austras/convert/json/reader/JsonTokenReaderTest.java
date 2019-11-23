@@ -306,14 +306,14 @@ class JsonTokenReaderTest {
 
     @Test
     void testNextTokenExpectedBoolean() {
-        assertEquals(TRUE, new JsonTokenReader(new StringReader("true")).nextBoolean());
-        assertEquals(FALSE, new JsonTokenReader(new StringReader("false")).nextBoolean());
-        assertEquals(NULL, new JsonTokenReader(new StringReader("null")).nextBoolean());
+        assertEquals(TRUE, new JsonTokenReader(new StringReader("true")).nextNullableBoolean());
+        assertEquals(FALSE, new JsonTokenReader(new StringReader("false")).nextNullableBoolean());
+        assertEquals(NULL, new JsonTokenReader(new StringReader("null")).nextNullableBoolean());
     }
 
     @Test
     void testNextTokenUnexpectedBoolean() {
-        assertThrows(ParsingException.class, () -> new JsonTokenReader(new StringReader("{}")).nextBoolean());
+        assertThrows(ParsingException.class, () -> new JsonTokenReader(new StringReader("{}")).nextNullableBoolean());
     }
 
     @Test

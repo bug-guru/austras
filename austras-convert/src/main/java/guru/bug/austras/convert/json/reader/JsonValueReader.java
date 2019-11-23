@@ -144,11 +144,13 @@ public interface JsonValueReader {
 
     <T> Optional<T> read(JsonDeserializer<T> converter);
 
-    <T> Optional<Stream<T>> readArray(JsonDeserializer<T> converter);
+    <T> Optional<Stream<T>> readOptionalArray(JsonDeserializer<T> converter);
 
     /* OBJECT */
 
-    <T> Optional<T> readObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor);
+    <T> T readNullableObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor);
+
+    <T> Optional<T> readOptionalObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor);
 
     <T> Optional<Stream<T>> readObjectArray(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor);
 

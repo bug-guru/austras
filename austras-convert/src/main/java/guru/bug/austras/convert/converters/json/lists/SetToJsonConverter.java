@@ -26,7 +26,7 @@ public class SetToJsonConverter<T> implements JsonConverter<Set<T>> {
 
     @Override
     public Set<T> fromJson(JsonValueReader reader) {
-        return reader.readArray(elementConverter)
+        return reader.readOptionalArray(elementConverter)
                 .map(s -> s.collect(Collectors.toSet()))
                 .orElse(null);
     }

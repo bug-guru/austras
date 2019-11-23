@@ -10,9 +10,8 @@ class JsonValueWriterFactoryTest {
 
     @Test
     void newInstance() {
-        var f = new JsonValueWriterFactory();
         var out = new StringWriter();
-        var vw = f.newInstance(out);
+        var vw = JsonValueWriter.newInstance(out);
         vw.writeNull();
         assertEquals("null" , out.toString());
     }

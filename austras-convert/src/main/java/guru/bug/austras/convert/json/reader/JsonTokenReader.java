@@ -49,7 +49,7 @@ class JsonTokenReader {
         }
     }
 
-    TokenType nextBoolean() {
+    TokenType nextNullableBoolean() {
         var tokenType = next();
         if (TokenType.TRUE == tokenType || TokenType.FALSE == tokenType || TokenType.NULL == tokenType) {
             return tokenType;
@@ -73,11 +73,13 @@ class JsonTokenReader {
             throw new IllegalStateException("Rewind twice");
         }
         rewind = true;
+        index--;
     }
 
     TokenType next() {
         if (rewind) {
             rewind = false;
+            index++;
             return type;
         }
         char ch = skipWhitespaces();

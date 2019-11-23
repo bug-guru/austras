@@ -864,6 +864,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReader.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReaderImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonTokenWriter.java">
           <value>
             <set>
@@ -878,12 +888,27 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonValueWriter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonTokenReaderTest.java">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonValueReaderFactoryTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonValueReaderImplTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonValueReaderTest.java">
           <value>
             <set />
           </value>

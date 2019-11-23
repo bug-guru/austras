@@ -12,7 +12,7 @@ import java.util.stream.StreamSupport;
 
 import static guru.bug.austras.convert.json.reader.TokenType.*;
 
-public class JsonValueReaderImpl implements JsonValueReader {
+class JsonValueReaderImpl implements JsonValueReader {
     private static final String CHAR_WAS_EXPECTING = "Char was expecting";
     private final JsonTokenReader tokenReader;
 
@@ -28,7 +28,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Boolean readNullableBoolean() {
-        var tt = tokenReader.nextBoolean();
+        var tt = tokenReader.nextNullableBoolean();
         if (tt == NULL) {
             return null; //NOSONAR reading null from json is OK
         }
@@ -37,7 +37,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Boolean> readOptionalBoolean() {
-        var tt = tokenReader.nextBoolean();
+        var tt = tokenReader.nextNullableBoolean();
         if (tt == NULL) {
             return Optional.empty();
         }
@@ -46,7 +46,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Boolean>> readBooleanArray() {
-        return readArray(JsonValueReader::readNullableBoolean);
+        return readOptionalArray(JsonValueReader::readNullableBoolean);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Byte>> readByteArray() {
-        return readArray(JsonValueReader::readNullableByte);
+        return readOptionalArray(JsonValueReader::readNullableByte);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Short>> readShortArray() {
-        return readArray(JsonValueReader::readNullableShort);
+        return readOptionalArray(JsonValueReader::readNullableShort);
     }
 
     @Override
@@ -136,7 +136,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Integer>> readIntegerArray() {
-        return readArray(JsonValueReader::readNullableInt);
+        return readOptionalArray(JsonValueReader::readNullableInt);
     }
 
     @Override
@@ -167,7 +167,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Long>> readLongArray() {
-        return readArray(JsonValueReader::readNullableLong);
+        return readOptionalArray(JsonValueReader::readNullableLong);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Float>> readFloatArray() {
-        return readArray(JsonValueReader::readNullableFloat);
+        return readOptionalArray(JsonValueReader::readNullableFloat);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Double>> readDoubleArray() {
-        return readArray(JsonValueReader::readNullableDouble);
+        return readOptionalArray(JsonValueReader::readNullableDouble);
     }
 
     @Override
@@ -260,7 +260,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<BigInteger>> readBigIntegerArray() {
-        return readArray(JsonValueReader::readNullableBigInteger);
+        return readOptionalArray(JsonValueReader::readNullableBigInteger);
     }
 
     @Override
@@ -291,7 +291,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<BigDecimal>> readBigDecimalArray() {
-        return readArray(JsonValueReader::readNullableBigDecimal);
+        return readOptionalArray(JsonValueReader::readNullableBigDecimal);
     }
 
     @Override
@@ -322,7 +322,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<String>> readStringArray() {
-        return readArray(JsonValueReader::readNullableString);
+        return readOptionalArray(JsonValueReader::readNullableString);
     }
 
     @Override
@@ -361,7 +361,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public Optional<Stream<Character>> readCharArray() {
-        return readArray(JsonValueReader::readNullableChar);
+        return readOptionalArray(JsonValueReader::readNullableChar);
     }
 
     @Override
@@ -371,37 +371,37 @@ public class JsonValueReaderImpl implements JsonValueReader {
 
     @Override
     public byte read(JsonByteDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public char read(JsonCharDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public double read(JsonDoubleDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public float read(JsonFloatDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public int read(JsonIntDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public long read(JsonLongDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
     public short read(JsonShortDeserializer converter) {
-        return 0;
+        return converter.fromJson(this);
     }
 
     @Override
@@ -418,7 +418,7 @@ public class JsonValueReaderImpl implements JsonValueReader {
     }
 
     @Override
-    public <T> Optional<Stream<T>> readArray(JsonDeserializer<T> converter) {
+    public <T> Optional<Stream<T>> readOptionalArray(JsonDeserializer<T> converter) {
         if (tokenReader.next(BEGIN_ARRAY, NULL) == NULL) {
             return Optional.empty();
         }
@@ -432,13 +432,13 @@ public class JsonValueReaderImpl implements JsonValueReader {
     }
 
     @Override
-    public <T> Optional<T> readObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor) {
+    public <T> T readNullableObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor) {
         if (tokenReader.next(BEGIN_OBJECT, NULL) == NULL) {
-            return Optional.empty();
+            return null;
         }
         var result = resultSupplier.get();
         if (tokenReader.next(STRING, END_OBJECT) == END_OBJECT) {
-            return Optional.of(result);
+            return result;
         }
         for (; ; ) {
             var key = tokenReader.getValue();
@@ -449,15 +449,20 @@ public class JsonValueReaderImpl implements JsonValueReader {
                 throw tokenReader.createParsingException("Unprocessed object member value: " + key);
             }
             if (tokenReader.next(COMMA, END_OBJECT) == END_OBJECT) {
-                return Optional.of(result);
+                return result;
             }
             tokenReader.next(STRING);
         }
     }
 
     @Override
+    public <T> Optional<T> readOptionalObject(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor) {
+        return Optional.ofNullable(readNullableObject(resultSupplier, memberVisitor));
+    }
+
+    @Override
     public <T> Optional<Stream<T>> readObjectArray(Supplier<T> resultSupplier, JsonObjectMemberVisitor<T> memberVisitor) {
-        return Optional.empty();
+        return readOptionalArray(reader -> readNullableObject(resultSupplier, memberVisitor));
     }
 
     private class JsonArraySpliterator<T> implements Spliterator<T> {

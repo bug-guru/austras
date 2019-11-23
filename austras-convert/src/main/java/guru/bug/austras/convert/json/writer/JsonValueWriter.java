@@ -1,11 +1,18 @@
 package guru.bug.austras.convert.json.writer;
 
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
 public interface JsonValueWriter {
+
+    static JsonValueWriter newInstance(Writer out) {
+        var tokenWriter = new JsonTokenWriter(out);
+        return new JsonValueWriterImpl(tokenWriter);
+    }
+
     void write(boolean value);
 
     void write(Boolean value);
