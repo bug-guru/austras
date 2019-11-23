@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -411,7 +413,7 @@ class JsonValueReaderTest {
 
     @Test
     void readString() {
-        assertEquals("Hello, World" , reader("\"Hello, World\"").readString());
+        assertEquals("Hello, Wor\u013Bd" , reader("\"Hello, Wor\\u013Bd\"").readString());
         assertEquals("" , reader("\"\"").readString());
         assertThrows(ParsingException.class, () -> reader("null").readString());
         assertThrows(ParsingException.class, () -> reader("\"abc").readString());
@@ -421,7 +423,7 @@ class JsonValueReaderTest {
 
     @Test
     void readNullableString() {
-        assertEquals("Hello, World" , reader("\"Hello, World\"").readNullableString());
+        assertEquals("Hello, Wor\u013Bd" , reader("\"Hello, Wor\\u013Bd\"").readNullableString());
         assertEquals("" , reader("\"\"").readNullableString());
         assertNull(reader("null").readNullableString());
         assertThrows(ParsingException.class, () -> reader("\"abc").readNullableString());
@@ -430,7 +432,7 @@ class JsonValueReaderTest {
 
     @Test
     void readOptionalString() {
-        assertEquals("Hello, World" , reader("\"Hello, World\"").readOptionalString().orElseThrow());
+        assertEquals("Hello, Wor\u013Bd" , reader("\"Hello, Wor\\u013Bd\"").readOptionalString().orElseThrow());
         assertEquals("" , reader("\"\"").readOptionalString().orElseThrow());
         assertTrue(reader("null").readOptionalString().isEmpty());
         assertThrows(ParsingException.class, () -> reader("\"abc").readOptionalString());
@@ -556,25 +558,35 @@ class JsonValueReaderTest {
     @Test
     void customRead() {
         assertEquals("Hello, World!" , reader("\"HW\"").read((JsonDeserializer<String>) reader -> "Hello, World!").orElseThrow());
+        assertEquals("Hello, World!" , reader("\"HW\"").read((JsonDeserializer<String>) reader -> "Hello, World!").orElseThrow());
+        assertTrue(reader("null").read((JsonDeserializer<String>) reader -> "Hello, World!").isEmpty());
+        assertTrue(reader("\"HW\"").read((JsonDeserializer<String>) reader -> null).isEmpty());
     }
 
     @Test
-    void readArray() {
+    void readNullableObject() {
+        var expected = Map.of(
+                "name" , "Janis" ,
+                "solutation" , "Hello, World!" ,
+                "nick" , "Pupils"
+        );
+        var sample = "{\"name\":\"Janis\",\"solutation\":\"Hello, World!\",\"nick\":\"Pupils\"}";
+        assertEquals(expected, reader(sample).readNullableObject(HashMap<String, String>::new,
+                (map, key, reader) -> map.put(key, reader.readString())));
+        assertTrue(reader("{}").readNullableObject(HashMap<String, String>::new,
+                (map, key, reader) -> map.put(key, reader.readString())).isEmpty());
+        assertNull(reader("null").readNullableObject(HashMap<String, String>::new,
+                (map, key, reader) -> map.put(key, reader.readString())));
+        assertThrows(ParsingException.class, () -> reader(sample).readNullableObject(HashMap<String, String>::new,
+                (map, key, reader) -> {
+                }));
     }
 
     @Test
-    void readValue() {
+    void readNullableObjectIncomplete() {
+        var sample = "{\"name\":\"Janis\",\"solutation\":\"Hello, World!\", null:\"Pupils\"}";
+        assertThrows(ParsingException.class, () -> reader(sample).readNullableObject(HashMap<String, String>::new,
+                (map, key, reader) -> map.put(key, reader.readString())));
     }
 
-    @Test
-    void readValueArray() {
-    }
-
-    @Test
-    void readObject() {
-    }
-
-    @Test
-    void readObjectArray() {
-    }
 }
