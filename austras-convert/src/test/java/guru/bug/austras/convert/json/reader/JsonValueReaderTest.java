@@ -1,5 +1,6 @@
 package guru.bug.austras.convert.json.reader;
 
+import guru.bug.austras.convert.converters.json.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -410,38 +411,151 @@ class JsonValueReaderTest {
 
     @Test
     void readString() {
+        assertEquals("Hello, World" , reader("\"Hello, World\"").readString());
+        assertEquals("" , reader("\"\"").readString());
+        assertThrows(ParsingException.class, () -> reader("null").readString());
+        assertThrows(ParsingException.class, () -> reader("\"abc").readString());
+        assertThrows(ParsingException.class, () -> reader("abc").readString());
+        assertThrows(ParsingException.class, () -> reader("[\"abc\"]").readString());
     }
 
     @Test
     void readNullableString() {
+        assertEquals("Hello, World" , reader("\"Hello, World\"").readNullableString());
+        assertEquals("" , reader("\"\"").readNullableString());
+        assertNull(reader("null").readNullableString());
+        assertThrows(ParsingException.class, () -> reader("\"abc").readNullableString());
+        assertThrows(ParsingException.class, () -> reader("[\"abc\"]").readNullableString());
     }
 
     @Test
     void readOptionalString() {
+        assertEquals("Hello, World" , reader("\"Hello, World\"").readOptionalString().orElseThrow());
+        assertEquals("" , reader("\"\"").readOptionalString().orElseThrow());
+        assertTrue(reader("null").readOptionalString().isEmpty());
+        assertThrows(ParsingException.class, () -> reader("\"abc").readOptionalString());
+        assertThrows(ParsingException.class, () -> reader("[\"abc\"]").readOptionalString());
     }
 
     @Test
     void readStringArray() {
+        assertEquals(Arrays.asList("" , null, "Hello" , "World"),
+                reader("[\"\", null, \"Hello\", \"World\"]").readStringArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readStringArray().orElseThrow().count());
+        assertTrue(reader("null").readStringArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[\"0\",").readStringArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, \"xxx\"]").readStringArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readStringArray());
     }
 
     @Test
     void readChar() {
+        assertEquals('A', reader("\"A\"").readChar());
+        assertEquals('\u013B', reader("\"\\u013B\"").readChar());
+        assertThrows(ParsingException.class, () -> reader("null").readChar());
+        assertThrows(ParsingException.class, () -> reader("\"AB\"").readChar());
+        assertThrows(ParsingException.class, () -> reader("AB").readChar());
+        assertThrows(ParsingException.class, () -> reader("\"A").readChar());
+        assertThrows(ParsingException.class, () -> reader("A\"").readChar());
     }
 
     @Test
     void readNullableChar() {
+        assertEquals('A', reader("\"A\"").readNullableChar());
+        assertEquals('\u013B', reader("\"\\u013B\"").readNullableChar());
+        assertNull(reader("null").readNullableChar());
+        assertThrows(ParsingException.class, () -> reader("\"AB\"").readNullableChar());
+        assertThrows(ParsingException.class, () -> reader("AB").readNullableChar());
+        assertThrows(ParsingException.class, () -> reader("\"A").readNullableChar());
+        assertThrows(ParsingException.class, () -> reader("A\"").readNullableChar());
     }
 
     @Test
     void readOptionalChar() {
+        assertEquals('A', reader("\"A\"").readOptionalChar().orElseThrow());
+        assertEquals('\u013B', reader("\"\\u013B\"").readOptionalChar().orElseThrow());
+        assertTrue(reader("null").readOptionalChar().isEmpty());
+        assertThrows(ParsingException.class, () -> reader("\"AB\"").readOptionalChar());
+        assertThrows(ParsingException.class, () -> reader("AB").readOptionalChar());
+        assertThrows(ParsingException.class, () -> reader("\"A").readOptionalChar());
+        assertThrows(ParsingException.class, () -> reader("A\"").readOptionalChar());
     }
 
     @Test
     void readCharArray() {
+        assertEquals(Arrays.asList('A', null, 'B', '\u013B'),
+                reader("[\"A\", null, \"B\", \"\\u013B\"]").readCharArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readCharArray().orElseThrow().count());
+        assertTrue(reader("null").readCharArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[\"0\",").readCharArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, \"xxx\"]").readCharArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readCharArray());
     }
 
     @Test
-    void read() {
+    void customReadBoolean() {
+        assertTrue(reader("true").read(new PrimitiveBooleanToJsonConverter()));
+        assertFalse(reader("false").read(new PrimitiveBooleanToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveBooleanToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveBooleanToJsonConverter()));
+    }
+
+    @Test
+    void customReadByte() {
+        assertEquals((byte) 100, reader("100").read(new PrimitiveByteToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveBooleanToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveBooleanToJsonConverter()));
+    }
+
+    @Test
+    void customReadChar() {
+        assertEquals('A', reader("\"A\"").read(new PrimitiveCharToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveCharToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveCharToJsonConverter()));
+    }
+
+    @Test
+    void customReadDouble() {
+        assertEquals(100.0, reader("100.0").read(new PrimitiveDoubleToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveDoubleToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveDoubleToJsonConverter()));
+    }
+
+    @Test
+    void customReadFloat() {
+        assertEquals(100.0F, reader("100.0").read(new PrimitiveFloatToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveFloatToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveFloatToJsonConverter()));
+    }
+
+    @Test
+    void customReadInt() {
+        assertEquals(100, reader("100").read(new PrimitiveIntToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveIntToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveIntToJsonConverter()));
+    }
+
+    @Test
+    void customReadLong() {
+        assertEquals(100L, reader("100").read(new PrimitiveLongToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveLongToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveLongToJsonConverter()));
+    }
+
+    @Test
+    void customReadShort() {
+        assertEquals((short) 100, reader("100").read(new PrimitiveShortToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveShortToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveShortToJsonConverter()));
+    }
+
+    @Test
+    void customRead() {
+        assertEquals("Hello, World!" , reader("\"HW\"").read((JsonDeserializer<String>) reader -> "Hello, World!").orElseThrow());
     }
 
     @Test
