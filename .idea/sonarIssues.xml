@@ -835,11 +835,6 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/java/guru/bug/austras/convert/apt/JsonConverterGenerator.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
           <value>
             <set />
@@ -859,21 +854,6 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonTokenReader.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReader.java">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/reader/JsonValueReaderImpl.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonTokenWriter.java">
           <value>
             <set>
@@ -886,11 +866,6 @@
                 <option name="severity" value="MAJOR" />
               </SonarIssue>
             </set>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonValueWriter.java">
-          <value>
-            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/reader/JsonTokenReaderTest.java">
@@ -993,14 +968,6 @@
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6VFUpltxF_EzPpKPk7" />
-                <option name="line" value="256" />
-                <option name="message" value="Remove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body." />
-                <option name="ruleKey" value="squid:RedundantThrowsDeclarationCheck" />
-                <option name="severity" value="MINOR" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
@@ -1220,26 +1187,21 @@
             </set>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/DefaultProviderGenerator.java">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/MainClassGenerator.java">
           <value>
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-f8txF_EzPpKMHJ" />
-                <option name="line" value="169" />
+                <option name="key" value="AW6U_-f8txF_EzPpKMHK" />
+                <option name="line" value="173" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-f8txF_EzPpKMHK" />
-                <option name="line" value="173" />
+                <option name="key" value="AW6U_-f8txF_EzPpKMHJ" />
+                <option name="line" value="169" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />

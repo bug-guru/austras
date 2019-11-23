@@ -3,7 +3,7 @@ package guru.bug.austras.convert.json.reader;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
-import java.util.List;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,105 +32,114 @@ class JsonValueReaderTest {
     }
 
     @Test
-    void readOptionalBooleanTrue() {
-        var opt = reader("true").readOptionalBoolean();
-        assertTrue(opt.isPresent());
-        assertTrue(opt.get());
-    }
-
-    @Test
-    void readOptionalBooleanFalse() {
-        var opt = reader("false").readOptionalBoolean();
-        assertTrue(opt.isPresent());
-        assertFalse(opt.get());
-    }
-
-    @Test
-    void readOptionalBooleanNull() {
-        var opt = reader("null").readOptionalBoolean();
-        assertTrue(opt.isEmpty());
-    }
-
-    @Test
-    void readOptionalBooleanThrows() {
+    void readOptionalBoolean() {
+        assertTrue(reader("true").readOptionalBoolean().orElseThrow());
+        assertFalse(reader("false").readOptionalBoolean().orElseThrow());
+        assertTrue(reader("null").readOptionalBoolean().isEmpty());
         assertThrows(ParsingException.class, () -> reader("\"true\"").readOptionalBoolean());
+    }
+
+    private <T> void noop(T aBoolean) {
+
     }
 
     @Test
     void readBooleanArray() {
-        var actual = reader("[true, false, null]").readBooleanArray();
-        assertTrue(actual.isPresent());
-        List<Boolean> expected = new java.util.ArrayList<>();
-        expected.add(true);
-        expected.add(false);
-        expected.add(null);
-        assertEquals(expected, actual.get().collect(Collectors.toList()));
-    }
-
-    @Test
-    void readBooleanArrayEmpty() {
-        var actual = reader("[]").readBooleanArray();
-        assertTrue(actual.isPresent());
-        assertEquals(0, actual.get().count());
-    }
-
-    @Test
-    void readBooleanArrayNull() {
-        var actual = reader("null").readBooleanArray();
-        assertTrue(actual.isEmpty());
-    }
-
-    @Test
-    void readBooleanArrayNotClosed() {
-        var actual = reader("[true,").readBooleanArray();
-        assertTrue(actual.isPresent());
-        assertThrows(ParsingException.class, () -> actual.get().forEach(b -> {
-        }));
-    }
-
-    @Test
-    void readBooleanArrayNotBoolean() {
-        var actual = reader("[true, 2]").readBooleanArray();
-        assertTrue(actual.isPresent());
-        assertThrows(ParsingException.class, () -> actual.get().forEach(b -> {
-        }));
-    }
-
-    @Test
-    void readBooleanArrayNotArray() {
+        assertEquals(Arrays.asList(true, false, null),
+                reader("[true, false, null]").readBooleanArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readBooleanArray().orElseThrow().count());
+        assertTrue(reader("null").readBooleanArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[true,").readBooleanArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readBooleanArray().orElseThrow().forEach(this::noop));
         assertThrows(ParsingException.class, () -> reader("{true,").readBooleanArray());
     }
 
     @Test
     void readByte() {
+        assertEquals(0, reader("0").readByte());
+        assertEquals(-128, reader("-128").readByte());
+        assertEquals(127, reader("127").readByte());
+        assertThrows(ParsingException.class, () -> reader("null").readByte());
+        assertThrows(NumberFormatException.class, () -> reader("128").readByte());
+        assertThrows(NumberFormatException.class, () -> reader("-129").readByte());
     }
 
     @Test
     void readNullableByte() {
+        assertEquals((Byte) (byte) 10, reader("10").readNullableByte());
+        assertEquals((Byte) (byte) (-128), reader("-128").readNullableByte());
+        assertEquals((Byte) (byte) 127, reader("127").readNullableByte());
+        assertNull(reader("null").readNullableByte());
+        assertThrows(NumberFormatException.class, () -> reader("128").readNullableByte());
+        assertThrows(NumberFormatException.class, () -> reader("-129").readNullableByte());
     }
 
     @Test
     void readOptionalByte() {
+        assertEquals((Byte) (byte) -123, reader("-123").readOptionalByte().orElseThrow());
+        assertEquals((Byte) (byte) (-128), reader("-128").readOptionalByte().orElseThrow());
+        assertEquals((Byte) (byte) 127, reader("127").readOptionalByte().orElseThrow());
+        assertTrue(reader("null").readOptionalByte().isEmpty());
+        assertThrows(NumberFormatException.class, () -> reader("128").readOptionalByte());
+        assertThrows(NumberFormatException.class, () -> reader("-129").readOptionalByte());
     }
 
     @Test
     void readByteArray() {
+        assertEquals(Arrays.asList(null, (byte) 0, (byte) 10, (byte) 100),
+                reader("[null, 0, 10, 100]").readByteArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readByteArray().orElseThrow().count());
+        assertTrue(reader("null").readByteArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readByteArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readByteArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readByteArray());
     }
 
     @Test
     void readShort() {
+        assertEquals((Short) (short) 0, reader("0").readShort());
+        assertEquals((Short) (short) (-32_768), reader("-32768").readShort());
+        assertEquals((Short) (short) (32_767), reader("32767").readShort());
+        assertThrows(ParsingException.class, () -> reader("null").readShort());
+        assertThrows(NumberFormatException.class, () -> reader("-32769").readShort());
+        assertThrows(NumberFormatException.class, () -> reader("32768").readShort());
     }
 
     @Test
     void readNullableShort() {
+        assertEquals((Short) (short) 10, reader("10").readNullableShort());
+        assertEquals((Short) (short) (-32_768), reader("-32768").readNullableShort());
+        assertEquals((Short) (short) (32_767), reader("32767").readNullableShort());
+        assertNull(reader("null").readNullableShort());
+        assertThrows(NumberFormatException.class, () -> reader("-32769").readShort());
+        assertThrows(NumberFormatException.class, () -> reader("32768").readShort());
     }
 
     @Test
     void readOptionalShort() {
+        assertEquals((Short) (short) (-12_300), reader("-12300").readOptionalShort().orElseThrow());
+        assertEquals((Short) (short) (-32_768), reader("-32768").readOptionalShort().orElseThrow());
+        assertEquals((Short) (short) (32_767), reader("32767").readOptionalShort().orElseThrow());
+        assertTrue(reader("null").readOptionalShort().isEmpty());
+        assertThrows(NumberFormatException.class, () -> reader("-32769").readOptionalShort());
+        assertThrows(NumberFormatException.class, () -> reader("32768").readOptionalShort());
     }
 
     @Test
     void readShortArray() {
+        assertEquals(Arrays.asList(null, (short) 0, (short) 10, (short) 1000),
+                reader("[null, 0, 10, 1000]").readShortArray().orElseThrow().collect(Collectors.toList()));
+        assertEquals(0, reader("[]").readShortArray().orElseThrow().count());
+        assertTrue(reader("null").readShortArray().isEmpty());
+        assertThrows(ParsingException.class,
+                () -> reader("[0,").readShortArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class,
+                () -> reader("[true, 2]").readShortArray().orElseThrow().forEach(this::noop));
+        assertThrows(ParsingException.class, () -> reader("{0,").readShortArray());
     }
 
     @Test
