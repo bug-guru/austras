@@ -835,6 +835,11 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/apt/JsonConverter.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert-apt/src/main/resources/guru/bug/austras/convert/template/JsonConverter.txt">
           <value>
             <set />
@@ -852,6 +857,21 @@
                 <option name="severity" value="INFO" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/utils/JsonException.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/utils/JsonReadingException.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/utils/JsonWritingException.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonTokenWriter.java">
@@ -898,6 +918,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonTokenWriterTest.java">
           <value>
             <set />
@@ -909,6 +934,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonValueWriterImplTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonValueWriterTest.java">
           <value>
             <set />
           </value>

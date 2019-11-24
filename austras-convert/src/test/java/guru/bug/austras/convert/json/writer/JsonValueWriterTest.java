@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class JsonValueWriterImplTest {
+class JsonValueWriterTest {
     private static final String SAMPLE_ARAY_JSON = "[{\"key1\":\"aa\",\"key2\":1,\"key3\":\"a\"}," +
             "{\"key1\":\"bb\",\"key2\":2,\"key3\":\"b\"}," +
             "{\"key1\":\"cc\",\"key2\":3,\"key3\":\"c\"}," +

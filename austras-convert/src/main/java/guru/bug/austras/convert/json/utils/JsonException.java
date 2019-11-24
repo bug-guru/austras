@@ -2,9 +2,6 @@ package guru.bug.austras.convert.json.utils;
 
 class JsonException extends RuntimeException {
 
-    JsonException() {
-    }
-
     JsonException(String message) {
         super(message);
     }

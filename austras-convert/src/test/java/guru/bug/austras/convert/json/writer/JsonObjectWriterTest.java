@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JsonObjectWriterImplTest {
+class JsonObjectWriterTest {
     private static final String KEY = "\"key\":";
     private JsonObjectWriterImpl ow;
     private StringWriter out;

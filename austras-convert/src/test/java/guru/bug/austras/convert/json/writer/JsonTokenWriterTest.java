@@ -4,7 +4,9 @@ import guru.bug.austras.convert.json.utils.JsonWritingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -359,4 +361,20 @@ class JsonTokenWriterTest {
     }
 
 
+    private static class ThrowingWriter extends Writer {
+        @Override
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            throw new IOException("Fake write exception");
+        }
+
+        @Override
+        public void flush() throws IOException {
+            throw new IOException("Fake flush exception");
+        }
+
+        @Override
+        public void close() throws IOException {
+            throw new IOException("Fake close exception");
+        }
+    }
 }
