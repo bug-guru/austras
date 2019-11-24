@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 public class ZoneOffsetToJsonConverter implements JsonConverter<ZoneOffset> {
     private final StringConverter<ZoneOffset> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public ZoneOffsetToJsonConverter(StringConverter<ZoneOffset> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class ZoneOffsetToJsonConverter implements JsonConverter<ZoneOffset> {
     @Override
     public void toJson(ZoneOffset value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

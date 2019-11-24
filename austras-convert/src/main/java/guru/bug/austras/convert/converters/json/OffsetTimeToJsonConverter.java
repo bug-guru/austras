@@ -12,6 +12,7 @@ import java.time.OffsetTime;
 public class OffsetTimeToJsonConverter implements JsonConverter<OffsetTime> {
     private final StringConverter<OffsetTime> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public OffsetTimeToJsonConverter(StringConverter<OffsetTime> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class OffsetTimeToJsonConverter implements JsonConverter<OffsetTime> {
     @Override
     public void toJson(OffsetTime value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

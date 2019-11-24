@@ -12,6 +12,7 @@ import java.time.Period;
 public class PeriodToJsonConverter implements JsonConverter<Period> {
     private final StringConverter<Period> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public PeriodToJsonConverter(StringConverter<Period> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class PeriodToJsonConverter implements JsonConverter<Period> {
     @Override
     public void toJson(Period value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

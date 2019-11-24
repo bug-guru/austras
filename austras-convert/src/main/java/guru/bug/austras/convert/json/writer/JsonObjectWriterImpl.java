@@ -1,14 +1,12 @@
 package guru.bug.austras.convert.json.writer;
 
-
 import guru.bug.austras.convert.json.utils.JsonWritingException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,6 +21,8 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
         this.valueWriter = requireNonNull(valueWriter);
     }
 
+    /* COMMON */
+
     private void nextKey(String key) {
         requireNonNull(key);
         if (!usedKeys.add(key)) {
@@ -32,16 +32,8 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
             tokenWriter.writeComma();
         }
         alreadyHasMembers = true;
-        tokenWriter.write(key);
+        tokenWriter.writeString(key);
         tokenWriter.writeColon();
-    }
-
-    void writeBegin() {
-        tokenWriter.writeBeginObject();
-    }
-
-    void writeEnd() {
-        tokenWriter.writeEndObject();
     }
 
     private void write(String key, Runnable action) {
@@ -49,234 +41,556 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
         action.run();
     }
 
+    /* BOOLEAN */
+
     @Override
-    public <T> void write(String key, T value, JsonSerializer<T> valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
+    public void writeBoolean(String key, boolean value, JsonBooleanSerializer serializer) {
+        write(key, () -> valueWriter.writeBoolean(value, serializer));
     }
 
     @Override
-    public void writeArray(String key, boolean[] array, JsonBooleanSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBoolean(String key, Boolean value, JsonSerializer<Boolean> serializer) {
+        write(key, () -> valueWriter.writeBoolean(value, serializer));
     }
 
     @Override
-    public void writeArray(String key, byte[] array, JsonByteSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBooleanArray(String key, boolean[] array, JsonBooleanSerializer serializer) {
+        write(key, () -> valueWriter.writeBooleanArray(array, serializer));
     }
 
     @Override
-    public void writeArray(String key, char[] array, JsonCharSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBooleanArray(String key, Boolean[] array, JsonSerializer<Boolean> serializer) {
+        write(key, () -> valueWriter.writeBooleanArray(array, serializer));
     }
 
     @Override
-    public void writeArray(String key, double[] array, JsonDoubleSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBooleanArray(String key, Collection<Boolean> array, JsonSerializer<Boolean> serializer) {
+        write(key, () -> valueWriter.writeBooleanArray(array, serializer));
     }
 
     @Override
-    public void writeArray(String key, float[] array, JsonFloatSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBoolean(String key, boolean value) {
+        write(key, () -> valueWriter.writeBoolean(value));
     }
 
     @Override
-    public void writeArray(String key, int[] array, JsonIntSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBoolean(String key, Boolean value) {
+        write(key, () -> valueWriter.writeBoolean(value));
     }
 
     @Override
-    public void writeArray(String key, long[] array, JsonLongSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBooleanArray(String key, boolean[] array) {
+        write(key, () -> valueWriter.writeBooleanArray(array));
     }
 
     @Override
-    public void writeArray(String key, short[] array, JsonShortSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeBooleanArray(String key, Boolean[] array) {
+        write(key, () -> valueWriter.writeBooleanArray(array));
     }
 
     @Override
-    public <T> void writeObject(String key, T object, JsonObjectSerializer<T> objectWriterConsumer) {
-        write(key, () -> valueWriter.writeObject(object, objectWriterConsumer));
+    public void writeBooleanArray(String key, Collection<Boolean> array) {
+        write(key, () -> valueWriter.writeBooleanArray(array));
+    }
+
+    /* BYTE */
+
+    @Override
+    public void writeByte(String key, byte value, JsonByteSerializer serializer) {
+        write(key, () -> valueWriter.writeByte(value, serializer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, T[] array, JsonObjectSerializer<T> objectWriterConsumer) {
-        write(key, () -> valueWriter.writeObjectArray(array, objectWriterConsumer));
+    public void writeByte(String key, Byte value, JsonSerializer<Byte> serializer) {
+        write(key, () -> valueWriter.writeByte(value, serializer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Stream<T> stream, JsonObjectSerializer<T> objectWriterConsumer) {
-        write(key, () -> valueWriter.writeObjectArray(stream, objectWriterConsumer));
+    public void writeByteArray(String key, byte[] array, JsonByteSerializer serializer) {
+        write(key, () -> valueWriter.writeByteArray(array, serializer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Iterable<T> iterable, JsonObjectSerializer<T> objectWriterConsumer) {
-        write(key, () -> valueWriter.writeObjectArray(iterable, objectWriterConsumer));
+    public void writeByteArray(String key, Byte[] array, JsonSerializer<Byte> serializer) {
+        write(key, () -> valueWriter.writeByteArray(array, serializer));
     }
 
     @Override
-    public <T> void writeObjectArray(String key, Iterator<T> iterator, JsonObjectSerializer<T> objectWriterConsumer) {
-        write(key, () -> valueWriter.writeObjectArray(iterator, objectWriterConsumer));
+    public void writeByteArray(String key, Collection<Byte> array, JsonSerializer<Byte> serializer) {
+        write(key, () -> valueWriter.writeByteArray(array, serializer));
     }
 
     @Override
-    public <T> void writeArray(String key, T[] array, JsonSerializer<T> valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(array, valueWriterConsumer));
+    public void writeByte(String key, byte value) {
+        write(key, () -> valueWriter.writeByte(value));
     }
 
     @Override
-    public <T> void writeArray(String key, Stream<T> stream, JsonSerializer<T> valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(stream, valueWriterConsumer));
+    public void writeByte(String key, Byte value) {
+        write(key, () -> valueWriter.writeByte(value));
     }
 
     @Override
-    public <T> void writeArray(String key, Iterable<T> iterable, JsonSerializer<T> valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(iterable, valueWriterConsumer));
+    public void writeByteArray(String key, byte[] array) {
+        write(key, () -> valueWriter.writeByteArray(array));
     }
 
     @Override
-    public <T> void writeArray(String key, Iterator<T> iterator, JsonSerializer<T> valueWriterConsumer) {
-        write(key, () -> valueWriter.writeArray(iterator, valueWriterConsumer));
+    public void writeByteArray(String key, Byte[] array) {
+        write(key, () -> valueWriter.writeByteArray(array));
     }
 
     @Override
-    public void write(String key, byte value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeByteArray(String key, Collection<Byte> array) {
+        write(key, () -> valueWriter.writeByteArray(array));
+    }
+
+    /* SHORT */
+
+    @Override
+    public void writeShort(String key, short value, JsonShortSerializer serializer) {
+        write(key, () -> valueWriter.writeShort(value, serializer));
     }
 
     @Override
-    public void write(String key, Byte value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShort(String key, Short value, JsonSerializer<Short> serializer) {
+        write(key, () -> valueWriter.writeShort(value, serializer));
     }
 
     @Override
-    public void write(String key, short value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, short[] array, JsonShortSerializer serializer) {
+        write(key, () -> valueWriter.writeShortArray(array, serializer));
     }
 
     @Override
-    public void write(String key, Short value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, Short[] array, JsonSerializer<Short> serializer) {
+        write(key, () -> valueWriter.writeShortArray(array, serializer));
     }
 
     @Override
-    public void write(String key, int value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, Collection<Short> array, JsonSerializer<Short> serializer) {
+        write(key, () -> valueWriter.writeShortArray(array, serializer));
     }
 
     @Override
-    public void write(String key, Integer value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShort(String key, short value) {
+        write(key, () -> valueWriter.writeShort(value));
     }
 
     @Override
-    public void write(String key, long value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShort(String key, Short value) {
+        write(key, () -> valueWriter.writeShort(value));
     }
 
     @Override
-    public void write(String key, Long value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, short[] array) {
+        write(key, () -> valueWriter.writeShortArray(array));
     }
 
     @Override
-    public void write(String key, float value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, Short[] array) {
+        write(key, () -> valueWriter.writeShortArray(array));
     }
 
     @Override
-    public void write(String key, Float value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeShortArray(String key, Collection<Short> array) {
+        write(key, () -> valueWriter.writeShortArray(array));
+    }
+
+    /* INTEGER */
+
+    @Override
+    public void writeInteger(String key, int value, JsonIntSerializer serializer) {
+        write(key, () -> valueWriter.writeInteger(value, serializer));
     }
 
     @Override
-    public void write(String key, double value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeInteger(String key, Integer value, JsonSerializer<Integer> serializer) {
+        write(key, () -> valueWriter.writeInteger(value, serializer));
     }
 
     @Override
-    public void write(String key, Double value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeIntegerArray(String key, int[] array, JsonIntSerializer serializer) {
+        write(key, () -> valueWriter.writeIntegerArray(array, serializer));
     }
 
     @Override
-    public void write(String key, boolean value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeIntegerArray(String key, Integer[] array, JsonSerializer<Integer> serializer) {
+        write(key, () -> valueWriter.writeIntegerArray(array, serializer));
     }
 
     @Override
-    public void write(String key, Boolean value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeInteger(String key, Collection<Integer> array, JsonSerializer<Integer> serializer) {
+        write(key, () -> valueWriter.writeIntegerArray(array, serializer));
     }
 
     @Override
-    public void write(String key, char value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeInteger(String key, int value) {
+        write(key, () -> valueWriter.writeInteger(value));
     }
 
     @Override
-    public void write(String key, Character value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeInteger(String key, Integer value) {
+        write(key, () -> valueWriter.writeInteger(value));
     }
 
     @Override
-    public void write(String key, String value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeIntegerArray(String key, int[] array) {
+        write(key, () -> valueWriter.writeIntegerArray(array));
     }
 
     @Override
-    public void write(String key, BigDecimal value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeIntegerArray(String key, Integer[] array) {
+        write(key, () -> valueWriter.writeIntegerArray(array));
     }
 
     @Override
-    public void write(String key, BigInteger value) {
-        write(key, () -> valueWriter.write(value));
+    public void writeIntegerArray(String key, Collection<Integer> array) {
+        write(key, () -> valueWriter.writeIntegerArray(array));
     }
+
+    /* LONG */
+
+    @Override
+    public void writeLong(String key, long value, JsonLongSerializer serializer) {
+        write(key, () -> valueWriter.writeLong(value, serializer));
+    }
+
+    @Override
+    public void writeLong(String key, Long value, JsonSerializer<Long> serializer) {
+        write(key, () -> valueWriter.writeLong(value, serializer));
+    }
+
+    @Override
+    public void writeLongArray(String key, long[] array, JsonLongSerializer serializer) {
+        write(key, () -> valueWriter.writeLongArray(array, serializer));
+    }
+
+    @Override
+    public void writeLongArray(String key, Long[] array, JsonSerializer<Long> serializer) {
+        write(key, () -> valueWriter.writeLongArray(array, serializer));
+    }
+
+    @Override
+    public void writeLongArray(String key, Collection<Long> array, JsonSerializer<Long> serializer) {
+        write(key, () -> valueWriter.writeLongArray(array, serializer));
+    }
+
+    @Override
+    public void writeLong(String key, long value) {
+        write(key, () -> valueWriter.writeLong(value));
+    }
+
+    @Override
+    public void writeLong(String key, Long value) {
+        write(key, () -> valueWriter.writeLong(value));
+    }
+
+    @Override
+    public void writeLongArray(String key, long[] array) {
+        write(key, () -> valueWriter.writeLongArray(array));
+    }
+
+    @Override
+    public void writeLongArray(String key, Long[] array) {
+        write(key, () -> valueWriter.writeLongArray(array));
+    }
+
+    @Override
+    public void writeLongArray(String key, Collection<Long> array) {
+        write(key, () -> valueWriter.writeLongArray(array));
+    }
+
+    /* FLOAT */
+
+    @Override
+    public void writeFloat(String key, float value, JsonFloatSerializer serializer) {
+        write(key, () -> valueWriter.writeFloat(value, serializer));
+    }
+
+    @Override
+    public void writeFloat(String key, Float value, JsonSerializer<Float> serializer) {
+        write(key, () -> valueWriter.writeFloat(value, serializer));
+    }
+
+    @Override
+    public void writeFloatArray(String key, float[] array, JsonFloatSerializer serializer) {
+        write(key, () -> valueWriter.writeFloatArray(array, serializer));
+    }
+
+    @Override
+    public void writeFloatArray(String key, Float[] array, JsonSerializer<Float> serializer) {
+        write(key, () -> valueWriter.writeFloatArray(array, serializer));
+    }
+
+    @Override
+    public void writeFloatArray(String key, Collection<Float> array, JsonSerializer<Float> serializer) {
+        write(key, () -> valueWriter.writeFloatArray(array, serializer));
+    }
+
+    @Override
+    public void writeFloat(String key, float value) {
+        write(key, () -> valueWriter.writeFloat(value));
+    }
+
+    @Override
+    public void writeFloat(String key, Float value) {
+        write(key, () -> valueWriter.writeFloat(value));
+    }
+
+    @Override
+    public void writeFloatArray(String key, float[] array) {
+        write(key, () -> valueWriter.writeFloatArray(array));
+    }
+
+    @Override
+    public void writeFloatArray(String key, Float[] array) {
+        write(key, () -> valueWriter.writeFloatArray(array));
+    }
+
+    @Override
+    public void writeFloatArray(String key, Collection<Float> array) {
+        write(key, () -> valueWriter.writeFloatArray(array));
+    }
+
+    /* DOUBLE */
+
+    @Override
+    public void writeDouble(String key, double value, JsonDoubleSerializer serializer) {
+        write(key, () -> valueWriter.writeDouble(value, serializer));
+    }
+
+    @Override
+    public void writeDouble(String key, Double value, JsonSerializer<Double> serializer) {
+        write(key, () -> valueWriter.writeDouble(value, serializer));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, double[] array, JsonDoubleSerializer serializer) {
+        write(key, () -> valueWriter.writeDoubleArray(array, serializer));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, Double[] array, JsonSerializer<Double> serializer) {
+        write(key, () -> valueWriter.writeDoubleArray(array, serializer));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, Collection<Double> array, JsonSerializer<Double> serializer) {
+        write(key, () -> valueWriter.writeDoubleArray(array, serializer));
+    }
+
+    @Override
+    public void writeDouble(String key, double value) {
+        write(key, () -> valueWriter.writeDouble(value));
+    }
+
+    @Override
+    public void writeDouble(String key, Double value) {
+        write(key, () -> valueWriter.writeDouble(value));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, double[] array) {
+        write(key, () -> valueWriter.writeDoubleArray(array));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, Double[] array) {
+        write(key, () -> valueWriter.writeDoubleArray(array));
+    }
+
+    @Override
+    public void writeDoubleArray(String key, Collection<Double> array) {
+        write(key, () -> valueWriter.writeDoubleArray(array));
+    }
+
+    /* BIG INTEGER */
+
+    @Override
+    public void writeBigInteger(String key, BigInteger value, JsonSerializer<BigInteger> serializer) {
+        write(key, () -> valueWriter.writeBigInteger(value, serializer));
+    }
+
+    @Override
+    public void writeBigIntegerArray(String key, BigInteger[] array, JsonSerializer<BigInteger> serializer) {
+        write(key, () -> valueWriter.writeBigIntegerArray(array, serializer));
+    }
+
+    @Override
+    public void writeBigIntegerArray(String key, Collection<BigInteger> array, JsonSerializer<BigInteger> serializer) {
+        write(key, () -> valueWriter.writeBigIntegerArray(array, serializer));
+    }
+
+    @Override
+    public void writeBigInteger(String key, BigInteger value) {
+        write(key, () -> valueWriter.writeBigInteger(value));
+    }
+
+    @Override
+    public void writeBigIntegerArray(String key, BigInteger[] array) {
+        write(key, () -> valueWriter.writeBigIntegerArray(array));
+    }
+
+    @Override
+    public void writeBigIntegerArray(String key, Collection<BigInteger> array) {
+        write(key, () -> valueWriter.writeBigIntegerArray(array));
+    }
+
+    /* BIG DECIMAL */
+
+    @Override
+    public void writeBigDecimal(String key, BigDecimal value, JsonSerializer<BigDecimal> serializer) {
+        write(key, () -> valueWriter.writeBigDecimal(value, serializer));
+    }
+
+    @Override
+    public void writeBigDecimalArray(String key, BigDecimal[] array, JsonSerializer<BigDecimal> serializer) {
+        write(key, () -> valueWriter.writeBigDecimalArray(array, serializer));
+    }
+
+    @Override
+    public void writeBigDecimalArray(String key, Collection<BigDecimal> array, JsonSerializer<BigDecimal> serializer) {
+        write(key, () -> valueWriter.writeBigDecimalArray(array, serializer));
+    }
+
+    @Override
+    public void writeBigDecimal(String key, BigDecimal value) {
+        write(key, () -> valueWriter.writeBigDecimal(value));
+    }
+
+    @Override
+    public void writeBigDecimalArray(String key, BigDecimal[] array) {
+        write(key, () -> valueWriter.writeBigDecimalArray(array));
+    }
+
+    @Override
+    public void writeBigDecimalArray(String key, Collection<BigDecimal> array) {
+        write(key, () -> valueWriter.writeBigDecimalArray(array));
+    }
+
+    /* STRING */
+
+    @Override
+    public void writeString(String key, String value, JsonSerializer<String> serializer) {
+        write(key, () -> valueWriter.writeString(value, serializer));
+    }
+
+    @Override
+    public void writeStringArray(String key, String[] array, JsonSerializer<String> serializer) {
+        write(key, () -> valueWriter.writeStringArray(array, serializer));
+    }
+
+    @Override
+    public void writeStringArray(String key, Collection<String> array, JsonSerializer<String> serializer) {
+        write(key, () -> valueWriter.writeStringArray(array, serializer));
+    }
+
+    @Override
+    public void writeString(String key, String value) {
+        write(key, () -> valueWriter.writeString(value));
+    }
+
+    @Override
+    public void writeStringArray(String key, String[] array) {
+        write(key, () -> valueWriter.writeStringArray(array));
+    }
+
+    @Override
+    public void writeStringArray(String key, Collection<String> array) {
+        write(key, () -> valueWriter.writeStringArray(array));
+    }
+
+    /* CHARACTER */
+
+    @Override
+    public void writeCharacter(String key, char value, JsonCharSerializer serializer) {
+        write(key, () -> valueWriter.writeCharacter(value, serializer));
+    }
+
+    @Override
+    public void writeCharacter(String key, Character value, JsonSerializer<Character> serializer) {
+        write(key, () -> valueWriter.writeCharacter(value, serializer));
+    }
+
+    @Override
+    public void writeCharacterArray(String key, char[] array, JsonCharSerializer serializer) {
+        write(key, () -> valueWriter.writeCharacterArray(array, serializer));
+    }
+
+    @Override
+    public void writeCharacterArray(String key, Character[] array, JsonSerializer<Character> serializer) {
+        write(key, () -> valueWriter.writeCharacterArray(array, serializer));
+    }
+
+    @Override
+    public void writeCharacter(String key, Collection<Character> array, JsonSerializer<Character> serializer) {
+        write(key, () -> valueWriter.writeCharacterArray(array, serializer));
+    }
+
+    @Override
+    public void writeCharacter(String key, char value) {
+        write(key, () -> valueWriter.writeCharacter(value));
+    }
+
+    @Override
+    public void writeCharacter(String key, Character value) {
+        write(key, () -> valueWriter.writeCharacter(value));
+    }
+
+    @Override
+    public void writeCharacterArray(String key, char[] array) {
+        write(key, () -> valueWriter.writeCharacterArray(array));
+    }
+
+    @Override
+    public void writeCharacterArray(String key, Character[] array) {
+        write(key, () -> valueWriter.writeCharacterArray(array));
+    }
+
+    @Override
+    public void writeCharacterArray(String key, Collection<Character> array) {
+        write(key, () -> valueWriter.writeCharacterArray(array));
+    }
+
+    /* CUSTOM */
+
+    @Override
+    public <T> void writeValue(String key, T value, JsonSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeValue(value, serializer));
+    }
+
+    @Override
+    public <T> void writeValueArray(String key, T[] array, JsonSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeValueArray(array, serializer));
+    }
+
+    @Override
+    public <T> void writeValueArray(String key, Collection<T> array, JsonSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeValueArray(array, serializer));
+    }
+
+    /* OBJECT */
+
+    @Override
+    public <T> void writeObject(String key, T value, JsonObjectSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeObject(value, serializer));
+    }
+
+    @Override
+    public <T> void writeObjectArray(String key, T[] array, JsonObjectSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeObjectArray(array, serializer));
+    }
+
+    @Override
+    public <T> void writeObjectArray(String key, Collection<T> array, JsonObjectSerializer<T> serializer) {
+        write(key, () -> valueWriter.writeObjectArray(array, serializer));
+    }
+
+    /* NULL */
 
     @Override
     public void writeNull(String key) {
         write(key, valueWriter::writeNull);
     }
-
-    @Override
-    public void write(String key, boolean value, JsonBooleanSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, byte value, JsonByteSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, char value, JsonCharSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, double value, JsonDoubleSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, float value, JsonFloatSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, int value, JsonIntSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, long value, JsonLongSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
-    @Override
-    public void write(String key, short value, JsonShortSerializer valueWriterConsumer) {
-        write(key, () -> valueWriter.write(value, valueWriterConsumer));
-    }
-
 }

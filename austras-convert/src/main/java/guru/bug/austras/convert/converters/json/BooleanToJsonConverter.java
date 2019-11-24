@@ -10,7 +10,7 @@ import guru.bug.austras.core.Component;
 public class BooleanToJsonConverter implements JsonConverter<Boolean> {
     @Override
     public void toJson(Boolean value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeBoolean(value);
     }
 
     @Override

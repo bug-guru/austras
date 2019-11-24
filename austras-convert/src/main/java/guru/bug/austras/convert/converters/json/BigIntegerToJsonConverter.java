@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public class BigIntegerToJsonConverter implements JsonConverter<BigInteger> {
     @Override
     public void toJson(BigInteger value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeBigInteger(value);
     }
 
     @Override

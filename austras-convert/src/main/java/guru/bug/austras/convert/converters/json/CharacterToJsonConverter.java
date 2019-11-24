@@ -10,7 +10,7 @@ import guru.bug.austras.core.Component;
 public class CharacterToJsonConverter implements JsonConverter<Character> {
     @Override
     public void toJson(Character value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeCharacter(value);
     }
 
     @Override

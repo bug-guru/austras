@@ -12,6 +12,7 @@ import java.util.UUID;
 public class UUIDToJsonConverter implements JsonConverter<UUID> {
     private final StringConverter<UUID> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public UUIDToJsonConverter(StringConverter<UUID> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class UUIDToJsonConverter implements JsonConverter<UUID> {
     @Override
     public void toJson(UUID value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

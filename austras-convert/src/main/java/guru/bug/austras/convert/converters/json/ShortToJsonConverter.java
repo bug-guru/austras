@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class ShortToJsonConverter implements JsonConverter<Short> {
     @Override
     public void toJson(Short value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeShort(value);
     }
 
     @Override

@@ -26,19 +26,23 @@ class JsonTokenWriter {
         }
     }
 
-    void write(String str) {
+    void writeString(String str) {
         try {
-            valueBuilder.setLength(0);
-            valueBuilder.append('"');
-            str.codePoints().forEach(this::writeChar);
-            valueBuilder.append('"');
-            out.append(valueBuilder);
+            if (str == null) {
+                out.append("null");
+            } else {
+                valueBuilder.setLength(0);
+                valueBuilder.append('"');
+                str.codePoints().forEach(this::writeCharacter);
+                valueBuilder.append('"');
+                out.append(valueBuilder);
+            }
         } catch (IOException e) {
             throw new JsonWritingException(e);
         }
     }
 
-    private void writeChar(int codePoint) {
+    private void writeCharacter(int codePoint) {
         switch (codePoint) {
             case '"':
                 valueBuilder.append("\\\"");
@@ -63,7 +67,7 @@ class JsonTokenWriter {
         }
     }
 
-    void write(byte value) {
+    void writeByte(byte value) {
         try {
             out.append(Integer.toString(value));
         } catch (IOException e) {
@@ -71,34 +75,79 @@ class JsonTokenWriter {
         }
     }
 
-    void write(short value) {
+    void writeByte(Byte value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                out.append(Integer.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeShort(short value) {
         try {
             out.append(Integer.toString(value));
         } catch (IOException e) {
             throw new JsonWritingException(e);
         }
-
     }
 
-    void write(int value) {
+    void writeShort(Short value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                out.append(Integer.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeInteger(int value) {
         try {
             out.append(Integer.toString(value));
         } catch (IOException e) {
             throw new JsonWritingException(e);
         }
-
     }
 
-    void write(long value) {
+    void writeInteger(Integer value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                out.append(Integer.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeLong(long value) {
         try {
             out.append(Long.toString(value));
         } catch (IOException e) {
             throw new JsonWritingException(e);
         }
-
     }
 
-    void write(double value) {
+    void writeLong(Long value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                out.append(Long.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeDouble(double value) {
         try {
             if (Double.isFinite(value)) {
                 out.append(Double.toString(value));
@@ -110,7 +159,19 @@ class JsonTokenWriter {
         }
     }
 
-    void write(float value) {
+    void writeDouble(Double value) {
+        try {
+            if (value == null || !Double.isFinite(value)) {
+                out.append("null");
+            } else {
+                out.append(Double.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeFloat(float value) {
         try {
             if (Float.isFinite(value)) {
                 out.append(Float.toString(value));
@@ -122,7 +183,19 @@ class JsonTokenWriter {
         }
     }
 
-    void write(BigInteger value) {
+    void writeFloat(Float value) {
+        try {
+            if (value == null || !Float.isFinite(value)) {
+                out.append("null");
+            } else {
+                out.append(Float.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeBigInteger(BigInteger value) {
         try {
             if (value == null) {
                 out.append("null");
@@ -134,7 +207,7 @@ class JsonTokenWriter {
         }
     }
 
-    void write(BigDecimal value) {
+    void writeBigDecimal(BigDecimal value) {
         try {
             if (value == null) {
                 out.append("null");
@@ -146,7 +219,7 @@ class JsonTokenWriter {
         }
     }
 
-    void write(boolean value) {
+    void writeBoolean(boolean value) {
         try {
             out.append(Boolean.toString(value));
         } catch (IOException e) {
@@ -154,8 +227,32 @@ class JsonTokenWriter {
         }
     }
 
-    void write(char value) {
-        write(String.valueOf(value));
+    void writeBoolean(Boolean value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                out.append(Boolean.toString(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
+    }
+
+    void writeCharacter(char value) {
+        writeString(String.valueOf(value));
+    }
+
+    void writeCharacter(Character value) {
+        try {
+            if (value == null) {
+                out.append("null");
+            } else {
+                writeString(String.valueOf(value));
+            }
+        } catch (IOException e) {
+            throw new JsonWritingException(e);
+        }
     }
 
     void writeBeginObject() {

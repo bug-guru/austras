@@ -7,7 +7,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
+@SuppressWarnings({"WeakerAccess" , "RedundantSuppression"})
 public class ListToJsonConverter<T> implements JsonConverter<List<T>> {
     private final JsonConverter<T> elementConverter;
 
@@ -17,11 +17,7 @@ public class ListToJsonConverter<T> implements JsonConverter<List<T>> {
 
     @Override
     public void toJson(List<T> value, JsonValueWriter writer) {
-        if (value == null) {
-            writer.writeNull();
-        } else {
-            writer.writeArray(value, elementConverter);
-        }
+        writer.writeValueArray(value, elementConverter);
     }
 
     @Override

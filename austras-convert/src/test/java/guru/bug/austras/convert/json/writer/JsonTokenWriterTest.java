@@ -43,244 +43,244 @@ class JsonTokenWriterTest {
 
     @Test
     void testWriteEngString() {
-        writer.write("Hello!");
+        writer.writeString("Hello!");
         assertEquals("\"Hello!\"" , out.toString());
     }
 
     @Test
     void testWriteRusString() {
-        writer.write("По русски");
+        writer.writeString("По русски");
         assertEquals("\"По русски\"" , out.toString());
     }
 
     @Test
     void testWriteSymbolsString() {
-        writer.write("$¢ह€㒨");
+        writer.writeString("$¢ह€㒨");
         assertEquals("\"$¢ह€㒨\"" , out.toString());
     }
 
     @Test
     void testWriteEscapeSurrogatesString() {
-        writer.write("\uD800\uDF48\uD83D\uDE02\uD841\uDC57");
+        writer.writeString("\uD800\uDF48\uD83D\uDE02\uD841\uDC57");
         assertEquals("\"\uD800\uDF48\uD83D\uDE02\uD841\uDC57\"" , out.toString());
     }
 
     @Test
     void testWriteEscapeSpecString() {
-        writer.write("a\rb\n\t\\/\b");
+        writer.writeString("a\rb\n\t\\/\b");
         assertEquals("\"a\\rb\\n\\t\\\\/\\b\"" , out.toString());
     }
 
     @Test
     void testWriteString_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write("abc\""));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeString("abc\""));
     }
 
     @Test
     void testWriteMaxByte() {
-        writer.write(Byte.MAX_VALUE);
+        writer.writeByte(Byte.MAX_VALUE);
         assertEquals(String.valueOf(Byte.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinByte() {
-        writer.write(Byte.MIN_VALUE);
+        writer.writeByte(Byte.MIN_VALUE);
         assertEquals(String.valueOf(Byte.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteByte_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write((byte) 0));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeByte((byte) 0));
     }
 
     @Test
     void testWriteMaxShort() {
-        writer.write(Short.MAX_VALUE);
+        writer.writeShort(Short.MAX_VALUE);
         assertEquals(String.valueOf(Short.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinShort() {
-        writer.write(Short.MIN_VALUE);
+        writer.writeShort(Short.MIN_VALUE);
         assertEquals(String.valueOf(Short.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteShort_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write((short) 0));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeShort((short) 0));
     }
 
     @Test
     void testWriteMaxInteger() {
-        writer.write(Integer.MAX_VALUE);
+        writer.writeInteger(Integer.MAX_VALUE);
         assertEquals(String.valueOf(Integer.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinInteger() {
-        writer.write(Integer.MIN_VALUE);
+        writer.writeInteger(Integer.MIN_VALUE);
         assertEquals(String.valueOf(Integer.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteInteger_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(0));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeInteger(0));
     }
 
     @Test
     void testWriteMaxLong() {
-        writer.write(Long.MAX_VALUE);
+        writer.writeLong(Long.MAX_VALUE);
         assertEquals(String.valueOf(Long.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinLong() {
-        writer.write(Long.MIN_VALUE);
+        writer.writeLong(Long.MIN_VALUE);
         assertEquals(String.valueOf(Long.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteLong_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(0L));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeLong(0L));
     }
 
     @Test
     void testWriteMaxDouble() {
-        writer.write(Double.MAX_VALUE);
+        writer.writeDouble(Double.MAX_VALUE);
         assertEquals(String.valueOf(Double.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinDouble() {
-        writer.write(Double.MIN_VALUE);
+        writer.writeDouble(Double.MIN_VALUE);
         assertEquals(String.valueOf(Double.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteNaNDouble() {
-        writer.write(Double.NaN);
+        writer.writeDouble(Double.NaN);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWritePositiveInfinityDouble() {
-        writer.write(Double.POSITIVE_INFINITY);
+        writer.writeDouble(Double.POSITIVE_INFINITY);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWriteNegativeInfinityDouble() {
-        writer.write(Double.NEGATIVE_INFINITY);
+        writer.writeDouble(Double.NEGATIVE_INFINITY);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWriteDouble_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(0D));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeDouble(0D));
     }
 
     @Test
     void testWriteMaxFloat() {
-        writer.write(Float.MAX_VALUE);
+        writer.writeFloat(Float.MAX_VALUE);
         assertEquals(String.valueOf(Float.MAX_VALUE), out.toString());
     }
 
     @Test
     void testWriteMinFloat() {
-        writer.write(Float.MIN_VALUE);
+        writer.writeFloat(Float.MIN_VALUE);
         assertEquals(String.valueOf(Float.MIN_VALUE), out.toString());
     }
 
     @Test
     void testWriteNaNFloat() {
-        writer.write(Float.NaN);
+        writer.writeFloat(Float.NaN);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWritePositiveInfinityFloat() {
-        writer.write(Float.POSITIVE_INFINITY);
+        writer.writeFloat(Float.POSITIVE_INFINITY);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWriteNegativeInfinityFloat() {
-        writer.write(Float.NEGATIVE_INFINITY);
+        writer.writeFloat(Float.NEGATIVE_INFINITY);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWriteFloat_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(0F));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeFloat(0F));
     }
 
     @Test
     void testWriteBigInteger() {
-        writer.write(new BigInteger("999999999999999999999999999999999999999999999999999999999999999999999999999"));
+        writer.writeBigInteger(new BigInteger("999999999999999999999999999999999999999999999999999999999999999999999999999"));
         assertEquals("999999999999999999999999999999999999999999999999999999999999999999999999999" , out.toString());
     }
 
     @Test
     void testWriteBigInteger_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(BigInteger.ZERO));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeBigInteger(BigInteger.ZERO));
     }
 
     @Test
     void testWriteBigInteger_null() {
-        writer.write((BigInteger) null);
+        writer.writeBigInteger(null);
         assertEquals("null" , out.toString());
     }
 
     @Test
     void testWriteBigDecimal() {
-        writer.write(new BigDecimal("999999999999999999999999999999999999999999999999999999999999999999999999999E-999"));
+        writer.writeBigDecimal(new BigDecimal("999999999999999999999999999999999999999999999999999999999999999999999999999E-999"));
         assertEquals("9.99999999999999999999999999999999999999999999999999999999999999999999999999E-925" , out.toString());
     }
 
     @Test
     void testWriteBigDecimal_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(BigDecimal.ZERO));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeBigDecimal(BigDecimal.ZERO));
     }
 
     @Test
     void testWriteBigDecimal_null() {
-        writer.write((BigDecimal) null);
+        writer.writeBigDecimal(null);
         assertEquals("null" , out.toString());
     }
 
 
     @Test
     void writeMinCharacter() {
-        writer.write(Character.MIN_VALUE);
+        writer.writeCharacter(Character.MIN_VALUE);
         assertEquals("\"\u0000\"" , out.toString());
     }
 
     @Test
     void writeMaxCharacter() {
-        writer.write(Character.MAX_VALUE);
+        writer.writeCharacter(Character.MAX_VALUE);
         assertEquals("\"\uFFFF\"" , out.toString());
     }
 
     @Test
     void writeCharacter_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write('x'));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeCharacter('x'));
     }
 
     @Test
     void writeBooleanTrue() {
-        writer.write(true);
+        writer.writeBoolean(true);
         assertEquals("true" , out.toString());
     }
 
     @Test
     void writeBooleanFalse() {
-        writer.write(false);
+        writer.writeBoolean(false);
         assertEquals("false" , out.toString());
     }
 
     @Test
     void writeBoolean_exception() {
-        assertThrows(JsonWritingException.class, () -> throwingWriter.write(true));
+        assertThrows(JsonWritingException.class, () -> throwingWriter.writeBoolean(true));
     }
 
     @Test

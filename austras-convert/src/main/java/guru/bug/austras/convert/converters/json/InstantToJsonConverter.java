@@ -12,6 +12,7 @@ import java.time.Instant;
 public class InstantToJsonConverter implements JsonConverter<Instant> {
     private final StringConverter<Instant> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public InstantToJsonConverter(StringConverter<Instant> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class InstantToJsonConverter implements JsonConverter<Instant> {
     @Override
     public void toJson(Instant value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

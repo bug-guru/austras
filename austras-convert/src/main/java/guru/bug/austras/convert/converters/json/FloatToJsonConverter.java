@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class FloatToJsonConverter implements JsonConverter<Float> {
     @Override
     public void toJson(Float value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeFloat(value);
     }
 
     @Override

@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class ByteToJsonConverter implements JsonConverter<Byte> {
     @Override
     public void toJson(Byte value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeByte(value);
     }
 
     @Override

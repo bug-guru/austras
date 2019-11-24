@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class BigDecimalToJsonConverter implements JsonConverter<BigDecimal> {
     @Override
     public void toJson(BigDecimal value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeBigDecimal(value);
     }
 
     @Override

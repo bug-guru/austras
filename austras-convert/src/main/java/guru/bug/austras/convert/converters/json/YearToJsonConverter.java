@@ -12,6 +12,7 @@ import java.time.Year;
 public class YearToJsonConverter implements JsonConverter<Year> {
     private final StringConverter<Year> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public YearToJsonConverter(StringConverter<Year> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class YearToJsonConverter implements JsonConverter<Year> {
     @Override
     public void toJson(Year value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

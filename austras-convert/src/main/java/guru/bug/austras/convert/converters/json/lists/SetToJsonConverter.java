@@ -7,7 +7,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
+@SuppressWarnings({"WeakerAccess" , "RedundantSuppression"})
 public class SetToJsonConverter<T> implements JsonConverter<Set<T>> {
     private final JsonConverter<T> elementConverter;
 
@@ -17,11 +17,7 @@ public class SetToJsonConverter<T> implements JsonConverter<Set<T>> {
 
     @Override
     public void toJson(Set<T> value, JsonValueWriter writer) {
-        if (value == null) {
-            writer.writeNull();
-        } else {
-            writer.writeArray(value, elementConverter);
-        }
+        writer.writeValueArray(value, elementConverter);
     }
 
     @Override

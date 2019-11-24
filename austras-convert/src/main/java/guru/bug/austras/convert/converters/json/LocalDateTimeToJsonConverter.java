@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class LocalDateTimeToJsonConverter implements JsonConverter<LocalDateTime> {
     private final StringConverter<LocalDateTime> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public LocalDateTimeToJsonConverter(StringConverter<LocalDateTime> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class LocalDateTimeToJsonConverter implements JsonConverter<LocalDateTime
     @Override
     public void toJson(LocalDateTime value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

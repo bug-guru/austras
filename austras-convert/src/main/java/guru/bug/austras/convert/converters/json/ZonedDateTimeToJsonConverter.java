@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 public class ZonedDateTimeToJsonConverter implements JsonConverter<ZonedDateTime> {
     private final StringConverter<ZonedDateTime> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public ZonedDateTimeToJsonConverter(StringConverter<ZonedDateTime> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class ZonedDateTimeToJsonConverter implements JsonConverter<ZonedDateTime
     @Override
     public void toJson(ZonedDateTime value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

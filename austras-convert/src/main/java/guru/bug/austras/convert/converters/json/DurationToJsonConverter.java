@@ -12,6 +12,7 @@ import java.time.Duration;
 public class DurationToJsonConverter implements JsonConverter<Duration> {
     private final StringConverter<Duration> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public DurationToJsonConverter(StringConverter<Duration> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class DurationToJsonConverter implements JsonConverter<Duration> {
     @Override
     public void toJson(Duration value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.time.MonthDay;
 public class MonthDayToJsonConverter implements JsonConverter<MonthDay> {
     private final StringConverter<MonthDay> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public MonthDayToJsonConverter(StringConverter<MonthDay> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class MonthDayToJsonConverter implements JsonConverter<MonthDay> {
     @Override
     public void toJson(MonthDay value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

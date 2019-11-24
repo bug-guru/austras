@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class PrimitiveLongToJsonConverter implements JsonLongConverter {
     @Override
     public void toJson(long value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeLong(value);
     }
 
     @Override

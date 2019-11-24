@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class IntegerToJsonConverter implements JsonConverter<Integer> {
     @Override
     public void toJson(Integer value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeInteger(value);
     }
 
     @Override

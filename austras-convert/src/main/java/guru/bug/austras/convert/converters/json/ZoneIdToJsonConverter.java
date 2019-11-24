@@ -12,6 +12,7 @@ import java.time.ZoneId;
 public class ZoneIdToJsonConverter implements JsonConverter<ZoneId> {
     private final StringConverter<ZoneId> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public ZoneIdToJsonConverter(StringConverter<ZoneId> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -19,7 +20,7 @@ public class ZoneIdToJsonConverter implements JsonConverter<ZoneId> {
     @Override
     public void toJson(ZoneId value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

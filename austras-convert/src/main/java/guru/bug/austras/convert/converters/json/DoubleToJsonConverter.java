@@ -10,7 +10,7 @@ import guru.bug.austras.core.Component;
 public class DoubleToJsonConverter implements JsonConverter<Double> {
     @Override
     public void toJson(Double value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeDouble(value);
     }
 
     @Override

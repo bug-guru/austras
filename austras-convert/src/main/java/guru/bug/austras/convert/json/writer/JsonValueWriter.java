@@ -3,8 +3,7 @@ package guru.bug.austras.convert.json.writer;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.stream.Stream;
+import java.util.Collection;
 
 public interface JsonValueWriter {
 
@@ -13,97 +12,242 @@ public interface JsonValueWriter {
         return new JsonValueWriterImpl(tokenWriter);
     }
 
-    void write(boolean value);
+    /* BOOLEAN */
 
-    void write(Boolean value);
+    void writeBoolean(boolean value, JsonBooleanSerializer serializer);
 
-    void write(byte value);
+    void writeBoolean(Boolean value, JsonSerializer<Boolean> serializer);
 
-    void write(Byte value);
+    void writeBooleanArray(boolean[] array, JsonBooleanSerializer serializer);
 
-    void write(char value);
+    void writeBooleanArray(Boolean[] array, JsonSerializer<Boolean> serializer);
 
-    void write(Character value);
+    void writeBooleanArray(Collection<Boolean> array, JsonSerializer<Boolean> serializer);
 
-    void write(double value);
+    void writeBoolean(boolean value);
 
-    void write(Double value);
+    void writeBoolean(Boolean value);
 
-    void write(float value);
+    void writeBooleanArray(boolean[] array);
 
-    void write(Float value);
+    void writeBooleanArray(Boolean[] array);
 
-    void write(int value);
+    void writeBooleanArray(Collection<Boolean> array);
 
-    void write(Integer value);
+    /* BYTE */
 
-    void write(long value);
+    void writeByte(byte value, JsonByteSerializer serializer);
 
-    void write(Long value);
+    void writeByte(Byte value, JsonSerializer<Byte> serializer);
 
-    void write(short value);
+    void writeByteArray(byte[] array, JsonByteSerializer serializer);
 
-    void write(Short value);
+    void writeByteArray(Byte[] array, JsonSerializer<Byte> serializer);
 
-    void write(BigDecimal value);
+    void writeByteArray(Collection<Byte> array, JsonSerializer<Byte> serializer);
 
-    void write(BigInteger value);
+    void writeByte(byte value);
 
-    void write(String value);
+    void writeByte(Byte value);
 
-    void writeRaw(String value);
+    void writeByteArray(byte[] array);
+
+    void writeByteArray(Byte[] array);
+
+    void writeByteArray(Collection<Byte> array);
+
+    /* SHORT */
+
+    void writeShort(short value, JsonShortSerializer serializer);
+
+    void writeShort(Short value, JsonSerializer<Short> serializer);
+
+    void writeShortArray(short[] array, JsonShortSerializer serializer);
+
+    void writeShortArray(Short[] array, JsonSerializer<Short> serializer);
+
+    void writeShortArray(Collection<Short> array, JsonSerializer<Short> serializer);
+
+    void writeShort(short value);
+
+    void writeShort(Short value);
+
+    void writeShortArray(short[] array);
+
+    void writeShortArray(Short[] array);
+
+    void writeShortArray(Collection<Short> array);
+
+    /* INTEGER */
+
+    void writeInteger(int value, JsonIntSerializer serializer);
+
+    void writeInteger(Integer value, JsonSerializer<Integer> serializer);
+
+    void writeIntegerArray(int[] array, JsonIntSerializer serializer);
+
+    void writeIntegerArray(Integer[] array, JsonSerializer<Integer> serializer);
+
+    void writeIntegerArray(Collection<Integer> array, JsonSerializer<Integer> serializer);
+
+    void writeInteger(int value);
+
+    void writeInteger(Integer value);
+
+    void writeIntegerArray(int[] array);
+
+    void writeIntegerArray(Integer[] array);
+
+    void writeIntegerArray(Collection<Integer> array);
+
+    /* LONG */
+
+    void writeLong(long value, JsonLongSerializer serializer);
+
+    void writeLong(Long value, JsonSerializer<Long> serializer);
+
+    void writeLongArray(long[] array, JsonLongSerializer serializer);
+
+    void writeLongArray(Long[] array, JsonSerializer<Long> serializer);
+
+    void writeLongArray(Collection<Long> array, JsonSerializer<Long> serializer);
+
+    void writeLong(long value);
+
+    void writeLong(Long value);
+
+    void writeLongArray(long[] array);
+
+    void writeLongArray(Long[] array);
+
+    void writeLongArray(Collection<Long> array);
+
+    /* FLOAT */
+
+    void writeFloat(float value, JsonFloatSerializer serializer);
+
+    void writeFloat(Float value, JsonSerializer<Float> serializer);
+
+    void writeFloatArray(float[] array, JsonFloatSerializer serializer);
+
+    void writeFloatArray(Float[] array, JsonSerializer<Float> serializer);
+
+    void writeFloatArray(Collection<Float> array, JsonSerializer<Float> serializer);
+
+    void writeFloat(float value);
+
+    void writeFloat(Float value);
+
+    void writeFloatArray(float[] array);
+
+    void writeFloatArray(Float[] array);
+
+    void writeFloatArray(Collection<Float> array);
+
+    /* DOUBLE */
+
+    void writeDouble(double value, JsonDoubleSerializer serializer);
+
+    void writeDouble(Double value, JsonSerializer<Double> serializer);
+
+    void writeDoubleArray(double[] array, JsonDoubleSerializer serializer);
+
+    void writeDoubleArray(Double[] array, JsonSerializer<Double> serializer);
+
+    void writeDoubleArray(Collection<Double> array, JsonSerializer<Double> serializer);
+
+    void writeDouble(double value);
+
+    void writeDouble(Double value);
+
+    void writeDoubleArray(double[] array);
+
+    void writeDoubleArray(Double[] array);
+
+    void writeDoubleArray(Collection<Double> array);
+
+    /* BIG INTEGER */
+
+    void writeBigInteger(BigInteger value, JsonSerializer<BigInteger> serializer);
+
+    void writeBigIntegerArray(BigInteger[] array, JsonSerializer<BigInteger> serializer);
+
+    void writeBigIntegerArray(Collection<BigInteger> array, JsonSerializer<BigInteger> serializer);
+
+    void writeBigInteger(BigInteger value);
+
+    void writeBigIntegerArray(BigInteger[] array);
+
+    void writeBigIntegerArray(Collection<BigInteger> array);
+
+    /* BIG DECIMAL */
+
+    void writeBigDecimal(BigDecimal value, JsonSerializer<BigDecimal> serializer);
+
+    void writeBigDecimalArray(BigDecimal[] array, JsonSerializer<BigDecimal> serializer);
+
+    void writeBigDecimalArray(Collection<BigDecimal> array, JsonSerializer<BigDecimal> serializer);
+
+    void writeBigDecimal(BigDecimal value);
+
+    void writeBigDecimalArray(BigDecimal[] array);
+
+    void writeBigDecimalArray(Collection<BigDecimal> array);
+
+    /* STRING */
+
+    void writeString(String value, JsonSerializer<String> serializer);
+
+    void writeStringArray(String[] array, JsonSerializer<String> serializer);
+
+    void writeStringArray(Collection<String> array, JsonSerializer<String> serializer);
+
+    void writeString(String value);
+
+    void writeStringArray(String[] array);
+
+    void writeStringArray(Collection<String> array);
+
+    /* CHARACTER */
+
+    void writeCharacter(char value, JsonCharSerializer serializer);
+
+    void writeCharacter(Character value, JsonSerializer<Character> serializer);
+
+    void writeCharacterArray(char[] array, JsonCharSerializer serializer);
+
+    void writeCharacterArray(Character[] array, JsonSerializer<Character> serializer);
+
+    void writeCharacterArray(Collection<Character> array, JsonSerializer<Character> serializer);
+
+    void writeCharacter(char value);
+
+    void writeCharacter(Character value);
+
+    void writeCharacterArray(char[] array);
+
+    void writeCharacterArray(Character[] array);
+
+    void writeCharacterArray(Collection<Character> array);
+
+    /* CUSTOM */
+
+    <T> void writeValue(T value, JsonSerializer<T> serializer);
+
+    <T> void writeValueArray(T[] array, JsonSerializer<T> serializer);
+
+    <T> void writeValueArray(Collection<T> array, JsonSerializer<T> serializer);
+
+    /* OBJECT */
+
+    <T> void writeObject(T value, JsonObjectSerializer<T> serializer);
+
+    <T> void writeObjectArray(T[] array, JsonObjectSerializer<T> serializer);
+
+    <T> void writeObjectArray(Collection<T> array, JsonObjectSerializer<T> serializer);
+
+    /* NULL */
 
     void writeNull();
 
-    void write(boolean value, JsonBooleanSerializer valueWriterConsumer);
-
-    void write(byte value, JsonByteSerializer valueWriterConsumer);
-
-    void write(char value, JsonCharSerializer valueWriterConsumer);
-
-    void write(double value, JsonDoubleSerializer valueWriterConsumer);
-
-    void write(float value, JsonFloatSerializer valueWriterConsumer);
-
-    void write(int value, JsonIntSerializer valueWriterConsumer);
-
-    void write(long value, JsonLongSerializer valueWriterConsumer);
-
-    void write(short value, JsonShortSerializer valueWriterConsumer);
-
-    <T> void write(T value, JsonSerializer<T> valueWriterConsumer);
-
-    void writeArray(boolean[] array, JsonBooleanSerializer valueWriterConsumer);
-
-    void writeArray(byte[] array, JsonByteSerializer valueWriterConsumer);
-
-    void writeArray(char[] array, JsonCharSerializer valueWriterConsumer);
-
-    void writeArray(double[] array, JsonDoubleSerializer valueWriterConsumer);
-
-    void writeArray(float[] array, JsonFloatSerializer valueWriterConsumer);
-
-    void writeArray(int[] array, JsonIntSerializer valueWriterConsumer);
-
-    void writeArray(long[] array, JsonLongSerializer valueWriterConsumer);
-
-    void writeArray(short[] array, JsonShortSerializer valueWriterConsumer);
-
-    <T> void writeArray(T[] array, JsonSerializer<T> valueWriterConsumer);
-
-    <T> void writeArray(Stream<T> stream, JsonSerializer<T> valueWriterConsumer);
-
-    <T> void writeArray(Iterable<T> iterable, JsonSerializer<T> valueWriterConsumer);
-
-    <T> void writeArray(Iterator<T> iterator, JsonSerializer<T> valueWriterConsumer);
-
-    <T> void writeObject(T object, JsonObjectSerializer<T> objectWriterConsumer);
-
-    <T> void writeObjectArray(T[] array, JsonObjectSerializer<T> objectWriterConsumer);
-
-    <T> void writeObjectArray(Stream<T> stream, JsonObjectSerializer<T> objectWriterConsumer);
-
-    <T> void writeObjectArray(Iterable<T> iterable, JsonObjectSerializer<T> objectWriterConsumer);
-
-    <T> void writeObjectArray(Iterator<T> iterator, JsonObjectSerializer<T> objectWriterConsumer);
 }

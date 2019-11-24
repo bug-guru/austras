@@ -13,6 +13,7 @@ import java.time.DayOfWeek;
 public class DayOfWeekToJsonConverter implements JsonConverter<DayOfWeek> {
     private final StringConverter<DayOfWeek> stringConverter;
 
+    @SuppressWarnings("WeakerAccess")
     public DayOfWeekToJsonConverter(StringConverter<DayOfWeek> stringConverter) {
         this.stringConverter = stringConverter;
     }
@@ -20,7 +21,7 @@ public class DayOfWeekToJsonConverter implements JsonConverter<DayOfWeek> {
     @Override
     public void toJson(DayOfWeek value, JsonValueWriter writer) {
         var str = stringConverter.toString(value);
-        writer.write(str);
+        writer.writeString(str);
     }
 
     @Override

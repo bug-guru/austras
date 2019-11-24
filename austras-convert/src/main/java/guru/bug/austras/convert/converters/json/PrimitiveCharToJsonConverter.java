@@ -9,7 +9,7 @@ import guru.bug.austras.core.Component;
 public class PrimitiveCharToJsonConverter implements JsonCharConverter {
     @Override
     public void toJson(char value, JsonValueWriter writer) {
-        writer.write(value);
+        writer.writeCharacter(value);
     }
 
     @Override

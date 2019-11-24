@@ -24,7 +24,7 @@ public class $SIMPLE_NAME$ implements JsonConverter<$TARGET$> {
     public void toJson($TARGET$ value, JsonValueWriter writer) {
         writer.writeObject(value, (obj, out) -> {
             #PROPERTIES#
-            out.write("$PROPERTY_NAME$", obj.$PROPERTY_GETTER_NAME$(), $CONVERTER_NAME$);
+            out.writeValue("$PROPERTY_NAME$", obj.$PROPERTY_GETTER_NAME$(), $CONVERTER_NAME$);
             #END#
         });
     }

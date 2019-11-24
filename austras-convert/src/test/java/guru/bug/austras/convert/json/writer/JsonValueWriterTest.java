@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,416 +42,406 @@ class JsonValueWriterTest {
 
     @Test
     void testWriteByteMin() {
-        jsonValueWriter.write(Byte.MIN_VALUE);
+        jsonValueWriter.writeByte(Byte.MIN_VALUE);
         assertEquals(String.valueOf(Byte.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteByteMax() {
-        jsonValueWriter.write(Byte.MAX_VALUE);
+        jsonValueWriter.writeByte(Byte.MAX_VALUE);
         assertEquals(String.valueOf(Byte.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjByteMin() {
-        jsonValueWriter.write((Byte) Byte.MIN_VALUE);
+        jsonValueWriter.writeByte((Byte) Byte.MIN_VALUE);
         assertEquals(String.valueOf(Byte.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjByteMax() {
-        jsonValueWriter.write((Byte) Byte.MAX_VALUE);
+        jsonValueWriter.writeByte((Byte) Byte.MAX_VALUE);
         assertEquals(String.valueOf(Byte.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjByteNull() {
-        jsonValueWriter.write((Byte) null);
+        jsonValueWriter.writeByte(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteShortMin() {
-        jsonValueWriter.write(Short.MIN_VALUE);
+        jsonValueWriter.writeShort(Short.MIN_VALUE);
         assertEquals(String.valueOf(Short.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteShortMax() {
-        jsonValueWriter.write(Short.MAX_VALUE);
+        jsonValueWriter.writeShort(Short.MAX_VALUE);
         assertEquals(String.valueOf(Short.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjShortMin() {
-        jsonValueWriter.write((Short) Short.MIN_VALUE);
+        jsonValueWriter.writeShort((Short) Short.MIN_VALUE);
         assertEquals(String.valueOf(Short.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjShortMax() {
-        jsonValueWriter.write((Short) Short.MAX_VALUE);
+        jsonValueWriter.writeShort((Short) Short.MAX_VALUE);
         assertEquals(String.valueOf(Short.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjShortNull() {
-        jsonValueWriter.write((Short) null);
+        jsonValueWriter.writeShort(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteIntMin() {
-        jsonValueWriter.write(Integer.MIN_VALUE);
+        jsonValueWriter.writeInteger(Integer.MIN_VALUE);
         assertEquals(String.valueOf(Integer.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteIntMax() {
-        jsonValueWriter.write(Integer.MAX_VALUE);
+        jsonValueWriter.writeInteger(Integer.MAX_VALUE);
         assertEquals(String.valueOf(Integer.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjIntMin() {
-        jsonValueWriter.write((Integer) Integer.MIN_VALUE);
+        jsonValueWriter.writeInteger((Integer) Integer.MIN_VALUE);
         assertEquals(String.valueOf(Integer.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjIntMax() {
-        jsonValueWriter.write((Integer) Integer.MAX_VALUE);
+        jsonValueWriter.writeInteger((Integer) Integer.MAX_VALUE);
         assertEquals(String.valueOf(Integer.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjIntNull() {
-        jsonValueWriter.write((Integer) null);
+        jsonValueWriter.writeInteger(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteLongMin() {
-        jsonValueWriter.write(Long.MIN_VALUE);
+        jsonValueWriter.writeLong(Long.MIN_VALUE);
         assertEquals(String.valueOf(Long.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteLongMax() {
-        jsonValueWriter.write(Long.MAX_VALUE);
+        jsonValueWriter.writeLong(Long.MAX_VALUE);
         assertEquals(String.valueOf(Long.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjLongMin() {
-        jsonValueWriter.write((Long) Long.MIN_VALUE);
+        jsonValueWriter.writeLong((Long) Long.MIN_VALUE);
         assertEquals(String.valueOf(Long.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjLongMax() {
-        jsonValueWriter.write((Long) Long.MAX_VALUE);
+        jsonValueWriter.writeLong((Long) Long.MAX_VALUE);
         assertEquals(String.valueOf(Long.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjLongNull() {
-        jsonValueWriter.write((Long) null);
+        jsonValueWriter.writeLong(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteFloatNegativeInfinitive() {
-        jsonValueWriter.write(Float.NEGATIVE_INFINITY);
+        jsonValueWriter.writeFloat(Float.NEGATIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteFloatPositiveInfinitive() {
-        jsonValueWriter.write(Float.POSITIVE_INFINITY);
+        jsonValueWriter.writeFloat(Float.POSITIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteFloatNaN() {
-        jsonValueWriter.write(Float.NaN);
+        jsonValueWriter.writeFloat(Float.NaN);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteFloatMin() {
-        jsonValueWriter.write(Float.MIN_VALUE);
+        jsonValueWriter.writeFloat(Float.MIN_VALUE);
         assertEquals(String.valueOf(Float.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteFloatMax() {
-        jsonValueWriter.write(Float.MAX_VALUE);
+        jsonValueWriter.writeFloat(Float.MAX_VALUE);
         assertEquals(String.valueOf(Float.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjFloatNegativeInfinitive() {
-        jsonValueWriter.write((Float) Float.NEGATIVE_INFINITY);
+        jsonValueWriter.writeFloat((Float) Float.NEGATIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjFloatPositiveInfinitive() {
-        jsonValueWriter.write((Float) Float.POSITIVE_INFINITY);
+        jsonValueWriter.writeFloat((Float) Float.POSITIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjFloatNaN() {
-        jsonValueWriter.write((Float) Float.NaN);
+        jsonValueWriter.writeFloat((Float) Float.NaN);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjFloatMin() {
-        jsonValueWriter.write((Float) Float.MIN_VALUE);
+        jsonValueWriter.writeFloat((Float) Float.MIN_VALUE);
         assertEquals(String.valueOf(Float.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjFloatMax() {
-        jsonValueWriter.write((Float) Float.MAX_VALUE);
+        jsonValueWriter.writeFloat((Float) Float.MAX_VALUE);
         assertEquals(String.valueOf(Float.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjFloatNull() {
-        jsonValueWriter.write((Float) null);
+        jsonValueWriter.writeFloat(null);
         assertEquals("null" , result.toString());
     }
 
 
     @Test
     void testWriteDoubleNegativeInfinitive() {
-        jsonValueWriter.write(Double.NEGATIVE_INFINITY);
+        jsonValueWriter.writeDouble(Double.NEGATIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteDoublePositiveInfinitive() {
-        jsonValueWriter.write(Double.POSITIVE_INFINITY);
+        jsonValueWriter.writeDouble(Double.POSITIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteDoubleNaN() {
-        jsonValueWriter.write(Double.NaN);
+        jsonValueWriter.writeDouble(Double.NaN);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteDoubleMin() {
-        jsonValueWriter.write(Double.MIN_VALUE);
+        jsonValueWriter.writeDouble(Double.MIN_VALUE);
         assertEquals(String.valueOf(Double.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteDoubleMax() {
-        jsonValueWriter.write(Double.MAX_VALUE);
+        jsonValueWriter.writeDouble(Double.MAX_VALUE);
         assertEquals(String.valueOf(Double.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjDoubleNegativeInfinitive() {
-        jsonValueWriter.write((Double) Double.NEGATIVE_INFINITY);
+        jsonValueWriter.writeDouble((Double) Double.NEGATIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjDoublePositiveInfinitive() {
-        jsonValueWriter.write((Double) Double.POSITIVE_INFINITY);
+        jsonValueWriter.writeDouble((Double) Double.POSITIVE_INFINITY);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjDoubleNaN() {
-        jsonValueWriter.write((Double) Double.NaN);
+        jsonValueWriter.writeDouble((Double) Double.NaN);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteObjDoubleMin() {
-        jsonValueWriter.write((Double) Double.MIN_VALUE);
+        jsonValueWriter.writeDouble((Double) Double.MIN_VALUE);
         assertEquals(String.valueOf(Double.MIN_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjDoubleMax() {
-        jsonValueWriter.write((Double) Double.MAX_VALUE);
+        jsonValueWriter.writeDouble((Double) Double.MAX_VALUE);
         assertEquals(String.valueOf(Double.MAX_VALUE), result.toString());
     }
 
     @Test
     void testWriteObjDoubleNull() {
-        jsonValueWriter.write((Double) null);
+        jsonValueWriter.writeDouble(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteBooleanFalse() {
-        jsonValueWriter.write(false);
+        jsonValueWriter.writeBoolean(false);
         assertEquals("false" , result.toString());
     }
 
     @Test
     void testWriteBooleanTrue() {
-        jsonValueWriter.write(true);
+        jsonValueWriter.writeBoolean(true);
         assertEquals("true" , result.toString());
     }
 
     @Test
     void testWriteObjBooleanFalse() {
-        jsonValueWriter.write((Boolean) false);
+        jsonValueWriter.writeBoolean((Boolean) false);
         assertEquals("false" , result.toString());
     }
 
     @Test
     void testWriteObjBooleanTrue() {
-        jsonValueWriter.write((Boolean) true);
+        jsonValueWriter.writeBoolean((Boolean) true);
         assertEquals("true" , result.toString());
     }
 
     @Test
     void testWriteObjBooleanNull() {
-        jsonValueWriter.write((Boolean) null);
+        jsonValueWriter.writeBoolean(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteBigDecimal() {
-        jsonValueWriter.write(BigDecimal.TEN);
+        jsonValueWriter.writeBigDecimal(BigDecimal.TEN);
         assertEquals(String.valueOf(BigDecimal.TEN), result.toString());
     }
 
     @Test
     void testWriteBigInteger() {
-        jsonValueWriter.write(BigInteger.TEN);
+        jsonValueWriter.writeBigInteger(BigInteger.TEN);
         assertEquals(String.valueOf(BigInteger.TEN), result.toString());
     }
 
     @Test
     void testWriteBigDecimalNull() {
-        jsonValueWriter.write((BigDecimal) null);
+        jsonValueWriter.writeBigDecimal(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteBigIntegerNull() {
-        jsonValueWriter.write((BigInteger) null);
+        jsonValueWriter.writeBigInteger(null);
         assertEquals("null" , result.toString());
     }
 
 
     @Test
     void testWriteChar() {
-        jsonValueWriter.write('a');
+        jsonValueWriter.writeCharacter('a');
         assertEquals("\"a\"" , result.toString());
     }
 
     @Test
     void testWriteObjChar() {
-        jsonValueWriter.write((Character) 'a');
+        jsonValueWriter.writeCharacter((Character) 'a');
         assertEquals("\"a\"" , result.toString());
     }
 
     @Test
     void testWriteObjCharNull() {
-        jsonValueWriter.write((Character) null);
+        jsonValueWriter.writeCharacter(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteCharEscape() {
-        jsonValueWriter.write('"');
+        jsonValueWriter.writeCharacter('"');
         assertEquals("\"\\\"\"" , result.toString());
     }
 
     @Test
     void testWriteStringNull() {
-        jsonValueWriter.write((String) null);
+        jsonValueWriter.writeString(null);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteEmptyString() {
-        jsonValueWriter.write("");
+        jsonValueWriter.writeString("");
         assertEquals("\"\"" , result.toString());
     }
 
     @Test
     void testWriteString() {
-        jsonValueWriter.write("abc");
+        jsonValueWriter.writeString("abc");
         assertEquals("\"abc\"" , result.toString());
     }
 
-    @Test
-    void testWriteRawString() {
-        jsonValueWriter.writeRaw("unescaped\"\n");
-        assertEquals("unescaped\"\n" , result.toString());
-    }
-
-    @Test
-    void testWriteObjectNull() {
-        jsonValueWriter.writeObject(null, (o, ow) -> ow.write("a" , null, (o2, vw) -> vw.write("abc")));
-        assertEquals("null" , result.toString());
-    }
 
     @Test
     void testWriteSimpleObject() {
         jsonValueWriter.writeObject("" , (object, writer) -> {
-            writer.write("key1" , "string" , this::write);
-            writer.write("key2" , 1234, this::writeInt);
-            writer.write("key3" , 'x', this::writeChar);
+            writer.writeString("key1" , "string" , this::writeStr);
+            writer.writeInteger("key2" , 1234, this::writeInt);
+            writer.writeCharacter("key3" , 'x', this::writeChar);
         });
         assertEquals("{\"key1\":\"string\",\"key2\":1234,\"key3\":\"x\"}" , result.toString());
     }
 
-    private void write(String str, JsonValueWriter valueWriter) {
-        valueWriter.write(str);
+    private void writeStr(String str, JsonValueWriter valueWriter) {
+        valueWriter.writeString(str);
     }
 
     private void writeInt(int i, JsonValueWriter valueWriter) {
-        valueWriter.write(i);
+        valueWriter.writeInteger(i);
     }
 
     private void writeChar(char ch, JsonValueWriter valueWriter) {
-        valueWriter.write(ch);
+        valueWriter.writeCharacter(ch);
     }
 
     private void writeInts(List<Integer> integers, JsonValueWriter valueWriter) {
-        valueWriter.writeArray(integers, this::writeInt);
+        valueWriter.writeIntegerArray(integers, this::writeInt);
     }
 
     private void writeStrings(List<String> strings, JsonValueWriter valueWriter) {
-        valueWriter.writeArray(strings, this::write);
+        valueWriter.writeStringArray(strings, this::writeStr);
     }
+
 
     private void writeSampleObject(SampleObject obj, JsonValueWriter valueWriter) {
         valueWriter.writeObject(obj, (o, ow) -> {
-            ow.write("key1" , o.getKey1(), this::write);
-            ow.write("key2" , o.getKey2(), this::writeInt);
-            ow.write("key3" , o.getKey3(), this::writeChar);
+            ow.writeString("key1" , o.getKey1(), this::writeStr);
+            ow.writeInteger("key2" , o.getKey2(), this::writeInt);
+            ow.writeCharacter("key3" , o.getKey3(), this::writeChar);
         });
     }
 
     private void writeSampleObject(List<SampleObject> sampleObjects, JsonValueWriter valueWriter) {
-        valueWriter.writeArray(sampleObjects, this::writeSampleObject);
+        valueWriter.writeObjectArray(sampleObjects, this::writeSampleObject);
     }
 
     @Test
     void testWriteComplexObject() {
         var sample = new SampleObject();
         jsonValueWriter.writeObject("" , (object, writer) -> {
-            writer.write("a" , 5, this::writeInt);
-            writer.write("obj" , sample, this::writeSampleObject);
-            writer.write("ints" , List.of(1, 2, 3), this::writeInts);
-            writer.write("objects" , List.of(sample, sample), this::writeSampleObject);
+            writer.writeInteger("a" , 5, this::writeInt);
+            writer.writeObject("obj" , sample, this::writeSampleObject);
+            writer.writeValue("ints" , List.of(1, 2, 3), this::writeInts);
+            writer.writeValue("objects" , List.of(sample, sample), this::writeSampleObject);
         });
         String jsonSample = "{\"key1\":\"string\",\"key2\":1234,\"key3\":\"x\"}";
         assertEquals("{\"a\":5,\"obj\":" + jsonSample + ",\"ints\":[1,2,3],\"objects\":[" + jsonSample + "," + jsonSample + "]}" , result.toString());
@@ -460,27 +449,26 @@ class JsonValueWriterTest {
 
     @Test
     void testWriteNullArray() {
-        jsonValueWriter.writeArray((String[]) null, this::write);
+        jsonValueWriter.writeStringArray((String[]) null, this::writeStr);
         assertEquals("null" , result.toString());
     }
 
     @Test
     void testWriteArrayWithNulls() {
-        jsonValueWriter.writeArray(new String[]{null, "a" , null, "b" , null}, this::write);
+        jsonValueWriter.writeStringArray(new String[]{null, "a" , null, "b" , null}, this::writeStr);
         assertEquals("[null,\"a\",null,\"b\",null]" , result.toString());
     }
 
     @Test
-    void testWriteArrayAsStream() {
-        Stream<String> stream = Stream.empty();
-        jsonValueWriter.writeArray(stream, this::write);
+    void testWriteArrayAsList() {
+        jsonValueWriter.writeStringArray(List.of(), this::writeStr);
         assertEquals("[]" , result.toString());
     }
 
     private void writeSampleObject(SampleObject obj, JsonObjectWriter writer) {
-        writer.write("key1" , obj.getKey1());
-        writer.write("key2" , obj.getKey2());
-        writer.write("key3" , obj.getKey3());
+        writer.writeString("key1" , obj.getKey1());
+        writer.writeInteger("key2" , obj.getKey2());
+        writer.writeCharacter("key3" , obj.getKey3());
     }
 
     @Test
@@ -490,20 +478,8 @@ class JsonValueWriterTest {
     }
 
     @Test
-    void writeObjectArray_Stream() {
-        jsonValueWriter.writeObjectArray(Stream.of(SAMPLE_ARRAY), this::writeSampleObject);
-        assertEquals(SAMPLE_ARAY_JSON, result.toString());
-    }
-
-    @Test
-    void writeObjectArray_Iterable() {
+    void writeObjectArray_List() {
         jsonValueWriter.writeObjectArray(Arrays.asList(SAMPLE_ARRAY), this::writeSampleObject);
-        assertEquals(SAMPLE_ARAY_JSON, result.toString());
-    }
-
-    @Test
-    void writeObjectArray_Iterator() {
-        jsonValueWriter.writeObjectArray(Arrays.asList(SAMPLE_ARRAY).iterator(), this::writeSampleObject);
         assertEquals(SAMPLE_ARAY_JSON, result.toString());
     }
 
