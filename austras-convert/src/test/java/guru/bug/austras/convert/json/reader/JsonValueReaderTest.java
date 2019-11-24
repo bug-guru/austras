@@ -9,12 +9,16 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonValueReaderTest {
+
+    private static final JsonObjectMemberVisitor<HashMap<String, String>> mapConverter = (map, key, reader) -> map.put(key, reader.readString());
+    private static final JsonObjectMemberVisitor<HashMap<String, String>> noopMapConverter = (map, key, reader) -> map.put(key, "");
 
     private JsonValueReader reader(String json) {
         var strReader = new StringReader(json);
@@ -351,7 +355,6 @@ class JsonValueReaderTest {
         assertNull(reader("null").readNullableBigInteger());
     }
 
-
     @Test
     void readOptionalBigInteger() {
         assertEquals(BigInteger.ZERO, reader("0").readOptionalBigInteger().orElseThrow());
@@ -388,7 +391,6 @@ class JsonValueReaderTest {
         assertEquals(BigDecimal.valueOf(2_147_483_647), reader("2147483647").readNullableBigDecimal());
         assertNull(reader("null").readNullableBigDecimal());
     }
-
 
     @Test
     void readOptionalBigDecimal() {
@@ -583,10 +585,45 @@ class JsonValueReaderTest {
     }
 
     @Test
+    void readOptionalObject() {
+        var expected = Map.of(
+                "name" , "Janis" ,
+                "solutation" , "Hello, World!" ,
+                "nick" , "Pupils"
+        );
+        var sample = "{\"name\":\"Janis\",\"solutation\":\"Hello, World!\",\"nick\":\"Pupils\"}";
+
+        assertEquals(expected, reader(sample).readOptionalObject(HashMap::new, mapConverter).orElseThrow());
+        assertTrue(reader("{}").readOptionalObject(HashMap::new, mapConverter).orElseThrow().isEmpty());
+        assertTrue(reader("null").readOptionalObject(HashMap::new, mapConverter).isEmpty());
+        assertThrows(ParsingException.class, () -> reader(sample).readOptionalObject(HashMap::new, noopMapConverter));
+    }
+
+    @Test
     void readNullableObjectIncomplete() {
         var sample = "{\"name\":\"Janis\",\"solutation\":\"Hello, World!\", null:\"Pupils\"}";
-        assertThrows(ParsingException.class, () -> reader(sample).readNullableObject(HashMap<String, String>::new,
-                (map, key, reader) -> map.put(key, reader.readString())));
+        assertThrows(ParsingException.class, () -> reader(sample).readNullableObject(HashMap::new, mapConverter));
+    }
+
+    @Test
+    void readObjectArray() {
+        var expected = List.of(
+                Map.of("name" , "Janis" ,
+                        "solutation" , "Hello, World!" ,
+                        "nick" , "Pupils"),
+                Map.of("name" , "Maris" ,
+                        "solutation" , "Sveiki!" ,
+                        "nick" , "TheRock")
+        );
+        var sample = "[{\"name\":\"Janis\",\"solutation\":\"Hello, World!\", \"nick\":\"Pupils\"},{\"name\":\"Maris\",\"solutation\":\"Sveiki!\", \"nick\":\"TheRock\"}]";
+        assertEquals(expected, reader(sample).readObjectArray(HashMap::new, mapConverter)
+                .map(s -> s.collect(Collectors.toList()))
+                .orElseThrow());
+    }
+
+    @Test
+    void readOptionalArrayBadDeserializer() {
+        assertThrows(ParsingException.class, () -> reader("[1,2,3]").readOptionalArray(reader -> null).map(s -> s.collect(Collectors.toList())).orElseThrow());
     }
 
 }
