@@ -31,7 +31,7 @@ public class $SIMPLE_NAME$ implements JsonConverter<$TARGET$> {
 
     @Override
     public $TARGET$ fromJson(JsonValueReader reader) {
-        return reader.readObject($TARGET$::new, (obj, key, in) -> {
+        return reader.readNullableObject($TARGET$::new, (obj, key, in) -> {
             switch (key) {
                 #PROPERTIES#
                 case "$PROPERTY_NAME$":
@@ -39,6 +39,6 @@ public class $SIMPLE_NAME$ implements JsonConverter<$TARGET$> {
                     break;
                 #END#
             }
-        }).orElse(null);
+        });
     }
 }
