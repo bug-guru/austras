@@ -80,11 +80,11 @@ public interface JsonValueWriter {
 
     /* INTEGER */
 
-    void writeInteger(int value, JsonIntSerializer serializer);
+    void writeInteger(int value, JsonIntegerSerializer serializer);
 
     void writeInteger(Integer value, JsonSerializer<Integer> serializer);
 
-    void writeIntegerArray(int[] array, JsonIntSerializer serializer);
+    void writeIntegerArray(int[] array, JsonIntegerSerializer serializer);
 
     void writeIntegerArray(Integer[] array, JsonSerializer<Integer> serializer);
 

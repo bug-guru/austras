@@ -850,6 +850,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/BigDecimalToJsonConverter.java">
           <value>
             <set />
@@ -980,6 +985,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/PrimitiveIntegerToJsonConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/PrimitiveLongToJsonConverter.java">
           <value>
             <set />
@@ -1069,6 +1079,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonIntSerializer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonIntegerSerializer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/json/writer/JsonObjectWriter.java">
           <value>
             <set />
@@ -1144,12 +1164,37 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterDoubleTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterFloatTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterImplTest.java">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterIntegerTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterLongTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterOtherTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterShortTest.java">
           <value>
             <set />
           </value>
@@ -1234,16 +1279,16 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-g6txF_EzPpKMHO" />
-                <option name="line" value="234" />
+                <option name="key" value="AW6U_-g6txF_EzPpKMHN" />
+                <option name="line" value="90" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
               </SonarIssue>
               <SonarIssue>
                 <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-g6txF_EzPpKMHN" />
-                <option name="line" value="90" />
+                <option name="key" value="AW6U_-g6txF_EzPpKMHO" />
+                <option name="line" value="234" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />
@@ -1529,6 +1574,14 @@
             <set>
               <SonarIssue>
                 <option name="isNew" value="false" />
+                <option name="key" value="AW6U_-hntxF_EzPpKMHR" />
+                <option name="line" value="87" />
+                <option name="message" value="Complete the task associated to this TODO comment." />
+                <option name="ruleKey" value="squid:S1135" />
+                <option name="severity" value="INFO" />
+              </SonarIssue>
+              <SonarIssue>
+                <option name="isNew" value="false" />
                 <option name="key" value="AW6U_-hntxF_EzPpKMHQ" />
                 <option name="line" value="53" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
@@ -1539,14 +1592,6 @@
                 <option name="isNew" value="false" />
                 <option name="key" value="AW6U_-hntxF_EzPpKMHS" />
                 <option name="line" value="94" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-hntxF_EzPpKMHR" />
-                <option name="line" value="87" />
                 <option name="message" value="Complete the task associated to this TODO comment." />
                 <option name="ruleKey" value="squid:S1135" />
                 <option name="severity" value="INFO" />

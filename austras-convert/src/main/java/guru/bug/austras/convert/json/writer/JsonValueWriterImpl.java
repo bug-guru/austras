@@ -209,7 +209,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
     /* INTEGER */
 
     @Override
-    public void writeInteger(int value, JsonIntSerializer serializer) {
+    public void writeInteger(int value, JsonIntegerSerializer serializer) {
         serializer.toJson(value, this);
     }
 
@@ -219,7 +219,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
     }
 
     @Override
-    public void writeIntegerArray(int[] array, JsonIntSerializer serializer) {
+    public void writeIntegerArray(int[] array, JsonIntegerSerializer serializer) {
         if (array == null) {
             tokenWriter.writeNull();
         } else {

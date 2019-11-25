@@ -200,7 +200,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* INTEGER */
 
     @Override
-    public void writeInteger(String key, int value, JsonIntSerializer serializer) {
+    public void writeInteger(String key, int value, JsonIntegerSerializer serializer) {
         write(key, () -> valueWriter.writeInteger(value, serializer));
     }
 
@@ -210,7 +210,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public void writeIntegerArray(String key, int[] array, JsonIntSerializer serializer) {
+    public void writeIntegerArray(String key, int[] array, JsonIntegerSerializer serializer) {
         write(key, () -> valueWriter.writeIntegerArray(array, serializer));
     }
 
@@ -220,7 +220,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public void writeInteger(String key, Collection<Integer> array, JsonSerializer<Integer> serializer) {
+    public void writeIntegerArray(String key, Collection<Integer> array, JsonSerializer<Integer> serializer) {
         write(key, () -> valueWriter.writeIntegerArray(array, serializer));
     }
 

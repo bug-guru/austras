@@ -75,15 +75,15 @@ public interface JsonObjectWriter {
 
     /* INTEGER */
 
-    void writeInteger(String key, int value, JsonIntSerializer serializer);
+    void writeInteger(String key, int value, JsonIntegerSerializer serializer);
 
     void writeInteger(String key, Integer value, JsonSerializer<Integer> serializer);
 
-    void writeIntegerArray(String key, int[] array, JsonIntSerializer serializer);
+    void writeIntegerArray(String key, int[] array, JsonIntegerSerializer serializer);
 
     void writeIntegerArray(String key, Integer[] array, JsonSerializer<Integer> serializer);
 
-    void writeInteger(String key, Collection<Integer> array, JsonSerializer<Integer> serializer);
+    void writeIntegerArray(String key, Collection<Integer> array, JsonSerializer<Integer> serializer);
 
     void writeInteger(String key, int value);
 
