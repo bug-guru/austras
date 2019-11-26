@@ -1,14 +1,15 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.convert.converters.StringIntConverter;
+import guru.bug.austras.convert.converters.StringIntegerConverter;
 import guru.bug.austras.core.Component;
 
 @Component
 public class IntegerToStringConverter implements StringConverter<Integer> {
-    private final StringIntConverter stringConverter;
+    private final StringIntegerConverter stringConverter;
 
-    public IntegerToStringConverter(StringIntConverter stringConverter) {
+    @SuppressWarnings("WeakerAccess")
+    public IntegerToStringConverter(StringIntegerConverter stringConverter) {
         this.stringConverter = stringConverter;
     }
 

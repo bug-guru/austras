@@ -1,5 +1,5 @@
 package guru.bug.austras.convert.json.reader;
 
-public interface JsonIntDeserializer {
+public interface JsonIntegerDeserializer {
     int fromJson(JsonValueReader reader);
 }

@@ -136,7 +136,7 @@ public interface JsonValueReader {
 
     float read(JsonFloatDeserializer converter);
 
-    int read(JsonIntDeserializer converter);
+    int read(JsonIntegerDeserializer converter);
 
     long read(JsonLongDeserializer converter);
 

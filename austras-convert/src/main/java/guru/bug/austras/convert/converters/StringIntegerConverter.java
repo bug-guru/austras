@@ -1,6 +1,6 @@
 package guru.bug.austras.convert.converters;
 
-public interface StringIntConverter {
+public interface StringIntegerConverter {
 
     int fromString(String value);
 
