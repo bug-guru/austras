@@ -33,27 +33,15 @@ class JsonObjectWriterIntegerTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveIntegerTrueWithConverter() {
+    void writePrimitiveIntegerWithConverter() {
         ow.writeInteger("key", 1, CUSTOM_PRIMITIVE_INTEGER_SERIALIZER);
         assertEquals(p("key", q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveIntegerFalseWithConverter() {
-        ow.writeInteger("key", 0, CUSTOM_PRIMITIVE_INTEGER_SERIALIZER);
-        assertEquals(p("key", q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectIntegerTrueWithConverter() {
+    void writeObjectIntegerWithConverter() {
         ow.writeInteger("key", 2, CUSTOM_OBJECT_INTEGER_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectIntegerFalseWithConverter() {
-        ow.writeInteger("key", 100, CUSTOM_OBJECT_INTEGER_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test

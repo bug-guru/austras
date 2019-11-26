@@ -1169,6 +1169,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterBigDecimalTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterBigIntegerTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/test/java/guru/bug/austras/convert/json/writer/JsonObjectWriterBooleanTest.java">
           <value>
             <set />

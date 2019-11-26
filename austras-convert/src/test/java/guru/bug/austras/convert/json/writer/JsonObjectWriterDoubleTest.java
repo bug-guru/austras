@@ -29,27 +29,15 @@ class JsonObjectWriterDoubleTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveDouble1WithConverter() {
+    void writePrimitiveDoubleWithConverter() {
         ow.writeDouble("key", 1.0, CUSTOM_PRIMITIVE_DOUBLE_SERIALIZER);
         assertEquals(p("key", q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveDouble2WithConverter() {
-        ow.writeDouble("key", 0.0, CUSTOM_PRIMITIVE_DOUBLE_SERIALIZER);
-        assertEquals(p("key", q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectDouble1WithConverter() {
+    void writeObjectDoubleWithConverter() {
         ow.writeDouble("key", 2.0, CUSTOM_OBJECT_DOUBLE_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectDouble2WithConverter() {
-        ow.writeDouble("key", 100.0, CUSTOM_OBJECT_DOUBLE_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test

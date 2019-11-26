@@ -33,27 +33,15 @@ class JsonObjectWriterShortTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveShortTrueWithConverter() {
+    void writePrimitiveShortWithConverter() {
         ow.writeShort("key", (short) 1, CUSTOM_PRIMITIVE_SHORT_SERIALIZER);
         assertEquals(p("key", q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveShortFalseWithConverter() {
-        ow.writeShort("key", (short) 0, CUSTOM_PRIMITIVE_SHORT_SERIALIZER);
-        assertEquals(p("key", q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectShortTrueWithConverter() {
+    void writeObjectShortWithConverter() {
         ow.writeShort("key", (short) 2, CUSTOM_OBJECT_SHORT_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectShortFalseWithConverter() {
-        ow.writeShort("key", (short) 100, CUSTOM_OBJECT_SHORT_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test

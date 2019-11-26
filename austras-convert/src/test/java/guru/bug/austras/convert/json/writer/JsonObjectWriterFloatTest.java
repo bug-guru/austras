@@ -29,28 +29,17 @@ class JsonObjectWriterFloatTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveFloat1WithConverter() {
+    void writePrimitiveFloatWithConverter() {
         ow.writeFloat("key", 1F, CUSTOM_PRIMITIVE_FLOAT_SERIALIZER);
         assertEquals(p("key", q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveFloat2WithConverter() {
-        ow.writeFloat("key", 0F, CUSTOM_PRIMITIVE_FLOAT_SERIALIZER);
-        assertEquals(p("key", q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectFloat1WithConverter() {
+    void writeObjectFloatWithConverter() {
         ow.writeFloat("key", 2F, CUSTOM_OBJECT_FLOAT_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
     }
 
-    @Test
-    void writeObjectFloat2WithConverter() {
-        ow.writeFloat("key", 100F, CUSTOM_OBJECT_FLOAT_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
-    }
 
     @Test
     void writeObjectFloatNullWithConverter() {

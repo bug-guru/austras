@@ -33,27 +33,15 @@ class JsonObjectWriterByteTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveByteTrueWithConverter() {
+    void writePrimitiveByteWithConverter() {
         ow.writeByte("key" , (byte) 1, CUSTOM_PRIMITIVE_BYTE_SERIALIZER);
         assertEquals(p("key" , q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveByteFalseWithConverter() {
-        ow.writeByte("key" , (byte) 0, CUSTOM_PRIMITIVE_BYTE_SERIALIZER);
-        assertEquals(p("key" , q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectByteTrueWithConverter() {
+    void writeObjectByteWithConverter() {
         ow.writeByte("key" , (byte) 2, CUSTOM_OBJECT_BYTE_SERIALIZER);
         assertEquals(p("key" , q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectByteFalseWithConverter() {
-        ow.writeByte("key" , (byte) 100, CUSTOM_OBJECT_BYTE_SERIALIZER);
-        assertEquals(p("key" , q("Z")), out.toString());
     }
 
     @Test

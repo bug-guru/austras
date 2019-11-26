@@ -33,27 +33,15 @@ class JsonObjectWriterLongTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writePrimitiveLongTrueWithConverter() {
+    void writePrimitiveLongWithConverter() {
         ow.writeLong("key", 1, CUSTOM_PRIMITIVE_LONG_SERIALIZER);
         assertEquals(p("key", q("B")), out.toString());
     }
 
     @Test
-    void writePrimitiveLongFalseWithConverter() {
-        ow.writeLong("key", 0, CUSTOM_PRIMITIVE_LONG_SERIALIZER);
-        assertEquals(p("key", q("A")), out.toString());
-    }
-
-    @Test
-    void writeObjectLongTrueWithConverter() {
+    void writeObjectLongWithConverter() {
         ow.writeLong("key", 2L, CUSTOM_OBJECT_LONG_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectLongFalseWithConverter() {
-        ow.writeLong("key", 100L, CUSTOM_OBJECT_LONG_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test
