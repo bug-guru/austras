@@ -30,15 +30,9 @@ class JsonObjectWriterBigIntegerTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writeObjectBigInteger1WithConverter() {
+    void writeObjectBigIntegerWithConverter() {
         ow.writeBigInteger("key", BigInteger.valueOf(2), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectBigInteger2WithConverter() {
-        ow.writeBigInteger("key", BigInteger.valueOf(100), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test

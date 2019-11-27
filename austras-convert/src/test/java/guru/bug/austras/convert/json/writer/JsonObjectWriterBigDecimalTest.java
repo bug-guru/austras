@@ -30,15 +30,9 @@ class JsonObjectWriterBigDecimalTest extends JsonObjectWriterAbstractTest {
     };
 
     @Test
-    void writeObjectBigDecimal1WithConverter() {
+    void writeObjectBigDecimalWithConverter() {
         ow.writeBigDecimal("key", BigDecimal.valueOf(2.9), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
-    }
-
-    @Test
-    void writeObjectBigDecimal2WithConverter() {
-        ow.writeBigDecimal("key", BigDecimal.valueOf(100.233), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
-        assertEquals(p("key", q("Z")), out.toString());
     }
 
     @Test
