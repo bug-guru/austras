@@ -517,9 +517,9 @@ class JsonValueReaderTest {
 
     @Test
     void customReadChar() {
-        assertEquals('A', reader("\"A\"").read(new PrimitiveCharToJsonConverter()));
-        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveCharToJsonConverter()));
-        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveCharToJsonConverter()));
+        assertEquals('A', reader("\"A\"").read(new PrimitiveCharacterToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("null").read(new PrimitiveCharacterToJsonConverter()));
+        assertThrows(ParsingException.class, () -> reader("t").read(new PrimitiveCharacterToJsonConverter()));
     }
 
     @Test

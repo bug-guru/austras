@@ -1,6 +1,6 @@
 package guru.bug.austras.convert.converters;
 
-public interface StringCharConverter {
+public interface StringCharacterConverter {
 
     char fromString(String value);
 

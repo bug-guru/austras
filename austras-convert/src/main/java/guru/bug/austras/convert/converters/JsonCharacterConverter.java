@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters;
 
-import guru.bug.austras.convert.json.reader.JsonCharDeserializer;
+import guru.bug.austras.convert.json.reader.JsonCharacterDeserializer;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonCharSerializer;
+import guru.bug.austras.convert.json.writer.JsonCharacterSerializer;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
 
-public interface JsonCharConverter extends JsonCharSerializer, JsonCharDeserializer {
+public interface JsonCharacterConverter extends JsonCharacterSerializer, JsonCharacterDeserializer {
 
     @Override
     void toJson(char value, JsonValueWriter writer);

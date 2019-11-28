@@ -504,7 +504,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* CHARACTER */
 
     @Override
-    public void writeCharacter(String key, char value, JsonCharSerializer serializer) {
+    public void writeCharacter(String key, char value, JsonCharacterSerializer serializer) {
         write(key, () -> valueWriter.writeCharacter(value, serializer));
     }
 
@@ -514,7 +514,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public void writeCharacterArray(String key, char[] array, JsonCharSerializer serializer) {
+    public void writeCharacterArray(String key, char[] array, JsonCharacterSerializer serializer) {
         write(key, () -> valueWriter.writeCharacterArray(array, serializer));
     }
 
@@ -524,7 +524,7 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     @Override
-    public void writeCharacter(String key, Collection<Character> array, JsonSerializer<Character> serializer) {
+    public void writeCharacterArray(String key, Collection<Character> array, JsonSerializer<Character> serializer) {
         write(key, () -> valueWriter.writeCharacterArray(array, serializer));
     }
 

@@ -9,7 +9,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonObjectWriterBigDecimalTest extends JsonObjectWriterAbstractTest {
-    private static final JsonSerializer<BigDecimal> CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER = (v, w) -> {
+    private static final JsonSerializer<BigDecimal> CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER = (v, w) -> {
         if (v == null) {
             w.writeCharacter('x');
         } else {
@@ -31,37 +31,37 @@ class JsonObjectWriterBigDecimalTest extends JsonObjectWriterAbstractTest {
 
     @Test
     void writeObjectBigDecimalWithConverter() {
-        ow.writeBigDecimal("key", BigDecimal.valueOf(2.9), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimal("key", BigDecimal.valueOf(2.9), CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", q("C")), out.toString());
     }
 
     @Test
     void writeObjectBigDecimalNullWithConverter() {
-        ow.writeBigDecimal("key", null, CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimal("key", null, CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", q("x")), out.toString());
     }
 
     @Test
     void writeObjectBigDecimalArrayWithConverter() {
-        ow.writeBigDecimalArray("key", new BigDecimal[]{BigDecimal.valueOf(2.5), BigDecimal.ZERO, null}, CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimalArray("key", new BigDecimal[]{BigDecimal.valueOf(2.5), BigDecimal.ZERO, null}, CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", "[\"C\",\"A\",\"x\"]"), out.toString());
     }
 
     @Test
     void writeObjectBigDecimalArrayNullWithConverter() {
-        ow.writeBigDecimalArray("key", (BigDecimal[]) null, CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimalArray("key", (BigDecimal[]) null, CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", "null"), out.toString());
     }
 
     @Test
     void writeObjectBigDecimalCollectionWithConverter() {
-        ow.writeBigDecimalArray("key", Arrays.asList(BigDecimal.ONE, BigDecimal.valueOf(2.5), null), CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimalArray("key", Arrays.asList(BigDecimal.ONE, BigDecimal.valueOf(2.5), null), CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", "[\"B\",\"C\",\"x\"]"), out.toString());
     }
 
     @Test
     void writeObjectBigDecimalCollectionNullWithConverter() {
-        ow.writeBigDecimalArray("key", (Collection<BigDecimal>) null, CUSTOM_OBJECT_BIG_INTEGER_SERIALIZER);
+        ow.writeBigDecimalArray("key", (Collection<BigDecimal>) null, CUSTOM_OBJECT_BIG_DECIMAL_SERIALIZER);
         assertEquals(p("key", "null"), out.toString());
     }
 

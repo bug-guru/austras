@@ -210,11 +210,11 @@ public interface JsonValueWriter {
 
     /* CHARACTER */
 
-    void writeCharacter(char value, JsonCharSerializer serializer);
+    void writeCharacter(char value, JsonCharacterSerializer serializer);
 
     void writeCharacter(Character value, JsonSerializer<Character> serializer);
 
-    void writeCharacterArray(char[] array, JsonCharSerializer serializer);
+    void writeCharacterArray(char[] array, JsonCharacterSerializer serializer);
 
     void writeCharacterArray(Character[] array, JsonSerializer<Character> serializer);
 

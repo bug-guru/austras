@@ -130,7 +130,7 @@ public interface JsonValueReader {
 
     byte read(JsonByteDeserializer converter);
 
-    char read(JsonCharDeserializer converter);
+    char read(JsonCharacterDeserializer converter);
 
     double read(JsonDoubleDeserializer converter);
 

@@ -1,14 +1,14 @@
 package guru.bug.austras.convert.converters.str;
 
-import guru.bug.austras.convert.converters.StringCharConverter;
+import guru.bug.austras.convert.converters.StringCharacterConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.core.Component;
 
 @Component
 public class CharacterToStringConverter implements StringConverter<Character> {
-    private final StringCharConverter stringConverter;
+    private final StringCharacterConverter stringConverter;
 
-    public CharacterToStringConverter(StringCharConverter stringConverter) {
+    public CharacterToStringConverter(StringCharacterConverter stringConverter) {
         this.stringConverter = stringConverter;
     }
 

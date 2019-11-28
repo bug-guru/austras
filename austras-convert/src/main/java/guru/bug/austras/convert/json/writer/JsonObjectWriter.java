@@ -205,15 +205,15 @@ public interface JsonObjectWriter {
 
     /* CHARACTER */
 
-    void writeCharacter(String key, char value, JsonCharSerializer serializer);
+    void writeCharacter(String key, char value, JsonCharacterSerializer serializer);
 
     void writeCharacter(String key, Character value, JsonSerializer<Character> serializer);
 
-    void writeCharacterArray(String key, char[] array, JsonCharSerializer serializer);
+    void writeCharacterArray(String key, char[] array, JsonCharacterSerializer serializer);
 
     void writeCharacterArray(String key, Character[] array, JsonSerializer<Character> serializer);
 
-    void writeCharacter(String key, Collection<Character> array, JsonSerializer<Character> serializer);
+    void writeCharacterArray(String key, Collection<Character> array, JsonSerializer<Character> serializer);
 
     void writeCharacter(String key, char value);
 

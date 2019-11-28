@@ -375,7 +375,7 @@ class JsonValueReaderImpl implements JsonValueReader {
     }
 
     @Override
-    public char read(JsonCharDeserializer converter) {
+    public char read(JsonCharacterDeserializer converter) {
         return converter.fromJson(this);
     }
 

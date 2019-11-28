@@ -1,10 +1,10 @@
 package guru.bug.austras.convert.converters.str;
 
-import guru.bug.austras.convert.converters.StringCharConverter;
+import guru.bug.austras.convert.converters.StringCharacterConverter;
 import guru.bug.austras.core.Component;
 
 @Component
-public class PrimitiveCharToStringConverter implements StringCharConverter {
+public class PrimitiveCharacterToStringConverter implements StringCharacterConverter {
     @Override
     public char fromString(String value) {
         return value.charAt(0);

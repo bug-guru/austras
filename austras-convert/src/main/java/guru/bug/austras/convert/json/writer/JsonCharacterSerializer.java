@@ -1,5 +1,5 @@
 package guru.bug.austras.convert.json.writer;
 
-public interface JsonCharSerializer {
+public interface JsonCharacterSerializer {
     void toJson(char value, JsonValueWriter writer);
 }

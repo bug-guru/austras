@@ -565,7 +565,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
     /* CHARACTER */
 
     @Override
-    public void writeCharacter(char value, JsonCharSerializer serializer) {
+    public void writeCharacter(char value, JsonCharacterSerializer serializer) {
         serializer.toJson(value, this);
     }
 
@@ -575,7 +575,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
     }
 
     @Override
-    public void writeCharacterArray(char[] array, JsonCharSerializer serializer) {
+    public void writeCharacterArray(char[] array, JsonCharacterSerializer serializer) {
         if (array == null) {
             tokenWriter.writeNull();
         } else {

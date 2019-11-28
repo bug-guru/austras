@@ -16,11 +16,11 @@ abstract class JsonObjectWriterAbstractTest {
         ow = new JsonObjectWriterImpl(tokenWriter, valueWriter);
     }
 
-    String p(String key, String value) {
-        return String.format("%s:%s" , q(key), value);
+    static String p(String key, String value) {
+        return String.format("%s:%s", q(key), value);
     }
 
-    String q(String value) {
+    static String q(String value) {
         return '"' + value + '"';
     }
 }
