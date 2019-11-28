@@ -12,17 +12,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonValueWriterTest {
-    private static final String SAMPLE_ARAY_JSON = "[{\"key1\":\"aa\",\"key2\":1,\"key3\":\"a\"}," +
+    private static final String SAMPLE_ARRAY_JSON = "[{\"key1\":\"aa\",\"key2\":1,\"key3\":\"a\"}," +
             "{\"key1\":\"bb\",\"key2\":2,\"key3\":\"b\"}," +
             "{\"key1\":\"cc\",\"key2\":3,\"key3\":\"c\"}," +
             "null," +
             "{\"key1\":\"ee\",\"key2\":5,\"key3\":\"e\"}]";
     private static final SampleObject[] SAMPLE_ARRAY = new SampleObject[]{
-            new SampleObject("aa" , 1, 'a'),
-            new SampleObject("bb" , 2, 'b'),
-            new SampleObject("cc" , 3, 'c'),
+            new SampleObject("aa", 1, 'a'),
+            new SampleObject("bb", 2, 'b'),
+            new SampleObject("cc", 3, 'c'),
             null,
-            new SampleObject("ee" , 5, 'e'),
+            new SampleObject("ee", 5, 'e'),
     };
     private JsonValueWriter jsonValueWriter;
     private StringWriter result;
@@ -30,8 +30,7 @@ class JsonValueWriterTest {
     @BeforeEach
     void initEach() {
         result = new StringWriter();
-        var tokenWriter = new JsonTokenWriter(result);
-        jsonValueWriter = new JsonValueWriterImpl(tokenWriter);
+        jsonValueWriter = JsonValueWriter.newInstance(result);
     }
 
     @Test
@@ -474,13 +473,13 @@ class JsonValueWriterTest {
     @Test
     void writeObjectArray_Array() {
         jsonValueWriter.writeObjectArray(SAMPLE_ARRAY, this::writeSampleObject);
-        assertEquals(SAMPLE_ARAY_JSON, result.toString());
+        assertEquals(SAMPLE_ARRAY_JSON, result.toString());
     }
 
     @Test
     void writeObjectArray_List() {
         jsonValueWriter.writeObjectArray(Arrays.asList(SAMPLE_ARRAY), this::writeSampleObject);
-        assertEquals(SAMPLE_ARAY_JSON, result.toString());
+        assertEquals(SAMPLE_ARRAY_JSON, result.toString());
     }
 
     private static class SampleObject {
