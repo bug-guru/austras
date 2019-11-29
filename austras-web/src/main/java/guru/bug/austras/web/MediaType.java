@@ -15,10 +15,12 @@ public class MediaType {
     public static final List<MediaType> WILDCARD_LIST = Collections.singletonList(WILDCARD_TYPE);
     private final String type;
     private final String subtype;
+    private final String full;
 
     public MediaType(String type, String subtype) {
-        this.type = type.toLowerCase();
-        this.subtype = subtype.toLowerCase();
+        this.type = type.toLowerCase().intern();
+        this.subtype = subtype.toLowerCase().intern();
+        this.full = (type + "/" + subtype).intern();
     }
 
     public static MediaType valueOf(String mediaType) {
@@ -66,17 +68,16 @@ public class MediaType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MediaType mediaType = (MediaType) o;
-        return type.equals(mediaType.type) &&
-                subtype.equals(mediaType.subtype);
+        return full.equals(mediaType.full);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, subtype);
+        return Objects.hash(full);
     }
 
     @Override
     public String toString() {
-        return type + "/" + subtype;
+        return full;
     }
 }

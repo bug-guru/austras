@@ -1,18 +1,11 @@
 package guru.bug.austras.web.apt;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
-import java.util.Set;
+import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
+import guru.bug.austras.apt.core.engine.ProcessingContext;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
-@SupportedAnnotationTypes("*")
-public class RestServicesProcessor extends AbstractProcessor {
+public class RestServicesProcessor implements AustrasProcessorPlugin {
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        return false;
+    public void process(ProcessingContext ctx) {
+
     }
 }

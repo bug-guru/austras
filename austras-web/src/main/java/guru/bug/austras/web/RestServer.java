@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
-public class HttpServerStart implements StartupService {
+public class RestServer implements StartupService {
+    private static final Logger log = LoggerFactory.getLogger(RestServer.class);
     private static final String ACCEPT_HEADER = "Accept";
-    private static final Logger log = LoggerFactory.getLogger(HttpServerStart.class);
     private final List<EndpointHandler> endpoints;
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
 
-    public HttpServerStart(Collection<? extends EndpointHandler> endpoints) {
+    public RestServer(Collection<? extends EndpointHandler> endpoints) {
         this.endpoints = endpoints == null ? List.of() : List.copyOf(endpoints);
     }
 
@@ -53,16 +53,16 @@ public class HttpServerStart implements StartupService {
         }
     }
 
-    private static class Filter implements Predicate<EndpointHandler> {
-        final Predicate<EndpointHandler> predicate;
+    private static class Filter implements Predicate<EndpointHandlerHolder> {
+        final Predicate<EndpointHandlerHolder> predicate;
         boolean passed;
 
-        private Filter(Predicate<EndpointHandler> predicate) {
+        Filter(Predicate<EndpointHandlerHolder> predicate) {
             this.predicate = predicate;
         }
 
         @Override
-        public boolean test(EndpointHandler h) {
+        public boolean test(EndpointHandlerHolder h) {
             var result = predicate.test(h);
             if (result) {
                 passed = true;
@@ -77,14 +77,34 @@ public class HttpServerStart implements StartupService {
         }
     }
 
+    static class EndpointHandlerHolder {
+        final EndpointHandler handler;
+        Map<String, String> pathParams;
+
+        EndpointHandlerHolder(EndpointHandler handler) {
+            this.handler = handler;
+        }
+
+        void putPathParam(String key, String value) {
+            if (pathParams == null) {
+                pathParams = new HashMap<>();
+            }
+            pathParams.put(key, value);
+        }
+
+        void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+            handler.handle(request, pathParams, response);
+        }
+    }
+
     private class JettyHandler extends AbstractHandler {
 
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             try {
                 var pathItems = PathSplitter.split(Function.identity(), target);
-                var handler = findHandler(request, pathItems);
-                handler.handle(request, response);
+                var handlerHolder = findHandler(request, pathItems);
+                handlerHolder.handle(request, response);
             } catch (AustrasHttpException e) {
                 log.error("Handling exception", e);
                 response.setStatus(e.getStatusCode());
@@ -92,7 +112,7 @@ public class HttpServerStart implements StartupService {
             }
         }
 
-        private List<MediaType> getAcceptTypes(HttpServletRequest request) {
+        List<MediaType> getAcceptTypes(HttpServletRequest request) {
             var types = request.getHeaders(ACCEPT_HEADER);
             if (!types.hasMoreElements()) {
                 return List.of(MediaType.WILDCARD_TYPE);
@@ -103,8 +123,8 @@ public class HttpServerStart implements StartupService {
             }
         }
 
-        private EndpointHandler findHandler(HttpServletRequest request, List<String> pathItems) {
-            var method = request.getMethod();
+        EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems) {
+            var method = request.getMethod().toUpperCase();
             var contentType = request.getContentType();
             var acceptTypes = getAcceptTypes(request);
 
@@ -114,6 +134,7 @@ public class HttpServerStart implements StartupService {
             var byAcceptFilter = new Filter(c -> byAccept(c, acceptTypes));
 
             var candidates = endpoints.stream()
+                    .map(EndpointHandlerHolder::new)
                     .filter(byMethodFilter)
                     .filter(byContentFilter)
                     .filter(byPathFilter)
@@ -139,38 +160,40 @@ public class HttpServerStart implements StartupService {
             return candidates.get(0);
         }
 
-        private boolean acceptedPath(List<ResourcePathItem> resPath, List<String> requestPath) {
-            Iterator<ResourcePathItem> resPathIterator = resPath.iterator();
+        private boolean byPath(EndpointHandlerHolder candidate, List<String> requestPath) {
+            if (candidate.handler.getPath().size() != requestPath.size()) {
+                return false;
+            }
+            Iterator<PathItem> resPathIterator = candidate.handler.getPath().iterator();
             Iterator<String> requestPathIterator = requestPath.iterator();
-            while (resPathIterator.hasNext() && requestPathIterator.hasNext()) {
+            while (resPathIterator.hasNext()) {
                 var resPathItem = resPathIterator.next();
                 var requestPathItem = requestPathIterator.next();
                 if (!resPathItem.canAccept(requestPathItem)) {
                     return false;
                 }
+                var key = resPathItem.key();
+                if (key != null) {
+                    candidate.putPathParam(key, requestPathItem);
+                }
             }
-            return !resPathIterator.hasNext() && !requestPathIterator.hasNext();
+            return true;
         }
 
-        private boolean byPath(EndpointHandler candidate, List<String> requestPath) {
-            return candidate.getPath().size() == requestPath.size()
-                    && acceptedPath(candidate.getPath(), requestPath);
+        private boolean byMethod(EndpointHandlerHolder candidate, String method) {
+            return candidate.handler.getMethod().equals(method);
         }
 
-        private boolean byMethod(EndpointHandler candidate, String method) {
-            return candidate.getMethod().equals(method);
-        }
-
-        private boolean byContentType(EndpointHandler candidate, String contentType) {
+        private boolean byContentType(EndpointHandlerHolder candidate, String contentType) {
             if (contentType == null) {
                 return true;
             }
             var targetMT = MediaType.valueOf(contentType);
-            return acceptTypes(targetMT, candidate.getConsumedTypes());
+            return acceptTypes(targetMT, candidate.handler.getConsumedTypes());
         }
 
-        private boolean byAccept(EndpointHandler candidate, List<MediaType> acceptTypes) {
-            return acceptTypes(acceptTypes, candidate.getProducedTypes());
+        private boolean byAccept(EndpointHandlerHolder candidate, List<MediaType> acceptTypes) {
+            return acceptTypes(acceptTypes, candidate.handler.getProducedTypes());
         }
 
         private boolean acceptTypes(MediaType requestedType, List<MediaType> targetTypes) {

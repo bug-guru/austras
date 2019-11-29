@@ -1,0 +1,55 @@
+package guru.bug.austras.web;
+
+import java.util.Objects;
+
+public interface PathItem {
+
+    static PathItem matching(String value) {
+        return new MatchingPathItem(value);
+    }
+
+    static PathItem param(String name) {
+        return new ParamPathItem(name);
+    }
+
+    boolean canAccept(String value);
+
+    String key();
+}
+
+class ParamPathItem implements PathItem {
+    private final String key;
+
+    ParamPathItem(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public boolean canAccept(String value) {
+        return true;
+    }
+
+    @Override
+    public String key() {
+        return key;
+    }
+}
+
+class MatchingPathItem implements PathItem {
+    private final String name;
+
+    MatchingPathItem(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean canAccept(String value) {
+        return Objects.equals(value, this.name);
+    }
+
+    @Override
+    public String key() {
+        return null;
+    }
+}
+

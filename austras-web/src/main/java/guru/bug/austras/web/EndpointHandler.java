@@ -5,15 +5,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-public interface EndpointHandler {
-    List<ResourcePathItem> getPath();
+public abstract class EndpointHandler {
+    private final List<PathItem> path;
+    private final String method;
+    private final List<MediaType> consumedTypes;
+    private final List<MediaType> producedTypes;
 
-    String getMethod();
+    protected EndpointHandler(String method, List<PathItem> path, List<MediaType> consumedTypes, List<MediaType> producedTypes) {
+        this.path = path;
+        this.method = Objects.requireNonNull(method).toUpperCase().intern();
+        this.consumedTypes = consumedTypes;
+        this.producedTypes = producedTypes;
+    }
 
-    List<MediaType> getConsumedTypes();
+    public final String getMethod() {
+        return method;
+    }
 
-    List<MediaType> getProducedTypes();
+    public final List<PathItem> getPath() {
+        return path;
+    }
 
-    void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
+    public final List<MediaType> getConsumedTypes() {
+        return consumedTypes;
+    }
+
+    public final List<MediaType> getProducedTypes() {
+        return producedTypes;
+    }
+
+    public abstract void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException;
 }

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>guru.bug.austras</groupId>
-            <artifactId>austras-codetempl</artifactId>
+            <artifactId>austras-codegen</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
