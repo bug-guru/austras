@@ -2,7 +2,9 @@ package guru.bug.austras.convert.json.writer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 class JsonValueWriterImpl implements JsonValueWriter {
     private final JsonTokenWriter tokenWriter;
@@ -636,38 +638,13 @@ class JsonValueWriterImpl implements JsonValueWriter {
 
     @Override
     public <T> void writeValueArray(T[] array, JsonSerializer<T> serializer) {
-        if (array == null) {
-            tokenWriter.writeNull();
-        } else {
-            tokenWriter.writeBeginArray();
-            boolean hasItems = false;
-            for (T value : array) {
-                if (hasItems) {
-                    tokenWriter.writeComma();
-                }
-                serializer.toJson(value, this);
-                hasItems = true;
-            }
-            tokenWriter.writeEndArray();
-        }
+        Collection<T> collection = array == null ? null : Arrays.asList(array);
+        processArray(collection, (value) -> serializer.toJson(value, this));
     }
 
     @Override
     public <T> void writeValueArray(Collection<T> array, JsonSerializer<T> serializer) {
-        if (array == null) {
-            tokenWriter.writeNull();
-        } else {
-            tokenWriter.writeBeginArray();
-            boolean hasItems = false;
-            for (T value : array) {
-                if (hasItems) {
-                    tokenWriter.writeComma();
-                }
-                serializer.toJson(value, this);
-                hasItems = true;
-            }
-            tokenWriter.writeEndArray();
-        }
+        processArray(array, value -> serializer.toJson(value, this));
     }
 
     /* OBJECT */
@@ -686,6 +663,11 @@ class JsonValueWriterImpl implements JsonValueWriter {
 
     @Override
     public <T> void writeObjectArray(T[] array, JsonObjectSerializer<T> serializer) {
+        Collection<T> collection = array == null ? null : Arrays.asList(array);
+        processArray(collection, value -> writeObject(value, serializer));
+    }
+
+    private <T> void processArray(Collection<T> array, Consumer<T> processor) {
         if (array == null) {
             tokenWriter.writeNull();
         } else {
@@ -695,7 +677,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
                 if (hasItems) {
                     tokenWriter.writeComma();
                 }
-                writeObject(value, serializer);
+                processor.accept(value);
                 hasItems = true;
             }
             tokenWriter.writeEndArray();
@@ -704,20 +686,7 @@ class JsonValueWriterImpl implements JsonValueWriter {
 
     @Override
     public <T> void writeObjectArray(Collection<T> array, JsonObjectSerializer<T> serializer) {
-        if (array == null) {
-            tokenWriter.writeNull();
-        } else {
-            tokenWriter.writeBeginArray();
-            boolean hasItems = false;
-            for (T value : array) {
-                if (hasItems) {
-                    tokenWriter.writeComma();
-                }
-                writeObject(value, serializer);
-                hasItems = true;
-            }
-            tokenWriter.writeEndArray();
-        }
+        processArray(array, value -> writeObject(value, serializer));
     }
 
     /* NULL */
