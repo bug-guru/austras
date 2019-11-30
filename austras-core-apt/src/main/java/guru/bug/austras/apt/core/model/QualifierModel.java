@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class QualifierModel {
-    private Map<String, Map<String, String>> qualifiers = new HashMap<>();
+    private final Map<String, Map<String, String>> qualifiers = new HashMap<>();
 
     private Map<String, String> computeIfAbsent(String qualifierName) {
         Objects.requireNonNull(qualifierName, "qualifierName must be not null");
