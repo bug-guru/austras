@@ -9,12 +9,12 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class StartupServicesStarter {
-    private static final Logger log = LoggerFactory.getLogger(StartupServicesStarter.class);
+public class ServiceManager {
+    private static final Logger log = LoggerFactory.getLogger(ServiceManager.class);
     private final Collection<? extends StartupService> services;
     private final List<StartupService> initializedStartupServices = new ArrayList<>();
 
-    public StartupServicesStarter(Collection<? extends StartupService> services) {
+    public ServiceManager(Collection<? extends StartupService> services) {
         this.services = services;
     }
 
@@ -41,7 +41,7 @@ public class StartupServicesStarter {
 
     private class Terminator extends Thread {
         private Terminator() {
-            super(StartupServicesStarter.class.getSimpleName() + "-shutdown-hook");
+            super(ServiceManager.class.getSimpleName() + "-shutdown");
         }
 
         @Override

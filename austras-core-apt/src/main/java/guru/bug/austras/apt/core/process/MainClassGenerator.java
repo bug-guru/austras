@@ -9,7 +9,7 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.startup.StartupServicesStarter;
+import guru.bug.austras.startup.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +233,7 @@ public class MainClassGenerator extends JavaGenerator {
             return;
         }
         this.componentMap = componentMap;
-        var starterKey = new ComponentKey(StartupServicesStarter.class.getName(), null);
+        var starterKey = new ComponentKey(ServiceManager.class.getName(), null);
         this.starterComponent = componentMap.findSingleComponentModel(starterKey);
         this.sortedComponents = sortComponents();
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";

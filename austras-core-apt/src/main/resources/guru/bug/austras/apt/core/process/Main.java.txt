@@ -7,7 +7,7 @@ guru.bug.austras.provider.Provider
 java.util.Collection
 guru.bug.austras.provider.CollectionProvider
 java.util.List
-guru.bug.austras.startup.StartupServicesStarter
+guru.bug.austras.startup.ServiceManager
 #END#
 
 public class $SIMPLE_CLASS_NAME$ {

@@ -1,6 +1,6 @@
 components:
-  - instantiable: guru.bug.austras.startup.StartupServicesStarter
-    name: startupServicesStarter
+  - instantiable: guru.bug.austras.startup.ServiceManager
+    name: serviceManager
     provider:
       dependencies:
         - collection: true
@@ -8,8 +8,8 @@ components:
           provider: true
           qualifiers: {}
           type: guru.bug.austras.startup.StartupService
-      instantiable: guru.bug.austras.startup.StartupServicesStarterProvider
-      name: startupServicesStarterProvider
+      instantiable: guru.bug.austras.startup.ServiceManagerProvider
+      name: serviceManagerProvider
     qualifiers: {}
     types:
-      - guru.bug.austras.startup.StartupServicesStarter
+      - guru.bug.austras.startup.ServiceManager
