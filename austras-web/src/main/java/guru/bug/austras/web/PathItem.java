@@ -33,6 +33,11 @@ class ParamPathItem implements PathItem {
     public String key() {
         return key;
     }
+
+    @Override
+    public String toString() {
+        return "{" + key + "}";
+    }
 }
 
 class MatchingPathItem implements PathItem {
@@ -50,6 +55,11 @@ class MatchingPathItem implements PathItem {
     @Override
     public String key() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
 

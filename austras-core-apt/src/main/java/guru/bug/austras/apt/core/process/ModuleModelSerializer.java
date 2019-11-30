@@ -38,10 +38,10 @@ public class ModuleModelSerializer {
                 if ("imported".equals(property.getName())) {
                     return null;
                 }
-                if (propertyValue instanceof List && ((Collection) propertyValue).isEmpty()) {
+                if (propertyValue instanceof List && ((Collection<?>) propertyValue).isEmpty()) {
                     return null;
                 }
-                if (propertyValue instanceof Map && ((Map) propertyValue).isEmpty()) {
+                if (propertyValue instanceof Map && ((Map<?, ?>) propertyValue).isEmpty()) {
                     return null;
                 }
                 if (propertyValue instanceof AnnotatedConstruct) {

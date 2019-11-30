@@ -17,12 +17,14 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Component
 public class RestServer implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(RestServer.class);
     private static final String ACCEPT_HEADER = "Accept";
+    private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
     private final List<EndpointHandler> endpoints;
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
@@ -34,6 +36,14 @@ public class RestServer implements StartupService {
     @Override
     public void initialize() {
         this.server = new Server(8080);
+
+        if (this.endpoints.isEmpty()) {
+            log.warn("There are no endpoints found in the application");
+        } else {
+            for (var ep : this.endpoints) {
+                log.info("Endpoint {} {}", ep.getMethod(), ep.getPath());
+            }
+        }
 
         server.setHandler(jettyHandler);
 
@@ -114,12 +124,13 @@ public class RestServer implements StartupService {
 
         List<MediaType> getAcceptTypes(HttpServletRequest request) {
             var types = request.getHeaders(ACCEPT_HEADER);
-            if (!types.hasMoreElements()) {
-                return List.of(MediaType.WILDCARD_TYPE);
-            } else {
+            if (types.hasMoreElements()) {
                 return StreamSupport.stream(Spliterators.spliteratorUnknownSize(types.asIterator(), Spliterator.ORDERED), false)
+                        .flatMap(s -> Stream.of(s.split(",")))
                         .map(MediaType::valueOf)
                         .collect(Collectors.toList());
+            } else {
+                return WILDCARD_TYPE;
             }
         }
 
@@ -181,6 +192,7 @@ public class RestServer implements StartupService {
         }
 
         private boolean byMethod(EndpointHandlerHolder candidate, String method) {
+            log.debug("candidate method {}; request method: {}", candidate.handler.getMethod(), method);
             return candidate.handler.getMethod().equals(method);
         }
 
@@ -201,6 +213,7 @@ public class RestServer implements StartupService {
         }
 
         private boolean acceptTypes(List<MediaType> requestedTypes, List<MediaType> targetTypes) {
+            log.info("requestTypes: {}; targetTypes: {}", requestedTypes, targetTypes);
             return requestedTypes.stream().anyMatch(rmt -> acceptTypes(rmt, targetTypes));
         }
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="rules">
+    <option name="sonarRulesByRuleKey">
+      <map>
+        <entry key="common-java:DuplicatedBlocks">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="An issue is created on a file as soon as there is at least one block of duplicated code on this file" />
+              <option name="key" value="common-java:DuplicatedBlocks" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Source files should not have any duplicated blocks" />
+              <option name="severity" value="MAJOR" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:AssignmentInSubExpressionCheck">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;Assignments within sub-expressions are hard to spot and therefore make the code less readable. Ideally, sub-expressions should not have&#10;side-effects.&lt;/p&gt;&#10;&lt;h2&gt;Noncompliant Code Example&lt;/h2&gt;&#10;&lt;pre&gt;&#10;if ((str = cont.substring(pos1, pos2)).isEmpty()) {  // Noncompliant&#10;  //...&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Compliant Solution&lt;/h2&gt;&#10;&lt;pre&gt;&#10;str = cont.substring(pos1, pos2);&#10;if (str.isEmpty()) {&#10;  //...&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Exceptions&lt;/h2&gt;&#10;&lt;p&gt;Assignments in &lt;code&gt;while&lt;/code&gt; statement conditions, and assignments enclosed in relational expressions are ignored.&lt;/p&gt;&#10;&lt;pre&gt;&#10;BufferedReader br = new BufferedReader(/* ... */);&#10;String line;&#10;while ((line = br.readLine()) != null) {...}&#10;&lt;/pre&gt;&#10;&lt;p&gt;Chained assignments, including compound assignments, are ignored.&lt;/p&gt;&#10;&lt;pre&gt;&#10;int i = j = 0;&#10;int k = (j += 1);&#10;result = (bresult = new byte[len]);&#10;&lt;/pre&gt;&#10;&lt;h2&gt;See&lt;/h2&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; MISRA C:2004, 13.1 - Assignment operators shall not be used in expressions that yield a Boolean value &lt;/li&gt;&#10;  &lt;li&gt; MISRA C++:2008, 6-2-1 - Assignment operators shall not be used in sub-expressions &lt;/li&gt;&#10;  &lt;li&gt; MISRA C:2012, 13.4 - The result of an assignment operator should not be used &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;http://cwe.mitre.org/data/definitions/481.html&quot;&gt;MITRE, CWE-481&lt;/a&gt; - Assigning instead of Comparing &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.securecoding.cert.org/confluence/x/nYFtAg&quot;&gt;CERT, EXP45-C.&lt;/a&gt; - Do not perform assignments in selection statements &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.securecoding.cert.org/confluence/x/1gCTAw&quot;&gt;CERT, EXP51-J.&lt;/a&gt; - Do not perform assignments in conditional expressions&#10;  &lt;/li&gt;&#10;&lt;/ul&gt;" />
+              <option name="key" value="squid:AssignmentInSubExpressionCheck" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Assignments should not be made from within sub-expressions" />
+              <option name="severity" value="MAJOR" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:MaximumInheritanceDepth">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;Inheritance is certainly one of the most valuable concepts in object-oriented programming. It's a way to compartmentalize and reuse code by&#10;creating collections of attributes and behaviors called classes which can be based on previously created classes. But abusing this concept by creating&#10;a deep inheritance tree can lead to very complex and unmaintainable source code. Most of the time a too deep inheritance tree is due to bad object&#10;oriented design which has led to systematically use 'inheritance' when for instance 'composition' would suit better.&lt;/p&gt;&#10;&lt;p&gt;This rule raises an issue when the inheritance tree, starting from &lt;code&gt;Object&lt;/code&gt; has a greater depth than is allowed. &lt;/p&gt;" />
+              <option name="key" value="squid:MaximumInheritanceDepth" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Inheritance tree of classes should not be too deep" />
+              <option name="severity" value="MAJOR" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:S00112">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;Using such generic exceptions as &lt;code&gt;Error&lt;/code&gt;, &lt;code&gt;RuntimeException&lt;/code&gt;, &lt;code&gt;Throwable&lt;/code&gt;, and &lt;code&gt;Exception&lt;/code&gt; prevents&#10;calling methods from handling true, system-generated exceptions differently than application-generated errors. &lt;/p&gt;&#10;&lt;h2&gt;Noncompliant Code Example&lt;/h2&gt;&#10;&lt;pre&gt;&#10;public void foo(String bar) throws Throwable {  // Noncompliant&#10;  throw new RuntimeException(&quot;My Message&quot;);     // Noncompliant&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Compliant Solution&lt;/h2&gt;&#10;&lt;pre&gt;&#10;public void foo(String bar) {&#10;  throw new MyOwnRuntimeException(&quot;My Message&quot;);&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Exceptions&lt;/h2&gt;&#10;&lt;p&gt;Generic exceptions in the signatures of overriding methods are ignored, because overriding method has to follow signature of the throw declaration&#10;in the superclass. The issue will be raised on superclass declaration of the method (or won't be raised at all if superclass is not part of the&#10;analysis).&lt;/p&gt;&#10;&lt;pre&gt;&#10;@Override&#10;public void myMethod() throws Exception {...}&#10;&lt;/pre&gt;&#10;&lt;p&gt;Generic exceptions are also ignored in the signatures of methods that make calls to methods that throw generic exceptions.&lt;/p&gt;&#10;&lt;pre&gt;&#10;public void myOtherMethod throws Exception {&#10;  doTheThing();  // this method throws Exception&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;See&lt;/h2&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; &lt;a href=&quot;http://cwe.mitre.org/data/definitions/397.html&quot;&gt;MITRE, CWE-397&lt;/a&gt; - Declaration of Throws for Generic Exception &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.securecoding.cert.org/confluence/x/BoB3AQ&quot;&gt;CERT, ERR07-J.&lt;/a&gt; - Do not throw RuntimeException, Exception, or Throwable&#10;  &lt;/li&gt;&#10;&lt;/ul&gt;" />
+              <option name="key" value="squid:S00112" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Generic exceptions should never be thrown" />
+              <option name="severity" value="MAJOR" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:S1214">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;According to Joshua Bloch, author of &quot;Effective Java&quot;:&lt;/p&gt;&#10;&lt;blockquote&gt;&#10;  &lt;p&gt;The constant interface pattern is a poor use of interfaces. &lt;/p&gt;&#10;  &lt;p&gt;That a class uses some constants internally is an implementation detail.&lt;/p&gt;&#10;  &lt;p&gt;Implementing a constant interface causes this implementation detail to leak into the class's exported API. It is of no consequence to the users&#10;  of a class that the class implements a constant interface. In fact, it may even confuse them. Worse, it represents a commitment: if in a future&#10;  release the class is modified so that it no longer needs to use the constants, it still must implement the interface to ensure binary compatibility.&#10;  If a nonfinal class implements a constant interface,&lt;/p&gt;&#10;  &lt;p&gt;all of its subclasses will have their namespaces polluted by the constants in the interface.&lt;/p&gt;&#10;&lt;/blockquote&gt;&#10;&lt;h2&gt;Noncompliant Code Example&lt;/h2&gt;&#10;&lt;pre&gt;&#10;interface Status {                      // Noncompliant&#10;   int OPEN = 1;&#10;   int CLOSED = 2;&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Compliant Solution&lt;/h2&gt;&#10;&lt;pre&gt;&#10;public enum Status {                    // Compliant&#10;  OPEN,&#10;  CLOSED;&#10;}&#10;&lt;/pre&gt;&#10;&lt;p&gt;or&lt;/p&gt;&#10;&lt;pre&gt;&#10;public final class Status {             // Compliant&#10;   public static final int OPEN = 1;&#10;   public static final int CLOSED = 2;&#10;}&#10;&lt;/pre&gt;" />
+              <option name="key" value="squid:S1214" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Constants should not be defined in interfaces" />
+              <option name="severity" value="CRITICAL" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:S2447">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;While &lt;code&gt;null&lt;/code&gt; is technically a valid &lt;code&gt;Boolean&lt;/code&gt; value, that fact, and the distinction between &lt;code&gt;Boolean&lt;/code&gt; and&#10;&lt;code&gt;boolean&lt;/code&gt; is easy to forget. So returning &lt;code&gt;null&lt;/code&gt; from a &lt;code&gt;Boolean&lt;/code&gt; method is likely to cause problems with callers'&#10;code.&lt;/p&gt;&#10;&lt;h2&gt;Noncompliant Code Example&lt;/h2&gt;&#10;&lt;pre&gt;&#10;public Boolean isUsable() {&#10;  // ...&#10;  return null;  // Noncompliant&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;See&lt;/h2&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; &lt;a href=&quot;http://cwe.mitre.org/data/definitions/476.html&quot;&gt;MITRE CWE-476&lt;/a&gt; - NULL Pointer Dereference &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.securecoding.cert.org/confluence/x/ZwDOAQ&quot;&gt;CERT, EXP01-J.&lt;/a&gt; - Do not use a null in a case where an object is required&#10;  &lt;/li&gt;&#10;&lt;/ul&gt;" />
+              <option name="key" value="squid:S2447" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Null should not be returned from a &quot;Boolean&quot; method" />
+              <option name="severity" value="CRITICAL" />
+            </Rule>
+          </value>
+        </entry>
+        <entry key="squid:S4784">
+          <value>
+            <Rule>
+              <option name="htmlDesc" value="&lt;p&gt;Using regular expressions is security-sensitive. It has led in the past to the following vulnerabilities:&lt;/p&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; &lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16021&quot;&gt;CVE-2017-16021&lt;/a&gt; &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-13863&quot;&gt;CVE-2018-13863&lt;/a&gt; &lt;/li&gt;&#10;&lt;/ul&gt;&#10;&lt;p&gt;Evaluating regular expressions against input strings is potentially an extremely CPU-intensive task. Specially crafted regular expressions such as&#10;&lt;code&gt;(a+)+s&lt;/code&gt; will take several seconds to evaluate the input string &lt;code&gt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaabs&lt;/code&gt;. The problem is that with&#10;every additional &lt;code&gt;a&lt;/code&gt; character added to the input, the time required to evaluate the regex doubles. However, the equivalent regular&#10;expression, &lt;code&gt;a+s&lt;/code&gt; (without grouping) is efficiently evaluated in milliseconds and scales linearly with the input size.&lt;/p&gt;&#10;&lt;p&gt;Evaluating such regular expressions opens the door to &lt;a&#10;href=&quot;https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS&quot;&gt;Regular expression Denial of Service (ReDoS)&lt;/a&gt; attacks. In the&#10;context of a web application, attackers can force the web server to spend all of its resources evaluating regular expressions thereby making the&#10;service inaccessible to genuine users.&lt;/p&gt;&#10;&lt;p&gt;This rule flags any execution of a hardcoded regular expression which has at least 3 characters and at least two instances of any of the following&#10;characters: &lt;code&gt;*+{&lt;/code&gt;.&lt;/p&gt;&#10;&lt;p&gt;Example: &lt;code&gt;(a+)*&lt;/code&gt;&lt;/p&gt;&#10;&lt;h2&gt;Ask Yourself Whether&lt;/h2&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; the executed regular expression is sensitive and a user can provide a string which will be analyzed by this regular expression. &lt;/li&gt;&#10;  &lt;li&gt; your regular expression engine performance decrease with specially crafted inputs and regular expressions. &lt;/li&gt;&#10;&lt;/ul&gt;&#10;&lt;p&gt;You may be at risk if you answered yes to any of those questions.&lt;/p&gt;&#10;&lt;h2&gt;Recommended Secure Coding Practices&lt;/h2&gt;&#10;&lt;p&gt;Check whether your regular expression engine (the algorithm executing your regular expression) has any known vulnerabilities. Search for&#10;vulnerability reports mentioning the one engine you're are using.&lt;/p&gt;&#10;&lt;p&gt;Use if possible a library which is not vulnerable to Redos Attacks such as &lt;a href=&quot;https://github.com/google/re2&quot;&gt;Google Re2&lt;/a&gt;.&lt;/p&gt;&#10;&lt;p&gt;Remember also that a ReDos attack is possible if a user-provided regular expression is executed. This rule won't detect this kind of injection.&lt;/p&gt;&#10;&lt;h2&gt;Sensitive Code Example&lt;/h2&gt;&#10;&lt;pre&gt;&#10;import java.util.regex.Pattern;&#10;&#10;class BasePattern {&#10;  String regex = &quot;(a+)+b&quot;; // a regular expression&#10;  String input; // a user input&#10;&#10;  void foo(CharSequence htmlString) {&#10;    input.matches(regex);  // Sensitive&#10;    Pattern.compile(regex);  // Sensitive&#10;    Pattern.compile(regex, Pattern.CASE_INSENSITIVE);  // Sensitive&#10;&#10;    String replacement = &quot;test&quot;;&#10;    input.replaceAll(regex, replacement);  // Sensitive&#10;    input.replaceFirst(regex, replacement);  // Sensitive&#10;&#10;    if (!Pattern.matches(&quot;.*&amp;lt;script&amp;gt;(a+)+b&quot;, htmlString)) { // Sensitive&#10;    }&#10;  }&#10;}&#10;&lt;/pre&gt;&#10;&lt;p&gt;This also applies for bean validation, where regexp can be specified:&lt;/p&gt;&#10;&lt;pre&gt;&#10;import java.io.Serializable;&#10;import javax.validation.constraints.Pattern;&#10;import javax.validation.constraints.Email;&#10;import org.hibernate.validator.constraints.URL;&#10;&#10;class BeansRegex implements Serializable {&#10;  @Pattern(regexp=&quot;.+@(a+)+b&quot;)  // Sensitive&#10;  private String email;&#10;&#10;  @Email(regexp=&quot;.+@(a+)+b&quot;)  // Sensitive&#10;  private String email2;&#10;&#10;  @URL(regexp=&quot;(a+)+b.com&quot;) // Sensitive&#10;  private String url;&#10;  // ...&#10;}&#10;&lt;/pre&gt;&#10;&lt;h2&gt;Exceptions&lt;/h2&gt;&#10;&lt;p&gt;Calls to &lt;code&gt;String.split(regex)&lt;/code&gt; and &lt;code&gt;String.split(regex, limit)&lt;/code&gt; will not raise an exception despite their use of a regular&#10;expression. These methods are used most of the time to split on simple regular expressions which don't create any vulnerabilities.&lt;/p&gt;&#10;&lt;h2&gt;See&lt;/h2&gt;&#10;&lt;ul&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.owasp.org/index.php/Top_10-2017_A1-Injection&quot;&gt;OWASP Top 10 2017 Category A1&lt;/a&gt; - Injection &lt;/li&gt;&#10;  &lt;li&gt; &lt;a href=&quot;https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS&quot;&gt;MITRE, CWE-624&lt;/a&gt; - Executable Regular Expression Error&#10;  &lt;/li&gt;&#10;  &lt;li&gt; OWASP Regular expression Denial of Service - ReDoS &lt;/li&gt;&#10;&lt;/ul&gt;" />
+              <option name="key" value="squid:S4784" />
+              <option name="lan" value="java" />
+              <option name="langName" value="Java" />
+              <option name="name" value="Using regular expressions is security-sensitive" />
+              <option name="severity" value="CRITICAL" />
+            </Rule>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

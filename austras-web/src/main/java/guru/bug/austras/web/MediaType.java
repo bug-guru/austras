@@ -3,13 +3,10 @@ package guru.bug.austras.web;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MediaType {
     public static final String APPLICATION_JSON = "application/json";
     public static final String WILDCARD = "*/*";
-    private static final Pattern MEDIA_TYPE_REGEX = Pattern.compile("(\\w+)/([^;]+)(;\\w+)?");
     public static final MediaType APPLICATION_JSON_TYPE = valueOf(APPLICATION_JSON);
     public static final MediaType WILDCARD_TYPE = valueOf(WILDCARD);
     public static final List<MediaType> WILDCARD_LIST = Collections.singletonList(WILDCARD_TYPE);
@@ -24,14 +21,20 @@ public class MediaType {
     }
 
     public static MediaType valueOf(String mediaType) {
-        Matcher matcher = MEDIA_TYPE_REGEX.matcher(mediaType);
-        if (matcher.matches()) {
-            var type = matcher.group(1).trim();
-            var subtype = matcher.group(2).trim();
-            return new MediaType(type, subtype);
-        } else {
-            throw new IllegalArgumentException("mediaType");
+        var mt = mediaType.strip();
+        if (mt.isBlank()) {
+            throw new IllegalArgumentException("mediaType cannot be blank");
         }
+        var sepIdx = mt.indexOf('/');
+        if (sepIdx == -1) {
+            throw new IllegalArgumentException("unsupported mediaType: " + mediaType);
+        }
+        var type = mt.substring(0, sepIdx).strip();
+        var subtype = mt.substring(sepIdx + 1).strip();
+        if (type.isBlank() || subtype.isBlank()) {
+            throw new IllegalArgumentException("unsupported mediaType: " + mediaType);
+        }
+        return new MediaType(type, subtype);
     }
 
     public String getType() {
