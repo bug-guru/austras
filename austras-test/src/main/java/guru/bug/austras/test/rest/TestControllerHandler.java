@@ -13,7 +13,18 @@ import java.util.Map;
 
 public class TestControllerHandler extends EndpointHandler {
     public TestControllerHandler() {
-        super("GET", List.of(PathItem.matching("test"), PathItem.param("group")), List.of(MediaType.WILDCARD_TYPE), List.of(MediaType.APPLICATION_JSON_TYPE));
+        super("GET",
+                List.of(
+                        PathItem.matching("test"),
+                        PathItem.param("group")
+                ),
+                List.of(
+                        MediaType.WILDCARD_TYPE
+                ),
+                List.of(
+                        MediaType.APPLICATION_JSON_TYPE
+                )
+        );
     }
 
     @Override
