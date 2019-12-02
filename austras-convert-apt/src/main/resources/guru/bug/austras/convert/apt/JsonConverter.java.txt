@@ -14,7 +14,7 @@ public class $SIMPLE_NAME$ implements JsonConverter<$TARGET$> {
     private $CONVERTER_TYPE$ $CONVERTER_NAME$;
     #END#
 
-    public FakeDtoToJsonConverter(#PROPERTIES PARAMS#$CONVERTER_TYPE$ $CONVERTER_NAME$#END#) {
+    public $SIMPLE_NAME$(#PROPERTIES PARAMS#$CONVERTER_TYPE$ $CONVERTER_NAME$#END#) {
         #PROPERTIES#
         this.$CONVERTER_NAME$ = $CONVERTER_NAME$;
         #END#
