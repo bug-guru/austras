@@ -107,7 +107,7 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("OPTIONAL_COMMA_SEPARATOR")
+    @FromTemplate(",")
     public String dependenciesSeparator() {
         if (this.hasMoreDependencies) {
             return ",";

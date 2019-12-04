@@ -1,0 +1,55 @@
+package $PACKAGE_NAME$;
+
+#IMPORTS#
+guru.bug.austras.convert.json.writer.JsonValueWriter
+guru.bug.austras.web.EndpointHandler
+guru.bug.austras.web.MediaType
+guru.bug.austras.web.PathItem
+javax.servlet.ServletException
+javax.servlet.http.HttpServletRequest
+javax.servlet.http.HttpServletResponse
+java.io.IOException
+java.util.List
+java.util.Map
+#END#
+
+public class $SIMPLE_NAME$ extends EndpointHandler {
+    #DEPENDENCIES#
+    private final $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$;
+    #END#
+
+    public $SIMPLE_NAME$(
+        #DEPENDENCIES#
+        $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$$,$
+        #END#
+    ) {
+        super("$METHOD$",
+                List.of(
+                    #PATH_ITEMS#
+                        PathItem.$PATH_ITEM_TYPE$("$PATH_ITEM_VALUE$")$,$
+                    #END#
+                ),
+                List.of(
+                    #CONSUMED_TYPES#
+                        MediaType.valueOf("$MEDIA_TYPE$")$,$
+                    #END#
+                ),
+                List.of(
+                    #PRODUCED_TYPES#
+                        MediaType.valueOf("$MEDIA_TYPE$")$,$
+                    #END#
+                )
+        );
+        #DEPENDENCIES#
+        this.$DEPENDENCY_NAME$ = $DEPENDENCY_NAME$;
+        #END#
+    }
+
+    @Override
+    public void handle(HttpServletRequest _request, Map<String, String> _pathParams, HttpServletResponse _response) throws IOException, ServletException {
+        _response.setContentType("text/plain");
+        try (var _out = _response.getWriter()) {
+            _out.print("Hello");
+        }
+    }
+}

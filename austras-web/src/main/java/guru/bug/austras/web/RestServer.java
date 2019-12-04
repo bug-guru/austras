@@ -41,7 +41,7 @@ public class RestServer implements StartupService {
             log.warn("There are no endpoints found in the application");
         } else {
             for (var ep : this.endpoints) {
-                log.info("Endpoint {} {}", ep.getMethod(), ep.getPath());
+                log.info("Registered {}", ep);
             }
         }
 
@@ -136,8 +136,9 @@ public class RestServer implements StartupService {
 
         EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems) {
             var method = request.getMethod().toUpperCase();
-            var contentType = request.getContentType();
+            var contentType = Optional.ofNullable(request.getContentType()).map(MediaType::valueOf).orElse(null);
             var acceptTypes = getAcceptTypes(request);
+            log.debug("Searching a handler. Method: {}; contentType: {}; accepts types: {}", method, contentType, acceptTypes);
 
             var byMethodFilter = new Filter(c -> byMethod(c, method));
             var byContentFilter = new Filter(c -> byContentType(c, contentType));
@@ -152,27 +153,35 @@ public class RestServer implements StartupService {
                     .filter(byAcceptFilter)
                     .collect(Collectors.toList());
             if (candidates.size() > 1) {
+                log.error("More than one candidate found {}", candidates);
                 throw new MultipleChoicesException();
             }
             if (candidates.isEmpty()) {
                 byMethodFilter.throwIfNotPassed(() -> {
+                    log.error("No handler found for HTTP method {}", method);
                     throw new MethodNotAllowedException();
                 });
                 byContentFilter.throwIfNotPassed(() -> {
+                    log.error("No handler found for content type {}", contentType);
                     throw new UnsupportedMediaTypeException();
                 });
                 byPathFilter.throwIfNotPassed(() -> {
+                    log.error("No handler found for path {}", pathItems);
                     throw new NotFoundException();
                 });
                 byAcceptFilter.throwIfNotPassed(() -> {
+                    log.error("No handler found for producing {}", acceptTypes);
                     throw new NotAcceptableException();
                 });
             }
-            return candidates.get(0);
+            var result = candidates.get(0);
+            log.debug("Handler found: {}", result.handler);
+            return result;
         }
 
         private boolean byPath(EndpointHandlerHolder candidate, List<String> requestPath) {
             if (candidate.handler.getPath().size() != requestPath.size()) {
+                log.trace("Testing candidate: {}; path: {}}; passed: false", candidate.handler, requestPath);
                 return false;
             }
             Iterator<PathItem> resPathIterator = candidate.handler.getPath().iterator();
@@ -181,6 +190,7 @@ public class RestServer implements StartupService {
                 var resPathItem = resPathIterator.next();
                 var requestPathItem = requestPathIterator.next();
                 if (!resPathItem.canAccept(requestPathItem)) {
+                    log.trace("Testing candidate: {}; path: {}}; passed: false", candidate.handler, requestPath);
                     return false;
                 }
                 var key = resPathItem.key();
@@ -188,33 +198,38 @@ public class RestServer implements StartupService {
                     candidate.putPathParam(key, requestPathItem);
                 }
             }
+            log.trace("Testing candidate: {}; path: {}}; passed: true", candidate.handler, requestPath);
             return true;
         }
 
         private boolean byMethod(EndpointHandlerHolder candidate, String method) {
-            log.debug("candidate method {}; request method: {}", candidate.handler.getMethod(), method);
-            return candidate.handler.getMethod().equals(method);
+            var result = candidate.handler.getMethod().equals(method);
+            log.trace("Testing candidate: {}; Method: {}; passed: {}", candidate.handler, method, result);
+            return result;
         }
 
-        private boolean byContentType(EndpointHandlerHolder candidate, String contentType) {
+        private boolean byContentType(EndpointHandlerHolder candidate, MediaType contentType) {
             if (contentType == null) {
+                log.trace("Testing candidate: {}; Content-Type: null; passed: true", candidate.handler);
                 return true;
             }
-            var targetMT = MediaType.valueOf(contentType);
-            return acceptTypes(targetMT, candidate.handler.getConsumedTypes());
+            var result = acceptTypes(contentType, candidate.handler.getConsumedTypes());
+            log.trace("Testing candidate {}; Content-Type: {}; passed: {}", candidate.handler, contentType, result);
+            return result;
         }
 
         private boolean byAccept(EndpointHandlerHolder candidate, List<MediaType> acceptTypes) {
-            return acceptTypes(acceptTypes, candidate.handler.getProducedTypes());
+            var result = acceptTypes(acceptTypes, candidate.handler.getProducedTypes());
+            log.trace("Testing candidate {}; Accepts: {}; passed: {}", candidate.handler, acceptTypes, result);
+            return result;
+        }
+
+        private boolean acceptTypes(List<MediaType> requestedTypes, List<MediaType> targetTypes) {
+            return requestedTypes.stream().anyMatch(rmt -> acceptTypes(rmt, targetTypes));
         }
 
         private boolean acceptTypes(MediaType requestedType, List<MediaType> targetTypes) {
             return targetTypes.stream().anyMatch(requestedType::isCompatible);
-        }
-
-        private boolean acceptTypes(List<MediaType> requestedTypes, List<MediaType> targetTypes) {
-            log.info("requestTypes: {}; targetTypes: {}", requestedTypes, targetTypes);
-            return requestedTypes.stream().anyMatch(rmt -> acceptTypes(rmt, targetTypes));
         }
 
     }

@@ -140,7 +140,7 @@ public class DispatcherGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("OPTIONAL_COMMA")
+    @FromTemplate(",")
     public String optionalComma() {
         return optionalComma;
     }

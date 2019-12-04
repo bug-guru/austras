@@ -38,4 +38,9 @@ public abstract class EndpointHandler {
     }
 
     public abstract void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException;
+
+    @Override
+    public String toString() {
+        return "Endpoint " + consumedTypes + " -> " + method + " " + path + " -> " + producedTypes;
+    }
 }
