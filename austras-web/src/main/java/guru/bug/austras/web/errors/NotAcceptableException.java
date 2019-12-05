@@ -1,6 +1,6 @@
 package guru.bug.austras.web.errors;
 
-public class NotAcceptableException extends AustrasHttpException {
+public class NotAcceptableException extends HttpException {
     // TODO If a server returns such an error status, the body of the message should contain the list of the available
     //  representations of the resources, allowing the user to choose among them.
     public NotAcceptableException() {

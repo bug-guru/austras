@@ -1,9 +1,9 @@
 package guru.bug.austras.web.errors;
 
-public class AustrasHttpException extends RuntimeException {
+public class HttpException extends Exception {
     private final int statusCode;
 
-    public AustrasHttpException(int statusCode, String message) {
+    public HttpException(int statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }

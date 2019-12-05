@@ -5,6 +5,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import guru.bug.austras.web.EndpointHandler;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathItem;
+import guru.bug.austras.web.errors.HttpException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class TestControllerHandler extends EndpointHandler {
     }
 
     @Override
-    public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException {
         response.setContentType(MediaType.APPLICATION_JSON);
         var result = new MyDataObject();
         result.setGroup(pathParams.get("group"));

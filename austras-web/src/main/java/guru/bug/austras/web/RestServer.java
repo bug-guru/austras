@@ -63,6 +63,10 @@ public class RestServer implements StartupService {
         }
     }
 
+    private interface HttpExceptionProducer {
+        void run() throws HttpException;
+    }
+
     private static class Filter implements Predicate<EndpointHandlerHolder> {
         final Predicate<EndpointHandlerHolder> predicate;
         boolean passed;
@@ -80,7 +84,7 @@ public class RestServer implements StartupService {
             return result;
         }
 
-        void throwIfNotPassed(Runnable exceptionProducer) {
+        void throwIfNotPassed(HttpExceptionProducer exceptionProducer) throws HttpException {
             if (!passed) {
                 exceptionProducer.run();
             }
@@ -102,7 +106,7 @@ public class RestServer implements StartupService {
             pathParams.put(key, value);
         }
 
-        void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, HttpException {
             handler.handle(request, pathParams, response);
         }
     }
@@ -110,15 +114,27 @@ public class RestServer implements StartupService {
     private class JettyHandler extends AbstractHandler {
 
         @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
             try {
                 var pathItems = PathSplitter.split(Function.identity(), target);
                 var handlerHolder = findHandler(request, pathItems);
                 handlerHolder.handle(request, response);
-            } catch (AustrasHttpException e) {
-                log.error("Handling exception", e);
-                response.setStatus(e.getStatusCode());
-                response.sendError(e.getStatusCode(), e.getMessage());
+            } catch (HttpException e) {
+                log.error("Handling HTTP Exception", e);
+                sendError(response, e.getStatusCode(), e.getMessage());
+            } catch (Exception e) {
+                log.error("Handling unexpected exception", e);
+                sendError(response, 500, "Unexpected server error");
+            }
+        }
+
+        private void sendError(HttpServletResponse response, int code, String message) {
+            if (response.isCommitted()) {
+                log.error("Cannot send error {} {} - response is already committed", code, message);
+            } else try {
+                response.sendError(code, message);
+            } catch (Exception e) {
+                log.error("Cannot send error " + code + " " + message + " - unexpected exception", e);
             }
         }
 
@@ -134,7 +150,7 @@ public class RestServer implements StartupService {
             }
         }
 
-        EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems) {
+        EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems) throws HttpException {
             var method = request.getMethod().toUpperCase();
             var contentType = Optional.ofNullable(request.getContentType()).map(MediaType::valueOf).orElse(null);
             var acceptTypes = getAcceptTypes(request);

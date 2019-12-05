@@ -1,5 +1,7 @@
 package guru.bug.austras.web;
 
+import guru.bug.austras.web.errors.HttpException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +39,7 @@ public abstract class EndpointHandler {
         return producedTypes;
     }
 
-    public abstract void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException;
+    public abstract void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException;
 
     @Override
     public String toString() {
