@@ -6,6 +6,7 @@ import guru.bug.austras.web.EndpointHandler;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathItem;
 import guru.bug.austras.web.errors.HttpException;
+import guru.bug.austras.web.errors.NotFoundException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +34,16 @@ public class TestControllerHandler extends EndpointHandler {
         this.converter = converter;
     }
 
+    @SuppressWarnings("RedundantThrows")
     @Override
     public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException {
+        var group = pathParams.get("group");
+        if ("a".equals(group)) {
+            throw new NotFoundException();
+        }
         response.setContentType(MediaType.APPLICATION_JSON);
         var result = new MyDataObject();
-        result.setGroup(pathParams.get("group"));
+        result.setGroup(group);
         try (var out = response.getWriter()) {
             JsonValueWriter w = JsonValueWriter.newInstance(out);
             converter.toJson(result, w);

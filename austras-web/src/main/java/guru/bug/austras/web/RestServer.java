@@ -50,7 +50,7 @@ public class RestServer implements StartupService {
         try {
             server.start();
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new RestServerInitializationException(e);
         }
     }
 
@@ -106,6 +106,7 @@ public class RestServer implements StartupService {
             pathParams.put(key, value);
         }
 
+        @SuppressWarnings("squid:RedundantThrowsDeclarationCheck")
         void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, HttpException {
             handler.handle(request, pathParams, response);
         }
@@ -132,6 +133,7 @@ public class RestServer implements StartupService {
             if (response.isCommitted()) {
                 log.error("Cannot send error {} {} - response is already committed", code, message);
             } else try {
+                response.reset();
                 response.sendError(code, message);
             } catch (Exception e) {
                 log.error("Cannot send error " + code + " " + message + " - unexpected exception", e);
