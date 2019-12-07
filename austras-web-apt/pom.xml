@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>guru.bug.austras</groupId>
+            <artifactId>austras-convert</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>guru.bug.austras</groupId>
             <artifactId>austras-codegen</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

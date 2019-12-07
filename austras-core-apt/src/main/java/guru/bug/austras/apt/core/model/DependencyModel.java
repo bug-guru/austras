@@ -3,6 +3,7 @@ package guru.bug.austras.apt.core.model;
 import guru.bug.austras.provider.Provider;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class DependencyModel {
     private String name;
@@ -83,5 +84,21 @@ public class DependencyModel {
 
     public ComponentKey asComponentKey() {
         return new ComponentKey(type, qualifiers);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DependencyModel that = (DependencyModel) o;
+        return provider == that.provider &&
+                collection == that.collection &&
+                type.equals(that.type) &&
+                Objects.equals(qualifiers, that.qualifiers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, provider, collection, qualifiers);
     }
 }

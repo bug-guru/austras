@@ -4,7 +4,7 @@ import guru.bug.austras.convert.converters.StringIntegerConverter;
 import guru.bug.austras.core.Component;
 
 @Component
-public class PrimitiveIntToStringConverter implements StringIntegerConverter {
+public class PrimitiveIntegerToStringConverter implements StringIntegerConverter {
     @Override
     public int fromString(String value) {
         return Integer.parseInt(value);
