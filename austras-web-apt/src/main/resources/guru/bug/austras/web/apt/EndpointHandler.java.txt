@@ -47,9 +47,17 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
 
     @Override
     public void handle(HttpServletRequest _request, Map<String, String> _pathParams, HttpServletResponse _response) throws IOException, ServletException {
-        _response.setContentType("text/plain");
+        $SET CHARSET$
+        $SET CONTENT TYPE$
         try (var _out = _response.getWriter()) {
-            _out.print("Hello");
+            _response.setStatus($SUCCESS_STATUS$);
+            $VAR RESULT =$$CONTROLLER_PROVIDER_NAME$.get()
+                .$ENDPOINT_METHOD$(
+                    #ENDPOINT_METHOD_PARAMS#
+                        $ENDPOINT_METHOD_PARAM_EXPRESSION$$,$
+                    #END#
+                );
+            $WRITE RESULT$
         }
     }
 }

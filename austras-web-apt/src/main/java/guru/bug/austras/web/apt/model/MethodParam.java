@@ -1,5 +1,7 @@
 package guru.bug.austras.web.apt.model;
 
-public abstract class MethodParam {
+public interface MethodParam {
+
+    String expresion();
 
 }

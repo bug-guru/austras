@@ -1,26 +1,31 @@
 package guru.bug.austras.web.apt;
 
+import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.convert.converters.*;
+import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import guru.bug.austras.web.Endpoint;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathSplitter;
+import guru.bug.austras.web.apt.model.MethodParam;
 import guru.bug.austras.web.apt.model.PathItemRef;
-import org.apache.commons.lang3.StringUtils;
+import guru.bug.austras.web.apt.model.PathParamMethodParam;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +41,14 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     private boolean commaRequired;
     private PathItemRef currentPathItem;
     private MediaType currentMediaType;
+    private DependencyModel controllerProvider;
+    private Set<DependencyModel> dependencies;
+    private List<MethodParam> methodParams;
+    private DependencyModel currentDependency;
+    private String endpointMethodName;
+    private MethodParam currentMethodParam;
+    private int successStatus;
+    private DependencyModel resultConverter;
 
     protected EndpointHandlerGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
@@ -43,88 +56,50 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     public void generate(ExecutableElement methodElement) {
+        this.dependencies = new HashSet<>();
+        this.methodParams = new ArrayList<>();
+        this.endpointMethodName = methodElement.getSimpleName().toString();
         var cls = (TypeElement) methodElement.getEnclosingElement();
         this.packageName = ctx.processingEnv().getElementUtils().getPackageOf(cls).getQualifiedName().toString();
         this.simpleClassName = cls.getSimpleName().toString() + "_" + methodElement.getSimpleName().toString() + "_EndpointHandler";
         var endpointAnnotation = methodElement.getAnnotation(Endpoint.class);
+        this.successStatus = endpointAnnotation.successStatus();
+        processControllerProvider(cls);
         processEndpointInfo(endpointAnnotation);
         processParams(methodElement);
+        processResult(methodElement);
 
         generateJavaClass();
+    }
+
+    private void processResult(ExecutableElement methodElement) {
+        var returnType = methodElement.getReturnType();
+        if (returnType.getKind() == TypeKind.VOID) {
+            resultConverter = null;
+        } else {
+            resultConverter = JsonConverterUtil.selectConverter(returnType);
+            dependencies.add(resultConverter);
+        }
+    }
+
+    public void processControllerProvider(TypeElement cls) {
+        this.controllerProvider = ctx.modelUtils()
+                .createDependencyModel("_controller", (DeclaredType) cls.asType(), cls)
+                .copyAsProvider();
+        dependencies.add(this.controllerProvider);
     }
 
     private void processParams(ExecutableElement methodElement) {
         for (var param : methodElement.getParameters()) {
             var type = param.asType();
             var name = param.getSimpleName().toString();
-            var converter = selectConverter(type);
-
-        }
-    }
-
-    private DependencyModel selectConverter(TypeMirror type) {
-        var kind = type.getKind();
-        if (kind.isPrimitive()) {
-            return selectPrimitiveConverter(type);
-        } else if (kind == TypeKind.DECLARED) {
-            var element = (TypeElement) ((DeclaredType) type).asElement();
-            if (element.getQualifiedName().contentEquals(String.class.getName())) {
-                return null;
+            var converterProvider = StringConverterUtil.selectConverter(type);
+            if (converterProvider != null) {
+                dependencies.add(converterProvider);
             }
-            var baseClassName = StringConverter.class.getName();
-            var typeClassName = element.getQualifiedName().toString();
-            var typeClassSimpleName = element.getSimpleName().toString();
-            var converterType = baseClassName + "<" + typeClassName + ">";
-            var name = "stringConverter" + typeClassSimpleName;
-            var result = new DependencyModel();
-            result.setQualifiers(null); // TODO think of taking qualifiers from the method's param
-            result.setName(name);
-            result.setType(converterType);
-            result.setCollection(false);
-            result.setProvider(false);
-            return result;
-        } else {
-            throw new IllegalArgumentException("Type " + type);
+            var paramObj = new PathParamMethodParam(name, converterProvider);
+            methodParams.add(paramObj);
         }
-    }
-
-    private DependencyModel selectPrimitiveConverter(TypeMirror type) {
-        Class<?> converter;
-        switch (type.getKind()) {
-            case SHORT:
-                converter = StringShortConverter.class;
-                break;
-            case INT:
-                converter = StringIntegerConverter.class;
-                break;
-            case DOUBLE:
-                converter = StringDoubleConverter.class;
-                break;
-            case BOOLEAN:
-                converter = StringBooleanConverter.class;
-                break;
-            case CHAR:
-                converter = StringCharacterConverter.class;
-                break;
-            case FLOAT:
-                converter = StringFloatConverter.class;
-                break;
-            case LONG:
-                converter = StringLongConverter.class;
-                break;
-            case BYTE:
-                converter = StringByteConverter.class;
-                break;
-            default:
-                throw new IllegalArgumentException("Type " + type);
-        }
-        var result = new DependencyModel();
-        result.setCollection(false);
-        result.setProvider(false);
-        result.setName(StringUtils.uncapitalize(converter.getSimpleName()));
-        result.setType(converter.getName());
-        result.setQualifiers(null); // TODO think of taking qualifiers from the method's param
-        return result;
     }
 
     public void processEndpointInfo(Endpoint endpointAnnotation) {
@@ -140,25 +115,27 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCIES")
     public void dependencies(PrintWriter out, BodyBlock bodyBlock) {
-        // TODO
+        var i = dependencies.iterator();
+        while (i.hasNext()) {
+            this.currentDependency = i.next();
+            this.commaRequired = i.hasNext();
+            out.print(bodyBlock.evaluateBody());
+        }
     }
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        // TODO
-        return "";
+        return ModelUtils.qualifierToString(currentDependency.getQualifiers());
     }
 
     @FromTemplate("DEPENDENCY_TYPE")
     public String dependencyType() {
-        // TODO
-        return "";
+        return tryImport(currentDependency.asTypeDeclaration());
     }
 
     @FromTemplate("DEPENDENCY_NAME")
     public String dependencyName() {
-        // TODO
-        return "";
+        return currentDependency.getName();
     }
 
     @FromTemplate(",")
@@ -169,6 +146,11 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     @FromTemplate("METHOD")
     public String getHttpMethod() {
         return httpMethod;
+    }
+
+    @FromTemplate("SUCCESS_STATUS")
+    public int getSuccessStatus() {
+        return successStatus;
     }
 
     @FromTemplate("PATH_ITEMS")
@@ -227,6 +209,67 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     public String getCurrentMediaType() {
         return currentMediaType.toString();
     }
+
+    @FromTemplate("ENDPOINT_METHOD")
+    public String getEndpointMethodName() {
+        return endpointMethodName;
+    }
+
+    @FromTemplate("CONTROLLER_PROVIDER_NAME")
+    public String getControllerProviderName() {
+        return controllerProvider.getName();
+    }
+
+    @FromTemplate("ENDPOINT_METHOD_PARAMS")
+    public void endpointMethodParams(PrintWriter out, BodyBlock body) {
+        var mpi = methodParams.iterator();
+        while (mpi.hasNext()) {
+            this.currentMethodParam = mpi.next();
+            this.commaRequired = mpi.hasNext();
+            out.print(body.evaluateBody());
+        }
+    }
+
+    @FromTemplate("ENDPOINT_METHOD_PARAM_EXPRESSION")
+    public String getEndpointMethodParamExpression() {
+        return currentMethodParam.expresion();
+    }
+
+    @FromTemplate("VAR RESULT =")
+    public String getResultVarAssignment() {
+        if (resultConverter == null) {
+            return "";
+        }
+        return "var _result = ";
+    }
+
+    @FromTemplate("WRITE RESULT")
+    public String getReturnResult() {
+        if (resultConverter == null) {
+            return "";
+        }
+
+        return String.format("%s.toJson(_result, %s.newInstance(_out));",
+                resultConverter.getName(),
+                tryImport(JsonValueWriter.class.getName()));
+    }
+
+    @FromTemplate("SET CONTENT TYPE")
+    public String getContentTYpe() {
+        if (resultConverter == null) {
+            return "";
+        }
+        return String.format("_response.setContentType(\"%s\");", MediaType.APPLICATION_JSON);
+    }
+
+    @FromTemplate("SET CHARSET")
+    public String getCharset() {
+        if (resultConverter == null) {
+            return "";
+        }
+        return String.format("_response.setCharacterEncoding(\"%s\");", StandardCharsets.UTF_8.name());
+    }
+
 
 }
 

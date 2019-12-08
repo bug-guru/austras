@@ -35,6 +35,7 @@ public class RestServer implements StartupService {
 
     @Override
     public void initialize() {
+
         this.server = new Server(8080);
 
         if (this.endpoints.isEmpty()) {

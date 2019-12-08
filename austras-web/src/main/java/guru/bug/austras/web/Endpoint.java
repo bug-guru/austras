@@ -15,4 +15,6 @@ public @interface Endpoint {
     String[] accept() default {MediaType.WILDCARD};
 
     String[] produce() default {MediaType.WILDCARD};
+
+    int successStatus() default 200;
 }

@@ -16,12 +16,20 @@ public class MyFirstController {
 
     @Endpoint(method = "POST", path = "/my/2/{param1}")
     public void doSimplePostWithPathParam1(String param1) {
-        log.info("POST Simple endpoint");
+        log.info("POST Simple endpoint with path param 1");
     }
 
     @Endpoint(method = "POST", path = "/my/3/{param1}/x/{param2}")
     public void doSimplePostWithPathParam2(String param1, LocalDateTime param2) {
-        log.info("POST Simple endpoint");
+        log.info("POST Simple endpoint with path param 2");
+    }
+
+    @Endpoint(method = "POST", path = "/my/group/{groupName}")
+    public MyDataObject doSimplePost3(String groupName) {
+        log.info("POST Simple endpoint with group name");
+        var result = new MyDataObject();
+        result.setGroup(groupName);
+        return result;
     }
 
 }

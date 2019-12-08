@@ -16,17 +16,21 @@ public abstract class JavaGenerator extends Generator {
     }
 
     protected final String tryImport(String typeName) {
+        String prefix = "";
+        if (typeName.startsWith("? extends ")) {
+            prefix = "? extends ";
+        }
         var tpFirstIdx = typeName.indexOf('<');
         if (tpFirstIdx == -1) {
-            return tryImport0(typeName);
+            return prefix + tryImport0(typeName.substring(prefix.length()));
         } else {
-            var type = tryImport0(typeName.substring(0, tpFirstIdx));
+            var type = tryImport0(typeName.substring(prefix.length(), tpFirstIdx));
             var tpLastIdx = typeName.lastIndexOf('>');
             if (tpLastIdx == -1) {
                 throw new IllegalArgumentException("wrong type " + typeName);
             }
             var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx));
-            return type + '<' + param + '>';
+            return prefix + type + '<' + param + '>';
         }
     }
 

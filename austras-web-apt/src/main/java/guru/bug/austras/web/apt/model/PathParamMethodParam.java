@@ -1,4 +1,22 @@
 package guru.bug.austras.web.apt.model;
 
-public class PathParamMethodParam extends MethodParam {
+import guru.bug.austras.apt.core.model.DependencyModel;
+
+public class PathParamMethodParam implements MethodParam {
+    private final String paramName;
+    private final DependencyModel converter;
+
+    public PathParamMethodParam(String paramName, DependencyModel converter) {
+        this.paramName = paramName;
+        this.converter = converter;
+    }
+
+    @Override
+    public String expresion() {
+        var result = "_pathParams.get(\"" + paramName + "\")";
+        if (converter != null) {
+            result = converter.getName() + ".fromString(" + result + ")";
+        }
+        return result;
+    }
 }

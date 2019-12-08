@@ -59,6 +59,9 @@ public class ModelUtils {
     }
 
     public static String qualifierToString(QualifierModel qualifierModel) {
+        if (qualifierModel == null) {
+            return "";
+        }
         var result = new StringBuilder(512);
         qualifierModel.forEach((qualifierName, properties) -> {
             result.append("@")
