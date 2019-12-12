@@ -1698,6 +1698,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/core/Matcher.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/core/Selector.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/events/ApplicationEvents.java">
           <value>
             <set>
@@ -1727,6 +1737,26 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/logging/AustrasLogManager.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/provider/CollectionProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/provider/Matcher.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/provider/Selector.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/provider/SelectorFilter.java">
           <value>
             <set />
           </value>
@@ -1871,16 +1901,127 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/MediaType.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-jotxF_EzPpKMHa" />
-                <option name="line" value="12" />
-                <option name="message" value="Make sure that using a regular expression is safe here." />
-                <option name="ruleKey" value="squid:S4784" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/BooleanContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/ByteContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/CharacterContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/ContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/DoubleContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/FloatContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/IntegerContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/LongContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/ShortContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonByteContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonCharacterContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonDoubleContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonFloatContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonIntegerContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonLongContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/json/JsonShortContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringBooleanContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringByteContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringCharacterContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringDoubleContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringFloatContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringIntegerContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringLongContentConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/contentconverter/str/StringShortContentConverter.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/errors/MethodNotAllowedException.java">

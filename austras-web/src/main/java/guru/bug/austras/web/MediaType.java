@@ -6,8 +6,10 @@ import java.util.Objects;
 
 public class MediaType {
     public static final String APPLICATION_JSON = "application/json";
+    public static final String TEXT_PLAIN = "text/plain";
     public static final String WILDCARD = "*/*";
     public static final MediaType APPLICATION_JSON_TYPE = valueOf(APPLICATION_JSON);
+    public static final MediaType TEXT_PLAIN_TYPE = valueOf(TEXT_PLAIN);
     public static final MediaType WILDCARD_TYPE = valueOf(WILDCARD);
     public static final List<MediaType> WILDCARD_LIST = Collections.singletonList(WILDCARD_TYPE);
     private final String type;
