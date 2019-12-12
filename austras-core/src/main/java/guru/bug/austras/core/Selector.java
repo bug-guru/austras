@@ -9,7 +9,7 @@ public interface Selector<T> {
 
     Collection<T> selectAll();
 
-    Selector<T> filter(Matcher matcher);
+    Selector<T> filter(QualifierMatcher qualifierMatcher);
 
 
 }
