@@ -1,4 +1,4 @@
-package guru.bug.austras.provider;
+package guru.bug.austras.core;
 
 import java.util.Collection;
 import java.util.List;

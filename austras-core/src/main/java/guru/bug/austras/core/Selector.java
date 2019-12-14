@@ -1,15 +1,39 @@
 package guru.bug.austras.core;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-public interface Selector<T> {
-    T selectAny();
+public abstract class Selector<T> {
 
-    T selectSingle();
+    protected abstract List<Provider<T>> getProviders();
 
-    Collection<T> selectAll();
+    public T selectAny() {
+        var list = getProviders();
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0).get();
+    }
 
-    Selector<T> filter(QualifierMatcher qualifierMatcher);
+    public T selectSingle() {
+        var list = getProviders();
+        if (list.isEmpty()) {
+            throw new NoSuchElementException();
+        } else if (list.size() > 1) {
+            throw new IllegalStateException("Too weak selector");
+        }
+        return list.get(0).get();
+    }
 
+    public List<T> selectAll() {
+        return getProviders().stream()
+                .map(Provider::get)
+                .collect(Collectors.toList());
+    }
+
+    public Selector<T> withQualifierName(String name) {
+        return null;
+    }
 
 }

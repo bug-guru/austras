@@ -3,10 +3,10 @@ package guru.bug.austras.apt.core;
 import guru.bug.austras.apt.core.model.ComponentModel;
 import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.core.model.QualifierModel;
+import guru.bug.austras.core.Provider;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.events.Broadcaster;
-import guru.bug.austras.provider.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

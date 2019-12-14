@@ -2,7 +2,7 @@ package $PACKAGE_NAME$;
 
 #IMPORTS#
 guru.bug.austras.core.Qualifier
-guru.bug.austras.provider.Provider
+guru.bug.austras.core.Provider
 java.util.Collection
 #END#
 

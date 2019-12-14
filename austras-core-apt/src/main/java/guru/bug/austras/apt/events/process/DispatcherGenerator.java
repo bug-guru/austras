@@ -10,7 +10,7 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.provider.Provider;
+import guru.bug.austras.core.Provider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.ExecutableElement;

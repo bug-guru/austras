@@ -1,6 +1,6 @@
 package guru.bug.austras.startup;
 
-import guru.bug.austras.provider.Provider;
+import guru.bug.austras.core.Provider;
 
 import java.util.Collection;
 

@@ -1,6 +1,6 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.provider.Provider;
+import guru.bug.austras.core.Provider;
 
 @SuppressWarnings("ALL") // this class is for testing only
 public class ComponentCImplProvider implements Provider<ComponentCImpl> {

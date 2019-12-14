@@ -1,4 +1,4 @@
-package guru.bug.austras.provider;
+package guru.bug.austras.core;
 
 public interface Provider<T> {
     T get();
