@@ -5,5 +5,5 @@ import guru.bug.austras.meta.QualifierSetMetaInfo;
 public interface Provider<T> {
     T get();
 
-    QualifierSetMetaInfo meta();
+    QualifierSetMetaInfo qualifier();
 }
