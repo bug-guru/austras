@@ -4,34 +4,50 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QualifierMetaInfo {
-    private final String name;
+    private static final QualifierMetaInfo EMPTY = new QualifierMetaInfo(null);
     private final Map<String, String> properties;
 
-    private QualifierMetaInfo(String name, Map<String, String> properties) {
-        this.name = name;
+    private QualifierMetaInfo(Map<String, String> properties) {
         this.properties = properties == null ? Map.of() : Map.copyOf(properties);
     }
 
-    public static Builder builderFor(String name) {
-        return new Builder(name);
+    public static Builder builder() {
+        return new Builder();
     }
 
+    public static QualifierMetaInfo empty() {
+        return EMPTY;
+    }
+
+    public boolean hasProperty(String key) {
+        return properties.containsKey(key);
+    }
+
+    public boolean hasProperty(String key, String value) {
+        var v = properties.get(key);
+        if (v == null) {
+            return false;
+        }
+        return v.equals(value);
+    }
+
+    public String getValue(String key) {
+        return properties.get(key);
+    }
 
     public static class Builder {
-        private final String name;
         private final Map<String, String> properties = new HashMap<>();
 
-        private Builder(String name) {
-            this.name = name;
+        private Builder() {
         }
 
-        public Builder property(String key, String value) {
+        public Builder add(String key, String value) {
             properties.put(key, value);
             return this;
         }
 
         public QualifierMetaInfo build() {
-            return new QualifierMetaInfo(name, properties);
+            return new QualifierMetaInfo(properties);
         }
     }
 }
