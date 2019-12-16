@@ -5,10 +5,15 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class QualifierSetMetaInfo {
+    private static final QualifierSetMetaInfo EMPTY = new QualifierSetMetaInfo(null);
     private final Map<String, QualifierMetaInfo> qualifiers;
 
     private QualifierSetMetaInfo(Map<String, QualifierMetaInfo> qualifiers) {
         this.qualifiers = qualifiers == null ? Map.of() : Map.copyOf(qualifiers);
+    }
+
+    public static QualifierSetMetaInfo empty() {
+        return EMPTY;
     }
 
     public static Builder build() {

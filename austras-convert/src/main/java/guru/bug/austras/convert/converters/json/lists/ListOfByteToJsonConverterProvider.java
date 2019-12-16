@@ -3,6 +3,7 @@ package guru.bug.austras.convert.converters.json.lists;
 
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.core.Provider;
+import guru.bug.austras.meta.QualifierSetMetaInfo;
 
 @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
 public class ListOfByteToJsonConverterProvider extends ListToJsonConverterProvider<Byte> {
@@ -11,4 +12,8 @@ public class ListOfByteToJsonConverterProvider extends ListToJsonConverterProvid
         super(elementConverterProvider);
     }
 
+    @Override
+    public QualifierSetMetaInfo qualifier() {
+        return QualifierSetMetaInfo.empty();
+    }
 }
