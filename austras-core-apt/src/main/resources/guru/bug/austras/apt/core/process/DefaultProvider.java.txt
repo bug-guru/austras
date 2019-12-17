@@ -7,7 +7,7 @@ java.util.Collection
 guru.bug.austras.meta.QualifierSetMetaInfo
 #END#
 
-$QUALIFIER ANNOTATIONS$
+$QUALIFIER_ANNOTATIONS$
 public class $SIMPLE_CLASS_NAME$ implements Provider<$COMPONENT_CLASS_NAME$> {
 
 	private final $COMPONENT_CLASS_NAME$ $COMPONENT_NAME$;
@@ -33,10 +33,11 @@ public class $SIMPLE_CLASS_NAME$ implements Provider<$COMPONENT_CLASS_NAME$> {
     public QualifierSetMetaInfo qualifier() {
         return QualifierSetMetaInfo.builder()
             #QUALIFIERS#
-                .add("$QUALIFIER NAME$", $PROP BUILDER START$
-                    #QUALIFIER PROPERTIES#
-
+                .add("$QUALIFIER_NAME$", propsBuilder -> {
+                    #QUALIFIER_PROPERTIES#
+                        propsBuilder.add("$PROPERTY_KEY$", "$PROPERTY_VALUE$");
                     #END#
+                });
             #END#
                 .build();
     }

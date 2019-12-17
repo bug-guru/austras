@@ -7,6 +7,7 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
@@ -24,6 +25,9 @@ public class DefaultProviderGenerator extends JavaGenerator {
     private ComponentModel componentModel;
     private Dependency currentDependency;
     private String optionalComma;
+    private String currentQualifierName;
+    private List<Pair<String, String>> currentQualifierProperties;
+    private Pair<String, String> currentQualifierProperty;
 
     public DefaultProviderGenerator(ProcessingEnvironment processingEnv) throws IOException, TemplateException {
         super(processingEnv.getFiler());
@@ -41,8 +45,8 @@ public class DefaultProviderGenerator extends JavaGenerator {
     }
 
 
-    @FromTemplate("QUALIFIERS")
-    public String componentQualifiers() {
+    @FromTemplate("QUALIFIER_ANNOTATIONS")
+    public String componentQualifiersAnnotations() {
         return ModelUtils.qualifierToString(componentModel.getQualifiers());
     }
 
@@ -118,6 +122,38 @@ public class DefaultProviderGenerator extends JavaGenerator {
         if (!currentDependency.componentDependency.isProvider()) {
             out.print(".get()");
         }
+    }
+
+    @FromTemplate("QUALIFIERS")
+    public void qualifiers(PrintWriter out, BodyBlock body) {
+        componentModel.getQualifiers().forEach((name, props) -> {
+            this.currentQualifierName = name;
+            this.currentQualifierProperties = props;
+            out.print(body.evaluateBody());
+        });
+    }
+
+    @FromTemplate("QUALIFIER_NAME")
+    public String qualifierName() {
+        return currentQualifierName;
+    }
+
+    @FromTemplate("QUALIFIER_PROPERTIES")
+    public void qualifierName(PrintWriter out, BodyBlock body) {
+        currentQualifierProperties.forEach(pair -> {
+            this.currentQualifierProperty = pair;
+            out.print(body.evaluateBody());
+        });
+    }
+
+    @FromTemplate("PROPERTY_KEY")
+    public String propertyKey() {
+        return currentQualifierProperty.getKey();
+    }
+
+    @FromTemplate("PROPERTY_VALUE")
+    public String propertyValue() {
+        return currentQualifierProperty.getValue();
     }
 
     static class Dependency {

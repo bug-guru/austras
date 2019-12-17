@@ -16,7 +16,7 @@ public class QualifierSetMetaInfo {
         return EMPTY;
     }
 
-    public static Builder build() {
+    public static Builder builder() {
         return new Builder();
     }
 
