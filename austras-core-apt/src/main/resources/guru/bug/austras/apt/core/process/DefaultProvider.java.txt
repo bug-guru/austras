@@ -37,7 +37,7 @@ public class $SIMPLE_CLASS_NAME$ implements Provider<$COMPONENT_CLASS_NAME$> {
                     #QUALIFIER_PROPERTIES#
                         propsBuilder.add("$PROPERTY_KEY$", "$PROPERTY_VALUE$");
                     #END#
-                });
+                })
             #END#
                 .build();
     }

@@ -248,8 +248,10 @@ public class MainClassGenerator extends JavaGenerator {
         final List<ComponentModel> dependencies;
 
         private ComponentModelRef(ComponentModel component) {
-            this.component = component;
-            this.dependencies = component.getProvider().getDependencies().stream()
+            this.component = Objects.requireNonNull(component, "component");
+            var provider = Objects.requireNonNull(component.getProvider(), "provider for " + component);
+            var dependencies = Objects.requireNonNull(provider.getDependencies(), "dependencies for " + component);
+            this.dependencies = dependencies.stream()
                     .map(DependencyModel::asComponentKey)
                     .flatMap(k -> componentMap.findComponentModels(k).stream())
                     .collect(Collectors.toList());

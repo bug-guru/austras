@@ -4,6 +4,7 @@ import guru.bug.austras.meta.QualifierSetMetaInfo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -42,10 +43,14 @@ public class CollectionProvider<E> implements Provider<Collection<E>> {
         var tmp = providers.stream()
                 .filter(p -> filter.test(p.qualifier()))
                 .limit(2)
-                .collect(Collectors.toList())
-                .map(Provider::get)
-                .map(v -> (E) v);
-
+                .collect(Collectors.toList());
+        if (tmp.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        if (tmp.size() > 2) {
+            throw new IllegalStateException();
+        }
+        return tmp.get(0).get();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class ConfigParamProvider implements Provider<String> {
 
     @Override
     public QualifierSetMetaInfo qualifier() {
-        return QualifierSetMetaInfo.build()
+        return QualifierSetMetaInfo.builder()
                 .add("ConfigurationProperty", b -> b.add("name", "config\"test\""))
                 .build();
     }
