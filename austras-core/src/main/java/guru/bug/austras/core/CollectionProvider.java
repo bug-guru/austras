@@ -30,11 +30,22 @@ public class CollectionProvider<E> implements Provider<Collection<E>> {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public Optional<? extends E> any(Predicate<QualifierSetMetaInfo> filter) {
+    public Optional<E> any(Predicate<QualifierSetMetaInfo> filter) {
         return providers.stream()
                 .filter(p -> filter.test(p.qualifier()))
                 .map(Provider::get)
-                .findAny();
+                .findAny()
+                .map(v -> (E) v);
+    }
+
+    public E single(Predicate<QualifierSetMetaInfo> filter) {
+        var tmp = providers.stream()
+                .filter(p -> filter.test(p.qualifier()))
+                .limit(2)
+                .collect(Collectors.toList())
+                .map(Provider::get)
+                .map(v -> (E) v);
+
     }
 
     @Override
