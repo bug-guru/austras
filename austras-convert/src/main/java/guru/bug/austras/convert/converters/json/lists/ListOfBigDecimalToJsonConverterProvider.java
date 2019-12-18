@@ -3,6 +3,7 @@ package guru.bug.austras.convert.converters.json.lists;
 
 import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.core.Provider;
+import guru.bug.austras.meta.QualifierSetMetaInfo;
 
 import java.math.BigDecimal;
 
@@ -13,4 +14,8 @@ public class ListOfBigDecimalToJsonConverterProvider extends ListToJsonConverter
         super(elementConverterProvider);
     }
 
+    @Override
+    public QualifierSetMetaInfo qualifier() {
+        return QualifierSetMetaInfo.empty();
+    }
 }

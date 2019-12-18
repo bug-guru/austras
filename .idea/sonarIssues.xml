@@ -1040,12 +1040,297 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfBigDecimalToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfBigIntegerToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfBooleanToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfByteToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfCharacterToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfDayOfWeekToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfDoubleToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfDurationToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfFloatToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfInstantToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfIntegerToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfLocalDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfLocalDateToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfLocalTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfLongToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfMonthDayToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfMonthToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfOffsetDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfOffsetTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfPeriodToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfShortToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfStringToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfUUIDToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfYearMonthToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfYearToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfZoneIdToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfZoneOffsetToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListOfZonedDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/ListToJsonConverter.java">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfBigDecimalToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfBigIntegerToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfBooleanToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfByteToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfCharacterToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfDayOfWeekToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfDoubleToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfDurationToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfFloatToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfInstantToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfIntegerToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfLocalDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfLocalDateToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfLocalTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfLongToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfMonthDayToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfMonthToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfOffsetDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfOffsetTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfPeriodToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfShortToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfStringToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfUUIDToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfYearMonthToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfYearToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfZoneIdToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfZoneOffsetToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetOfZonedDateTimeToJsonConverterProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetToJsonConverter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-convert/src/main/java/guru/bug/austras/convert/converters/json/lists/SetToJsonConverterProvider.java">
           <value>
             <set />
           </value>
@@ -1528,6 +1813,11 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/DefaultProviderGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/MainClassGenerator.java">
           <value>
             <set>
@@ -1683,6 +1973,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/core/process/DefaultProvider.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/events/Broadcaster.java.txt">
           <value>
             <set />
@@ -1813,6 +2108,21 @@
                 <option name="severity" value="MINOR" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/startup/ServiceManagerProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentCImplProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ConfigParamProvider.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/test/java/guru/bug/austras/test/BeanComponentForTest.java">

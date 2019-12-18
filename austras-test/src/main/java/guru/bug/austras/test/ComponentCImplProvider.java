@@ -1,6 +1,7 @@
 package guru.bug.austras.test;
 
 import guru.bug.austras.core.Provider;
+import guru.bug.austras.meta.QualifierSetMetaInfo;
 
 @SuppressWarnings("ALL") // this class is for testing only
 public class ComponentCImplProvider implements Provider<ComponentCImpl> {
@@ -17,5 +18,10 @@ public class ComponentCImplProvider implements Provider<ComponentCImpl> {
         var a = new ComponentA();
         var b = new ComponentB(a);
         return new ComponentCImpl(a, b);
+    }
+
+    @Override
+    public QualifierSetMetaInfo qualifier() {
+        return QualifierSetMetaInfo.empty();
     }
 }
