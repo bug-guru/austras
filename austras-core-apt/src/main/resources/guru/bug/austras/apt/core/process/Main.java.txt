@@ -5,7 +5,7 @@ org.slf4j.Logger
 org.slf4j.LoggerFactory
 guru.bug.austras.core.Provider
 java.util.Collection
-guru.bug.austras.core.CollectionProvider
+guru.bug.austras.core.Selector
 java.util.List
 guru.bug.austras.startup.ServiceManager
 #END#
@@ -22,7 +22,7 @@ public class $SIMPLE_CLASS_NAME$ {
         var $COMPONENT_PROVIDER_VAR$ = new $COMPONENT_PROVIDER_CLASS$(
             #COMPONENT_PROVIDER_DEPENDENCIES#
             #COLLECTION_DEPENDENCY#
-            new CollectionProvider<>($DEPENDENCY_INITIALIZATION$)$,$
+            new Selector<>($DEPENDENCY_INITIALIZATION$)$,$
             #END#
             #UNWRAPPED_COLLECTION_DEPENDENCY#
             List.of($DEPENDENCY_INITIALIZATION$)$,$

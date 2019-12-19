@@ -1,39 +1,62 @@
 package guru.bug.austras.core;
 
+import guru.bug.austras.meta.QualifierSetMetaInfo;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class Selector<T> {
+public class Selector<E> implements Provider<Collection<E>> {
+    private final List<Provider<? extends E>> providers;
 
-    protected abstract List<Provider<T>> getProviders();
-
-    public T selectAny() {
-        var list = getProviders();
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0).get();
+    @SafeVarargs
+    public Selector(Provider<? extends E>... providers) {
+        this.providers = List.of(providers);
     }
 
-    public T selectSingle() {
-        var list = getProviders();
-        if (list.isEmpty()) {
-            throw new NoSuchElementException();
-        } else if (list.size() > 1) {
-            throw new IllegalStateException("Too weak selector");
-        }
-        return list.get(0).get();
-    }
-
-    public List<T> selectAll() {
-        return getProviders().stream()
+    @Override
+    public Collection<E> get() {
+        return providers.stream()
                 .map(Provider::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    public Selector<T> withQualifierName(String name) {
+    public Collection<E> get(Predicate<QualifierSetMetaInfo> filter) {
+        return providers.stream()
+                .filter(p -> filter.test(p.qualifier()))
+                .map(Provider::get)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Optional<E> any(Predicate<QualifierSetMetaInfo> filter) {
+        return providers.stream()
+                .filter(p -> filter.test(p.qualifier()))
+                .map(Provider::get)
+                .findAny()
+                .map(v -> (E) v);
+    }
+
+    public E single(Predicate<QualifierSetMetaInfo> filter) {
+        var tmp = providers.stream()
+                .filter(p -> filter.test(p.qualifier()))
+                .limit(2)
+                .collect(Collectors.toList());
+        if (tmp.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        if (tmp.size() > 2) {
+            throw new IllegalStateException();
+        }
+        return tmp.get(0).get();
+    }
+
+    @Override
+    public QualifierSetMetaInfo qualifier() {
         return null;
     }
+
 
 }
