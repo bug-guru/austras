@@ -1,7 +1,8 @@
 package guru.bug.austras.web.apt;
 
 import guru.bug.austras.apt.core.model.DependencyModel;
-import guru.bug.austras.convert.converters.*;
+import guru.bug.austras.core.Selector;
+import guru.bug.austras.web.contentconverter.*;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -14,51 +15,51 @@ class JsonConverterUtil {
 
     static DependencyModel selectConverter(TypeMirror type) {
         if (type.getKind().isPrimitive()) {
-            return selectPrimitiveJsonConverter(type);
+            return selectPrimitiveContentConverter(type);
         } else if (type.getKind() == TypeKind.DECLARED) {
-            return selectObjectJsonConverter((DeclaredType) type);
+            return selectObjectContentConverter((DeclaredType) type);
         } else {
             throw new IllegalArgumentException("Type " + type);
         }
 
     }
 
-    private static DependencyModel selectObjectJsonConverter(DeclaredType type) {
+    private static DependencyModel selectObjectContentConverter(DeclaredType type) {
         var element = (TypeElement) type.asElement();
-        var baseClassName = JsonConverter.class.getName();
+        var baseClassName = ContentConverter.class.getName();
         var typeClassName = element.getQualifiedName().toString();
         var typeClassSimpleName = element.getSimpleName().toString();
-        var converterType = baseClassName + "<" + typeClassName + ">";
-        var name = "jsonConverter" + typeClassSimpleName;
+        var converterType = Selector.class.getName() + "<" + baseClassName + "<" + typeClassName + ">>";
+        var name = "contentConverter" + typeClassSimpleName;
         return DependencyModelUtil.createDependencyModel(converterType, name);
     }
 
-    private static DependencyModel selectPrimitiveJsonConverter(TypeMirror type) {
+    private static DependencyModel selectPrimitiveContentConverter(TypeMirror type) {
         Class<?> converter;
         switch (type.getKind()) {
             case SHORT:
-                converter = JsonShortConverter.class;
+                converter = ShortContentConverter.class;
                 break;
             case INT:
-                converter = JsonIntegerConverter.class;
+                converter = IntegerContentConverter.class;
                 break;
             case DOUBLE:
-                converter = JsonDoubleConverter.class;
+                converter = DoubleContentConverter.class;
                 break;
             case BOOLEAN:
-                converter = JsonBooleanConverter.class;
+                converter = BooleanContentConverter.class;
                 break;
             case CHAR:
-                converter = JsonCharacterConverter.class;
+                converter = CharacterContentConverter.class;
                 break;
             case FLOAT:
-                converter = JsonFloatConverter.class;
+                converter = FloatContentConverter.class;
                 break;
             case LONG:
-                converter = JsonLongConverter.class;
+                converter = LongContentConverter.class;
                 break;
             case BYTE:
-                converter = JsonByteConverter.class;
+                converter = ByteContentConverter.class;
                 break;
             default:
                 throw new IllegalArgumentException("Type " + type);

@@ -22,24 +22,29 @@ public class JsonBooleanContentConverter implements BooleanContentConverter {
 
     @Override
     public boolean fromString(String value) {
-        return booleanConverter.fromJson(JsonValueReader.newInstance(new StringReader(value)));
+        var reader = new StringReader(value);
+        var jsonReader = JsonValueReader.newInstance(reader);
+        return booleanConverter.fromJson(jsonReader);
     }
 
     @Override
     public String toString(boolean value) {
         var result = new StringWriter(10);
-        booleanConverter.toJson(value, JsonValueWriter.newInstance(result));
+        var jsonWriter = JsonValueWriter.newInstance(result);
+        booleanConverter.toJson(value, jsonWriter);
         return result.toString();
     }
 
     @Override
     public boolean read(Reader reader) {
-        return booleanConverter.fromJson(JsonValueReader.newInstance(reader));
+        var jsonReader = JsonValueReader.newInstance(reader);
+        return booleanConverter.fromJson(jsonReader);
     }
 
     @Override
     public void write(boolean value, Writer writer) {
-        booleanConverter.toJson(value, JsonValueWriter.newInstance(writer));
+        var jsonWriter = JsonValueWriter.newInstance(writer);
+        booleanConverter.toJson(value, jsonWriter);
     }
 }
 
