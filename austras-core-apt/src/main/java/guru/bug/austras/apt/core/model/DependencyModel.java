@@ -6,6 +6,7 @@ public class DependencyModel {
     private String name;
     private String type;
     private QualifierModel qualifiers;
+    private WrappingType wrapping;
 
     public String getName() {
         return name;
@@ -31,6 +32,14 @@ public class DependencyModel {
         this.qualifiers = qualifiers;
     }
 
+    public WrappingType getWrapping() {
+        return wrapping;
+    }
+
+    public void setWrapping(WrappingType wrapping) {
+        this.wrapping = wrapping;
+    }
+
     public ComponentKey asComponentKey() {
         return new ComponentKey(type, qualifiers);
     }
@@ -40,13 +49,14 @@ public class DependencyModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DependencyModel that = (DependencyModel) o;
-        return name.equals(that.name) &&
-                type.equals(that.type) &&
-                Objects.equals(qualifiers, that.qualifiers);
+        return Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(qualifiers, that.qualifiers) &&
+                wrapping == that.wrapping;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type, qualifiers);
+        return Objects.hash(name, type, qualifiers, wrapping);
     }
 }

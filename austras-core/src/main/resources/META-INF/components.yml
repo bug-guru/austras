@@ -4,11 +4,8 @@ components:
     qualifiers: {}
     types:
       - guru.bug.austras.startup.ServiceManager
-    provider:
-      name: serviceManagerProvider
-      instantiable: guru.bug.austras.startup.ServiceManagerProvider
-      dependencies:
-        - name: services
-          wrapping: COLLECTION
-          qualifiers: {}
-          type: guru.bug.austras.startup.StartupService
+    dependencies:
+      - name: services
+        wrapping: COLLECTION
+        qualifiers: {}
+        type: guru.bug.austras.startup.StartupService

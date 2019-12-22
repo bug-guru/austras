@@ -5,9 +5,7 @@ import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
 import guru.bug.austras.apt.core.model.ComponentKey;
 import guru.bug.austras.apt.core.model.ComponentModel;
-import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.core.model.QualifierModel;
-import guru.bug.austras.apt.core.process.DefaultProviderGenerator;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import guru.bug.austras.codegen.TemplateException;
@@ -23,7 +21,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
 import java.io.IOException;
@@ -44,9 +41,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
     private List<AustrasProcessorPlugin> plugins;
     private ModelUtils modelUtils;
-    private MainClassGenerator mainClassGenerator;
-    private DefaultProviderGenerator defaultProviderGenerator;
-    private ComponentMap stagedComponents;
     private ComponentMap componentMap;
     private ComponentModel appMainComponent;
 
@@ -57,15 +51,8 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         this.modelUtils = new ModelUtils(uniqueNameGenerator, processingEnv);
 
         this.componentMap = new ComponentMap();
-        this.stagedComponents = new ComponentMap();
         readComponentMaps();
         initPlugins();
-        try {
-            this.mainClassGenerator = new MainClassGenerator(processingEnv.getFiler());
-            this.defaultProviderGenerator = new DefaultProviderGenerator(processingEnv);
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private void readComponentMaps() {
@@ -78,12 +65,11 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 try (var stream = map.openStream()) {
                     var moduleModel = ModuleModelSerializer.load(stream);
                     for (var comp : moduleModel.getComponents()) {
-                        comp.setImported(true);
-                        componentMap.publishComponent(comp);
+                        componentMap.importComponent(comp);
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e); // TODO
         }
     }
@@ -95,7 +81,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        var pctx = new ProcessingContextImpl() {
+        var ctx = new ProcessingContextImpl() {
 
             @Override
             public RoundEnvironment roundEnv() {
@@ -105,16 +91,29 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         try {
             if (roundEnv.processingOver()) {
                 generateComponentMap();
-                mainClassGenerator.generateAppMain(appMainComponent, componentMap);
+                generateAppMain(ctx);
             } else {
                 log.debug("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
                 log.debug("PLUGINS");
-                processPlugins(pctx);
+                processPlugins(ctx);
             }
             return false;
         } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void generateAppMain(ProcessingContext ctx) {
+        if (this.appMainComponent == null) {
+            log.info("No main class defined");
+            return;
+        }
+        try {
+            var mainClassGenerator = new MainClassGenerator(ctx);
+
+        } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -146,7 +145,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             componentMap.publishComponent(model);
         } else {
             log.debug("PROCESS: Adding component to staging: {}", typeElement);
-            stagedComponents.publishComponent(model);
+            componentMap.stageComponent(model);
         }
         if (hasApplicationAnnotation) {
             this.appMainComponent = model;
@@ -198,88 +197,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void linkProviders() {
-        if (stagedProviders.isEmpty()) {
-            log.info("No providers found for linking");
-            return;
-        } else {
-            log.debug("Linking {} providers", stagedProviders.size());
-        }
-        while (!stagedProviders.isEmpty()) {
-            log.info("{} providers yet to link", stagedProviders.size());
-            var providerElement = stagedProviders.remove();
-            log.info("Link provider {}", providerElement);
-            DeclaredType providerType = (DeclaredType) providerElement.asType();
-            var componentType = modelUtils.extractComponentTypeFromProvider(providerType);
-            var qualifiers = modelUtils.extractQualifiers(providerElement);
-            var key = new ComponentKey(componentType.toString(), qualifiers);
-
-            var models = stagedComponents.findAndRemoveComponentModels(key);
-            componentMap.publishComponents(models);
-
-            var componentModel = componentMap.findSingleComponentModel(key);
-            if (componentModel != null && componentModel.getProvider() != null) {
-                var msg = format("CONFLICT: provider %s cannot be set for the component %s. Provider already set: %s",
-                        providerElement,
-                        componentModel.getInstantiable(),
-                        componentModel.getProvider().getInstantiable());
-                log.error(msg);
-                throw new IllegalStateException(msg); // TODO better error handling
-            }
-            var name = uniqueNameGenerator.findFreeVarName(providerType);
-            var dependencies = modelUtils.collectConstructorParams(providerType);
-            var instantiable = providerElement.toString();
-
-            var providerModel = new ProviderModel();
-            providerModel.setInstantiable(instantiable);
-            providerModel.setName(name);
-            providerModel.setDependencies(dependencies);
-
-            if (componentModel == null) {
-                log.debug("Provider {} provides non existing component of {}. Creating ComponentModel", providerModel.getInstantiable(), key);
-                componentModel = modelUtils.createComponentModel(componentType, providerType);
-                componentModel.setQualifiers(qualifiers);
-                componentMap.publishComponent(componentModel);
-            }
-            log.info("Assigning provider {} for component {}", providerElement, componentType);
-            componentModel.setProvider(providerModel);
-        }
-    }
-
-    private void resolveAndGenerateProviders() {
-        var toAdd = new ArrayList<ComponentModel>();
-        var toGenerate = new ArrayList<ComponentModel>();
-        componentMap.allComponentsStream()
-                .forEach(cm -> {
-                    var provider = cm.getProvider();
-                    if (provider == null) {
-                        log.info("Component {} doesn't have a provider yet. Will be generated.", cm.getInstantiable());
-                        toGenerate.add(cm);
-                    } else {
-                        log.info("Resolving dependencies of provider {} (component {})", provider.getInstantiable(), cm.getInstantiable());
-                        for (var d : provider.getDependencies()) {
-                            log.debug("resolving {} of type {}}", d.getName(), d.getType());
-                            var k = new ComponentKey(d.getType(), d.getQualifiers());
-                            var components = stagedComponents.findAndRemoveComponentModels(k);
-                            toAdd.addAll(components);
-                        }
-                    }
-                });
-        componentMap.publishComponents(toAdd);
-        toGenerate.addAll(toAdd);
-        for (var c : toGenerate) {
-            log.info("Generating provider for component {}.", c.getInstantiable());
-            generateProvider(c);
-        }
-    }
-
-    private void generateProvider(ComponentModel model) {
-        TypeElement componentElement = processingEnv.getElementUtils().getTypeElement(model.getInstantiable());
-        List<DependencyModel> dependencies = modelUtils.collectConstructorParams(componentElement);
-        defaultProviderGenerator.generate(model, componentElement, dependencies);
-    }
-
-
     private abstract class ProcessingContextImpl implements ProcessingContext {
         private final ComponentManager componentManager = new ComponentManagerImpl();
 
@@ -309,8 +226,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         @Override
         public Collection<ComponentModel> useAndGetComponents(TypeMirror type, QualifierModel qualifier) {
             var key = new ComponentKey(type.toString(), qualifier);
-            var comps = stagedComponents.findAndRemoveComponentModels(key);
-            componentMap.publishComponents(comps);
             return componentMap.findComponentModels(key);
         }
 

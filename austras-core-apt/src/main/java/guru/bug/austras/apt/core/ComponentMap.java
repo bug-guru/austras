@@ -31,11 +31,13 @@ public class ComponentMap {
 
     public void publishComponent(ComponentModel componentModel) {
         log.debug("Publishing component {}", componentModel.getInstantiable());
-        if (componentModel.isImported()) {
-            imported.add(componentModel);
-        } else {
-            model.components().add(componentModel);
-        }
+        model.components().add(componentModel);
+        index.add(componentModel);
+    }
+
+    public void importComponent(ComponentModel componentModel) {
+        log.debug("Importing component {}", componentModel.getInstantiable());
+        imported.add(componentModel);
         index.add(componentModel);
     }
 
@@ -43,27 +45,24 @@ public class ComponentMap {
         return Stream.concat(imported.stream(), model.components().stream());
     }
 
-    public ComponentModel findSingleComponentModel(ComponentKey key) {
-        var comps = index.get(key);
-        if (comps == null) {
-            return null;
-        }
+    public Optional<ComponentModel> findSingleComponentModel(ComponentKey key) {
+        publishStaged(key);
+        var comps = index.find(key);
         if (comps.size() > 1) {
             throw new IllegalArgumentException("Too many components " + key + "; components: " + comps);
         }
-        return comps.stream()
-                .findFirst()
-                .orElse(null);
+        return comps.stream().findFirst();
     }
 
     public Collection<ComponentModel> findComponentModels(ComponentKey key) {
-        var comps = index.get(key);
-        if (comps == null) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableCollection(comps);
+        publishStaged(key);
+        return index.find(key);
     }
 
+    private void publishStaged(ComponentKey key) {
+        var comps = stageIndex.remove(key);
+        publishComponents(comps);
+    }
 
     @Override
     public String toString() {

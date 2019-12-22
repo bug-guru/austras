@@ -1,6 +1,7 @@
 package guru.bug.austras.apt.core.process;
 
 import guru.bug.austras.apt.core.ComponentMap;
+import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.core.model.ComponentKey;
 import guru.bug.austras.apt.core.model.ComponentModel;
 import guru.bug.austras.apt.core.model.DependencyModel;
@@ -13,7 +14,6 @@ import guru.bug.austras.startup.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @FromTemplate("Main.java.txt")
 public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
+    private final ProcessingContext ctx;
     private ComponentMap componentMap;
     private String qualifiedClassName;
     private String simpleClassName;
@@ -29,12 +30,12 @@ public class MainClassGenerator extends JavaGenerator {
     private ComponentModel starterComponent;
     private ComponentModel currentComponent;
     private DependencyModel currentDependency;
-    private String dependencyInitialization;
     private boolean hasMoreDependencies;
     private List<ComponentModel> sortedComponents;
 
-    public MainClassGenerator(Filer filer) throws IOException, TemplateException {
-        super(filer);
+    public MainClassGenerator(ProcessingContext ctx) throws IOException, TemplateException {
+        super(ctx.processingEnv().getFiler());
+        this.ctx = ctx;
     }
 
     @FromTemplate("PACKAGE_NAME")
