@@ -13,25 +13,17 @@ org.slf4j.LoggerFactory
 $QUALIFIERS$
 public class $SIMPLE_CLASS_NAME$ implements Dispatcher<$MESSAGE_TYPE$> {
     private static final Logger _log = LoggerFactory.getLogger($SIMPLE_CLASS_NAME$.class);
-    #DEPENDENCIES#
-    private final $DEPENDENCY_PROVIDER_CLASS$ $TARGET_PROVIDER_NAME$;
-    #END#
+    private final $RECEIVERS_SELECTOR_TYPE$ $RECEIVERS_SELECTOR_NAME$;
 
-    public $SIMPLE_CLASS_NAME$(
-    #DEPENDENCIES#
-        $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_PROVIDER_CLASS$ $TARGET_PROVIDER_NAME$$,$
-    #END#
-    ) {
-        #DEPENDENCIES#
-        this.$TARGET_PROVIDER_NAME$ = $TARGET_PROVIDER_NAME$;
-        #END#
+    public $SIMPLE_CLASS_NAME$($RECEIVERS_SELECTOR_QUALIFIERS$ $RECEIVERS_SELECTOR_TYPE$ $RECEIVERS_SELECTOR_NAME$) {
+        this.$RECEIVERS_SELECTOR_NAME$ = $RECEIVERS_SELECTOR_NAME$;
     }
 
     @Override
-    public void dispatch($MESSAGE_TYPE$ $MESSAGE_PARAM_NAME$) {
-        for (var _receiverComponent : $RECEIVERS_DEPENDENCY_PROVIDER_NAME$.get()) {
+    public void dispatch($MESSAGE_TYPE$ _message) {
+        for (var _receiverComponent : $RECEIVERS_SELECTOR_NAME$.get()) {
             try {
-                _receiverComponent.$RECEIVER_METHOD_NAME$($RECEIVER_METHOD_PARAMS$);
+                _receiverComponent.$RECEIVER_METHOD_NAME$(_message);
             } catch (Exception _ex) {
                 _log.error("Exception while dispatching a message", _ex);
             }

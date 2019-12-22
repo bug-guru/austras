@@ -21,18 +21,7 @@ public class $SIMPLE_CLASS_NAME$ {
         #WITH_DEPENDENCIES#
         var $COMPONENT_PROVIDER_VAR$ = new $COMPONENT_PROVIDER_CLASS$(
             #COMPONENT_PROVIDER_DEPENDENCIES#
-            #COLLECTION_DEPENDENCY#
-            new Selector<>($DEPENDENCY_INITIALIZATION$)$,$
-            #END#
-            #UNWRAPPED_COLLECTION_DEPENDENCY#
-            List.of($DEPENDENCY_INITIALIZATION$)$,$
-            #END#
-            #STANDARD_DEPENDENCY#
-            $DEPENDENCY_INITIALIZATION$$,$
-            #END#
-            #UNWRAPPED_STANDARD_DEPENDENCY#
-            $DEPENDENCY_INITIALIZATION$$,$
-            #END#
+                $DEPENDENCY$$,$
             #END#
         );
         #END#

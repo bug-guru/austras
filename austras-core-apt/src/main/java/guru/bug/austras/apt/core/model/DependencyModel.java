@@ -1,15 +1,14 @@
 package guru.bug.austras.apt.core.model;
 
 import guru.bug.austras.core.Provider;
+import guru.bug.austras.core.Selector;
 
-import java.util.Collection;
 import java.util.Objects;
 
 public class DependencyModel {
     private String name;
     private String type;
-    private boolean provider;
-    private boolean collection;
+    private DependencyWrappingType wrappingType = DependencyWrappingType.NONE;
     private QualifierModel qualifiers;
 
     public String getName() {
@@ -28,20 +27,12 @@ public class DependencyModel {
         this.type = type;
     }
 
-    public boolean isProvider() {
-        return provider;
+    public DependencyWrappingType getWrappingType() {
+        return wrappingType;
     }
 
-    public void setProvider(boolean provider) {
-        this.provider = provider;
-    }
-
-    public boolean isCollection() {
-        return collection;
-    }
-
-    public void setCollection(boolean collection) {
-        this.collection = collection;
+    public void setWrappingType(DependencyWrappingType wrappingType) {
+        this.wrappingType = wrappingType;
     }
 
     public QualifierModel getQualifiers() {
@@ -54,33 +45,62 @@ public class DependencyModel {
 
     public DependencyModel copyAsProvider() {
         var result = new DependencyModel();
-        result.setCollection(collection);
         result.setType(type);
         result.setQualifiers(qualifiers);
-        result.setProvider(true);
-        if (provider) {
-            result.setName(name + "_");
-        } else {
-            result.setName(name + "Provider");
+        switch (wrappingType) {
+            case NONE:
+                result.setWrappingType(DependencyWrappingType.PROVIDER);
+                result.setName(name + "Provider");
+                break;
+            case PROVIDER:
+                result.setWrappingType(wrappingType);
+                result.setName(name);
+                break;
+            case SELECTOR:
+                throw new IllegalArgumentException("SELECTOR cannot be copied as PROVIDER");
+            default:
+                throw new IllegalArgumentException(wrappingType.name());
+        }
+        return result;
+    }
+
+    public DependencyModel copyAsSelector() {
+        var result = new DependencyModel();
+        result.setType(type);
+        result.setQualifiers(qualifiers);
+        switch (wrappingType) {
+            case NONE:
+                result.setWrappingType(DependencyWrappingType.SELECTOR);
+                result.setName(name + "Selector");
+                break;
+            case PROVIDER:
+                throw new IllegalArgumentException("PROVIDER cannot be copied as SELECTOR");
+            case SELECTOR:
+                result.setWrappingType(wrappingType);
+                result.setName(name);
+                break;
+            default:
+                throw new IllegalArgumentException(wrappingType.name());
         }
         return result;
     }
 
     public String asTypeDeclaration() {
-        var result = type;
-        if (collection) {
-            result = Collection.class.getName() + "<? extends " + result + ">";
+        switch (wrappingType) {
+            case NONE:
+                return type;
+            case PROVIDER:
+                return Provider.class.getName() + "<? extends " + type + ">";
+            case SELECTOR:
+                return Selector.class.getName() + "<? extends " + type + ">";
+            default:
+                throw new IllegalArgumentException(wrappingType.name());
         }
-        if (provider) {
-            result = Provider.class.getName() + "<? extends " + result + ">";
-        }
-        return result;
     }
 
     public String asParameterDeclaration() {
         return asTypeDeclaration() + " " + getName();
     }
-
 
     public ComponentKey asComponentKey() {
         return new ComponentKey(type, qualifiers);
@@ -91,14 +111,14 @@ public class DependencyModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DependencyModel that = (DependencyModel) o;
-        return provider == that.provider &&
-                collection == that.collection &&
+        return name.equals(that.name) &&
                 type.equals(that.type) &&
+                wrappingType == that.wrappingType &&
                 Objects.equals(qualifiers, that.qualifiers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, provider, collection, qualifiers);
+        return Objects.hash(name, type, wrappingType, qualifiers);
     }
 }

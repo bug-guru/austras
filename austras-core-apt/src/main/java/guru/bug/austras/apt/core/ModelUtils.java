@@ -2,10 +2,12 @@ package guru.bug.austras.apt.core;
 
 import guru.bug.austras.apt.core.model.ComponentModel;
 import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.model.DependencyWrappingType;
 import guru.bug.austras.apt.core.model.QualifierModel;
 import guru.bug.austras.core.Provider;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
+import guru.bug.austras.core.Selector;
 import guru.bug.austras.events.Broadcaster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +41,8 @@ public class ModelUtils {
     private final UniqueNameGenerator uniqueNameGenerator;
     private final Types typeUtils;
     private final Elements elementUtils;
-    private final TypeElement collectionInterfaceElement;
-    private final DeclaredType collectionInterfaceType;
+    private final TypeElement selectorInterfaceElement;
+    private final DeclaredType selectorInterfaceType;
     private final TypeElement providerInterfaceElement;
     private final DeclaredType providerInterfaceType;
     private final TypeElement broadcasterInterfaceElement;
@@ -50,12 +52,20 @@ public class ModelUtils {
         this.uniqueNameGenerator = uniqueNameGenerator;
         this.typeUtils = processingEnv.getTypeUtils();
         this.elementUtils = processingEnv.getElementUtils();
-        this.collectionInterfaceElement = elementUtils.getTypeElement(Collection.class.getName());
-        this.collectionInterfaceType = typeUtils.getDeclaredType(collectionInterfaceElement);
+        this.selectorInterfaceElement = elementUtils.getTypeElement(Selector.class.getName());
+        this.selectorInterfaceType = typeUtils.getDeclaredType(selectorInterfaceElement);
         this.providerInterfaceElement = elementUtils.getTypeElement(Provider.class.getName());
         this.providerInterfaceType = typeUtils.getDeclaredType(providerInterfaceElement);
         this.broadcasterInterfaceElement = elementUtils.getTypeElement(Broadcaster.class.getName());
         this.broadcasterInterfaceType = typeUtils.getDeclaredType(broadcasterInterfaceElement);
+    }
+
+    public static String firstLower(String str) {
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    public static String firstLower(Element element) {
+        return firstLower(element.getSimpleName().toString());
     }
 
     public static String qualifierToString(QualifierModel qualifierModel) {
@@ -182,20 +192,6 @@ public class ModelUtils {
         return elem.getKind() == ElementKind.CLASS || elem.getKind() == ElementKind.INTERFACE;
     }
 
-    public DeclaredType extractComponentTypeFromProvider(DeclaredType providerType) {
-        if (!isProvider(providerType)) {
-            throw new IllegalArgumentException(providerType + " isn't a provider");
-        }
-        return unwrap(providerType, providerInterfaceElement);
-    }
-
-    private DeclaredType extractComponentTypeFromCollection(DeclaredType collectionType) {
-        if (!isCollection(collectionType)) {
-            throw new IllegalArgumentException(collectionType + " isn't a collection");
-        }
-        return unwrap(collectionType, collectionInterfaceElement);
-    }
-
     public DeclaredType extractComponentTypeFromBroadcaster(DeclaredType broadcasterType) {
         if (!isBroadcaster(broadcasterType)) {
             throw new IllegalArgumentException(broadcasterType + " isn't a broadcaster");
@@ -250,18 +246,17 @@ public class ModelUtils {
         var result = new DependencyModel();
         var qualifiers = extractQualifiers(metadata);
 
-        boolean isProvider = isProvider(paramType);
+        var isProvider = typeUtils.isAssignable(paramType, providerInterfaceType);
+        var isSelector = typeUtils.isAssignable(paramType, selectorInterfaceType);
+
         if (isProvider) {
-            paramType = extractComponentTypeFromProvider(paramType);
+            paramType = unwrap(paramType, providerInterfaceElement);
+            result.setWrappingType(DependencyWrappingType.PROVIDER);
+        } else if (isSelector) {
+            paramType = unwrap(paramType, selectorInterfaceElement);
+            result.setWrappingType(DependencyWrappingType.SELECTOR);
         }
 
-        var isCollection = isCollection(paramType);
-        if (isCollection) {
-            paramType = extractComponentTypeFromCollection(paramType);
-        }
-
-        result.setProvider(isProvider);
-        result.setCollection(isCollection);
         result.setType(paramType.toString());
         result.setName(varName);
         result.setQualifiers(qualifiers);
@@ -277,10 +272,6 @@ public class ModelUtils {
 
     public boolean isBroadcaster(TypeMirror type) {
         return typeUtils.isAssignable(type, broadcasterInterfaceType);
-    }
-
-    private boolean isCollection(DeclaredType type) {
-        return typeUtils.isAssignable(type, collectionInterfaceType);
     }
 
     private boolean isProvider(TypeMirror type) {

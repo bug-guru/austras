@@ -1,15 +1,14 @@
 package guru.bug.austras.startup;
 
 import guru.bug.austras.core.Provider;
+import guru.bug.austras.core.Selector;
 import guru.bug.austras.meta.QualifierSetMetaInfo;
-
-import java.util.Collection;
 
 public class ServiceManagerProvider implements Provider<ServiceManager> {
     private final ServiceManager serviceManager;
 
-    public ServiceManagerProvider(Provider<? extends Collection<? extends StartupService>> servicesProvider) {
-        var serviceProviders = servicesProvider.get();
+    public ServiceManagerProvider(Selector<? extends StartupService> servicesSelector) {
+        var serviceProviders = servicesSelector.get();
         this.serviceManager = new ServiceManager(serviceProviders);
     }
 

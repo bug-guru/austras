@@ -1,6 +1,7 @@
 package guru.bug.austras.web;
 
 import guru.bug.austras.core.Component;
+import guru.bug.austras.core.Selector;
 import guru.bug.austras.startup.StartupService;
 import guru.bug.austras.web.errors.*;
 import org.eclipse.jetty.server.Request;
@@ -25,12 +26,12 @@ public class RestServer implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(RestServer.class);
     private static final String ACCEPT_HEADER = "Accept";
     private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
-    private final List<EndpointHandler> endpoints;
+    private final Selector<? extends EndpointHandler> endpointsSelector;
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
 
-    public RestServer(Collection<? extends EndpointHandler> endpoints) {
-        this.endpoints = endpoints == null ? List.of() : List.copyOf(endpoints);
+    public RestServer(Selector<? extends EndpointHandler> endpointsSelector) {
+        this.endpointsSelector = endpointsSelector;
     }
 
     @Override
@@ -38,11 +39,12 @@ public class RestServer implements StartupService {
 
         this.server = new Server(8080);
 
-        if (this.endpoints.isEmpty()) {
+        var endpointHandlers = this.endpointsSelector.get();
+        if (endpointHandlers.isEmpty()) {
             log.warn("There are no endpoints found in the application");
         } else {
-            for (var ep : this.endpoints) {
-                log.info("Registered {}", ep);
+            for (var handler : endpointHandlers) {
+                log.info("Registered {}", handler);
             }
         }
 
@@ -164,7 +166,7 @@ public class RestServer implements StartupService {
             var byPathFilter = new Filter(c -> byPath(c, pathItems));
             var byAcceptFilter = new Filter(c -> byAccept(c, acceptTypes));
 
-            var candidates = endpoints.stream()
+            var candidates = endpointsSelector.get().stream()
                     .map(EndpointHandlerHolder::new)
                     .filter(byMethodFilter)
                     .filter(byContentFilter)

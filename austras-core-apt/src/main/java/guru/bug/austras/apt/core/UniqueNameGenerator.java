@@ -10,12 +10,9 @@ public class UniqueNameGenerator {
 
     public String findFreeVarName(TypeElement type) {
         var nameBase = type.getSimpleName().toString();
-        return findFreeVarName(firstLower(nameBase));
+        return findFreeVarName(ModelUtils.firstLower(nameBase));
     }
 
-    private String firstLower(String str) {
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
-    }
 
     public String findFreeVarName(DeclaredType type) {
         return findFreeVarName((TypeElement) type.asElement());

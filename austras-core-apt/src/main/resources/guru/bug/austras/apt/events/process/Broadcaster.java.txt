@@ -4,14 +4,14 @@ package $PACKAGE_NAME$;
 guru.bug.austras.core.Component
 guru.bug.austras.core.Qualifier
 guru.bug.austras.events.Broadcaster
-java.util.Collection
+guru.bug.austras.core.Selector
 guru.bug.austras.events.Dispatcher
 #END#
 
 @Component
 $QUALIFIERS$
 public class $SIMPLE_CLASS_NAME$ extends Broadcaster<$MESSAGE_TYPE$> {
-    public $SIMPLE_CLASS_NAME$($QUALIFIERS$ Collection<? extends Dispatcher<$MESSAGE_TYPE$>> dispatchers) {
+    public $SIMPLE_CLASS_NAME$($QUALIFIERS$ Selector<? extends Dispatcher<$MESSAGE_TYPE$>> dispatchers) {
         super(dispatchers);
     }
 }

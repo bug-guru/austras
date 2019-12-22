@@ -54,14 +54,8 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
                 return null;
             }
             ExecutableElement method = (ExecutableElement) e.getEnclosingElement();
-            if (!isValidReceiver(ctx, method) && !isValidBroadcaster(method)) {
-                return null;
-            }
-
-            if (ctx.modelUtils().isBroadcaster(e.asType())) {
+            if (isValidBroadcaster(method) && ctx.modelUtils().isBroadcaster(e.asType())) {
                 generateBroadcaster(e);
-            } else {
-                generateDispatcher(e);
             }
 
             return null;
@@ -78,23 +72,15 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         }
 
         private boolean isValidReceiver(ProcessingContext ctx, ExecutableElement method) {
-            var annotatedCount = method.getParameters().stream()
-                    .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                    .filter(p -> !ctx.modelUtils().isBroadcaster(p.asType()))
-                    .count();
-
-            if (annotatedCount > 1) {
-                logError(ctx, method, "Expecting zero or one message receiver parameter per method, but there are " + annotatedCount); // TODO Better error handling
+            var methodIsAnnotated = method.getAnnotationsByType(Message.class).length > 0;
+            if (!methodIsAnnotated) {
                 return false;
             }
-
-            boolean annotatedMethod = method.getAnnotationsByType(Message.class).length > 0;
-
-            if (annotatedMethod && annotatedCount > 0) {
-                logError(ctx, method, "Message annotation on method and on parameter together not supported"); // TODO Better error handling
+            var parameters = method.getParameters();
+            if (parameters.size() > 1) {
+                logError(ctx, method, "Too many parameters");
                 return false;
             }
-
             return true;
         }
 
@@ -119,10 +105,6 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
 
         private void generateBroadcaster(VariableElement e) {
             broadcasterGenerator.generate(e);
-        }
-
-        private void generateDispatcher(VariableElement e) {
-            generateDispatcher((ExecutableElement) e.getEnclosingElement());
         }
 
         private void generateDispatcher(ExecutableElement e) {

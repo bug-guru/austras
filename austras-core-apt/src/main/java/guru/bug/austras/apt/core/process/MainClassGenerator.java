@@ -9,6 +9,7 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.core.Selector;
 import guru.bug.austras.startup.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,49 +117,22 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("COLLECTION_DEPENDENCY")
-    public void collectionDependency(PrintWriter out, BodyBlock bodyBlock) {
-        if (currentDependency.isCollection() && currentDependency.isProvider()) {
-            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
-            var params = componentMap.findComponentModels(key);
-            dependencyInitialization = params.stream()
-                    .map(p -> p.getProvider().getName())
-                    .collect(Collectors.joining(", "));
-            out.print(bodyBlock.evaluateBody());
-            dependencyInitialization = null;
-        }
-    }
-
-    @FromTemplate("UNWRAPPED_COLLECTION_DEPENDENCY")
-    public void unwrappedCollectionDependency(PrintWriter out, BodyBlock bodyBlock) {
-        if (currentDependency.isCollection() && !currentDependency.isProvider()) {
-            var key = new ComponentKey(currentDependency.getType(), currentDependency.getQualifiers());
-            var params = componentMap.findComponentModels(key);
-            dependencyInitialization = params.stream()
-                    .map(p -> p.getProvider().getName() + ".get()")
-                    .collect(Collectors.joining(", "));
-            out.print(bodyBlock.evaluateBody());
-            dependencyInitialization = null;
-        }
-    }
-
-    @FromTemplate("STANDARD_DEPENDENCY")
-    public void standardDependency(PrintWriter out, BodyBlock bodyBlock) {
-        if (!currentDependency.isCollection() && currentDependency.isProvider()) {
-            var provider = findProviderModel();
-            dependencyInitialization = provider.getName();
-            out.print(bodyBlock.evaluateBody());
-            dependencyInitialization = null;
-        }
-    }
-
-    @FromTemplate("UNWRAPPED_STANDARD_DEPENDENCY")
-    public void unwrappedStandardDependency(PrintWriter out, BodyBlock bodyBlock) {
-        if (!currentDependency.isCollection() && !currentDependency.isProvider()) {
-            var provider = findProviderModel();
-            dependencyInitialization = provider.getName() + ".get()";
-            out.print(bodyBlock.evaluateBody());
-            dependencyInitialization = null;
+    @FromTemplate("DEPENDENCY")
+    public String dependency() {
+        switch (currentDependency.getWrappingType()) {
+            case NONE:
+                return currentDependency.getName() + ".get()";
+            case PROVIDER:
+                return currentDependency.getName();
+            case SELECTOR:
+                var key = currentDependency.asComponentKey();
+                var params = componentMap.findComponentModels(key);
+                var selectorType = tryImport(Selector.class.getName());
+                return params.stream()
+                        .map(p -> p.getProvider().getName())
+                        .collect(Collectors.joining(", ", "new " + selectorType + "(", ")"));
+            default:
+                throw new IllegalArgumentException("Unknown wrapping " + currentDependency.getWrappingType());
         }
     }
 

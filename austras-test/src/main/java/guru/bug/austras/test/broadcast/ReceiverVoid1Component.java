@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 public class ReceiverVoid1Component {
     private static final Logger log = LoggerFactory.getLogger(ReceiverVoid1Component.class);
 
-    @Qualifier(name = "void-qualifier")
     @Message
+    @Qualifier(name = "void-qualifier")
     public void receive(ComponentA componentA, ServiceExecutor serviceExecutor) {
         log.info("ReceiverVoid1: received notification");
     }

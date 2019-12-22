@@ -3,18 +3,13 @@ package guru.bug.austras.apt.events.model;
 import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.core.model.QualifierModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MessageDispatcherModel {
     private String packageName;
     private String className;
-    private List<DependencyModel> dependencies;
-    private List<CallParamModel> parameters;
+    private DependencyModel componentDependency;
     private QualifierModel qualifiers;
     private String messageType;
     private String methodName;
-    private MessageCallParamModel messageParam;
 
     public String getPackageName() {
         return packageName;
@@ -32,34 +27,12 @@ public class MessageDispatcherModel {
         this.className = className;
     }
 
-    public List<DependencyModel> getDependencies() {
-        return dependencies;
+    public DependencyModel getComponentDependency() {
+        return componentDependency;
     }
 
-    public void setDependencies(List<DependencyModel> dependencies) {
-        this.dependencies = dependencies;
-    }
-
-    public void addDependency(DependencyModel dependency) {
-        if (dependencies == null) {
-            dependencies = new ArrayList<>();
-        }
-        dependencies.add(dependency);
-    }
-
-    public List<CallParamModel> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(List<CallParamModel> parameters) {
-        this.parameters = parameters;
-    }
-
-    public void addParameter(CallParamModel parameter) {
-        if (parameters == null) {
-            parameters = new ArrayList<>();
-        }
-        parameters.add(parameter);
+    public void setComponentDependency(DependencyModel componentDependency) {
+        this.componentDependency = componentDependency;
     }
 
     public QualifierModel getQualifier() {
@@ -84,13 +57,5 @@ public class MessageDispatcherModel {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
-    }
-
-    public void setMessageParam(MessageCallParamModel messageParam) {
-        this.messageParam = messageParam;
-    }
-
-    public MessageCallParamModel getMessageParam() {
-        return messageParam;
     }
 }

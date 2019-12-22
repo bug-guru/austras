@@ -1584,6 +1584,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/ModelUtils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/UniqueNameGenerator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/componentmap/ComponentMap.java">
           <value>
             <set />
@@ -1823,6 +1833,16 @@
             </set>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/model/DependencyModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/model/DependencyWrappingType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/DefaultProviderGenerator.java">
           <value>
             <set />
@@ -1830,24 +1850,7 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/core/process/MainClassGenerator.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-f8txF_EzPpKMHK" />
-                <option name="line" value="173" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-f8txF_EzPpKMHJ" />
-                <option name="line" value="169" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/BroadcasterGenerator.java">
@@ -1875,18 +1878,14 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/model/MessageDispatcherModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/DispatcherGenerator.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-iFtxF_EzPpKMHW" />
-                <option name="line" value="99" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/EventComponentsProcessor.java">
@@ -1896,32 +1895,7 @@
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/events/process/EventComponentsProcessorPlugin.java">
           <value>
-            <set>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-hntxF_EzPpKMHR" />
-                <option name="line" value="87" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-hntxF_EzPpKMHQ" />
-                <option name="line" value="53" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-              <SonarIssue>
-                <option name="isNew" value="false" />
-                <option name="key" value="AW6U_-hntxF_EzPpKMHS" />
-                <option name="line" value="94" />
-                <option name="message" value="Complete the task associated to this TODO comment." />
-                <option name="ruleKey" value="squid:S1135" />
-                <option name="severity" value="INFO" />
-              </SonarIssue>
-            </set>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core-apt/src/main/java/guru/bug/austras/apt/model/ComponentModel.java">
@@ -2008,6 +1982,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/events/process/Broadcaster.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core-apt/src/main/resources/guru/bug/austras/apt/events/process/Dispatcher.java.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/core/CollectionProvider.java">
           <value>
             <set />
@@ -2045,6 +2029,11 @@
                 <option name="severity" value="INFO" />
               </SonarIssue>
             </set>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/events/Message.java">
+          <value>
+            <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-core/src/main/java/guru/bug/austras/events/Receiver.java">
@@ -2130,12 +2119,42 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-core/src/main/resources/META-INF/components.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ComponentCImplProvider.java">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/ConfigParamProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr1Component.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverStr2Component.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverVoid1Component.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/broadcast/ReceiverVoid2Component.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-test/src/main/java/guru/bug/austras/test/collection/ForEachComponent.java">
           <value>
             <set />
           </value>
@@ -2274,6 +2293,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/austras-test/target/generated-sources/annotations/guru/bug/austras/test/rest/MyFirstController_doSimplePost3_EndpointHandlerProvider.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/austras-test/target/generated-sources/annotations/guru/bug/austras/test/rest/MyFirstController_doSimplePostWithPathParam2_EndpointHandlerProvider.java">
           <value>
             <set />
@@ -2295,6 +2319,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/MediaType.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/austras-web/src/main/java/guru/bug/austras/web/RestServer.java">
           <value>
             <set />
           </value>

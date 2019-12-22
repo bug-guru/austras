@@ -7,6 +7,8 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.core.Provider;
+import guru.bug.austras.core.Selector;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -14,16 +16,15 @@ import javax.lang.model.element.TypeElement;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @FromTemplate("DefaultProvider.java.txt")
 public class DefaultProviderGenerator extends JavaGenerator {
     private final ProcessingEnvironment processingEnv;
     private String providerSimpleClassName;
     private String providerPackageName;
-    private List<Dependency> dependencies;
+    private List<DependencyModel> dependencies;
     private ComponentModel componentModel;
-    private Dependency currentDependency;
+    private DependencyModel currentDependency;
     private String optionalComma;
     private String currentQualifierName;
     private List<Pair<String, String>> currentQualifierProperties;
@@ -38,12 +39,9 @@ public class DefaultProviderGenerator extends JavaGenerator {
         this.componentModel = componentModel;
         this.providerPackageName = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName().toString();
         this.providerSimpleClassName = element.getSimpleName() + "Provider";
-        this.dependencies = dependencies.stream()
-                .map(Dependency::new)
-                .collect(Collectors.toList());
+        this.dependencies = dependencies;
         super.generateJavaClass();
     }
-
 
     @FromTemplate("QUALIFIER_ANNOTATIONS")
     public String componentQualifiersAnnotations() {
@@ -89,38 +87,43 @@ public class DefaultProviderGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        return ModelUtils.qualifierToString(currentDependency.componentDependency.getQualifiers());
+        return ModelUtils.qualifierToString(currentDependency.getQualifiers());
     }
 
-    @FromTemplate("DEPENDENCY_TYPE")
-    public void dependencyType(PrintWriter out) {
-        var isProvider = currentDependency.providerDependency.isProvider();
-        var isCollection = currentDependency.providerDependency.isCollection();
-        if (isProvider) {
-            out.print("Provider<? extends ");
-        }
-        if (isCollection) {
-            out.print("Collection<? extends ");
-        }
-        out.print(tryImport(currentDependency.componentDependency.getType()));
-        if (isCollection) {
-            out.print(">");
-        }
-        if (isProvider) {
-            out.print(">");
+    @FromTemplate("DEPENDENCY_PROVIDER_TYPE")
+    public String dependencyType() {
+        var compType = tryImport(currentDependency.getType());
+        switch (currentDependency.getWrappingType()) {
+            case NONE:
+                throw new IllegalArgumentException("Must be provider");
+            case SELECTOR:
+                return tryImport(Selector.class.getName()) + "<? extends " + compType + ">";
+            case PROVIDER:
+                return tryImport(Provider.class.getName()) + "<? extends " + compType + ">";
+            default:
+                throw new IllegalArgumentException("Unsupported " + currentDependency.getWrappingType());
         }
     }
 
-    @FromTemplate("DEPENDENCY_NAME")
+    @FromTemplate("DEPENDENCY_PROVIDER_NAME")
     public String dependencyName() {
         return currentDependency.providerDependency.getName();
     }
 
     @FromTemplate("DEPENDENCY_RESOLVE")
     public void dependencyResolve(PrintWriter out) {
-        out.print(dependencyName());
-        if (!currentDependency.componentDependency.isProvider()) {
-            out.print(".get()");
+        var providerDependency = currentDependency.providerDependency;
+        var componentDependency = currentDependency.componentDependency;
+        var compType = tryImport(providerDependency.getType());
+        switch (componentDependency.getWrappingType()) {
+            case NONE:
+                throw new IllegalArgumentException("Must be provider");
+            case SELECTOR:
+                return tryImport(Selector.class.getName()) + "<? extends " + compType + ">";
+            case PROVIDER:
+                return tryImport(Provider.class.getName()) + "<? extends " + compType + ">";
+            default:
+                throw new IllegalArgumentException("Unsupported " + providerDependency.getWrappingType());
         }
     }
 
@@ -156,13 +159,4 @@ public class DefaultProviderGenerator extends JavaGenerator {
         return currentQualifierProperty.getValue();
     }
 
-    static class Dependency {
-        final DependencyModel componentDependency;
-        final DependencyModel providerDependency;
-
-        Dependency(DependencyModel componentDependency) {
-            this.componentDependency = componentDependency;
-            this.providerDependency = componentDependency.copyAsProvider();
-        }
-    }
 }

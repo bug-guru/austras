@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Selector<E> implements Provider<Collection<E>> {
+public class Selector<E> {
     private final List<Provider<? extends E>> providers;
 
     @SafeVarargs
@@ -17,7 +17,6 @@ public class Selector<E> implements Provider<Collection<E>> {
         this.providers = List.of(providers);
     }
 
-    @Override
     public Collection<E> get() {
         return providers.stream()
                 .map(Provider::get)
@@ -52,11 +51,5 @@ public class Selector<E> implements Provider<Collection<E>> {
         }
         return tmp.get(0).get();
     }
-
-    @Override
-    public QualifierSetMetaInfo qualifier() {
-        return null;
-    }
-
 
 }
