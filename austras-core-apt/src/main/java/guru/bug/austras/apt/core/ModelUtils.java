@@ -2,9 +2,7 @@ package guru.bug.austras.apt.core;
 
 import guru.bug.austras.apt.core.model.ComponentModel;
 import guru.bug.austras.apt.core.model.DependencyModel;
-import guru.bug.austras.apt.core.model.DependencyWrappingType;
 import guru.bug.austras.apt.core.model.QualifierModel;
-import guru.bug.austras.core.Provider;
 import guru.bug.austras.core.Qualifier;
 import guru.bug.austras.core.QualifierProperty;
 import guru.bug.austras.core.Selector;

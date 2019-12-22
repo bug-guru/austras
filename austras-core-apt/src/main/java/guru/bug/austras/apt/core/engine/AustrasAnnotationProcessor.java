@@ -3,7 +3,10 @@ package guru.bug.austras.apt.core.engine;
 import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
-import guru.bug.austras.apt.core.model.*;
+import guru.bug.austras.apt.core.model.ComponentKey;
+import guru.bug.austras.apt.core.model.ComponentModel;
+import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.model.QualifierModel;
 import guru.bug.austras.apt.core.process.DefaultProviderGenerator;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
@@ -28,7 +31,6 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -66,11 +68,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void initPlugins() {
-        var loader = ServiceLoader.load(AustrasProcessorPlugin.class, this.getClass().getClassLoader());
-        this.plugins = loader.stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
-    }
-
     private void readComponentMaps() {
         try {
             var classLoader = this.getClass().getClassLoader();
@@ -82,13 +79,18 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                     var moduleModel = ModuleModelSerializer.load(stream);
                     for (var comp : moduleModel.getComponents()) {
                         comp.setImported(true);
-                        componentMap.addComponent(comp);
+                        componentMap.publishComponent(comp);
                     }
                 }
             }
         } catch (Exception e) {
             throw new IllegalStateException(e); // TODO
         }
+    }
+
+    private void initPlugins() {
+        var loader = ServiceLoader.load(AustrasProcessorPlugin.class, this.getClass().getClassLoader());
+        this.plugins = loader.stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
     }
 
     @Override
@@ -108,16 +110,23 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 log.debug("SCAN");
                 var rootElements = roundEnv.getRootElements();
                 scanRootElements(rootElements);
-                log.debug("LINK");
-                linkProviders();
-                log.debug("RESOLVE AND GENERATE");
-                resolveAndGenerateProviders();
                 log.debug("PLUGINS");
                 processPlugins(pctx);
             }
             return false;
         } catch (Exception e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private void scanRootElements(Set<? extends Element> rootElements) {
+        for (var element : rootElements) {
+            if (shouldBeIgnored(element)) {
+                continue;
+            }
+            TypeElement typeElement = (TypeElement) element;
+            log.info("PROCESS: Found component class {}.", element);
+            scanComponent(typeElement);
         }
     }
 
@@ -128,19 +137,19 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void scanRootElements(Set<? extends Element> rootElements) {
-        for (var element : rootElements) {
-            if (shouldBeIgnored(element)) {
-                continue;
-            }
-            TypeElement typeElement = (TypeElement) element;
-            if (modelUtils.isProvider(element)) {
-                log.info("PROCESS: Found provider class {}.", element);
-                stagedProviders.add(typeElement);
-            } else {
-                log.info("PROCESS: Found component class {}.", element);
-                scanComponent(typeElement);
-            }
+    private void scanComponent(TypeElement typeElement) {
+        var model = modelUtils.createComponentModel(typeElement);
+        var hasComponentAnnotation = typeElement.getAnnotationsByType(Component.class).length > 0;
+        var hasApplicationAnnotation = typeElement.getAnnotationsByType(Application.class).length > 0;
+        if (hasComponentAnnotation || hasApplicationAnnotation) {
+            log.debug("PROCESS: Adding component to index: {}", typeElement);
+            componentMap.publishComponent(model);
+        } else {
+            log.debug("PROCESS: Adding component to staging: {}", typeElement);
+            stagedComponents.publishComponent(model);
+        }
+        if (hasApplicationAnnotation) {
+            this.appMainComponent = model;
         }
     }
 
@@ -159,22 +168,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             return true;
         }
         return false;
-    }
-
-    private void scanComponent(TypeElement typeElement) {
-        var model = modelUtils.createComponentModel(typeElement);
-        var componentAnnotation = typeElement.getAnnotationsByType(Component.class);
-        var applicationAnnotation = typeElement.getAnnotationsByType(Application.class);
-        if (componentAnnotation.length == 0 && applicationAnnotation.length == 0) {
-            log.debug("PROCESS: Adding component to staging: {}", typeElement);
-            stagedComponents.addComponent(model);
-        } else {
-            log.debug("PROCESS: Adding component to index: {}", typeElement);
-            componentMap.addComponent(model);
-        }
-        if (applicationAnnotation.length > 0) {
-            this.appMainComponent = model;
-        }
     }
 
     private boolean checkIsPublicNonAbstractClass(TypeElement typeElement) {
@@ -222,7 +215,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             var key = new ComponentKey(componentType.toString(), qualifiers);
 
             var models = stagedComponents.findAndRemoveComponentModels(key);
-            componentMap.addComponents(models);
+            componentMap.publishComponents(models);
 
             var componentModel = componentMap.findSingleComponentModel(key);
             if (componentModel != null && componentModel.getProvider() != null) {
@@ -246,7 +239,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                 log.debug("Provider {} provides non existing component of {}. Creating ComponentModel", providerModel.getInstantiable(), key);
                 componentModel = modelUtils.createComponentModel(componentType, providerType);
                 componentModel.setQualifiers(qualifiers);
-                componentMap.addComponent(componentModel);
+                componentMap.publishComponent(componentModel);
             }
             log.info("Assigning provider {} for component {}", providerElement, componentType);
             componentModel.setProvider(providerModel);
@@ -272,7 +265,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
                         }
                     }
                 });
-        componentMap.addComponents(toAdd);
+        componentMap.publishComponents(toAdd);
         toGenerate.addAll(toAdd);
         for (var c : toGenerate) {
             log.info("Generating provider for component {}.", c.getInstantiable());
@@ -317,7 +310,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         public Collection<ComponentModel> useAndGetComponents(TypeMirror type, QualifierModel qualifier) {
             var key = new ComponentKey(type.toString(), qualifier);
             var comps = stagedComponents.findAndRemoveComponentModels(key);
-            componentMap.addComponents(comps);
+            componentMap.publishComponents(comps);
             return componentMap.findComponentModels(key);
         }
 

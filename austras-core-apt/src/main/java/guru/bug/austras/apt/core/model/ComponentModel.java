@@ -7,7 +7,7 @@ public class ComponentModel implements Comparable<ComponentModel> {
     private String instantiable;
     private QualifierModel qualifiers;
     private List<String> types;
-    private ProviderModel provider;
+    private List<DependencyModel> dependencies;
     private boolean imported;
 
     public String getName() {
@@ -42,12 +42,12 @@ public class ComponentModel implements Comparable<ComponentModel> {
         this.types = types;
     }
 
-    public ProviderModel getProvider() {
-        return provider;
+    public List<DependencyModel> getDependencies() {
+        return dependencies == null ? List.of() : dependencies;
     }
 
-    public void setProvider(ProviderModel provider) {
-        this.provider = provider;
+    public void setDependencies(List<DependencyModel> dependencies) {
+        this.dependencies = dependencies;
     }
 
     public boolean isImported() {
