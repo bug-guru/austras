@@ -14,26 +14,27 @@ public class $SIMPLE_CLASS_NAME$ {
     public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
 
     public static void main(String[] args) {
-        LOGGER.info("Application is initializing...");
+        var _t1 = System.currentTimeMillis();
+        LOGGER.info("Application is starting up...");
         #COMPONENTS#
 
-        LOGGER.info("Initializing provider for $COMPONENT_NAME$");
+        LOGGER.info("Initializing component $COMPONENT_NAME$");
         #WITH_DEPENDENCIES#
-        var $COMPONENT_PROVIDER_VAR$ = new $COMPONENT_PROVIDER_CLASS$(
-            #COMPONENT_PROVIDER_DEPENDENCIES#
+        var $COMPONENT_NAME$ = new $COMPONENT_CLASS$(
+            #COMPONENT_DEPENDENCIES#
                 $DEPENDENCY$$,$
             #END#
         );
         #END#
         #WITHOUT_DEPENDENCIES#
-        var $COMPONENT_PROVIDER_VAR$ = new $COMPONENT_PROVIDER_CLASS$();
+        var $COMPONENT_NAME$ = new $COMPONENT_CLASS$();
         #END#
         #END#
 
         LOGGER.info("Starting up services...");
-        var $STARTER_NAME$ = $STARTER_PROVIDER_NAME$.get();
-        $STARTER_NAME$.initAll();
-        
-        LOGGER.info("Application is ready!");
+        $STARTER_COMPONENT_NAME$.initAll();
+
+        var _t2 = System.currentTimeMillis();
+        LOGGER.info("Application is started up in {} ms", _t2 - _t1);
     }
 }

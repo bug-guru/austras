@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.core.process;
 
-import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.core.model.ComponentKey;
 import guru.bug.austras.apt.core.model.ComponentModel;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
     private final ProcessingContext ctx;
-    private ComponentMap componentMap;
     private String qualifiedClassName;
     private String simpleClassName;
     private String packageName;
@@ -63,44 +61,34 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("COMPONENT_PROVIDER_NAME")
-    public String getCurrentComponentProviderName() {
-        return currentComponent.getProvider().getName();
-    }
-
-    @FromTemplate("COMPONENT_PROVIDER_CLASS")
-    public String getCurrentComponentProviderClass() {
-        return tryImport(currentComponent.getProvider().getInstantiable());
-    }
-
-    @FromTemplate("COMPONENT_PROVIDER_VAR")
-    public String getCurrentComponentProviderVar() {
-        return currentComponent.getProvider().getName();
-    }
-
     @FromTemplate("COMPONENT_NAME")
-    public String getCurrentComponentName() {
+    public String getCurrentComponentProviderName() {
         return currentComponent.getName();
+    }
+
+    @FromTemplate("COMPONENT_CLASS")
+    public String getCurrentComponentProviderClass() {
+        return tryImport(currentComponent.getInstantiable());
     }
 
     @FromTemplate("WITH_DEPENDENCIES")
     public void withDependencies(PrintWriter out, BodyBlock bodyBlock) {
-        if (!currentComponent.getProvider().getDependencies().isEmpty()) {
+        if (!currentComponent.getDependencies().isEmpty()) {
             out.print(bodyBlock.evaluateBody());
         }
     }
 
     @FromTemplate("WITHOUT_DEPENDENCIES")
     public void withoutDependencies(PrintWriter out, BodyBlock bodyBlock) {
-        if (currentComponent.getProvider().getDependencies().isEmpty()) {
+        if (currentComponent.getDependencies().isEmpty()) {
             out.print(bodyBlock.evaluateBody());
         }
     }
 
-    @FromTemplate("COMPONENT_PROVIDER_DEPENDENCIES")
+    @FromTemplate("COMPONENT_DEPENDENCIES")
     public void currentComponentCollectionsInitializers(PrintWriter out, BodyBlock bodyBlock) {
 
-        Iterator<DependencyModel> dependencies = currentComponent.getProvider().getDependencies().iterator();
+        Iterator<DependencyModel> dependencies = currentComponent.getDependencies().iterator();
         while (dependencies.hasNext()) {
             this.currentDependency = dependencies.next();
             this.hasMoreDependencies = dependencies.hasNext();
@@ -119,11 +107,18 @@ public class MainClassGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY")
     public String dependency() {
-        switch (currentDependency.getWrappingType()) {
+        switch (currentDependency.getWrapping()) {
             case NONE:
-                return currentDependency.getName() + ".get()";
-            case PROVIDER:
-                return currentDependency.getName();
+                return ctx.componentManager()
+                        .findSingleComponent(currentDependency)
+                        .map(ComponentModel::getName)
+                        .orElseThrow();
+            case COLLECTION:
+                return ctx.componentManager()
+                        .findComponents(currentDependency)
+                        .stream()
+                        .map(ComponentModel::getName)
+                        .collect(Collectors.joining(", ", "List.of(", ")"));
             case SELECTOR:
                 var key = currentDependency.asComponentKey();
                 var params = componentMap.findComponentModels(key);
@@ -201,14 +196,13 @@ public class MainClassGenerator extends JavaGenerator {
         return new ArrayDeque<>(result.values());
     }
 
-    public void generateAppMain(ComponentModel appMainComponent, ComponentMap componentMap) {
+    public void generateAppMain(ComponentModel appMainComponent) {
         if (appMainComponent == null) {
             log.debug("No application component");
             return;
         }
-        this.componentMap = componentMap;
         var starterKey = new ComponentKey(ServiceManager.class.getName(), null);
-        this.starterComponent = componentMap.findSingleComponentModel(starterKey);
+        this.starterComponent = ctx.componentManager().findSingleComponent(starterKey).orElseThrow();
         this.sortedComponents = sortComponents();
         this.qualifiedClassName = appMainComponent.getInstantiable() + "Main";
         var lastDotIndex = qualifiedClassName.lastIndexOf('.');

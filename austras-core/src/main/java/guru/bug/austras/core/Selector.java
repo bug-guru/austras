@@ -10,11 +10,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Selector<E> {
-    private final List<Provider<? extends E>> providers;
+    private final List<? extends E> components;
 
-    @SafeVarargs
-    public Selector(Provider<? extends E>... providers) {
-        this.providers = List.of(providers);
+    private Selector(List<E> components) {
+        this.components = components;
+    }
+
+    public static <E> Selector<E> of(E... components) {
+        return new Selector(List.of(components));
     }
 
     public Collection<E> get() {

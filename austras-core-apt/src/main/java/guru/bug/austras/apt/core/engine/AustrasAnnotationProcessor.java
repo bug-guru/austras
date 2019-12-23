@@ -5,6 +5,7 @@ import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
 import guru.bug.austras.apt.core.model.ComponentKey;
 import guru.bug.austras.apt.core.model.ComponentModel;
+import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.core.model.QualifierModel;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
@@ -90,8 +91,8 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         };
         try {
             if (roundEnv.processingOver()) {
-                generateComponentMap();
                 generateAppMain(ctx);
+                generateComponentMap();
             } else {
                 log.debug("SCAN");
                 var rootElements = roundEnv.getRootElements();
@@ -112,7 +113,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
         try {
             var mainClassGenerator = new MainClassGenerator(ctx);
-
+            mainClassGenerator.generateAppMain(this.appMainComponent);
         } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
@@ -219,14 +220,81 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private class ComponentManagerImpl implements ComponentManager {
 
         @Override
-        public boolean useComponent(TypeMirror type, QualifierModel qualifier) {
-            return !useAndGetComponents(type, qualifier).isEmpty();
+        public boolean tryUseComponents(TypeMirror type, QualifierModel qualifier) {
+            return tryUseComponents(type.toString(), qualifier);
         }
 
         @Override
-        public Collection<ComponentModel> useAndGetComponents(TypeMirror type, QualifierModel qualifier) {
-            var key = new ComponentKey(type.toString(), qualifier);
+        public Collection<ComponentModel> findComponents(TypeMirror type, QualifierModel qualifier) {
+            return findComponents(type.toString(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(TypeMirror type, QualifierModel qualifier) {
+            return findSingleComponent(type.toString(), qualifier);
+        }
+
+        @Override
+        public boolean tryUseComponents(Class<?> type, QualifierModel qualifier) {
+            return tryUseComponents(type.getName(), qualifier);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(Class<?> type, QualifierModel qualifier) {
+            return findComponents(type.getName(), qualifier);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(Class<?> type, QualifierModel qualifier) {
+            return findSingleComponent(type.getName(), qualifier);
+        }
+
+        @Override
+        public boolean tryUseComponents(String type, QualifierModel qualifier) {
+            var key = new ComponentKey(type, qualifier);
+            return tryUseComponents(key);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(String type, QualifierModel qualifier) {
+            var key = new ComponentKey(type, qualifier);
+            return findComponents(key);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(String type, QualifierModel qualifier) {
+            var key = new ComponentKey(type, qualifier);
+            return findSingleComponent(key);
+        }
+
+        @Override
+        public boolean tryUseComponents(DependencyModel dependencyModel) {
+            return tryUseComponents(dependencyModel.getType(), dependencyModel.getQualifiers());
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(DependencyModel dependencyModel) {
+            return findComponents(dependencyModel.getType(), dependencyModel.getQualifiers());
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(DependencyModel dependencyModel) {
+            return findSingleComponent(dependencyModel.getType(), dependencyModel.getQualifiers());
+        }
+
+        @Override
+        public boolean tryUseComponents(ComponentKey key) {
+            return componentMap.tryUseComponentModels(key);
+        }
+
+        @Override
+        public Collection<ComponentModel> findComponents(ComponentKey key) {
             return componentMap.findComponentModels(key);
+        }
+
+        @Override
+        public Optional<ComponentModel> findSingleComponent(ComponentKey key) {
+            return componentMap.findSingleComponentModel(key);
         }
 
         @Override

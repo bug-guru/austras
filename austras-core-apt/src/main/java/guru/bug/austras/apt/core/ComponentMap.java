@@ -77,9 +77,18 @@ public class ComponentMap {
         ModuleModelSerializer.store(model, out);
     }
 
+    public boolean tryUseComponentModels(ComponentKey key) {
+        publishStaged(key);
+        return index.contains(key);
+    }
+
 
     private static class Index {
         final Map<ComponentKey, HashSet<ComponentModel>> components = new HashMap<>();
+
+        boolean contains(ComponentKey key) {
+            return components.containsKey(key);
+        }
 
         Set<ComponentModel> find(ComponentKey key) {
             var result = components.get(key);

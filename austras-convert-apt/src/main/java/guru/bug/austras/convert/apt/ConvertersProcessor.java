@@ -61,7 +61,7 @@ class ConvertersProcessor {
             return;
         }
         var qualifier = ctx.componentManager().extractQualifier(parameter);
-        if (ctx.componentManager().useComponent(paramType, qualifier)) {
+        if (ctx.componentManager().tryUseComponents(paramType, qualifier)) {
             return;
         }
 
