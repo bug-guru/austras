@@ -1,13 +1,13 @@
-package guru.bug.austras.meta;
+package guru.bug.austras.core.qualifiers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class QualifierMetaInfo {
-    private static final QualifierMetaInfo EMPTY = new QualifierMetaInfo(null);
+public class QualifierInfo {
+    private static final QualifierInfo EMPTY = new QualifierInfo(null);
     private final Map<String, String> properties;
 
-    private QualifierMetaInfo(Map<String, String> properties) {
+    private QualifierInfo(Map<String, String> properties) {
         this.properties = properties == null ? Map.of() : Map.copyOf(properties);
     }
 
@@ -15,7 +15,7 @@ public class QualifierMetaInfo {
         return new Builder();
     }
 
-    public static QualifierMetaInfo empty() {
+    public static QualifierInfo empty() {
         return EMPTY;
     }
 
@@ -46,8 +46,8 @@ public class QualifierMetaInfo {
             return this;
         }
 
-        public QualifierMetaInfo build() {
-            return new QualifierMetaInfo(properties);
+        public QualifierInfo build() {
+            return new QualifierInfo(properties);
         }
     }
 }

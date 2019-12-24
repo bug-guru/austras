@@ -1,12 +1,10 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.apt.core.model.ComponentModel;
-import guru.bug.austras.apt.core.model.DependencyModel;
-import guru.bug.austras.apt.core.model.QualifierModel;
-import guru.bug.austras.core.Qualifier;
-import guru.bug.austras.core.QualifierProperty;
+import guru.bug.austras.apt.core.common.model.ComponentModel;
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
 import guru.bug.austras.core.Selector;
-import guru.bug.austras.events.Broadcaster;
+import guru.bug.austras.core.qualifiers.Qualifier;
+import guru.bug.austras.core.qualifiers.QualifierProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,35 +64,6 @@ public class ModelUtils {
         return firstLower(element.getSimpleName().toString());
     }
 
-    public static String qualifierToString(QualifierModel qualifierModel) {
-        if (qualifierModel == null) {
-            return "";
-        }
-        var result = new StringBuilder(512);
-        qualifierModel.forEach((qualifierName, properties) -> {
-            result.append("@")
-                    .append(Qualifier.class.getSimpleName())
-                    .append("(name = \"")
-                    .append(qualifierName)
-                    .append("\"");
-            if (!properties.isEmpty()) {
-                result.append(", properties = ");
-                if (properties.size() > 1) {
-                    result.append("{");
-                }
-                result.append(properties.stream()
-                        .map(p -> String.format("@QualifierProperty(name = \"%s\", value = \"%s\"", p.getKey(), p.getValue()))
-                        .collect(Collectors.joining(", "))
-                );
-                if (properties.size() > 1) {
-                    result.append("}");
-                }
-            }
-            result.append(") ");
-        });
-        return result.toString();
-    }
-
     public ComponentModel createComponentModel(TypeElement type) {
         return createComponentModel((DeclaredType) type.asType(), type);
     }
@@ -117,8 +86,8 @@ public class ModelUtils {
         return model;
     }
 
-    public QualifierModel extractQualifiers(AnnotatedConstruct element) {
-        var result = new QualifierModel();
+    public QualifierSetModel extractQualifiers(AnnotatedConstruct element) {
+        var result = new QualifierSetModel();
         for (var a : element.getAnnotationMirrors()) {
             convertAnnotationToQualifierModel(a, result);
         }
@@ -128,7 +97,7 @@ public class ModelUtils {
         return result;
     }
 
-    private void convertRawQualifierToModel(Qualifier q, QualifierModel result) {
+    private void convertRawQualifierToModel(Qualifier q, QualifierSetModel result) {
         String name = q.name();
         result.setProperty(name);
         for (var p : q.properties()) {
@@ -136,7 +105,7 @@ public class ModelUtils {
         }
     }
 
-    private void convertAnnotationToQualifierModel(AnnotationMirror am, QualifierModel result) {
+    private void convertAnnotationToQualifierModel(AnnotationMirror am, QualifierSetModel result) {
         Element annotationElement = typeUtils.asElement(am.getAnnotationType());
         Qualifier qualifier = annotationElement.getAnnotation(Qualifier.class);
         if (qualifier == null) {
@@ -241,7 +210,7 @@ public class ModelUtils {
     }
 
     public DependencyModel createDependencyModel(String varName, DeclaredType paramType, AnnotatedConstruct metadata) {
-        var result = new DependencyModel();
+        var result = new DependencyModel(type, qualifiers, wrapping);
         var qualifiers = extractQualifiers(metadata);
 
         var isProvider = typeUtils.isAssignable(paramType, providerInterfaceType);

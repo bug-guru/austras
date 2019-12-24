@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.events.process;
 
-import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.events.model.MessageBroadcasterModel;
 import guru.bug.austras.codegen.FromTemplate;
@@ -47,7 +46,7 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     @FromTemplate("QUALIFIERS")
     public String qualifiers() {
-        return ModelUtils.qualifierToString(messageBroadcasterModel.getQualifier());
+        return qualifierToString(messageBroadcasterModel.getQualifier());
     }
 
     private MessageBroadcasterModel createModel(VariableElement e) {

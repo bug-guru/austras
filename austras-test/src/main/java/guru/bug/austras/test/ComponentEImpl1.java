@@ -1,6 +1,6 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.core.Qualifier;
+import guru.bug.austras.core.qualifiers.Qualifier;
 
 @SuppressWarnings("ALL")
 @Qualifier(name = "alternative")

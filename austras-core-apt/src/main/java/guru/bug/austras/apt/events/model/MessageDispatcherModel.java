@@ -1,13 +1,13 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.core.model.DependencyModel;
-import guru.bug.austras.apt.core.model.QualifierModel;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
 
 public class MessageDispatcherModel {
     private String packageName;
     private String className;
     private DependencyModel componentDependency;
-    private QualifierModel qualifiers;
+    private QualifierSetModel qualifiers;
     private String messageType;
     private String methodName;
 
@@ -35,11 +35,11 @@ public class MessageDispatcherModel {
         this.componentDependency = componentDependency;
     }
 
-    public QualifierModel getQualifier() {
+    public QualifierSetModel getQualifier() {
         return qualifiers;
     }
 
-    public void setQualifiers(QualifierModel qualifiers) {
+    public void setQualifiers(QualifierSetModel qualifiers) {
         this.qualifiers = qualifiers;
     }
 

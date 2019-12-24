@@ -67,6 +67,7 @@
         <module>austras-web-apt</module>
         <module>austras-test</module>
         <module>austras-codegen</module>
+        <module>austras-core-apt-common</module>
     </modules>
 
 </project>

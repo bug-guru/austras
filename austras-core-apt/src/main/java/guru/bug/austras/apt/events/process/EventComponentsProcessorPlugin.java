@@ -3,7 +3,6 @@ package guru.bug.austras.apt.events.process;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.events.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

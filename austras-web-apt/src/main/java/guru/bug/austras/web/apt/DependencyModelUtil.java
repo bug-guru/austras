@@ -12,7 +12,7 @@ class DependencyModelUtil {
     }
 
     static DependencyModel createDependencyModel(String type, String name) {
-        var result = new DependencyModel();
+        var result = new DependencyModel(type, qualifiers, wrapping);
         result.setCollection(false);
         result.setProvider(false);
         result.setName(name);

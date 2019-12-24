@@ -1,10 +1,15 @@
 package guru.bug.austras.codegen;
 
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
+import guru.bug.austras.core.qualifiers.Qualifier;
+import guru.bug.austras.core.qualifiers.QualifierProperty;
+
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class JavaGenerator extends Generator {
     private final Map<String, ImportLine> imports = new HashMap<>();
@@ -32,6 +37,37 @@ public abstract class JavaGenerator extends Generator {
             var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx));
             return prefix + type + '<' + param + '>';
         }
+    }
+
+    protected final String qualifierToString(QualifierSetModel qualifierSetModel) {
+        if (qualifierSetModel == null) {
+            return "";
+        }
+        var result = new StringBuilder(512);
+        qualifierSetModel.getAll().forEach(qm -> {
+            result.append("@")
+                    .append(tryImport(Qualifier.class.getName()))
+                    .append("(name = \"")
+                    .append(qm.getName())
+                    .append("\"");
+            if (!qm.getProperties().isEmpty()) {
+                result.append(", properties = ");
+                if (qm.getProperties().size() > 1) {
+                    result.append("{");
+                }
+                result.append(qm.getProperties().stream()
+                        .map(p -> String.format("@%s(name = \"%s\", value = \"%s\"",
+                                tryImport(QualifierProperty.class.getName()),
+                                p.getName(), p.getValue()))
+                        .collect(Collectors.joining(", "))
+                );
+                if (qm.getProperties().size() > 1) {
+                    result.append("}");
+                }
+            }
+            result.append(") ");
+        });
+        return result.toString();
     }
 
     private String tryImport0(String qualifiedName) {

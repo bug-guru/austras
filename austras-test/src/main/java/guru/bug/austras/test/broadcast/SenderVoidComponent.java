@@ -1,17 +1,15 @@
 package guru.bug.austras.test.broadcast;
 
-import guru.bug.austras.core.Qualifier;
-import guru.bug.austras.events.Broadcaster;
-import guru.bug.austras.events.Message;
+import guru.bug.austras.core.qualifiers.Broadcast;
 
 public class SenderVoidComponent {
-    private final Broadcaster<Void> broadcaster;
+    private final VoidEvents voidEvents;
 
-    public SenderVoidComponent(@Qualifier(name = "void-qualifier") @Message Broadcaster<Void> broadcaster) {
-        this.broadcaster = broadcaster;
+    public SenderVoidComponent(@Broadcast VoidEvents voidEvents) {
+        this.voidEvents = voidEvents;
     }
 
     public void sendNotification() {
-        broadcaster.send(null);
+        voidEvents.notification();
     }
 }

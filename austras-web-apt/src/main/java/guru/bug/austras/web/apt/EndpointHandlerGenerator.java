@@ -1,8 +1,7 @@
 package guru.bug.austras.web.apt;
 
-import guru.bug.austras.apt.core.ModelUtils;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
@@ -125,7 +124,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        return ModelUtils.qualifierToString(currentDependency.getQualifiers());
+        return qualifierToString(currentDependency.getQualifiers());
     }
 
     @FromTemplate("DEPENDENCY_TYPE")

@@ -1,7 +1,7 @@
 package guru.bug.austras.config;
 
-import guru.bug.austras.core.Qualifier;
-import guru.bug.austras.core.QualifierProperty;
+import guru.bug.austras.core.qualifiers.Qualifier;
+import guru.bug.austras.core.qualifiers.QualifierProperty;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

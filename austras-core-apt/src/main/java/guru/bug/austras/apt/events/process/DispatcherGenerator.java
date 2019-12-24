@@ -1,6 +1,5 @@
 package guru.bug.austras.apt.events.process;
 
-import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.events.model.MessageDispatcherModel;
@@ -81,7 +80,7 @@ public class DispatcherGenerator extends JavaGenerator {
 
     @FromTemplate("QUALIFIERS")
     public String qualifiers() {
-        return ModelUtils.qualifierToString(dispatcherModel.getQualifier());
+        return qualifierToString(dispatcherModel.getQualifier());
     }
 
 
@@ -102,7 +101,7 @@ public class DispatcherGenerator extends JavaGenerator {
     @FromTemplate("RECEIVERS_SELECTOR_QUALIFIERS")
     public String dependencyQualifiers() {
         var componentDependency = dispatcherModel.getComponentDependency();
-        return ModelUtils.qualifierToString(componentDependency.getQualifiers());
+        return qualifierToString(componentDependency.getQualifiers());
     }
 
     @FromTemplate("RECEIVERS_SELECTOR_NAME")

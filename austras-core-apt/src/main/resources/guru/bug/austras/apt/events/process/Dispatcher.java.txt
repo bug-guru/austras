@@ -2,7 +2,7 @@ package $PACKAGE_NAME$;
 
 #IMPORTS#
 guru.bug.austras.core.Component
-guru.bug.austras.core.Qualifier
+guru.bug.austras.core.qualifiers.Qualifier
 java.util.Collection
 guru.bug.austras.events.Dispatcher
 org.slf4j.Logger

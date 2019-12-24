@@ -3,10 +3,10 @@ package guru.bug.austras.apt.core.engine;
 import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
-import guru.bug.austras.apt.core.model.ComponentKey;
-import guru.bug.austras.apt.core.model.ComponentModel;
-import guru.bug.austras.apt.core.model.DependencyModel;
-import guru.bug.austras.apt.core.model.QualifierModel;
+import guru.bug.austras.apt.core.common.model.ComponentKey;
+import guru.bug.austras.apt.core.common.model.ComponentModel;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import guru.bug.austras.codegen.TemplateException;
@@ -24,7 +24,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,8 +65,10 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             while (allMaps.hasMoreElements()) {
                 var map = allMaps.nextElement();
                 log.info("Loading components from {}", map);
-                try (var stream = map.openStream()) {
-                    var moduleModel = ModuleModelSerializer.load(stream);
+                try (var stream = map.openStream();
+                     var bufStream = new BufferedInputStream(stream);
+                     var reader = new InputStreamReader(bufStream)) {
+                    var moduleModel = ModuleModelSerializer.load(reader);
                     for (var comp : moduleModel.getComponents()) {
                         componentMap.importComponent(comp);
                     }
@@ -220,50 +224,50 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private class ComponentManagerImpl implements ComponentManager {
 
         @Override
-        public boolean tryUseComponents(TypeMirror type, QualifierModel qualifier) {
+        public boolean tryUseComponents(TypeMirror type, QualifierSetModel qualifier) {
             return tryUseComponents(type.toString(), qualifier);
         }
 
         @Override
-        public Collection<ComponentModel> findComponents(TypeMirror type, QualifierModel qualifier) {
+        public Collection<ComponentModel> findComponents(TypeMirror type, QualifierSetModel qualifier) {
             return findComponents(type.toString(), qualifier);
         }
 
         @Override
-        public Optional<ComponentModel> findSingleComponent(TypeMirror type, QualifierModel qualifier) {
+        public Optional<ComponentModel> findSingleComponent(TypeMirror type, QualifierSetModel qualifier) {
             return findSingleComponent(type.toString(), qualifier);
         }
 
         @Override
-        public boolean tryUseComponents(Class<?> type, QualifierModel qualifier) {
+        public boolean tryUseComponents(Class<?> type, QualifierSetModel qualifier) {
             return tryUseComponents(type.getName(), qualifier);
         }
 
         @Override
-        public Collection<ComponentModel> findComponents(Class<?> type, QualifierModel qualifier) {
+        public Collection<ComponentModel> findComponents(Class<?> type, QualifierSetModel qualifier) {
             return findComponents(type.getName(), qualifier);
         }
 
         @Override
-        public Optional<ComponentModel> findSingleComponent(Class<?> type, QualifierModel qualifier) {
+        public Optional<ComponentModel> findSingleComponent(Class<?> type, QualifierSetModel qualifier) {
             return findSingleComponent(type.getName(), qualifier);
         }
 
         @Override
-        public boolean tryUseComponents(String type, QualifierModel qualifier) {
-            var key = new ComponentKey(type, qualifier);
+        public boolean tryUseComponents(String type, QualifierSetModel qualifier) {
+            var key = ComponentKey.of(type, qualifier);
             return tryUseComponents(key);
         }
 
         @Override
-        public Collection<ComponentModel> findComponents(String type, QualifierModel qualifier) {
-            var key = new ComponentKey(type, qualifier);
+        public Collection<ComponentModel> findComponents(String type, QualifierSetModel qualifier) {
+            var key = ComponentKey.of(type, qualifier);
             return findComponents(key);
         }
 
         @Override
-        public Optional<ComponentModel> findSingleComponent(String type, QualifierModel qualifier) {
-            var key = new ComponentKey(type, qualifier);
+        public Optional<ComponentModel> findSingleComponent(String type, QualifierSetModel qualifier) {
+            var key = ComponentKey.of(type, qualifier);
             return findSingleComponent(key);
         }
 
@@ -298,7 +302,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
 
         @Override
-        public QualifierModel extractQualifier(AnnotatedConstruct annotated) {
+        public QualifierSetModel extractQualifier(AnnotatedConstruct annotated) {
             return modelUtils.extractQualifiers(annotated);
         }
     }

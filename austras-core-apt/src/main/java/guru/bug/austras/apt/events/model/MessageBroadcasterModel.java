@@ -1,10 +1,10 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.core.model.QualifierModel;
+import guru.bug.austras.apt.core.model.QualifierSetModel;
 
 public class MessageBroadcasterModel {
     private String type;
-    private QualifierModel qualifier;
+    private QualifierSetModel qualifier;
     private String packageName;
     private String simpleName;
 
@@ -16,11 +16,11 @@ public class MessageBroadcasterModel {
         this.type = type;
     }
 
-    public QualifierModel getQualifier() {
+    public QualifierSetModel getQualifier() {
         return qualifier;
     }
 
-    public void setQualifier(QualifierModel qualifier) {
+    public void setQualifier(QualifierSetModel qualifier) {
         this.qualifier = qualifier;
     }
 

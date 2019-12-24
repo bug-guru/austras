@@ -2,7 +2,7 @@ package $PACKAGE_NAME$;
 
 #IMPORTS#
 guru.bug.austras.core.Component
-guru.bug.austras.core.Qualifier
+guru.bug.austras.core.qualifiers.Qualifier
 guru.bug.austras.events.Broadcaster
 guru.bug.austras.core.Selector
 guru.bug.austras.events.Dispatcher

@@ -1,4 +1,4 @@
-package guru.bug.austras.events;
+package guru.bug.austras.core;
 
 // TODO application events not yet implemented
 public interface ApplicationEvents {

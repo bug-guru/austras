@@ -1,0 +1,58 @@
+package guru.bug.austras.core.qualifiers;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+public class QualifierSetInfo {
+    private static final QualifierSetInfo DEFAULT = new QualifierSetInfo(Map.of("austras.default", QualifierInfo.empty()));
+    private final Map<String, QualifierInfo> qualifiers;
+
+    private QualifierSetInfo(Map<String, QualifierInfo> qualifiers) {
+        this.qualifiers = qualifiers == null ? Map.of() : Map.copyOf(qualifiers);
+    }
+
+    public static QualifierSetInfo defaultQualifier() {
+        return DEFAULT;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public boolean hasQualifier(String name) {
+        return qualifiers.containsKey(name);
+    }
+
+    public QualifierInfo getQualifier(String name) {
+        return qualifiers.get(name);
+    }
+
+    public static class Builder {
+        private final Map<String, QualifierInfo> qualifiers = new HashMap<>();
+
+        private Builder() {
+        }
+
+        public Builder add(String qualifierName) {
+            qualifiers.put(qualifierName, QualifierInfo.empty());
+            return this;
+        }
+
+        public Builder add(String qualifierName, QualifierInfo props) {
+            qualifiers.put(qualifierName, props);
+            return this;
+        }
+
+        public Builder add(String qualifierName, Consumer<QualifierInfo.Builder> builderConsumer) {
+            var propBuilder = QualifierInfo.builder();
+            builderConsumer.accept(propBuilder);
+            add(qualifierName, propBuilder.build());
+            return this;
+        }
+
+        public QualifierSetInfo build() {
+            return new QualifierSetInfo(qualifiers);
+        }
+    }
+}

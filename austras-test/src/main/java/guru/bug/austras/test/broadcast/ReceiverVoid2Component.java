@@ -1,18 +1,14 @@
 package guru.bug.austras.test.broadcast;
 
-import guru.bug.austras.core.Qualifier;
-import guru.bug.austras.events.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("ALL")
-public class ReceiverVoid2Component {
+public class ReceiverVoid2Component implements VoidEvents {
     private static final Logger log = LoggerFactory.getLogger(ReceiverVoid2Component.class);
 
-    @Message
-    @Qualifier(name = "void-qualifier")
-    public void receive() {
+    @Override
+    public void notification() {
         log.info("ReceiverVoid2: received notification");
     }
-
 }
