@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.Month;
 
-@Component
+@Default
 public class MonthToStringConverter implements StringConverter<Month> {
     @Override
     public Month fromString(String value) {

@@ -11,17 +11,15 @@ import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.core.Application;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Qualifier;
+import guru.bug.austras.core.qualifiers.Qualifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
 import java.io.BufferedInputStream;
@@ -38,10 +36,10 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
+    public static final String COMPONENTS_INDEX_FILE_NAME = "META-INF/components.json";
     private static final Logger log = LoggerFactory.getLogger(AustrasAnnotationProcessor.class);
-
-    private final Queue<TypeElement> stagedProviders = new LinkedList<>();
     private final UniqueNameGenerator uniqueNameGenerator = new UniqueNameGenerator();
+    private final Set<AnnotationMirror> registeredQualifiers = new HashSet<>();
     private List<AustrasProcessorPlugin> plugins;
     private ModelUtils modelUtils;
     private ComponentMap componentMap;
@@ -61,7 +59,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     private void readComponentMaps() {
         try {
             var classLoader = this.getClass().getClassLoader();
-            var allMaps = classLoader.getResources("META-INF/components.yml");
+            var allMaps = classLoader.getResources(COMPONENTS_INDEX_FILE_NAME);
             while (allMaps.hasMoreElements()) {
                 var map = allMaps.nextElement();
                 log.info("Loading components from {}", map);
@@ -143,9 +141,9 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     private void scanComponent(TypeElement typeElement) {
         var model = modelUtils.createComponentModel(typeElement);
-        var hasComponentAnnotation = typeElement.getAnnotationsByType(Component.class).length > 0;
+        var hasQualifierAnnotation = hasQualifiers(typeElement);
         var hasApplicationAnnotation = typeElement.getAnnotationsByType(Application.class).length > 0;
-        if (hasComponentAnnotation || hasApplicationAnnotation) {
+        if (hasQualifierAnnotation || hasApplicationAnnotation) {
             log.debug("PROCESS: Adding component to index: {}", typeElement);
             componentMap.publishComponent(model);
         } else {
@@ -155,6 +153,30 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         if (hasApplicationAnnotation) {
             this.appMainComponent = model;
         }
+    }
+
+    private boolean hasQualifiers(TypeElement typeElement) {
+        var qualifierClassName = Qualifier.class.getName();
+        var qualifiersClassName = Qualifiers.class.getName();
+        var checked = new HashSet<AnnotationMirror>();
+        var toCheck = new ArrayDeque<AnnotationMirror>(typeElement.getAnnotationMirrors());
+        while (!toCheck.isEmpty()) {
+            var ae = toCheck.remove();
+            if (registeredQualifiers.contains(ae)) {
+                return true;
+            }
+            if (!checked.add(ae)) {
+                continue;
+            }
+            var annotationType = (TypeElement) ae.getAnnotationType().asElement();
+            var annotationClassName = annotationType.getQualifiedName();
+            if (annotationClassName.contentEquals(qualifierClassName) || annotationClassName.contentEquals(qualifiersClassName)) {
+                registeredQualifiers.add(ae);
+                return true;
+            }
+            toCheck.addAll(annotationType.getAnnotationMirrors());
+        }
+        return false;
     }
 
     private boolean shouldBeIgnored(Element element) {
@@ -194,7 +216,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     }
 
     private void generateComponentMap() {
-        try (var out = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/components.yml").openOutputStream();
+        try (var out = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", COMPONENTS_INDEX_FILE_NAME).openOutputStream();
              var w = new PrintWriter(out)) {
             componentMap.serialize(w);
         } catch (IOException e) {

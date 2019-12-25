@@ -4,11 +4,11 @@ import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.Period;
 
-@Component
+@Default
 public class PeriodToJsonConverter implements JsonConverter<Period> {
     private final StringConverter<Period> stringConverter;
 

@@ -53,12 +53,12 @@ class TemplateTokenizerTest {
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.convert.json.writer.JsonValueWriter");
         assertNextTokenIsNewLine();
-        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.core.Component");
+        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.core.qualifiers.Default");
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.BLOCK, "END");
         assertNextTokenIsNewLine();
         assertNextTokenIsNewLine();
-        assertNextToken(TemplateToken.Type.TEXT, "@Component");
+        assertNextToken(TemplateToken.Type.TEXT, "@Default");
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.TEXT, "public class ");
         assertNextToken(TemplateToken.Type.VALUE, "TARGET.SIMPLE_NAME");

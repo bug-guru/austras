@@ -1,5 +1,7 @@
 package guru.bug.austras.apt.core;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import java.util.HashSet;
@@ -10,7 +12,7 @@ public class UniqueNameGenerator {
 
     public String findFreeVarName(TypeElement type) {
         var nameBase = type.getSimpleName().toString();
-        return findFreeVarName(ModelUtils.firstLower(nameBase));
+        return findFreeVarName(StringUtils.uncapitalize(nameBase));
     }
 
 

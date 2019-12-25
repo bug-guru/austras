@@ -4,10 +4,10 @@ package $TARGET.PACKAGE$;
 guru.bug.austras.convert.converters.JsonConverter
 guru.bug.austras.convert.json.reader.JsonValueReader
 guru.bug.austras.convert.json.writer.JsonValueWriter
-guru.bug.austras.core.Component
+guru.bug.austras.core.qualifiers.Default
 #END#
 
-@Component
+@Default
 public class $TARGET.SIMPLE_NAME$ToJsonConverter implements JsonConverter<$TARGET$> {
 
     #CONVERTERS#

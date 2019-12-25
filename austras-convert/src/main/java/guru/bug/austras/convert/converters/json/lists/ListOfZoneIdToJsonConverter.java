@@ -1,12 +1,12 @@
 package guru.bug.austras.convert.converters.json.lists;
 
 import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.ZoneId;
 
 @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
-@Component
+@Default
 public class ListOfZoneIdToJsonConverter extends ListToJsonConverter<ZoneId> {
 
     public ListOfZoneIdToJsonConverter(JsonConverter<ZoneId> elementConverter) {

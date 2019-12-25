@@ -2,9 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.converters.StringFloatConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class FloatToStringConverter implements StringConverter<Float> {
     private final StringFloatConverter stringConverter;
 

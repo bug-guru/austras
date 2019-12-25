@@ -2,8 +2,8 @@ package guru.bug.austras.apt.core.process;
 
 import guru.bug.austras.apt.core.common.model.ComponentKey;
 import guru.bug.austras.apt.core.common.model.ComponentModel;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
@@ -11,7 +11,6 @@ import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.core.Instance;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.startup.ServiceManager;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,10 +161,6 @@ public class MainClassGenerator extends JavaGenerator {
 
     private void stringConst(StringBuilder result, String value) {
         result.append('"').append(StringEscapeUtils.escapeJava(value)).append('"');
-    }
-
-    private void convertToString(StringBuilder builder, String name, List<Pair<String, String>> props) {
-        builder.append(", ");
     }
 
     @FromTemplate("STARTER_NAME")

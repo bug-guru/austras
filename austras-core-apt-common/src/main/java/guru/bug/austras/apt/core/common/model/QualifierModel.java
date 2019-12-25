@@ -80,7 +80,7 @@ public class QualifierModel {
             return this;
         }
 
-        public Builder property(QualifierPropertyModel property) {
+        public Builder addProperty(QualifierPropertyModel property) {
             this.props.add(property);
             return this;
         }

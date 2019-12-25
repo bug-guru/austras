@@ -2,9 +2,9 @@ package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.converters.StringIntegerConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class IntegerToStringConverter implements StringConverter<Integer> {
     private final StringIntegerConverter stringConverter;
 

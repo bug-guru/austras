@@ -1,0 +1,27 @@
+{
+  "components": [
+    {
+      "name": "serviceManager",
+      "instantiable": "guru.bug.austras.startup.ServiceManager",
+      "qualifiers": [
+        {
+          "name": "austras.default"
+        }
+      ],
+      "types": [
+        "guru.bug.austras.startup.ServiceManager"
+      ],
+      "dependencies": [
+        {
+          "type": "guru.bug.austras.startup.StartupService",
+          "qualifiers": [
+            {
+              "name": "austras.default"
+            }
+          ],
+          "wrapping": "COLLECTION"
+        }
+      ]
+    }
+  ]
+}

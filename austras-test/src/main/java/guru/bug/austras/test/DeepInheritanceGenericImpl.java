@@ -1,9 +1,9 @@
 package guru.bug.austras.test;
 
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 @SuppressWarnings("ALL")
-@Component
+@Default
 public class DeepInheritanceGenericImpl extends DeepInheritanceGenericAbstract<Boolean> {
 
     @Override

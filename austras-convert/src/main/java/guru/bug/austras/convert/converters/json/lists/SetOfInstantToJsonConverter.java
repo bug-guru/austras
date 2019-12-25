@@ -1,12 +1,12 @@
 package guru.bug.austras.convert.converters.json.lists;
 
 import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.Instant;
 
 @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
-@Component
+@Default
 public class SetOfInstantToJsonConverter extends SetToJsonConverter<Instant> {
 
     public SetOfInstantToJsonConverter(JsonConverter<Instant> elementConverter) {

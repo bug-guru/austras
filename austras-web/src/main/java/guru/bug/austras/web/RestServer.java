@@ -1,7 +1,7 @@
 package guru.bug.austras.web;
 
-import guru.bug.austras.core.Component;
 import guru.bug.austras.core.Selector;
+import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.startup.StartupService;
 import guru.bug.austras.web.errors.*;
 import org.eclipse.jetty.server.Request;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@Component
+@Default
 public class RestServer implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(RestServer.class);
     private static final String ACCEPT_HEADER = "Accept";

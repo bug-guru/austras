@@ -1,9 +1,9 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringFloatConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class PrimitiveFloatToStringConverter implements StringFloatConverter {
     @Override
     public float fromString(String value) {

@@ -1,7 +1,7 @@
 package guru.bug.austras.apt.events.process;
 
+import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.apt.core.model.DependencyModel;
 import guru.bug.austras.apt.events.model.MessageDispatcherModel;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
@@ -61,8 +61,7 @@ public class DispatcherGenerator extends JavaGenerator {
     private DependencyModel createComponentDependency(ExecutableElement method) {
         var componentElement = (TypeElement) method.getEnclosingElement();
         DeclaredType componentType = (DeclaredType) componentElement.asType();
-        var varName = StringUtils.uncapitalize(componentElement.getSimpleName().toString());
-        var result = ctx.modelUtils().createDependencyModel(varName, componentType, componentElement);
+        var result = ctx.modelUtils().createDependencyModel(componentType, componentElement);
         return result.copyAsSelector();
     }
 

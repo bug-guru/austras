@@ -1,9 +1,9 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringShortConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class PrimitiveShortToStringConverter implements StringShortConverter {
     @Override
     public short fromString(String value) {

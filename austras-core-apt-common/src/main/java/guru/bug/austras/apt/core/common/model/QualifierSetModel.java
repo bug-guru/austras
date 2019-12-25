@@ -6,10 +6,7 @@ import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import guru.bug.austras.core.qualifiers.Qualifier;
 import guru.bug.austras.core.qualifiers.Qualifiers;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -37,6 +34,10 @@ public class QualifierSetModel {
 
     public static JsonConverter<QualifierSetModel> serializer() {
         return SERIALIZER;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static QualifierSetModel ofDefault() {
@@ -95,6 +96,29 @@ public class QualifierSetModel {
         @Override
         public QualifierSetModel fromJson(JsonValueReader reader) {
             var qualifiers = reader.readOptionalArray(QualifierModel.serializer()).map(s -> s.collect(Collectors.toList())).orElse(List.of());
+            return new QualifierSetModel(qualifiers);
+        }
+    }
+
+    public static class Builder {
+        private List<QualifierModel> qualifiers = new ArrayList<>();
+
+        public Builder addQualifier(QualifierModel qualifier) {
+            this.qualifiers.add(qualifier);
+            return this;
+        }
+
+        public Builder addQualifiers(QualifierModel... qualifiers) {
+            this.qualifiers.addAll(Arrays.asList(qualifiers));
+            return this;
+        }
+
+        public Builder addQualifiers(Collection<QualifierModel> qualifiers) {
+            this.qualifiers.addAll(qualifiers);
+            return this;
+        }
+
+        public QualifierSetModel build() {
             return new QualifierSetModel(qualifiers);
         }
     }

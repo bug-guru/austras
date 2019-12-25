@@ -1,14 +1,11 @@
 package $PACKAGE_NAME$;
 
 #IMPORTS#
-guru.bug.austras.core.Component
-guru.bug.austras.core.qualifiers.Qualifier
 guru.bug.austras.events.Broadcaster
 guru.bug.austras.core.Selector
 guru.bug.austras.events.Dispatcher
 #END#
 
-@Component
 $QUALIFIERS$
 public class $SIMPLE_CLASS_NAME$ extends Broadcaster<$MESSAGE_TYPE$> {
     public $SIMPLE_CLASS_NAME$($QUALIFIERS$ Selector<? extends Dispatcher<$MESSAGE_TYPE$>> dispatchers) {

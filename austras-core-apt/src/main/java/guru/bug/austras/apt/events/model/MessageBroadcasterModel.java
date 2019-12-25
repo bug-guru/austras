@@ -1,6 +1,6 @@
 package guru.bug.austras.apt.events.model;
 
-import guru.bug.austras.apt.core.model.QualifierSetModel;
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
 
 public class MessageBroadcasterModel {
     private String type;
@@ -24,12 +24,12 @@ public class MessageBroadcasterModel {
         this.qualifier = qualifier;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
     public String getPackageName() {
         return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public String getSimpleName() {

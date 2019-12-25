@@ -1,12 +1,12 @@
 package guru.bug.austras.convert.converters.json.lists;
 
 import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.MonthDay;
 
 @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
-@Component
+@Default
 public class ListOfMonthDayToJsonConverter extends ListToJsonConverter<MonthDay> {
 
     public ListOfMonthDayToJsonConverter(JsonConverter<MonthDay> elementConverter) {

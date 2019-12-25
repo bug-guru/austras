@@ -1,7 +1,6 @@
 package guru.bug.austras.apt.core;
 
-import guru.bug.austras.apt.core.common.model.ComponentModel;
-import guru.bug.austras.apt.core.common.model.QualifierSetModel;
+import guru.bug.austras.apt.core.common.model.*;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.core.qualifiers.Qualifier;
 import guru.bug.austras.core.qualifiers.QualifierProperty;
@@ -25,6 +24,7 @@ import java.util.stream.Stream;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
+// TODO try to move all methods to related classes
 public class ModelUtils {
     private static final Logger log = LoggerFactory.getLogger(ModelUtils.class);
     @SuppressWarnings("squid:MaximumInheritanceDepth")
@@ -39,10 +39,8 @@ public class ModelUtils {
     private final Elements elementUtils;
     private final TypeElement selectorInterfaceElement;
     private final DeclaredType selectorInterfaceType;
-    private final TypeElement providerInterfaceElement;
-    private final DeclaredType providerInterfaceType;
-    private final TypeElement broadcasterInterfaceElement;
-    private final DeclaredType broadcasterInterfaceType;
+    private final TypeElement collectionInterfaceElement;
+    private final DeclaredType collectionInterfaceType;
 
     public ModelUtils(UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.uniqueNameGenerator = uniqueNameGenerator;
@@ -50,24 +48,16 @@ public class ModelUtils {
         this.elementUtils = processingEnv.getElementUtils();
         this.selectorInterfaceElement = elementUtils.getTypeElement(Selector.class.getName());
         this.selectorInterfaceType = typeUtils.getDeclaredType(selectorInterfaceElement);
-        this.providerInterfaceElement = elementUtils.getTypeElement(Provider.class.getName());
-        this.providerInterfaceType = typeUtils.getDeclaredType(providerInterfaceElement);
-        this.broadcasterInterfaceElement = elementUtils.getTypeElement(Broadcaster.class.getName());
-        this.broadcasterInterfaceType = typeUtils.getDeclaredType(broadcasterInterfaceElement);
+        this.collectionInterfaceElement = elementUtils.getTypeElement(Collection.class.getName());
+        this.collectionInterfaceType = typeUtils.getDeclaredType(collectionInterfaceElement);
     }
 
-    public static String firstLower(String str) {
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
-    }
-
-    public static String firstLower(Element element) {
-        return firstLower(element.getSimpleName().toString());
-    }
-
+    // TODO right place of this method is - ComponentModel
     public ComponentModel createComponentModel(TypeElement type) {
         return createComponentModel((DeclaredType) type.asType(), type);
     }
 
+    // TODO right place of this method is - ComponentModel
     public ComponentModel createComponentModel(DeclaredType type, AnnotatedConstruct metaInfo) {
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
@@ -76,46 +66,63 @@ public class ModelUtils {
         log.debug("All superclasses and interfaces: {}", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
-        var model = new ComponentModel();
 
-        model.setQualifiers(qualifiers);
-        model.setInstantiable(type.toString());
-        model.setName(varName);
-        model.setTypes(ancestors);
-
-        return model;
+        return ComponentModel.builder()
+                .qualifiers(qualifiers)
+                .instantiable(type.toString())
+                .name(varName)
+                .types(ancestors)
+                .build();
     }
 
+    // TODO right place of this method is - QualifierSetModel
     public QualifierSetModel extractQualifiers(AnnotatedConstruct element) {
-        var result = new QualifierSetModel();
+        var result = QualifierSetModel.builder();
         for (var a : element.getAnnotationMirrors()) {
-            convertAnnotationToQualifierModel(a, result);
+            var qualifierModel = convertAnnotationToQualifierModel(a);
+            if (qualifierModel != null) {
+                result.addQualifier(qualifierModel);
+            }
         }
         for (var e : element.getAnnotationsByType(Qualifier.class)) {
-            convertRawQualifierToModel(e, result);
+            var qualifierModel = convertRawQualifierToModel(e);
+            if (qualifierModel != null) {
+                result.addQualifier(qualifierModel);
+            }
         }
-        return result;
+        return result.build();
     }
 
-    private void convertRawQualifierToModel(Qualifier q, QualifierSetModel result) {
-        String name = q.name();
-        result.setProperty(name);
+    // TODO right place of this method is - QualifierSetModel
+    private QualifierModel convertRawQualifierToModel(Qualifier q) {
+        var qualifierBuilder = QualifierModel.builder();
+        qualifierBuilder.name(q.name());
         for (var p : q.properties()) {
-            result.setProperty(name, p.name(), p.value());
+            var property = QualifierPropertyModel.builder()
+                    .name(p.name())
+                    .value(p.value())
+                    .build();
+            qualifierBuilder.addProperty(property);
         }
+        return qualifierBuilder.build();
     }
 
-    private void convertAnnotationToQualifierModel(AnnotationMirror am, QualifierSetModel result) {
+    // TODO right place of this method is - QualifierSetModel
+    private QualifierModel convertAnnotationToQualifierModel(AnnotationMirror am) {
+        // TODO need to check whether typeUtils is required. Seems same effect can be done useing am.getAnnotationType().asElement()
+        //      if so - move extractQualifiers (and all related methods) to QualifierSetModel
         Element annotationElement = typeUtils.asElement(am.getAnnotationType());
         Qualifier qualifier = annotationElement.getAnnotation(Qualifier.class);
         if (qualifier == null) {
-            return;
+            return null;
         }
-        String name = qualifier.name();
-        result.setProperty(name);
+        var qualifierBuilder = QualifierModel.builder();
+        qualifierBuilder.name(qualifier.name());
+
         if (qualifier.properties().length == 0) {
-            return;
+            return qualifierBuilder.build();
         }
+
         var mappedNames = Stream.of(qualifier.properties())
                 .collect(Collectors.toMap(QualifierProperty::name, p -> p.value().isBlank() ? p.name() : p.value()));
         var elementValuesWithDefaults = elementUtils.getElementValuesWithDefaults(am);
@@ -124,10 +131,15 @@ public class ModelUtils {
                 .map(e -> (ExecutableElement) e)
                 .filter(e -> mappedNames.containsKey(e.getSimpleName().toString()))
                 .forEach(e -> {
-                    var key = mappedNames.get(e.getSimpleName().toString());
-                    var val = annotationValueToString(elementValuesWithDefaults.get(e));
-                    result.setProperty(name, key, val);
+                    var name = mappedNames.get(e.getSimpleName().toString());
+                    var value = annotationValueToString(elementValuesWithDefaults.get(e));
+                    var property = QualifierPropertyModel.builder()
+                            .name(name)
+                            .value(value)
+                            .build();
+                    qualifierBuilder.addProperty(property);
                 });
+        return qualifierBuilder.build();
     }
 
     private String annotationValueToString(AnnotationValue annotationValue) {
@@ -157,13 +169,6 @@ public class ModelUtils {
         }
         var elem = ((DeclaredType) type).asElement();
         return elem.getKind() == ElementKind.CLASS || elem.getKind() == ElementKind.INTERFACE;
-    }
-
-    public DeclaredType extractComponentTypeFromBroadcaster(DeclaredType broadcasterType) {
-        if (!isBroadcaster(broadcasterType)) {
-            throw new IllegalArgumentException(broadcasterType + " isn't a broadcaster");
-        }
-        return unwrap(broadcasterType, broadcasterInterfaceElement);
     }
 
     private DeclaredType unwrap(DeclaredType wrapperType, Element wrapperElement) {
@@ -209,43 +214,30 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    public DependencyModel createDependencyModel(String varName, DeclaredType paramType, AnnotatedConstruct metadata) {
-        var result = new DependencyModel(type, qualifiers, wrapping);
+    public DependencyModel createDependencyModel(DeclaredType paramType, AnnotatedConstruct metadata) {
+        var resultBuilder = DependencyModel.builder();
         var qualifiers = extractQualifiers(metadata);
 
-        var isProvider = typeUtils.isAssignable(paramType, providerInterfaceType);
+        var isCollection = typeUtils.isAssignable(paramType, collectionInterfaceType);
         var isSelector = typeUtils.isAssignable(paramType, selectorInterfaceType);
 
-        if (isProvider) {
-            paramType = unwrap(paramType, providerInterfaceElement);
-            result.setWrappingType(DependencyWrappingType.PROVIDER);
+        if (isCollection) {
+            paramType = unwrap(paramType, collectionInterfaceElement);
+            resultBuilder.wrapping(WrappingType.COLLECTION);
         } else if (isSelector) {
             paramType = unwrap(paramType, selectorInterfaceElement);
-            result.setWrappingType(DependencyWrappingType.SELECTOR);
+            resultBuilder.wrapping(WrappingType.SELECTOR);
         }
 
-        result.setType(paramType.toString());
-        result.setName(varName);
-        result.setQualifiers(qualifiers);
+        resultBuilder.type(paramType.toString());
+        resultBuilder.qualifiers(qualifiers);
 
-        return result;
+        return resultBuilder.build();
     }
 
     public DependencyModel createDependencyModel(VariableElement paramElement) {
         var paramType = (DeclaredType) paramElement.asType();
-        var varName = paramElement.getSimpleName().toString();
-        return createDependencyModel(varName, paramType, paramElement);
+        return createDependencyModel(paramType, paramElement);
     }
 
-    public boolean isBroadcaster(TypeMirror type) {
-        return typeUtils.isAssignable(type, broadcasterInterfaceType);
-    }
-
-    private boolean isProvider(TypeMirror type) {
-        return typeUtils.isAssignable(type, providerInterfaceType);
-    }
-
-    public boolean isProvider(Element element) {
-        return isProvider(element.asType());
-    }
 }

@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.ZoneId;
 
-@Component
+@Default
 public class ZoneIdToStringConverter implements StringConverter<ZoneId> {
     @Override
     public ZoneId fromString(String value) {

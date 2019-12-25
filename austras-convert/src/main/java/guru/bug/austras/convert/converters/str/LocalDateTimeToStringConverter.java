@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.LocalDateTime;
 
-@Component
+@Default
 public class LocalDateTimeToStringConverter implements StringConverter<LocalDateTime> {
     @Override
     public LocalDateTime fromString(String value) {

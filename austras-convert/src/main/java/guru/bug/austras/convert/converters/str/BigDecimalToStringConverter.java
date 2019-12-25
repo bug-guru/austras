@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.math.BigDecimal;
 
-@Component
+@Default
 public class BigDecimalToStringConverter implements StringConverter<BigDecimal> {
     @Override
     public BigDecimal fromString(String value) {

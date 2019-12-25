@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.Period;
 
-@Component
+@Default
 public class PeriodToStringConverter implements StringConverter<Period> {
     @Override
     public Period fromString(String value) {

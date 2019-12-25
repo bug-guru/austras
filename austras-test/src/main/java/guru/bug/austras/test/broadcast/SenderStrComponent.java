@@ -1,9 +1,9 @@
 package guru.bug.austras.test.broadcast;
 
-import guru.bug.austras.core.Component;
 import guru.bug.austras.core.qualifiers.Broadcast;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class SenderStrComponent {
 
     private final StrEvents strEvents;

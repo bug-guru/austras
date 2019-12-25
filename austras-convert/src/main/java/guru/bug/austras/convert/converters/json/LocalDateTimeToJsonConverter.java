@@ -4,11 +4,11 @@ import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
 import guru.bug.austras.convert.json.reader.JsonValueReader;
 import guru.bug.austras.convert.json.writer.JsonValueWriter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.LocalDateTime;
 
-@Component
+@Default
 public class LocalDateTimeToJsonConverter implements JsonConverter<LocalDateTime> {
     private final StringConverter<LocalDateTime> stringConverter;
 

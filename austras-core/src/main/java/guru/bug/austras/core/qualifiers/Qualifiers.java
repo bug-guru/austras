@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 public @interface Qualifiers {
-    MatchType match() default MatchType.EXACT;
-
     Qualifier[] value();
 }

@@ -1,8 +1,8 @@
 package guru.bug.austras.test.chain;
 
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 @SuppressWarnings("ALL") // this class is for testing only
 public class CompChain5 {
     private final CompChain4 chain4; //NOSONAR for testing purposes only

@@ -1,9 +1,9 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringBooleanConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
-@Component
+@Default
 public class PrimitiveBooleanToStringConverter implements StringBooleanConverter {
     @Override
     public boolean fromString(String value) {

@@ -1,11 +1,11 @@
 package guru.bug.austras.convert.converters.str;
 
 import guru.bug.austras.convert.converters.StringConverter;
-import guru.bug.austras.core.Component;
+import guru.bug.austras.core.qualifiers.Default;
 
 import java.time.Instant;
 
-@Component
+@Default
 public class InstantToStringConverter implements StringConverter<Instant> {
     @Override
     public Instant fromString(String value) {
