@@ -85,7 +85,7 @@ public class QualifierModel {
             return this;
         }
 
-        public Builder properties(Collection<QualifierPropertyModel> properties) {
+        public Builder addProperties(Collection<QualifierPropertyModel> properties) {
             this.props.addAll(properties);
             return this;
         }
@@ -113,7 +113,7 @@ public class QualifierModel {
                         builder.name(in.readString());
                         break;
                     case "properties":
-                        builder.properties(in.readOptionalArray(QualifierPropertyModel.serializer())
+                        builder.addProperties(in.readOptionalArray(QualifierPropertyModel.serializer())
                                 .map(a -> a.collect(Collectors.toList()))
                                 .orElse(List.of()));
                         break;

@@ -41,6 +41,40 @@ public class ModelUtils {
     private final DeclaredType selectorInterfaceType;
     private final TypeElement collectionInterfaceElement;
     private final DeclaredType collectionInterfaceType;
+    private final AnnotationValueVisitor<String, Void> stringVisitor = new SimpleAnnotationValueVisitor9<>(null) {
+        @Override
+        public String visitString(String s, Void aVoid) {
+            return s;
+        }
+    };
+    private final AnnotationValueVisitor<QualifierPropertyModel, Void> propertyVisitor = new SimpleAnnotationValueVisitor9<>(null) {
+        @Override
+        public QualifierPropertyModel visitAnnotation(AnnotationMirror am, Void aVoid) {
+            var builder = QualifierPropertyModel.builder();
+            elementUtils.getElementValuesWithDefaults(am).forEach((e, v) -> {
+                var key = e.getSimpleName().toString();
+                switch (key) {
+                    case "name":
+                        builder.name(stringVisitor.visit(v));
+                        break;
+                    case "value":
+                        builder.value(stringVisitor.visit(v));
+                        break;
+                    default:
+                        throw new IllegalArgumentException(key);
+                }
+            });
+            return builder.build();
+        }
+    };
+    private final AnnotationValueVisitor<Collection<QualifierPropertyModel>, Void> propertiesVisitor = new SimpleAnnotationValueVisitor9<>(null) {
+        @Override
+        public Collection<QualifierPropertyModel> visitArray(List<? extends AnnotationValue> vals, Void aVoid) {
+            return vals.stream()
+                    .map(propertyVisitor::visit)
+                    .collect(Collectors.toList());
+        }
+    };
 
     public ModelUtils(UniqueNameGenerator uniqueNameGenerator, ProcessingEnvironment processingEnv) {
         this.uniqueNameGenerator = uniqueNameGenerator;
@@ -61,7 +95,7 @@ public class ModelUtils {
     public ComponentModel createComponentModel(DeclaredType type, AnnotatedConstruct metaInfo) {
         var ancestors = collectAllAncestor(type).stream()
                 .map(TypeMirror::toString)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(TreeSet::new));
         ancestors.add(type.toString());
         log.debug("All superclasses and interfaces: {}", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
@@ -84,34 +118,17 @@ public class ModelUtils {
                 result.addQualifier(qualifierModel);
             }
         }
-        for (var e : element.getAnnotationsByType(Qualifier.class)) {
-            var qualifierModel = convertRawQualifierToModel(e);
-            if (qualifierModel != null) {
-                result.addQualifier(qualifierModel);
-            }
-        }
         return result.build();
     }
 
     // TODO right place of this method is - QualifierSetModel
-    private QualifierModel convertRawQualifierToModel(Qualifier q) {
-        var qualifierBuilder = QualifierModel.builder();
-        qualifierBuilder.name(q.name());
-        for (var p : q.properties()) {
-            var property = QualifierPropertyModel.builder()
-                    .name(p.name())
-                    .value(p.value())
-                    .build();
-            qualifierBuilder.addProperty(property);
-        }
-        return qualifierBuilder.build();
-    }
-
-    // TODO right place of this method is - QualifierSetModel
     private QualifierModel convertAnnotationToQualifierModel(AnnotationMirror am) {
-        // TODO need to check whether typeUtils is required. Seems same effect can be done useing am.getAnnotationType().asElement()
-        //      if so - move extractQualifiers (and all related methods) to QualifierSetModel
-        Element annotationElement = typeUtils.asElement(am.getAnnotationType());
+        TypeElement annotationElement = (TypeElement) am.getAnnotationType().asElement();
+        var qualifierClassName = Qualifier.class.getName();
+        var annotationClassName = annotationElement.getQualifiedName();
+        if (annotationClassName.contentEquals(qualifierClassName)) {
+            return convertDirectQualifierToQualifierModel(am);
+        }
         Qualifier qualifier = annotationElement.getAnnotation(Qualifier.class);
         if (qualifier == null) {
             return null;
@@ -140,6 +157,24 @@ public class ModelUtils {
                     qualifierBuilder.addProperty(property);
                 });
         return qualifierBuilder.build();
+    }
+
+    private QualifierModel convertDirectQualifierToQualifierModel(AnnotationMirror am) {
+        var builder = QualifierModel.builder();
+        elementUtils.getElementValuesWithDefaults(am).forEach((e, v) -> {
+            var key = e.getSimpleName().toString();
+            switch (key) {
+                case "name":
+                    builder.name(stringVisitor.visit(v));
+                    break;
+                case "properties":
+                    builder.addProperties(propertiesVisitor.visit(v));
+                    break;
+                default:
+                    throw new IllegalArgumentException(key);
+            }
+        });
+        return builder.build();
     }
 
     private String annotationValueToString(AnnotationValue annotationValue) {
