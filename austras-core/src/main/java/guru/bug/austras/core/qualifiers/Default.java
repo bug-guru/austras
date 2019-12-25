@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE})
-@Qualifier(name = "austras.default")
+@Qualifier(name = Default.QUALIFIER_NAME)
 public @interface Default {
+    String QUALIFIER_NAME = "austras.default";
 }

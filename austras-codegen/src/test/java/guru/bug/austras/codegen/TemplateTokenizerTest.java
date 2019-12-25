@@ -49,9 +49,9 @@ class TemplateTokenizerTest {
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.convert.converters.JsonConverter");
         assertNextTokenIsNewLine();
-        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.convert.json.reader.JsonValueReader");
+        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.json.reader.JsonValueReader");
         assertNextTokenIsNewLine();
-        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.convert.json.writer.JsonValueWriter");
+        assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.json.writer.JsonValueWriter");
         assertNextTokenIsNewLine();
         assertNextToken(TemplateToken.Type.TEXT, "guru.bug.austras.core.qualifiers.Default");
         assertNextTokenIsNewLine();

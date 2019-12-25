@@ -1,9 +1,12 @@
 package guru.bug.austras.apt.core.common.model;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.core.qualifiers.Any;
+import guru.bug.austras.core.qualifiers.Broadcast;
+import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.core.qualifiers.Qualifier;
+import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.json.reader.JsonValueReader;
+import guru.bug.austras.json.writer.JsonValueWriter;
 
 import java.util.*;
 import java.util.function.Function;
@@ -11,9 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class QualifierModel {
+    public static final QualifierModel DEFAULT = new QualifierModel(Default.QUALIFIER_NAME);
+    public static final QualifierModel ANY = new QualifierModel(Any.QUALIFIER_NAME);
+    public static final QualifierModel BROADCAST = new QualifierModel(Broadcast.QUALIFIER_NAME);
     private static final Serializer SERIALIZER = new Serializer();
-    static final QualifierModel DEFAULT = new QualifierModel("austras.default");
-    static final QualifierModel ANY = new QualifierModel("austras.any");
     private final String name;
     private final Map<String, QualifierPropertyModel> properties;
 

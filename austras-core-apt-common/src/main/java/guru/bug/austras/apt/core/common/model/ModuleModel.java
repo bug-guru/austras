@@ -1,8 +1,8 @@
 package guru.bug.austras.apt.core.common.model;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.json.reader.JsonValueReader;
+import guru.bug.austras.json.writer.JsonValueWriter;
 
 import java.util.Collection;
 import java.util.HashSet;

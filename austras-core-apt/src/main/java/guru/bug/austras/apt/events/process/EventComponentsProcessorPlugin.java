@@ -3,6 +3,7 @@ package guru.bug.austras.apt.events.process;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.core.qualifiers.Broadcast;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,19 +16,17 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
     private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessorPlugin.class);
     private final ElementWithMessageVisitor msgVisitor = new ElementWithMessageVisitor();
     private ProcessingContext ctx;
-    private DispatcherGenerator dispatcherGenerator;
     private BroadcasterGenerator broadcasterGenerator;
 
     @Override
     public void process(ProcessingContext ctx) {
         this.ctx = ctx;
         try {
-            dispatcherGenerator = new DispatcherGenerator(ctx);
             broadcasterGenerator = new BroadcasterGenerator(ctx);
         } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
-        ctx.roundEnv().getElementsAnnotatedWith(Message.class)
+        ctx.roundEnv().getElementsAnnotatedWith(Broadcast.class)
                 .forEach(e -> e.accept(msgVisitor, ctx));
     }
 
@@ -48,48 +47,42 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
 
         @Override
         public Void visitVariable(VariableElement e, ProcessingContext ctx) {
-            if (e.getKind() != ElementKind.PARAMETER || (e.getEnclosingElement().getKind() != ElementKind.METHOD && e.getEnclosingElement().getKind() != ElementKind.CONSTRUCTOR)) {
-                logError(ctx, e, "Message annotation unexpected placement"); // TODO Better error handling
+            if (!validParameter(e)
+                    || !validConstructor(e.getEnclosingElement())
+                    || !validClass(e.getEnclosingElement().getEnclosingElement())) {
+                logError(ctx, e, Broadcast.class.getSimpleName() + "-annotation unexpected placement"); // TODO Better error handling
                 return null;
             }
-            ExecutableElement method = (ExecutableElement) e.getEnclosingElement();
-            if (isValidBroadcaster(method) && ctx.modelUtils().isBroadcaster(e.asType())) {
-                generateBroadcaster(e);
-            }
-
+            generateBroadcaster(e);
             return null;
         }
 
-
-        @Override
-        public Void visitExecutable(ExecutableElement e, ProcessingContext ctx) {
-            if (isValidReceiver(ctx, e)) {
-                generateDispatcher(e);
-            }
-
-            return null;
+        private boolean validParameter(VariableElement e) {
+            return e.getKind() == ElementKind.PARAMETER;
         }
 
-        private boolean isValidReceiver(ProcessingContext ctx, ExecutableElement method) {
-            var methodIsAnnotated = method.getAnnotationsByType(Message.class).length > 0;
-            if (!methodIsAnnotated) {
+        private boolean validConstructor(Element suspect) {
+            if (suspect.getKind() != ElementKind.CONSTRUCTOR) {
                 return false;
             }
-            var parameters = method.getParameters();
-            if (parameters.size() > 1) {
-                logError(ctx, method, "Too many parameters");
+            var constructor = (ExecutableElement) suspect;
+            if (!constructor.getThrownTypes().isEmpty()) {
                 return false;
             }
-            return true;
+            var modifiers = constructor.getModifiers();
+            return modifiers.contains(Modifier.PUBLIC);
         }
 
-        private boolean isValidBroadcaster(ExecutableElement method) {
-            var annotatedCount = method.getParameters().stream()
-                    .filter(p -> p.getAnnotationsByType(Message.class).length > 0)
-                    .filter(p -> ctx.modelUtils().isBroadcaster(p.asType()))
-                    .count();
-
-            return annotatedCount >= 1;
+        private boolean validClass(Element suspect) {
+            if (suspect.getKind() != ElementKind.CLASS) {
+                return false;
+            }
+            var type = (TypeElement) suspect;
+            var modifiers = type.getModifiers();
+            if (modifiers.contains(Modifier.ABSTRACT)) {
+                return false;
+            }
+            return modifiers.contains(Modifier.PUBLIC);
         }
 
         private void logError(ProcessingContext ctx, Element e, String reason) {
@@ -104,10 +97,6 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
 
         private void generateBroadcaster(VariableElement e) {
             broadcasterGenerator.generate(e);
-        }
-
-        private void generateDispatcher(ExecutableElement e) {
-            dispatcherGenerator.generate(e);
         }
     }
 }

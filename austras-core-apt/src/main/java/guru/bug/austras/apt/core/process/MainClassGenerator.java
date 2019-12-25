@@ -163,7 +163,7 @@ public class MainClassGenerator extends JavaGenerator {
         result.append('"').append(StringEscapeUtils.escapeJava(value)).append('"');
     }
 
-    @FromTemplate("STARTER_NAME")
+    @FromTemplate("STARTER_COMPONENT_NAME")
     public String getStarterName() {
         return starterComponent.getName();
     }
@@ -185,9 +185,11 @@ public class MainClassGenerator extends JavaGenerator {
 
     private Queue<ComponentModelRef> findRequiredComponents() {
         var result = new HashMap<ComponentModel, ComponentModelRef>();
+        var unresolved = new HashSet<ComponentModelRef>();
 
         Queue<ComponentModel> resolveQueue = new LinkedList<>();
         resolveQueue.add(starterComponent);
+
 
         while (!resolveQueue.isEmpty()) {
             var comp = resolveQueue.remove();
@@ -198,6 +200,14 @@ public class MainClassGenerator extends JavaGenerator {
             var ref = new ComponentModelRef(comp);
             resolveQueue.addAll(ref.dependencies);
             result.put(comp, ref);
+            if (!ref.unresolved.isEmpty()) {
+                unresolved.add(ref);
+            }
+        }
+
+        if (!unresolved.isEmpty()) {
+            log.error("Unresolved components: {}", unresolved);
+            throw new IllegalStateException("Unresolved components");
         }
 
         return new ArrayDeque<>(result.values());
@@ -221,13 +231,34 @@ public class MainClassGenerator extends JavaGenerator {
     private class ComponentModelRef {
         final ComponentModel component;
         final Set<ComponentModel> dependencies;
+        final Set<DependencyModel> unresolved;
 
         private ComponentModelRef(ComponentModel component) {
             this.component = Objects.requireNonNull(component, "component");
             var deps = Objects.requireNonNull(component.getDependencies(), "dependencies for " + component);
+            this.unresolved = new HashSet<>();
             this.dependencies = deps.stream()
-                    .flatMap(d -> ctx.componentManager().findComponents(d).stream())
+                    .flatMap(d -> {
+                        var comps = ctx.componentManager().findComponents(d);
+                        if (comps.isEmpty()) {
+                            unresolved.add(d);
+                        }
+                        return comps.stream();
+                    })
                     .collect(Collectors.toSet());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ComponentModelRef that = (ComponentModelRef) o;
+            return component.equals(that.component);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(component);
         }
     }
 

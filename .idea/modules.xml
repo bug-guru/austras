@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/austras-core/austras-core.iml" filepath="$PROJECT_DIR$/austras-core/austras-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core-apt/austras-core-apt.iml" filepath="$PROJECT_DIR$/austras-core-apt/austras-core-apt.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core-apt-common/austras-core-apt-common.iml" filepath="$PROJECT_DIR$/austras-core-apt-common/austras-core-apt-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-json/austras-json.iml" filepath="$PROJECT_DIR$/austras-json/austras-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-test/austras-test.iml" filepath="$PROJECT_DIR$/austras-test/austras-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-web/austras-web.iml" filepath="$PROJECT_DIR$/austras-web/austras-web.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-web-apt/austras-web-apt.iml" filepath="$PROJECT_DIR$/austras-web-apt/austras-web-apt.iml" />

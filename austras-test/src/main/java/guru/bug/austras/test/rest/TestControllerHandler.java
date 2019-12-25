@@ -1,7 +1,7 @@
 package guru.bug.austras.test.rest;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.json.writer.JsonValueWriter;
 import guru.bug.austras.web.EndpointHandler;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathItem;

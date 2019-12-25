@@ -100,12 +100,14 @@ public class ModelUtils {
         log.debug("All superclasses and interfaces: {}", ancestors);
         var varName = uniqueNameGenerator.findFreeVarName(type);
         var qualifiers = extractQualifiers(metaInfo);
+        var dependencies = collectConstructorParams(type);
 
         return ComponentModel.builder()
                 .qualifiers(qualifiers)
                 .instantiable(type.toString())
                 .name(varName)
                 .types(ancestors)
+                .dependencies(dependencies)
                 .build();
     }
 
@@ -256,15 +258,19 @@ public class ModelUtils {
         var isCollection = typeUtils.isAssignable(paramType, collectionInterfaceType);
         var isSelector = typeUtils.isAssignable(paramType, selectorInterfaceType);
 
+        DeclaredType pt;
         if (isCollection) {
-            paramType = unwrap(paramType, collectionInterfaceElement);
+            pt = unwrap(paramType, collectionInterfaceElement);
             resultBuilder.wrapping(WrappingType.COLLECTION);
         } else if (isSelector) {
-            paramType = unwrap(paramType, selectorInterfaceElement);
+            pt = unwrap(paramType, selectorInterfaceElement);
             resultBuilder.wrapping(WrappingType.SELECTOR);
+        } else {
+            pt = paramType;
+            resultBuilder.wrapping(WrappingType.NONE);
         }
 
-        resultBuilder.type(paramType.toString());
+        resultBuilder.type(pt.toString());
         resultBuilder.qualifiers(qualifiers);
 
         return resultBuilder.build();

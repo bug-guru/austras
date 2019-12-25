@@ -1,6 +1,6 @@
 package guru.bug.austras.web.apt;
 
-import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.web.contentconverter.*;
 
@@ -28,10 +28,8 @@ class JsonConverterUtil {
         var element = (TypeElement) type.asElement();
         var baseClassName = ContentConverter.class.getName();
         var typeClassName = element.getQualifiedName().toString();
-        var typeClassSimpleName = element.getSimpleName().toString();
         var converterType = Selector.class.getName() + "<" + baseClassName + "<" + typeClassName + ">>";
-        var name = "contentConverter" + typeClassSimpleName;
-        return DependencyModelUtil.createDependencyModel(converterType, name);
+        return DependencyModelUtil.createDependencyModel(converterType);
     }
 
     private static DependencyModel selectPrimitiveContentConverter(TypeMirror type) {

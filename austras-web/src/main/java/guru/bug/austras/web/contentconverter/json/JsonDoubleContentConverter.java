@@ -1,8 +1,8 @@
 package guru.bug.austras.web.contentconverter.json;
 
-import guru.bug.austras.convert.converters.JsonDoubleConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.json.JsonDoubleConverter;
+import guru.bug.austras.json.reader.JsonValueReader;
+import guru.bug.austras.json.writer.JsonValueWriter;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.contentconverter.Converts;
 import guru.bug.austras.web.contentconverter.DoubleContentConverter;

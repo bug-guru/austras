@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD})
-@Qualifier(name = "austras.broadcast")
+@Qualifier(name = Broadcast.QUALIFIER_NAME)
 public @interface Broadcast {
+    String QUALIFIER_NAME = "austras.broadcast";
 }

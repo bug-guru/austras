@@ -2,8 +2,8 @@ package guru.bug.austras.convert.apt;
 
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.convert.converters.JsonConverter;
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.json.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
-@Qualifier(name = "austras.any")
+@Qualifier(name = Any.QUALIFIER_NAME)
 public @interface Any {
+    String QUALIFIER_NAME = "austras.any";
 }

@@ -1,6 +1,6 @@
 package guru.bug.austras.web.apt;
 
-import guru.bug.austras.apt.core.model.DependencyModel;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.convert.converters.*;
 
 import javax.lang.model.element.TypeElement;
@@ -30,10 +30,8 @@ class StringConverterUtil {
         }
         var baseClassName = StringConverter.class.getName();
         var typeClassName = element.getQualifiedName().toString();
-        var typeClassSimpleName = element.getSimpleName().toString();
         var converterType = baseClassName + "<" + typeClassName + ">";
-        var name = "stringConverter" + typeClassSimpleName;
-        return DependencyModelUtil.createDependencyModel(converterType, name);
+        return DependencyModelUtil.createDependencyModel(converterType);
     }
 
     private static DependencyModel selectPrimitiveConverterProvider(TypeMirror type) {

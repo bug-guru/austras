@@ -1,14 +1,31 @@
 package $PACKAGE_NAME$;
 
 #IMPORTS#
-guru.bug.austras.events.Broadcaster
-guru.bug.austras.core.Selector
-guru.bug.austras.events.Dispatcher
+guru.bug.austras.core.qualifiers.Broadcast
+java.util.Collection
+org.slf4j.Logger
+org.slf4j.LoggerFactory
 #END#
 
-$QUALIFIERS$
-public class $SIMPLE_CLASS_NAME$ extends Broadcaster<$MESSAGE_TYPE$> {
-    public $SIMPLE_CLASS_NAME$($QUALIFIERS$ Selector<? extends Dispatcher<$MESSAGE_TYPE$>> dispatchers) {
-        super(dispatchers);
+$BROADCASTER_QUALIFIERS$
+public class $SIMPLE_CLASS_NAME$ implements $EVENTS_INTERFACE$ {
+    private static final Logger LOG = LoggerFactory.getLogger($SIMPLE_CLASS_NAME$.class);
+    private final Collection<? extends $EVENTS_INTERFACE$> receivers;
+
+    public $SIMPLE_CLASS_NAME$($DEPENDENCIES_QUALIFIERS$ Collection<? extends $EVENTS_INTERFACE$> receivers) {
+        this.receivers = receivers;
     }
+
+    #METHODS#
+    public void $METHOD_NAME$($METHOD_PARAMS$) {
+        for (var receiver : receivers) {
+            try {
+                receiver.$METHOD_NAME$($METHOD_PARAM_NAMES$);
+            } catch (Exception e) {
+                LOG.error("Exception while broadcasting", e);
+            }
+        }
+    }
+
+    #END#
 }

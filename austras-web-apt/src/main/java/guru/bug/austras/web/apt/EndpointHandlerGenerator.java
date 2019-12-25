@@ -6,13 +6,11 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
 import guru.bug.austras.web.Endpoint;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathSplitter;
 import guru.bug.austras.web.apt.model.MethodParam;
 import guru.bug.austras.web.apt.model.PathItemRef;
-import guru.bug.austras.web.apt.model.PathParamMethodParam;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -83,22 +81,21 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     public void processControllerProvider(TypeElement cls) {
         this.controllerProvider = ctx.modelUtils()
-                .createDependencyModel("_controller", (DeclaredType) cls.asType(), cls)
-                .copyAsProvider();
+                .createDependencyModel((DeclaredType) cls.asType(), cls);
         dependencies.add(this.controllerProvider);
     }
 
     private void processParams(ExecutableElement methodElement) {
-        for (var param : methodElement.getParameters()) {
-            var type = param.asType();
-            var name = param.getSimpleName().toString();
-            var converterProvider = StringConverterUtil.selectConverter(type);
-            if (converterProvider != null) {
-                dependencies.add(converterProvider);
-            }
-            var paramObj = new PathParamMethodParam(name, converterProvider);
-            methodParams.add(paramObj);
-        }
+//        for (var param : methodElement.getParameters()) {
+//            var type = param.asType();
+//            var name = param.getSimpleName().toString();
+//            var converterProvider = StringConverterUtil.selectConverter(type);
+//            if (converterProvider != null) {
+//                dependencies.add(converterProvider);
+//            }
+//            var paramObj = new PathParamMethodParam(name, converterProvider);
+//            methodParams.add(paramObj);
+//        }
     }
 
     public void processEndpointInfo(Endpoint endpointAnnotation) {
@@ -127,15 +124,15 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return qualifierToString(currentDependency.getQualifiers());
     }
 
-    @FromTemplate("DEPENDENCY_TYPE")
-    public String dependencyType() {
-        return tryImport(currentDependency.asTypeDeclaration());
-    }
+//    @FromTemplate("DEPENDENCY_TYPE")
+//    public String dependencyType() {
+//        return tryImport(currentDependency.asTypeDeclaration());
+//    }
 
-    @FromTemplate("DEPENDENCY_NAME")
-    public String dependencyName() {
-        return currentDependency.getName();
-    }
+//    @FromTemplate("DEPENDENCY_NAME")
+//    public String dependencyName() {
+//        return currentDependency.getName();
+//    }
 
     @FromTemplate(",")
     public String optionalComma() {
@@ -214,10 +211,10 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return endpointMethodName;
     }
 
-    @FromTemplate("CONTROLLER_PROVIDER_NAME")
-    public String getControllerProviderName() {
-        return controllerProvider.getName();
-    }
+//    @FromTemplate("CONTROLLER_PROVIDER_NAME")
+//    public String getControllerProviderName() {
+//        return controllerProvider.getName();
+//    }
 
     @FromTemplate("ENDPOINT_METHOD_PARAMS")
     public void endpointMethodParams(PrintWriter out, BodyBlock body) {
@@ -241,17 +238,17 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         }
         return "var _result = ";
     }
-
-    @FromTemplate("WRITE RESULT")
-    public String getReturnResult() {
-        if (resultConverter == null) {
-            return "";
-        }
-
-        return String.format("%s.toJson(_result, %s.newInstance(_out));",
-                resultConverter.getName(),
-                tryImport(JsonValueWriter.class.getName()));
-    }
+//
+//    @FromTemplate("WRITE RESULT")
+//    public String getReturnResult() {
+//        if (resultConverter == null) {
+//            return "";
+//        }
+//
+//        return String.format("%s.toJson(_result, %s.newInstance(_out));",
+//                resultConverter.getName(),
+//                tryImport(JsonValueWriter.class.getName()));
+//    }
 
     @FromTemplate("SET CONTENT TYPE")
     public String getContentTYpe() {

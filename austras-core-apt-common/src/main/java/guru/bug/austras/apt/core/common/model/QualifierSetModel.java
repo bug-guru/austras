@@ -1,14 +1,14 @@
 package guru.bug.austras.apt.core.common.model;
 
-import guru.bug.austras.convert.converters.JsonConverter;
-import guru.bug.austras.convert.json.reader.JsonValueReader;
-import guru.bug.austras.convert.json.writer.JsonValueWriter;
+import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.core.qualifiers.Qualifier;
 import guru.bug.austras.core.qualifiers.Qualifiers;
+import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.json.reader.JsonValueReader;
+import guru.bug.austras.json.writer.JsonValueWriter;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,12 +16,14 @@ public class QualifierSetModel {
     private static final Serializer SERIALIZER = new Serializer();
     private static final QualifierSetModel DEFAULT = new QualifierSetModel(QualifierModel.DEFAULT);
     private static final QualifierSetModel ANY = new QualifierSetModel(QualifierModel.ANY);
-    private static final Collector<QualifierModel, ?, Map<String, QualifierModel>> COLLECTOR
-            = Collectors.toMap(QualifierModel::getName, Function.identity());
     private final Map<String, QualifierModel> qualifiers;
 
     private QualifierSetModel(Stream<QualifierModel> qualifiers) {
-        this.qualifiers = Map.copyOf(qualifiers.collect(COLLECTOR));
+        var map = qualifiers.collect(Collectors.toMap(QualifierModel::getName, Function.identity()));
+        if (map.isEmpty()) {
+            map = Map.of(Default.QUALIFIER_NAME, QualifierModel.DEFAULT);
+        }
+        this.qualifiers = Map.copyOf(map);
     }
 
     public QualifierSetModel(QualifierModel... qualifiers) {
@@ -56,6 +58,11 @@ public class QualifierSetModel {
     public static QualifierSetModel of(Collection<Qualifier> qualifiers) {
         var q = Objects.requireNonNull(qualifiers, "qualifiers");
         return new QualifierSetModel(q.stream().map(QualifierModel::of));
+    }
+
+    public QualifierSetModel minus(QualifierModel qualifier) {
+        return new QualifierSetModel(this.qualifiers.values().stream()
+                .filter(qm -> !qm.equals(qualifier)));
     }
 
     public Collection<QualifierModel> getAll() {
