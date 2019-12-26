@@ -5,7 +5,7 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.convert.engine.json.JsonConverter;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;

@@ -1,6 +1,6 @@
 package guru.bug.austras.test.convert;
 
-import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.convert.engine.json.JsonConverter;
 
 @SuppressWarnings("ALL") // this class is for testing only
 public class WithJsonConverter {

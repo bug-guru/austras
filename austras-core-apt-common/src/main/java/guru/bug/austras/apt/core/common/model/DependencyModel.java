@@ -1,8 +1,8 @@
 package guru.bug.austras.apt.core.common.model;
 
-import guru.bug.austras.json.JsonConverter;
-import guru.bug.austras.json.reader.JsonValueReader;
-import guru.bug.austras.json.writer.JsonValueWriter;
+import guru.bug.austras.convert.engine.json.JsonConverter;
+import guru.bug.austras.convert.engine.json.reader.JsonValueReader;
+import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
 
 import java.util.Objects;
 

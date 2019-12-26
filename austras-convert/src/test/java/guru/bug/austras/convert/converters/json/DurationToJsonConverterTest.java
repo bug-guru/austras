@@ -1,7 +1,7 @@
 package guru.bug.austras.convert.converters.json;
 
 import guru.bug.austras.convert.converters.str.DurationToStringConverter;
-import guru.bug.austras.json.JsonConverter;
+import guru.bug.austras.convert.engine.json.JsonConverter;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;

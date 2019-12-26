@@ -2,10 +2,10 @@ package guru.bug.austras.convert.converters.json;
 
 
 import guru.bug.austras.convert.converters.StringConverter;
+import guru.bug.austras.convert.engine.json.JsonConverter;
+import guru.bug.austras.convert.engine.json.reader.JsonValueReader;
+import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
 import guru.bug.austras.core.qualifiers.Default;
-import guru.bug.austras.json.JsonConverter;
-import guru.bug.austras.json.reader.JsonValueReader;
-import guru.bug.austras.json.writer.JsonValueWriter;
 
 import java.time.DayOfWeek;
 

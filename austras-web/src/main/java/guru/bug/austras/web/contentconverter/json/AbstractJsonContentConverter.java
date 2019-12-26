@@ -1,7 +1,7 @@
 package guru.bug.austras.web.contentconverter.json;
 
-import guru.bug.austras.json.reader.JsonValueReader;
-import guru.bug.austras.json.writer.JsonValueWriter;
+import guru.bug.austras.convert.engine.json.reader.JsonValueReader;
+import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
 import guru.bug.austras.web.contentconverter.ContentConverter;
 
 import java.io.Reader;

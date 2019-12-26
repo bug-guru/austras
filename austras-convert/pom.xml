@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>guru.bug.austras</groupId>
-            <artifactId>austras-json</artifactId>
+            <artifactId>austras-convert-engine-json</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

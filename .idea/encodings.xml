@@ -9,6 +9,14 @@
     <file url="file://$PROJECT_DIR$/austras-convert-apt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert-apt/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert-apt/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content-json/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content-json/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content-plaintext/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content-plaintext/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-content/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-engine-json/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-convert-engine-json/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-convert/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-core" charset="UTF-8" />
@@ -19,8 +27,6 @@
     <file url="file://$PROJECT_DIR$/austras-core-apt/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-core/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/austras-json/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/austras-json/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test/src/main/resources" charset="UTF-8" />

@@ -19,7 +19,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.20.v20190813" level="project" />
     <orderEntry type="module" module-name="austras-core" />
     <orderEntry type="module" module-name="austras-convert" />
-    <orderEntry type="module" module-name="austras-json" />
+    <orderEntry type="module" module-name="austras-convert-engine-json" />
     <orderEntry type="module" module-name="austras-codegen" />
     <orderEntry type="module" module-name="austras-core-apt-common" />
     <orderEntry type="module" module-name="austras-core-apt" />
