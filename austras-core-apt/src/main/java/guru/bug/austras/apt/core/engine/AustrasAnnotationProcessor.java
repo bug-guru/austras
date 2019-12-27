@@ -84,6 +84,10 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        if (roundEnv.errorRaised()) {
+            log.error("Error was raised");
+            return false;
+        }
         var ctx = new ProcessingContextImpl() {
 
             @Override

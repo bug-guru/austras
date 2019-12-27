@@ -2,6 +2,7 @@ package guru.bug.austras.convert.apt;
 
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.convert.content.ContentConverter;
 import guru.bug.austras.convert.engine.json.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -16,17 +18,17 @@ import java.util.stream.Stream;
 class ConvertersProcessor {
     private final Logger logger = LoggerFactory.getLogger(ConvertersProcessor.class);
     private final ProcessingContext ctx;
+    private final TypeElement contentConverter;
     private final TypeElement jsonConverter;
-    private final TypeElement stringConverter;
-    private final JsonConverterGenerator jsonConverterGenerator;
+    private final JsonContentConverterGenerator contentConverterGenerator;
 
     ConvertersProcessor(ProcessingContext ctx) {
         this.ctx = ctx;
         var elementUtils = ctx.processingEnv().getElementUtils();
+        contentConverter = elementUtils.getTypeElement(ContentConverter.class.getName());
         jsonConverter = elementUtils.getTypeElement(JsonConverter.class.getName());
-        stringConverter = elementUtils.getTypeElement(StringConverter.class.getName());
         try {
-            jsonConverterGenerator = new JsonConverterGenerator(ctx);
+            contentConverterGenerator = new JsonContentConverterGenerator(ctx);
         } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
@@ -54,9 +56,7 @@ class ConvertersProcessor {
             return;
         }
         var paramTypeElement = paramDeclType.asElement();
-        boolean isJsonConverter = jsonConverter.equals(paramTypeElement);
-        boolean isStringConverter = stringConverter.equals(paramTypeElement);
-        if (!isJsonConverter && !isStringConverter) {
+        if (!contentConverter.equals(paramTypeElement) && !jsonConverter.equals(paramTypeElement)) {
             return;
         }
         var qualifier = ctx.componentManager().extractQualifier(parameter);
@@ -70,21 +70,16 @@ class ConvertersProcessor {
         }
         var convDeclType = (DeclaredType) args.get(0);
 
-        if (isJsonConverter) {
-            generateJsonConverter(convDeclType);
-        } else {
-            generateStringConverter(convDeclType);
+        try {
+            generateConverter(convDeclType);
+        } catch (Exception e) {
+            ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, "Error generating content converter", parameter);
         }
     }
 
-    private void generateStringConverter(DeclaredType conversionType) { //NOSONAR not yet finished
-        logger.info("GENERATING STRING CONVERTER FOR {}" , conversionType);
-        // TODO
-    }
-
-    private void generateJsonConverter(DeclaredType conversionType) {
-        logger.info("generating json converter for {}" , conversionType);
-        jsonConverterGenerator.generate(conversionType);
+    private void generateConverter(DeclaredType conversionType) {
+        logger.info("generating json converter for {}", conversionType);
+        contentConverterGenerator.generate(conversionType);
     }
 
     private Stream<? extends VariableElement> parametersOf(ExecutableElement executableElement) {

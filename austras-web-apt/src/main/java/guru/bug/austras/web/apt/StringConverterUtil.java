@@ -1,7 +1,8 @@
 package guru.bug.austras.web.apt;
 
 import guru.bug.austras.apt.core.common.model.DependencyModel;
-import guru.bug.austras.convert.converters.*;
+import guru.bug.austras.convert.content.*;
+import guru.bug.austras.convert.content.plaintext.ShortPlainTextConverter;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -28,7 +29,7 @@ class StringConverterUtil {
         if (element.getQualifiedName().contentEquals(String.class.getName())) {
             return null;
         }
-        var baseClassName = StringConverter.class.getName();
+        var baseClassName = ContentConverter.class.getName();
         var typeClassName = element.getQualifiedName().toString();
         var converterType = baseClassName + "<" + typeClassName + ">";
         return DependencyModelUtil.createDependencyModel(converterType);
@@ -38,28 +39,28 @@ class StringConverterUtil {
         Class<?> converter;
         switch (type.getKind()) {
             case SHORT:
-                converter = StringShortConverter.class;
+                converter = ShortPlainTextConverter.class;
                 break;
             case INT:
-                converter = StringIntegerConverter.class;
+                converter = IntegerContentConverter.class;
                 break;
             case DOUBLE:
-                converter = StringDoubleConverter.class;
+                converter = DoubleContentConverter.class;
                 break;
             case BOOLEAN:
-                converter = StringBooleanConverter.class;
+                converter = BooleanContentConverter.class;
                 break;
             case CHAR:
-                converter = StringCharacterConverter.class;
+                converter = CharacterContentConverter.class;
                 break;
             case FLOAT:
-                converter = StringFloatConverter.class;
+                converter = FloatContentConverter.class;
                 break;
             case LONG:
-                converter = StringLongConverter.class;
+                converter = LongContentConverter.class;
                 break;
             case BYTE:
-                converter = StringByteConverter.class;
+                converter = ByteContentConverter.class;
                 break;
             default:
                 throw new IllegalArgumentException("Type " + type);

@@ -87,6 +87,15 @@ public class DependencyModel {
         }
     }
 
+    @Override
+    public String toString() {
+        return "DependencyModel{" +
+                "type='" + type + '\'' +
+                ", qualifiers=" + qualifiers +
+                ", wrapping=" + wrapping +
+                '}';
+    }
+
     public static class Builder {
         private String type;
         private QualifierSetModel qualifiers;

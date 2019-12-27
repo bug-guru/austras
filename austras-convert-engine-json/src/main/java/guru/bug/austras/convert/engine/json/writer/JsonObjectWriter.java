@@ -9,6 +9,8 @@ public interface JsonObjectWriter {
 
     /* BOOLEAN */
 
+    void writeValue(String key, boolean value, JsonBooleanSerializer serializer);
+
     void writeBoolean(String key, boolean value, JsonBooleanSerializer serializer);
 
     void writeBoolean(String key, Boolean value, JsonSerializer<Boolean> serializer);
@@ -30,6 +32,8 @@ public interface JsonObjectWriter {
     void writeBooleanArray(String key, Collection<Boolean> array);
 
     /* BYTE */
+
+    void writeValue(String key, byte value, JsonByteSerializer serializer);
 
     void writeByte(String key, byte value, JsonByteSerializer serializer);
 
@@ -53,6 +57,8 @@ public interface JsonObjectWriter {
 
     /* SHORT */
 
+    void writeValue(String key, short value, JsonShortSerializer serializer);
+
     void writeShort(String key, short value, JsonShortSerializer serializer);
 
     void writeShort(String key, Short value, JsonSerializer<Short> serializer);
@@ -74,6 +80,8 @@ public interface JsonObjectWriter {
     void writeShortArray(String key, Collection<Short> array);
 
     /* INTEGER */
+
+    void writeValue(String key, int value, JsonIntegerSerializer serializer);
 
     void writeInteger(String key, int value, JsonIntegerSerializer serializer);
 
@@ -97,6 +105,8 @@ public interface JsonObjectWriter {
 
     /* LONG */
 
+    void writeValue(String key, long value, JsonLongSerializer serializer);
+
     void writeLong(String key, long value, JsonLongSerializer serializer);
 
     void writeLong(String key, Long value, JsonSerializer<Long> serializer);
@@ -119,6 +129,8 @@ public interface JsonObjectWriter {
 
     /* FLOAT */
 
+    void writeValue(String key, float value, JsonFloatSerializer serializer);
+
     void writeFloat(String key, float value, JsonFloatSerializer serializer);
 
     void writeFloat(String key, Float value, JsonSerializer<Float> serializer);
@@ -140,6 +152,8 @@ public interface JsonObjectWriter {
     void writeFloatArray(String key, Collection<Float> array);
 
     /* DOUBLE */
+
+    void writeValue(String key, double value, JsonDoubleSerializer serializer);
 
     void writeDouble(String key, double value, JsonDoubleSerializer serializer);
 

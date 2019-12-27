@@ -7,7 +7,7 @@ import guru.bug.austras.core.qualifiers.QualifierProperty;
 
 import java.util.Objects;
 
-public class QualifierPropertyModel {
+public class QualifierPropertyModel implements Comparable<QualifierPropertyModel> {
     private static final Serializer SERIALIZER = new Serializer();
     private final String name;
     private final String value;
@@ -56,6 +56,16 @@ public class QualifierPropertyModel {
     @Override
     public int hashCode() {
         return Objects.hash(name, value);
+    }
+
+    @Override
+    public int compareTo(QualifierPropertyModel o) {
+        var result = this.name.compareTo(o.name);
+        if (result != 0) {
+            return result;
+        }
+        result = this.value.compareTo(o.value);
+        return result;
     }
 
     public static class Builder {

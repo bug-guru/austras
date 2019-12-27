@@ -78,7 +78,7 @@ public class ComponentMap {
 
 
     private static class Index {
-        final Map<ComponentKey, HashSet<ComponentModel>> components = new HashMap<>();
+        final Map<ComponentKey, HashSet<ComponentModel>> components = new TreeMap<>();
 
         boolean contains(ComponentKey key) {
             return components.containsKey(key);

@@ -185,7 +185,7 @@ public class MainClassGenerator extends JavaGenerator {
 
     private Queue<ComponentModelRef> findRequiredComponents() {
         var result = new HashMap<ComponentModel, ComponentModelRef>();
-        var unresolved = new HashSet<ComponentModelRef>();
+        var unresolved = new HashSet<DependencyModel>();
 
         Queue<ComponentModel> resolveQueue = new LinkedList<>();
         resolveQueue.add(starterComponent);
@@ -201,7 +201,7 @@ public class MainClassGenerator extends JavaGenerator {
             resolveQueue.addAll(ref.dependencies);
             result.put(comp, ref);
             if (!ref.unresolved.isEmpty()) {
-                unresolved.add(ref);
+                unresolved.addAll(ref.unresolved);
             }
         }
 
@@ -259,6 +259,11 @@ public class MainClassGenerator extends JavaGenerator {
         @Override
         public int hashCode() {
             return Objects.hash(component);
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toString(component);
         }
     }
 

@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class QualifierModel {
+public class QualifierModel implements Comparable<QualifierModel> {
     public static final QualifierModel DEFAULT = new QualifierModel(Default.QUALIFIER_NAME);
     public static final QualifierModel ANY = new QualifierModel(Any.QUALIFIER_NAME);
     public static final QualifierModel BROADCAST = new QualifierModel(Broadcast.QUALIFIER_NAME);
@@ -23,7 +23,7 @@ public class QualifierModel {
 
     private QualifierModel(String name, Stream<QualifierPropertyModel> properties) {
         this.name = name;
-        this.properties = Map.copyOf(properties.collect(Collectors.toMap(QualifierPropertyModel::getName, Function.identity())));
+        this.properties = new TreeMap<>(properties.collect(Collectors.toMap(QualifierPropertyModel::getName, Function.identity())));
     }
 
     public QualifierModel(String name, QualifierPropertyModel... properties) {
@@ -90,6 +90,30 @@ public class QualifierModel {
     @Override
     public int hashCode() {
         return Objects.hash(name, properties);
+    }
+
+    @Override
+    public int compareTo(QualifierModel o) {
+        var result = this.name.compareTo(o.name);
+        if (result != 0) {
+            return result;
+        }
+        var thisIterator = this.properties.values().iterator();
+        var otherIterator = o.properties.values().iterator();
+        while (thisIterator.hasNext() && otherIterator.hasNext()) {
+            result = thisIterator.next().compareTo(otherIterator.next());
+            if (result != 0) {
+                return result;
+            }
+        }
+        if (!thisIterator.hasNext() && !otherIterator.hasNext()) {
+            return 0;
+        }
+        if (thisIterator.hasNext()) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     public static class Builder {

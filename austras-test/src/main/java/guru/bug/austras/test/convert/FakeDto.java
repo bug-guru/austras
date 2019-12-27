@@ -8,6 +8,7 @@ public class FakeDto {
     private String name;
     private Integer number;
     private LocalDate dateOfBirth;
+    private int intnum;
 
     public UUID getId() {
         return id;
@@ -39,5 +40,13 @@ public class FakeDto {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getIntnum() {
+        return intnum;
+    }
+
+    public void setIntnum(int intnum) {
+        this.intnum = intnum;
     }
 }

@@ -1,8 +1,8 @@
 package guru.bug.austras.web.apt;
 
 import guru.bug.austras.apt.core.common.model.DependencyModel;
+import guru.bug.austras.convert.content.*;
 import guru.bug.austras.core.Selector;
-import guru.bug.austras.web.contentconverter.*;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;

@@ -2,7 +2,7 @@ package guru.bug.austras.apt.core.common.model;
 
 import java.util.Objects;
 
-public class ComponentKey {
+public class ComponentKey implements Comparable<ComponentKey> {
     private final String type;
     private final QualifierSetModel qualifiers;
 
@@ -59,5 +59,14 @@ public class ComponentKey {
                 "type='" + type + '\'' +
                 ", qualifiers=" + qualifiers +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ComponentKey o) {
+        var result = this.type.compareTo(o.type);
+        if (result == 0) {
+            result = this.qualifiers.compareTo(o.qualifiers);
+        }
+        return result;
     }
 }

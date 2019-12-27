@@ -44,6 +44,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* BOOLEAN */
 
     @Override
+    public void writeValue(String key, boolean value, JsonBooleanSerializer serializer) {
+        writeBoolean(key, value, serializer);
+    }
+
+    @Override
     public void writeBoolean(String key, boolean value, JsonBooleanSerializer serializer) {
         write(key, () -> valueWriter.writeBoolean(value, serializer));
     }
@@ -94,6 +99,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     /* BYTE */
+
+    @Override
+    public void writeValue(String key, byte value, JsonByteSerializer serializer) {
+        writeByte(key, value, serializer);
+    }
 
     @Override
     public void writeByte(String key, byte value, JsonByteSerializer serializer) {
@@ -148,6 +158,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* SHORT */
 
     @Override
+    public void writeValue(String key, short value, JsonShortSerializer serializer) {
+        writeShort(key, value, serializer);
+    }
+
+    @Override
     public void writeShort(String key, short value, JsonShortSerializer serializer) {
         write(key, () -> valueWriter.writeShort(value, serializer));
     }
@@ -198,6 +213,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     /* INTEGER */
+
+    @Override
+    public void writeValue(String key, int value, JsonIntegerSerializer serializer) {
+        writeInteger(key, value, serializer);
+    }
 
     @Override
     public void writeInteger(String key, int value, JsonIntegerSerializer serializer) {
@@ -252,6 +272,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* LONG */
 
     @Override
+    public void writeValue(String key, long value, JsonLongSerializer serializer) {
+        writeLong(key, value, serializer);
+    }
+
+    @Override
     public void writeLong(String key, long value, JsonLongSerializer serializer) {
         write(key, () -> valueWriter.writeLong(value, serializer));
     }
@@ -304,6 +329,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     /* FLOAT */
 
     @Override
+    public void writeValue(String key, float value, JsonFloatSerializer serializer) {
+        writeFloat(key, value, serializer);
+    }
+
+    @Override
     public void writeFloat(String key, float value, JsonFloatSerializer serializer) {
         write(key, () -> valueWriter.writeFloat(value, serializer));
     }
@@ -354,6 +384,11 @@ class JsonObjectWriterImpl implements JsonObjectWriter {
     }
 
     /* DOUBLE */
+
+    @Override
+    public void writeValue(String key, double value, JsonDoubleSerializer serializer) {
+        writeDouble(key, value, serializer);
+    }
 
     @Override
     public void writeDouble(String key, double value, JsonDoubleSerializer serializer) {

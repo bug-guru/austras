@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class QualifierSetModel {
+public class QualifierSetModel implements Comparable<QualifierSetModel> {
     private static final Serializer SERIALIZER = new Serializer();
     private static final QualifierSetModel DEFAULT = new QualifierSetModel(QualifierModel.DEFAULT);
     private static final QualifierSetModel ANY = new QualifierSetModel(QualifierModel.ANY);
@@ -23,7 +23,7 @@ public class QualifierSetModel {
         if (map.isEmpty()) {
             map = Map.of(Default.QUALIFIER_NAME, QualifierModel.DEFAULT);
         }
-        this.qualifiers = Map.copyOf(map);
+        this.qualifiers = new TreeMap<>(map);
     }
 
     public QualifierSetModel(QualifierModel... qualifiers) {
@@ -91,6 +91,27 @@ public class QualifierSetModel {
     @Override
     public int hashCode() {
         return Objects.hash(qualifiers);
+    }
+
+    @Override
+    public int compareTo(QualifierSetModel o) {
+        var thisIterator = this.qualifiers.values().iterator();
+        var otherIterator = o.qualifiers.values().iterator();
+        var result = 0;
+        while (thisIterator.hasNext() && otherIterator.hasNext()) {
+            result = thisIterator.next().compareTo(otherIterator.next());
+            if (result != 0) {
+                return result;
+            }
+        }
+        if (!thisIterator.hasNext() && !otherIterator.hasNext()) {
+            return 0;
+        }
+        if (thisIterator.hasNext()) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     private static class Serializer implements JsonConverter<QualifierSetModel> {

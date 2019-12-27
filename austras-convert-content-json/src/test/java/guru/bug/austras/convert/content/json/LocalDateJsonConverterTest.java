@@ -1,6 +1,6 @@
 package guru.bug.austras.convert.content.json;
 
-import guru.bug.austras.convert.converters.str.LocalDateToStringConverter;
+import guru.bug.austras.convert.content.plaintext.LocalDatePlainTextConverter;
 import guru.bug.austras.convert.engine.json.JsonConverter;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LocalDateJsonConverterTest extends JsonConverterTestBase {
-    private JsonConverter<LocalDate> converter = new LocalDateJsonConverter(new LocalDateToStringConverter());
+    private JsonConverter<LocalDate> converter = new LocalDateJsonConverter(new LocalDatePlainTextConverter());
 
     @Test
     void toJson() {

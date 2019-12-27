@@ -5,16 +5,20 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.convert.engine.json.JsonConverter;
+import guru.bug.austras.convert.content.BooleanContentConverter;
+import guru.bug.austras.convert.engine.json.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor9;
+import javax.lang.model.util.TypeKindVisitor9;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -23,8 +27,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-@FromTemplate("JsonConverter.java.txt")
-public class JsonConverterGenerator extends JavaGenerator {
+@FromTemplate("JsonContentConverter.java.txt")
+public class JsonContentConverterGenerator extends JavaGenerator {
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;
     private List<Property> properties;
@@ -32,8 +36,11 @@ public class JsonConverterGenerator extends JavaGenerator {
     private String simpleName;
     private String targetQualifiedName;
     private Property currentProperty;
+    private boolean hasMore;
+    private List<ConverterInfo> converters;
+    private ConverterInfo currentConverter;
 
-    JsonConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
+    JsonContentConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
         this.ctx = ctx;
     }
@@ -41,10 +48,76 @@ public class JsonConverterGenerator extends JavaGenerator {
 
     void generate(DeclaredType type) {
         properties = collectProps(type);
+        converters = collectConverters();
         packageName = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
-        simpleName = type.asElement().getSimpleName().toString() + "ToJsonConverter";
+        simpleName = type.asElement().getSimpleName().toString() + "JsonConverter";
         targetQualifiedName = ((TypeElement) type.asElement()).getQualifiedName().toString();
         generateJavaClass();
+    }
+
+    private List<ConverterInfo> collectConverters() {
+        var convertersMap = new HashMap<TypeMirror, ConverterInfo>();
+        for (var p : properties) {
+            p.converter = convertersMap.computeIfAbsent(p.type, k -> {
+                String type;
+                String name;
+                if (k.getKind().isPrimitive()) {
+                    type = findPrimitiveConverterType(k);
+                    name = k.toString() + "Converter";
+                } else {
+                    var d = (DeclaredType) k;
+                    var propType = (TypeElement) d.asElement();
+                    type = JsonConverter.class.getName() + "<" + k.toString() + ">";
+                    name = StringUtils.uncapitalize(propType.getSimpleName().toString()) + "Converter";
+                }
+                return new ConverterInfo(type, name);
+            });
+        }
+        return List.copyOf(convertersMap.values());
+    }
+
+    private String findPrimitiveConverterType(TypeMirror primitive) {
+        return primitive.accept(new TypeKindVisitor9<Class<?>, Void>() {
+            @Override
+            public Class<?> visitPrimitiveAsBoolean(PrimitiveType t, Void aVoid) {
+                return BooleanContentConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsByte(PrimitiveType t, Void aVoid) {
+                return JsonByteConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsShort(PrimitiveType t, Void aVoid) {
+                return JsonShortConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsInt(PrimitiveType t, Void aVoid) {
+                return JsonIntegerConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsLong(PrimitiveType t, Void aVoid) {
+                return JsonLongConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsChar(PrimitiveType t, Void aVoid) {
+                return JsonCharacterConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsFloat(PrimitiveType t, Void aVoid) {
+                return JsonFloatConverter.class;
+            }
+
+            @Override
+            public Class<?> visitPrimitiveAsDouble(PrimitiveType t, Void aVoid) {
+                return JsonDoubleConverter.class;
+            }
+        }, null).getName();
     }
 
     @FromTemplate("PACKAGE_NAME")
@@ -65,40 +138,48 @@ public class JsonConverterGenerator extends JavaGenerator {
     }
 
     @FromTemplate("PROPERTIES")
-    public void processConverters(PrintWriter out, BodyBlock body) {
-        for (var p : properties) {
-            this.currentProperty = p;
+    public void processConvertersParams(PrintWriter out, BodyBlock body) {
+        var pi = properties.iterator();
+        while (pi.hasNext()) {
+            this.currentProperty = pi.next();
+            this.hasMore = pi.hasNext();
             out.print(body.evaluateBody());
         }
     }
 
-    @FromTemplate("PROPERTIES PARAMS")
-    public void processConvertersParams(PrintWriter out, BodyBlock body) {
-        boolean sep = false;
-        for (var p : properties) {
-            this.currentProperty = p;
-            if (sep) {
-                out.print(", ");
-            } else {
-                sep = true;
-            }
+    @FromTemplate("CONVERTERS")
+    public void processConverters(PrintWriter out, BodyBlock body) {
+        var pi = converters.iterator();
+        while (pi.hasNext()) {
+            this.currentConverter = pi.next();
+            this.hasMore = pi.hasNext();
             out.print(body.evaluateBody());
         }
+    }
+
+    @FromTemplate(",")
+    public String commaSeparator() {
+        return hasMore ? ", " : "";
     }
 
     @FromTemplate("CONVERTER_TYPE")
     public String getCurrentConverterType() {
-        return tryImport(JsonConverter.class.getName()) + "<" + tryImport(currentProperty.type.toString()) + ">";
+        return tryImport(currentConverter.type);
     }
 
     @FromTemplate("CONVERTER_NAME")
     public String getCurrentConverterName() {
-        return currentProperty.name + "Converter";
+        return currentConverter.name;
     }
 
     @FromTemplate("PROPERTY_NAME")
     public String getCurrentPropertyName() {
         return currentProperty.name;
+    }
+
+    @FromTemplate("PROPERTY_CONVERTER_NAME")
+    public String getCurrentPropertyConverterName() {
+        return currentProperty.converter.name;
     }
 
     @FromTemplate("PROPERTY_GETTER_NAME")
@@ -109,6 +190,13 @@ public class JsonConverterGenerator extends JavaGenerator {
     @FromTemplate("PROPERTY_SETTER_NAME")
     public String getCurrentPropertySetterName() {
         return currentProperty.setter.getSimpleName().toString();
+    }
+
+    @FromTemplate("IF_NOT_PRIMITIVE")
+    public void ifNotPrimitive(PrintWriter out, BodyBlock body) {
+        if (!currentProperty.type.getKind().isPrimitive()) {
+            out.print(body.evaluateBody());
+        }
     }
 
     private List<Property> collectProps(DeclaredType type) {
@@ -178,6 +266,7 @@ public class JsonConverterGenerator extends JavaGenerator {
         VariableElement field;
         ExecutableElement getter;
         ExecutableElement setter;
+        ConverterInfo converter;
 
         @Override
         public String toString() {
@@ -225,6 +314,16 @@ public class JsonConverterGenerator extends JavaGenerator {
             }
             prop.name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
             return prop;
+        }
+    }
+
+    private static class ConverterInfo {
+        final String type;
+        final String name;
+
+        private ConverterInfo(String type, String name) {
+            this.type = type;
+            this.name = name;
         }
     }
 }

@@ -13,12 +13,6 @@ import java.io.Writer;
 public abstract class AbstractJsonConverter<T> implements ContentConverter<T>, JsonConverter<T> {
 
     @Override
-    public abstract void toJson(T value, JsonValueWriter writer);
-
-    @Override
-    public abstract T fromJson(JsonValueReader reader);
-
-    @Override
     public T fromString(String value) {
         return read(new StringReader(value));
     }

@@ -1,6 +1,6 @@
 package guru.bug.austras.convert.content.json;
 
-import guru.bug.austras.convert.converters.str.LocalTimeToStringConverter;
+import guru.bug.austras.convert.content.plaintext.LocalTimePlainTextConverter;
 import guru.bug.austras.convert.engine.json.JsonConverter;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LocalTimeJsonConverterTest extends JsonConverterTestBase {
-    private JsonConverter<LocalTime> converter = new LocalTimeJsonConverter(new LocalTimeToStringConverter());
+    private JsonConverter<LocalTime> converter = new LocalTimeJsonConverter(new LocalTimePlainTextConverter());
 
     @Test
     void toJson() {

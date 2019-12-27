@@ -1,6 +1,6 @@
 package guru.bug.austras.convert.content.json;
 
-import guru.bug.austras.convert.converters.str.DurationToStringConverter;
+import guru.bug.austras.convert.content.plaintext.DurationPlainTextConverter;
 import guru.bug.austras.convert.engine.json.JsonConverter;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DurationJsonConverterTest extends JsonConverterTestBase {
-    private JsonConverter<Duration> converter = new DurationJsonConverter(new DurationToStringConverter());
+    private JsonConverter<Duration> converter = new DurationJsonConverter(new DurationPlainTextConverter());
 
     @Test
     void toJson() {
