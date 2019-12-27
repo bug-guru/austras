@@ -60,12 +60,12 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     @FromTemplate("BROADCASTER_QUALIFIERS")
     public String broadcasterQualifiers() {
-        return qualifierToString(eventsBroadcasterModel.getQualifier());
+        return eventsBroadcasterModel.getQualifier().toString();
     }
 
     @FromTemplate("DEPENDENCIES_QUALIFIERS")
     public String dependenciesQualifiers() {
-        return qualifierToString(eventsBroadcasterModel.getQualifier().minus(QualifierModel.BROADCAST));
+        return eventsBroadcasterModel.getQualifier().minus(QualifierModel.BROADCAST).toString();
     }
 
     @FromTemplate("METHODS")

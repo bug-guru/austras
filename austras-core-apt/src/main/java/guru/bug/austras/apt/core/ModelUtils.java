@@ -150,7 +150,7 @@ public class ModelUtils {
                 .map(e -> (ExecutableElement) e)
                 .filter(e -> mappedNames.containsKey(e.getSimpleName().toString()))
                 .forEach(e -> {
-                    var name = mappedNames.get(e.getSimpleName().toString());
+                    var name = mappedNames.remove(e.getSimpleName().toString());
                     var value = annotationValueToString(elementValuesWithDefaults.get(e));
                     var property = QualifierPropertyModel.builder()
                             .name(name)
@@ -158,6 +158,13 @@ public class ModelUtils {
                             .build();
                     qualifierBuilder.addProperty(property);
                 });
+        mappedNames.forEach((name, value) -> {
+            var property = QualifierPropertyModel.builder()
+                    .name(name)
+                    .value(value)
+                    .build();
+            qualifierBuilder.addProperty(property);
+        });
         return qualifierBuilder.build();
     }
 

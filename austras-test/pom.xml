@@ -14,7 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>guru.bug.austras</groupId>
-            <artifactId>austras-convert</artifactId>
+            <artifactId>austras-convert-content-json</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>guru.bug.austras</groupId>
+            <artifactId>austras-convert-content-plaintext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -46,7 +51,7 @@
                     <annotationProcessorPaths>
                         <path>
                             <groupId>guru.bug.austras</groupId>
-                            <artifactId>austras-convert-apt</artifactId>
+                            <artifactId>austras-convert-content-json-apt</artifactId>
                             <version>1.0-SNAPSHOT</version>
                         </path>
                         <path>

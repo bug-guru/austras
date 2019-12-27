@@ -121,7 +121,8 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        return qualifierToString(currentDependency.getQualifiers());
+        var qualifiers = currentDependency.getQualifiers();
+        return qualifiers == null ? "" : qualifiers.toString();
     }
 
 //    @FromTemplate("DEPENDENCY_TYPE")

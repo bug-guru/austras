@@ -4,10 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/austras.iml" filepath="$PROJECT_DIR$/austras.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-codegen/austras-codegen.iml" filepath="$PROJECT_DIR$/austras-codegen/austras-codegen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert/austras-convert.iml" filepath="$PROJECT_DIR$/austras-convert/austras-convert.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" filepath="$PROJECT_DIR$/austras-convert-apt/austras-convert-apt.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert-content/austras-convert-content.iml" filepath="$PROJECT_DIR$/austras-convert-content/austras-convert-content.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert-content-json/austras-convert-content-json.iml" filepath="$PROJECT_DIR$/austras-convert-content-json/austras-convert-content-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-convert-content-json-apt/austras-convert-content-json-apt.iml" filepath="$PROJECT_DIR$/austras-convert-content-json-apt/austras-convert-content-json-apt.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert-content-plaintext/austras-convert-content-plaintext.iml" filepath="$PROJECT_DIR$/austras-convert-content-plaintext/austras-convert-content-plaintext.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-convert-engine-json/austras-convert-engine-json.iml" filepath="$PROJECT_DIR$/austras-convert-engine-json/austras-convert-engine-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core/austras-core.iml" filepath="$PROJECT_DIR$/austras-core/austras-core.iml" />

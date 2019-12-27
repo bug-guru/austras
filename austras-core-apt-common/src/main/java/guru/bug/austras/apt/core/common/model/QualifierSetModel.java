@@ -75,9 +75,9 @@ public class QualifierSetModel {
 
     @Override
     public String toString() {
-        return "QualifierSetModel{" +
-                "qualifiers=" + qualifiers +
-                '}';
+        return qualifiers.values().stream()
+                .map(QualifierModel::toString)
+                .collect(Collectors.joining(" "));
     }
 
     @Override

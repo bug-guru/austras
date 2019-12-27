@@ -55,10 +55,27 @@ public class QualifierModel {
 
     @Override
     public String toString() {
-        return "QualifierModel{" +
-                "name='" + name + '\'' +
-                ", properties=" + properties +
-                '}';
+        var result = new StringBuilder(64);
+        result.append("@")
+                .append(Qualifier.class.getSimpleName())
+                .append("(name = \"")
+                .append(name)
+                .append("\"");
+        if (!properties.isEmpty()) {
+            result.append(", properties = ");
+            if (properties.size() > 1) {
+                result.append("{");
+            }
+            result.append(properties.values().stream()
+                    .map(QualifierPropertyModel::toString)
+                    .collect(Collectors.joining(", "))
+            );
+            if (properties.size() > 1) {
+                result.append("}");
+            }
+        }
+        result.append(")");
+        return result.toString();
     }
 
     @Override

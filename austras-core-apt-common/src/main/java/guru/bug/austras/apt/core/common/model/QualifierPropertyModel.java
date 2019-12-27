@@ -39,10 +39,9 @@ public class QualifierPropertyModel {
 
     @Override
     public String toString() {
-        return "QualifierPropertyModel{" +
-                "key='" + name + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+        return String.format("@%s(name = \"%s\", value = \"%s\"",
+                QualifierProperty.class.getSimpleName(),
+                name, value);
     }
 
     @Override
