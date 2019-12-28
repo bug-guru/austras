@@ -63,7 +63,7 @@ public class JsonContentConverterGenerator extends JavaGenerator {
                 String name;
                 if (k.getKind().isPrimitive()) {
                     type = findPrimitiveConverterType(k);
-                    name = k.toString() + "Converter";
+                    name = "primitive" + StringUtils.capitalize(k.toString()) + "Converter";
                 } else {
                     var d = (DeclaredType) k;
                     var propType = (TypeElement) d.asElement();
