@@ -1,11 +1,12 @@
 package guru.bug.austras.test.rest;
 
-import guru.bug.austras.convert.engine.json.JsonConverter;
-import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
+import guru.bug.austras.convert.content.ContentConverter;
+import guru.bug.austras.core.Selector;
+import guru.bug.austras.core.qualifiers.Any;
 import guru.bug.austras.web.EndpointHandler;
-import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathItem;
 import guru.bug.austras.web.errors.HttpException;
+import guru.bug.austras.web.errors.NotAcceptableException;
 import guru.bug.austras.web.errors.NotFoundException;
 
 import javax.servlet.ServletException;
@@ -16,37 +17,37 @@ import java.util.List;
 import java.util.Map;
 
 public class TestControllerHandler extends EndpointHandler {
-    private final JsonConverter<MyDataObject> converter;
+    private final Selector<ContentConverter<MyDataObject>> resultConverterSelector;
 
-    public TestControllerHandler(JsonConverter<MyDataObject> converter) {
-        super("GET",
+    public TestControllerHandler(@Any Selector<ContentConverter<MyDataObject>> resultConverterSelector) {
+        super("POST",
+                200,
                 List.of(
                         PathItem.matching("test"),
                         PathItem.param("group")
-                ),
-                List.of(
-                        MediaType.WILDCARD_TYPE
-                ),
-                List.of(
-                        MediaType.APPLICATION_JSON_TYPE
                 )
         );
-        this.converter = converter;
+        this.resultConverterSelector = resultConverterSelector;
     }
 
     @SuppressWarnings("RedundantThrows")
     @Override
     public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException {
+        var selectedResponseConverter =
+                selectResponseContentType(resultConverterSelector, request)
+                        .orElseThrow(NotAcceptableException::new);
         var group = pathParams.get("group");
         if ("a".equals(group)) {
             throw new NotFoundException();
         }
-        response.setContentType(MediaType.APPLICATION_JSON);
         var result = new MyDataObject();
         result.setGroup(group);
+        response.setContentType(selectedResponseConverter.getMediaType().toString());
+        response.setCharacterEncoding("UTF-8");
         try (var out = response.getWriter()) {
-            JsonValueWriter w = JsonValueWriter.newInstance(out);
-            converter.toJson(result, w);
+            selectedResponseConverter.getConverter().write(result, out);
         }
     }
+
+
 }

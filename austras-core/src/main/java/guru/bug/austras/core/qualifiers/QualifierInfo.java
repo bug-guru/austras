@@ -2,6 +2,7 @@ package guru.bug.austras.core.qualifiers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class QualifierInfo {
     private static final QualifierInfo EMPTY = new QualifierInfo(null);
@@ -31,8 +32,8 @@ public class QualifierInfo {
         return v.equals(value);
     }
 
-    public String getValue(String key) {
-        return properties.get(key);
+    public Optional<String> getValue(String key) {
+        return Optional.ofNullable(properties.get(key));
     }
 
     public static class Builder {

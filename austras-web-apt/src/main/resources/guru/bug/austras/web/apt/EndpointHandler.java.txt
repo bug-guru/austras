@@ -28,16 +28,6 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
                     #PATH_ITEMS#
                         PathItem.$PATH_ITEM_TYPE$("$PATH_ITEM_VALUE$")$,$
                     #END#
-                ),
-                List.of(
-                    #CONSUMED_TYPES#
-                        MediaType.valueOf("$MEDIA_TYPE$")$,$
-                    #END#
-                ),
-                List.of(
-                    #PRODUCED_TYPES#
-                        MediaType.valueOf("$MEDIA_TYPE$")$,$
-                    #END#
                 )
         );
         #DEPENDENCIES#
@@ -51,7 +41,7 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
         $SET CONTENT TYPE$
         try (var _out = _response.getWriter()) {
             _response.setStatus($SUCCESS_STATUS$);
-            $VAR RESULT =$$CONTROLLER_PROVIDER_NAME$.get()
+            $VAR RESULT = $$CONTROLLER_PROVIDER_NAME$.get()
                 .$ENDPOINT_METHOD$(
                     #ENDPOINT_METHOD_PARAMS#
                         $ENDPOINT_METHOD_PARAM_EXPRESSION$$,$
