@@ -30,6 +30,7 @@ public class ConvertersProcessorPlugin implements AustrasProcessorPlugin {
             }
             generated.addAll(toGenerate);
         } catch (IOException | TemplateException e) {
+            // TODO better error handling
             ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, "Error generating content converter");
             throw new IllegalStateException(e);
         }
