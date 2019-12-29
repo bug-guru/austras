@@ -45,9 +45,29 @@ public abstract class EndpointHandler {
         }
     }
 
+    private MediaType getContentType(HttpServletRequest request) {
+        var strType = request.getContentType();
+        if (strType == null || strType.isBlank()) {
+            return null;
+        }
+        return MediaType.valueOf(strType);
+    }
+
     protected final <T> Optional<ContentTypeSelector<T>> selectResponseContentType(Selector<? extends ContentConverter<T>> availableConverters, HttpServletRequest request) {
         var result = new ContentTypeSelector<T>(availableConverters);
         if (result.select(getAcceptTypes(request))) {
+            return Optional.of(result);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    protected final <T> Optional<ContentTypeSelector<T>> selectRequestContentType(Selector<? extends ContentConverter<T>> availableConverters, HttpServletRequest request) {
+        var result = new ContentTypeSelector<T>(availableConverters);
+        var contentType = getContentType(request);
+        if (contentType == null) {
+            return Optional.empty();
+        } else if (result.select(List.of(contentType))) {
             return Optional.of(result);
         } else {
             return Optional.empty();

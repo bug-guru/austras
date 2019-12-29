@@ -2,6 +2,8 @@ package guru.bug.austras.web.apt.model;
 
 import guru.bug.austras.apt.core.common.model.DependencyModel;
 
+import java.util.Objects;
+
 public class DependencyRef {
     private final String varName;
     private final DependencyModel dependencyModel;
@@ -17,5 +19,19 @@ public class DependencyRef {
 
     public DependencyModel getDependencyModel() {
         return dependencyModel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DependencyRef that = (DependencyRef) o;
+        return varName.equals(that.varName) &&
+                dependencyModel.equals(that.dependencyModel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(varName, dependencyModel);
     }
 }

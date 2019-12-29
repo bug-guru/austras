@@ -14,6 +14,7 @@ guru.bug.austras.web.errors.NotAcceptableException
 guru.bug.austras.core.qualifiers.Qualifier
 guru.bug.austras.core.qualifiers.QualifierProperty
 guru.bug.austras.web.errors.HttpException
+guru.bug.austras.web.errors.UnsupportedMediaTypeException
 #END#
 
 public class $SIMPLE_NAME$ extends EndpointHandler {
@@ -40,19 +41,24 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
 
     @Override
     public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException {
-        #HAS_RESPONSE#
+        #HAS_RESPONSE_BODY#
         var selectedResponseConverter =
                 selectResponseContentType($RESPONSE_CONVERTER_SELECTOR_NAME$, request)
                         .orElseThrow(NotAcceptableException::new);
         #END#
+        #HAS_REQUEST_BODY#
+        var selectedRequestConverter =
+                selectRequestContentType($REQUEST_CONVERTER_SELECTOR_NAME$, request)
+                        .orElseThrow(UnsupportedMediaTypeException::new);
+        #END#
         try (var out = response.getWriter()) {
             response.setStatus($SUCCESS_STATUS$);
-            #HAS_RESPONSE#var result = #END#$CONTROLLER_DEPENDENCY_NAME$.$ENDPOINT_METHOD$(
+            #HAS_RESPONSE_BODY#var result = #END#$CONTROLLER_DEPENDENCY_NAME$.$ENDPOINT_METHOD$(
                 #ENDPOINT_METHOD_PARAMS#
                     $ENDPOINT_METHOD_PARAM_EXPRESSION$$,$
                 #END#
             );
-            #HAS_RESPONSE#
+            #HAS_RESPONSE_BODY#
             response.setCharacterEncoding("UTF-8");
             selectedResponseConverter.getConverter().write(result, out);
             #END#

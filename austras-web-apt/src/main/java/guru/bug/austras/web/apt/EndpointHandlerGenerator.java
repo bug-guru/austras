@@ -6,17 +6,15 @@ import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
-import guru.bug.austras.web.Endpoint;
-import guru.bug.austras.web.PathSplitter;
-import guru.bug.austras.web.apt.model.DependencyRef;
-import guru.bug.austras.web.apt.model.MethodParam;
-import guru.bug.austras.web.apt.model.PathItemRef;
-import guru.bug.austras.web.apt.model.PathParamMethodParam;
+import guru.bug.austras.web.*;
+import guru.bug.austras.web.apt.model.*;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     private PathItemRef currentPathItem;
     private DependencyRef responseConverterSelectorDependency;
     private DependencyRef controllerDependency;
+    private DependencyRef requestBodyConverterSelectorDependency;
     private Map<DependencyModel, DependencyRef> dependencies;
     private List<MethodParam> methodParams;
     private DependencyRef currentDependency;
@@ -48,6 +47,8 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     public void generate(ExecutableElement methodElement) {
+        this.responseConverterSelectorDependency = null;
+        this.requestBodyConverterSelectorDependency = null;
         this.dependencies = new HashMap<>();
         this.methodParams = new ArrayList<>();
         this.endpointMethodName = methodElement.getSimpleName().toString();
@@ -76,12 +77,69 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     private void processParams(ExecutableElement methodElement) {
         for (var param : methodElement.getParameters()) {
-            var type = param.asType();
-            var name = param.getSimpleName().toString();
-            var converterRef = addDependencyIfAbsent(ContentConverterUtil.createStringConverterDependency(type));
-            var paramObj = new PathParamMethodParam(name, converterRef);
-            methodParams.add(paramObj);
+            MethodParam paramRef;
+            if (param.getAnnotation(PathParam.class) != null) {
+                paramRef = createPathParam(param);
+            } else if (param.getAnnotation(QueryParam.class) != null) {
+                paramRef = createQueryParam(param);
+            } else if (param.getAnnotation(HeaderParam.class) != null) {
+                paramRef = createHeaderParam(param);
+            } else if (param.getAnnotation(BodyParam.class) != null) {
+                paramRef = createBodyParam(param);
+            } else {
+                ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, "Unsupported parameter. Must be one of @QueryParam, @PathParam, @HeaderParam or @BodyParam", param);
+                return;
+            }
+            methodParams.add(paramRef);
         }
+    }
+
+    private MethodParam createPathParam(VariableElement param) {
+        var annotation = param.getAnnotation(PathParam.class);
+        var type = param.asType();
+        var name = annotation.value();
+        if (name.isEmpty()) {
+            name = param.getSimpleName().toString();
+        }
+        var converterRef = addDependencyIfAbsent(ContentConverterUtil.createStringConverterDependency(type));
+        return new PathParamMethodParam(name, converterRef);
+    }
+
+    private MethodParam createQueryParam(VariableElement param) {
+        var annotation = param.getAnnotation(QueryParam.class);
+        var type = param.asType();
+        var name = annotation.value();
+        if (name.isEmpty()) {
+            name = param.getSimpleName().toString();
+        }
+        var converterRef = addDependencyIfAbsent(ContentConverterUtil.createStringConverterDependency(type));
+        return new QueryParamMethodParam(name, converterRef);
+    }
+
+    private MethodParam createHeaderParam(VariableElement param) {
+        var annotation = param.getAnnotation(HeaderParam.class);
+        var type = param.asType();
+        var name = annotation.value();
+        if (name.isEmpty()) {
+            name = param.getSimpleName().toString();
+        }
+        var converterRef = addDependencyIfAbsent(ContentConverterUtil.createStringConverterDependency(type));
+        return new HeaderParamMethodParam(name, converterRef);
+    }
+
+    private MethodParam createBodyParam(VariableElement param) {
+        if (this.requestBodyConverterSelectorDependency != null) {
+            ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, "Maximum one @BodyParam is allowed", param);
+            return null;
+        }
+        var annotation = param.getAnnotation(BodyParam.class);
+        var type = param.asType();
+        var name = annotation.value();
+        if (name.isEmpty()) {
+            name = param.getSimpleName().toString();
+        }
+        this.requestBodyConverterSelectorDependency = addDependencyIfAbsent(ContentConverterUtil.createConverterSelectorDependency(type));
+        return new BodyParamMethodParam(name, requestBodyConverterSelectorDependency);
     }
 
     private void processResult(ExecutableElement methodElement) {
@@ -179,9 +237,16 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return endpointMethodName;
     }
 
-    @FromTemplate("HAS_RESPONSE")
+    @FromTemplate("HAS_RESPONSE_BODY")
     public void processIfHasResponseContent(PrintWriter out, BodyBlock body) {
         if (responseConverterSelectorDependency != null) {
+            out.print(body.evaluateBody());
+        }
+    }
+
+    @FromTemplate("HAS_REQUEST_BODY")
+    public void processIfHasRequestBody(PrintWriter out, BodyBlock body) {
+        if (requestBodyConverterSelectorDependency != null) {
             out.print(body.evaluateBody());
         }
     }
@@ -191,6 +256,10 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return responseConverterSelectorDependency.getVarName();
     }
 
+    @FromTemplate("REQUEST_CONVERTER_SELECTOR_NAME")
+    public String requestConverterSelectorName() {
+        return requestBodyConverterSelectorDependency.getVarName();
+    }
 
     @FromTemplate("CONTROLLER_DEPENDENCY_NAME")
     public String getControllerProviderName() {
