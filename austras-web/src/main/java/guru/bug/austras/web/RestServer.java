@@ -3,7 +3,10 @@ package guru.bug.austras.web;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.startup.StartupService;
-import guru.bug.austras.web.errors.*;
+import guru.bug.austras.web.errors.HttpException;
+import guru.bug.austras.web.errors.MethodNotAllowedException;
+import guru.bug.austras.web.errors.MultipleChoicesException;
+import guru.bug.austras.web.errors.NotFoundException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -162,16 +165,12 @@ public class RestServer implements StartupService {
             log.debug("Searching a handler. Method: {}; contentType: {}; accepts types: {}", method, contentType, acceptTypes);
 
             var byMethodFilter = new Filter(c -> byMethod(c, method));
-            var byContentFilter = new Filter(c -> byContentType(c, contentType));
             var byPathFilter = new Filter(c -> byPath(c, pathItems));
-            var byAcceptFilter = new Filter(c -> byAccept(c, acceptTypes));
 
             var candidates = endpointsSelector.get().stream()
                     .map(EndpointHandlerHolder::new)
                     .filter(byMethodFilter)
-                    .filter(byContentFilter)
                     .filter(byPathFilter)
-                    .filter(byAcceptFilter)
                     .collect(Collectors.toList());
             if (candidates.size() > 1) {
                 log.error("More than one candidate found {}", candidates);
@@ -182,17 +181,9 @@ public class RestServer implements StartupService {
                     log.error("No handler found for HTTP method {}", method);
                     throw new MethodNotAllowedException();
                 });
-                byContentFilter.throwIfNotPassed(() -> {
-                    log.error("No handler found for content type {}", contentType);
-                    throw new UnsupportedMediaTypeException();
-                });
                 byPathFilter.throwIfNotPassed(() -> {
                     log.error("No handler found for path {}", pathItems);
                     throw new NotFoundException();
-                });
-                byAcceptFilter.throwIfNotPassed(() -> {
-                    log.error("No handler found for producing {}", acceptTypes);
-                    throw new NotAcceptableException();
                 });
             }
             var result = candidates.get(0);
@@ -227,30 +218,6 @@ public class RestServer implements StartupService {
             var result = candidate.handler.getMethod().equals(method);
             log.trace("Testing candidate: {}; Method: {}; passed: {}", candidate.handler, method, result);
             return result;
-        }
-
-        private boolean byContentType(EndpointHandlerHolder candidate, MediaType contentType) {
-            if (contentType == null) {
-                log.trace("Testing candidate: {}; Content-Type: null; passed: true", candidate.handler);
-                return true;
-            }
-            var result = acceptTypes(contentType, candidate.handler.getConsumedTypes());
-            log.trace("Testing candidate {}; Content-Type: {}; passed: {}", candidate.handler, contentType, result);
-            return result;
-        }
-
-        private boolean byAccept(EndpointHandlerHolder candidate, List<MediaType> acceptTypes) {
-            var result = acceptTypes(acceptTypes, candidate.handler.getProducedTypes());
-            log.trace("Testing candidate {}; Accepts: {}; passed: {}", candidate.handler, acceptTypes, result);
-            return result;
-        }
-
-        private boolean acceptTypes(List<MediaType> requestedTypes, List<MediaType> targetTypes) {
-            return requestedTypes.stream().anyMatch(rmt -> acceptTypes(rmt, targetTypes));
-        }
-
-        private boolean acceptTypes(MediaType requestedType, List<MediaType> targetTypes) {
-            return targetTypes.stream().anyMatch(requestedType::isCompatible);
         }
 
     }

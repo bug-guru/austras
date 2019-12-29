@@ -9,6 +9,7 @@ import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.web.Endpoint;
 import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathSplitter;
+import guru.bug.austras.web.apt.model.DependencyRef;
 import guru.bug.austras.web.apt.model.MethodParam;
 import guru.bug.austras.web.apt.model.PathItemRef;
 
@@ -20,9 +21,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @FromTemplate("EndpointHandler.java.txt")
 public class EndpointHandlerGenerator extends JavaGenerator {
@@ -33,15 +34,14 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     private List<PathItemRef> pathItems;
     private boolean commaRequired;
     private PathItemRef currentPathItem;
-    private MediaType currentMediaType;
-    private DependencyModel controllerProvider;
-    private Set<DependencyModel> dependencies;
+    private DependencyRef responseConverterSelectorDependency;
+    private DependencyRef controllerDependency;
+    private Map<DependencyModel, DependencyRef> dependencies;
     private List<MethodParam> methodParams;
-    private DependencyModel currentDependency;
+    private DependencyRef currentDependency;
     private String endpointMethodName;
     private MethodParam currentMethodParam;
     private int successStatus;
-    private DependencyModel resultConverter;
 
     protected EndpointHandlerGenerator(ProcessingContext ctx) throws IOException, TemplateException {
         super(ctx.processingEnv().getFiler());
@@ -49,7 +49,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     public void generate(ExecutableElement methodElement) {
-        this.dependencies = new HashSet<>();
+        this.dependencies = new HashMap<>();
         this.methodParams = new ArrayList<>();
         this.endpointMethodName = methodElement.getSimpleName().toString();
         var cls = (TypeElement) methodElement.getEnclosingElement();

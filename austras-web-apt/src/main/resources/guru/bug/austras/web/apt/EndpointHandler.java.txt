@@ -40,7 +40,7 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
     public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException {
         #HAS_RESPONSE#
         var selectedResponseConverter =
-                selectResponseContentType(resultConverterSelector, request)
+                selectResponseContentType($RESPONSE_CONVERTER_SELECTOR_NAME$, request)
                         .orElseThrow(NotAcceptableException::new);
         #END#
         try (var out = response.getWriter()) {
