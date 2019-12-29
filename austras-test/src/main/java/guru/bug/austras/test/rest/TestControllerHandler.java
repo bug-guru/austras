@@ -21,7 +21,6 @@ public class TestControllerHandler extends EndpointHandler {
 
     public TestControllerHandler(@Any Selector<ContentConverter<MyDataObject>> resultConverterSelector) {
         super("POST",
-                200,
                 List.of(
                         PathItem.matching("test"),
                         PathItem.param("group")
@@ -43,8 +42,8 @@ public class TestControllerHandler extends EndpointHandler {
         var result = new MyDataObject();
         result.setGroup(group);
         response.setContentType(selectedResponseConverter.getMediaType().toString());
-        response.setCharacterEncoding("UTF-8");
         try (var out = response.getWriter()) {
+            response.setCharacterEncoding("UTF-8"); // TODO what to do with encoding?
             selectedResponseConverter.getConverter().write(result, out);
         }
     }

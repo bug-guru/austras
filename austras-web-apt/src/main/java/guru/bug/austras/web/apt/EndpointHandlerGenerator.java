@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @FromTemplate("EndpointHandler.java.txt")
 public class EndpointHandlerGenerator extends JavaGenerator {
@@ -33,8 +31,6 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     private String simpleClassName;
     private String httpMethod;
     private List<PathItemRef> pathItems;
-    private List<MediaType> produces;
-    private List<MediaType> accept;
     private boolean commaRequired;
     private PathItemRef currentPathItem;
     private MediaType currentMediaType;
@@ -101,12 +97,6 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     public void processEndpointInfo(Endpoint endpointAnnotation) {
         this.httpMethod = endpointAnnotation.method().toUpperCase();
         this.pathItems = PathSplitter.split(PathItemRef::new, endpointAnnotation.path());
-        this.accept = Stream.of(endpointAnnotation.accept())
-                .map(MediaType::valueOf)
-                .collect(Collectors.toList());
-        this.produces = Stream.of(endpointAnnotation.produce())
-                .map(MediaType::valueOf)
-                .collect(Collectors.toList());
     }
 
     @FromTemplate("DEPENDENCIES")
@@ -125,15 +115,15 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return qualifiers == null ? "" : qualifiers.toString();
     }
 
-//    @FromTemplate("DEPENDENCY_TYPE")
-//    public String dependencyType() {
-//        return tryImport(currentDependency.asTypeDeclaration());
-//    }
+    @FromTemplate("DEPENDENCY_TYPE")
+    public String dependencyType() {
+        return tryImport(currentDependency.asTypeDeclaration());
+    }
 
-//    @FromTemplate("DEPENDENCY_NAME")
-//    public String dependencyName() {
-//        return currentDependency.getName();
-//    }
+    @FromTemplate("DEPENDENCY_NAME")
+    public String dependencyName() {
+        return currentDependency.getName();
+    }
 
     @FromTemplate(",")
     public String optionalComma() {
@@ -180,26 +170,6 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     @Override
     public String getSimpleClassName() {
         return simpleClassName;
-    }
-
-    @FromTemplate("CONSUMED_TYPES")
-    public void consumingTypes(PrintWriter out, BodyBlock body) {
-        var mti = accept.iterator();
-        while (mti.hasNext()) {
-            this.currentMediaType = mti.next();
-            this.commaRequired = mti.hasNext();
-            out.print(body.evaluateBody());
-        }
-    }
-
-    @FromTemplate("PRODUCED_TYPES")
-    public void producingTypes(PrintWriter out, BodyBlock body) {
-        var mti = produces.iterator();
-        while (mti.hasNext()) {
-            this.currentMediaType = mti.next();
-            this.commaRequired = mti.hasNext();
-            out.print(body.evaluateBody());
-        }
     }
 
     @FromTemplate("MEDIA_TYPE")

@@ -11,6 +11,7 @@ javax.servlet.http.HttpServletResponse
 java.io.IOException
 java.util.List
 java.util.Map
+guru.bug.austras.web.errors.NotAcceptableException
 #END#
 
 public class $SIMPLE_NAME$ extends EndpointHandler {
@@ -36,18 +37,23 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
     }
 
     @Override
-    public void handle(HttpServletRequest _request, Map<String, String> _pathParams, HttpServletResponse _response) throws IOException, ServletException {
-        $SET CHARSET$
-        $SET CONTENT TYPE$
-        try (var _out = _response.getWriter()) {
-            _response.setStatus($SUCCESS_STATUS$);
-            $VAR RESULT = $$CONTROLLER_PROVIDER_NAME$.get()
-                .$ENDPOINT_METHOD$(
-                    #ENDPOINT_METHOD_PARAMS#
-                        $ENDPOINT_METHOD_PARAM_EXPRESSION$$,$
-                    #END#
-                );
-            $WRITE RESULT$
+    public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException {
+        #HAS_RESPONSE#
+        var selectedResponseConverter =
+                selectResponseContentType(resultConverterSelector, request)
+                        .orElseThrow(NotAcceptableException::new);
+        #END#
+        try (var out = response.getWriter()) {
+            response.setStatus($SUCCESS_STATUS$);
+            #HAS_RESPONSE#var result = #END#$CONTROLLER_DEPENDENCY_NAME$.$ENDPOINT_METHOD$(
+                #ENDPOINT_METHOD_PARAMS#
+                    $ENDPOINT_METHOD_PARAM_EXPRESSION$$,$
+                #END#
+            );
+            #HAS_RESPONSE#
+            response.setCharacterEncoding("UTF-8");
+            selectedResponseConverter.getConverter().write(result, out);
+            #END#
         }
     }
 }

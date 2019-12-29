@@ -19,11 +19,9 @@ public abstract class EndpointHandler {
     private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
     private final List<PathItem> path;
     private final String method;
-    private final int successResponseCode;
 
-    protected EndpointHandler(String method, int successResponseCode, List<PathItem> path) {
+    protected EndpointHandler(String method, List<PathItem> path) {
         this.path = path;
-        this.successResponseCode = successResponseCode;
         this.method = Objects.requireNonNull(method).toUpperCase().intern();
     }
 
@@ -33,10 +31,6 @@ public abstract class EndpointHandler {
 
     public final List<PathItem> getPath() {
         return path;
-    }
-
-    public final int getSuccessResponseCode() {
-        return successResponseCode;
     }
 
     protected final List<MediaType> getAcceptTypes(HttpServletRequest request) {
