@@ -45,7 +45,7 @@ public abstract class EndpointHandler {
         }
     }
 
-    protected final <T> Optional<ContentTypeSelector<T>> selectResponseContentType(Selector<ContentConverter<T>> availableConverters, HttpServletRequest request) {
+    protected final <T> Optional<ContentTypeSelector<T>> selectResponseContentType(Selector<? extends ContentConverter<T>> availableConverters, HttpServletRequest request) {
         var result = new ContentTypeSelector<T>(availableConverters);
         if (result.select(getAcceptTypes(request))) {
             return Optional.of(result);
@@ -62,12 +62,12 @@ public abstract class EndpointHandler {
     }
 
     protected static final class ContentTypeSelector<T> {
-        private final Selector<ContentConverter<T>> availableConverters;
+        private final Selector<? extends ContentConverter<T>> availableConverters;
         private ContentConverter<T> selectedConverter;
         private MediaType selectedMediaType;
 
 
-        private ContentTypeSelector(Selector<ContentConverter<T>> availableConverters) {
+        private ContentTypeSelector(Selector<? extends ContentConverter<T>> availableConverters) {
             this.availableConverters = availableConverters;
         }
 

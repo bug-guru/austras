@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Qualifier(name = Converts.QUALIFIER_NAME, properties = @QualifierProperty(name = Converts.PROPERTY_TYPE, value = "text/plain"))
+@Qualifier(name = Converts.QUALIFIER_NAME, properties = @QualifierProperty(name = Converts.PROPERTY_TYPE, value = PlainText.CONTENT_TYPE))
 public @interface PlainText {
+    String CONTENT_TYPE = "text/plain";
 }

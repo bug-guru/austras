@@ -3,7 +3,9 @@ package guru.bug.austras.apt.core.common.model;
 import guru.bug.austras.convert.engine.json.JsonConverter;
 import guru.bug.austras.convert.engine.json.reader.JsonValueReader;
 import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
+import guru.bug.austras.core.Selector;
 
+import java.util.Collection;
 import java.util.Objects;
 
 public class DependencyModel {
@@ -42,6 +44,19 @@ public class DependencyModel {
         return ComponentKey.of(type, qualifiers);
     }
 
+    public String asTypeDeclaration() {
+        switch (wrapping) {
+            case NONE:
+                return type;
+            case COLLECTION:
+                return String.format("%s<? extends %s>", Collection.class.getName(), type);
+            case SELECTOR:
+                return String.format("%s<? extends %s>", Selector.class.getName(), type);
+            default:
+                throw new IllegalArgumentException("wrapping " + wrapping);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,7 +72,17 @@ public class DependencyModel {
         return Objects.hash(type, qualifiers, wrapping);
     }
 
+    @Override
+    public String toString() {
+        return "DependencyModel{" +
+                "type='" + type + '\'' +
+                ", qualifiers=" + qualifiers +
+                ", wrapping=" + wrapping +
+                '}';
+    }
+
     private static class Serializer implements JsonConverter<DependencyModel> {
+
         @Override
         public void toJson(DependencyModel value, JsonValueWriter writer) {
             writer.writeObject(value, (obj, out) -> {
@@ -85,15 +110,6 @@ public class DependencyModel {
                 }
             }).map(Builder::build).orElseThrow();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "DependencyModel{" +
-                "type='" + type + '\'' +
-                ", qualifiers=" + qualifiers +
-                ", wrapping=" + wrapping +
-                '}';
     }
 
     public static class Builder {

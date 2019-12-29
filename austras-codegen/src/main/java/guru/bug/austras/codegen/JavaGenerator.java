@@ -36,7 +36,7 @@ public abstract class JavaGenerator extends Generator {
 
     private String tryImport0(String qualifiedName) {
         var idx = qualifiedName.lastIndexOf('.');
-        var pkg = qualifiedName.substring(0, idx);
+        var pkg = idx == -1 ? "" : qualifiedName.substring(0, idx);
         var cls = qualifiedName.substring(idx + 1);
         var imp = imports.get(cls);
         if (imp == null) {
@@ -54,6 +54,9 @@ public abstract class JavaGenerator extends Generator {
 
     private boolean isPrintableToImports(String qualifiedName) {
         var idx = qualifiedName.lastIndexOf('.');
+        if (idx == -1) {
+            return true;
+        }
         var pkg = qualifiedName.substring(0, idx);
         return isPrintableToImportPkg(pkg);
     }

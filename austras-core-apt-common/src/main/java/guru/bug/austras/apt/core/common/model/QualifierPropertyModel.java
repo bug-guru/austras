@@ -13,12 +13,16 @@ public class QualifierPropertyModel implements Comparable<QualifierPropertyModel
     private final String value;
 
     public QualifierPropertyModel(String name, String value) {
-        this.name = name;
-        this.value = value;
+        this.name = Objects.requireNonNull(name);
+        this.value = Objects.requireNonNull(value);
     }
 
     public static QualifierPropertyModel of(QualifierProperty property) {
         return new QualifierPropertyModel(property.name(), property.value());
+    }
+
+    public static QualifierPropertyModel of(String name, String value) {
+        return new QualifierPropertyModel(name, value);
     }
 
     public static JsonConverter<QualifierPropertyModel> serializer() {
@@ -39,7 +43,7 @@ public class QualifierPropertyModel implements Comparable<QualifierPropertyModel
 
     @Override
     public String toString() {
-        return String.format("@%s(name = \"%s\", value = \"%s\"",
+        return String.format("@%s(name = \"%s\", value = \"%s\")",
                 QualifierProperty.class.getSimpleName(),
                 name, value);
     }

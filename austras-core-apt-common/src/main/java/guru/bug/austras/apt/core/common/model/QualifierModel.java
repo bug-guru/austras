@@ -45,6 +45,10 @@ public class QualifierModel implements Comparable<QualifierModel> {
         );
     }
 
+    public static QualifierModel of(String name, QualifierPropertyModel... properties) {
+        return new QualifierModel(name, Stream.of(properties));
+    }
+
     public String getName() {
         return name;
     }

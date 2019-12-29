@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.WildcardType;
+import javax.lang.model.type.*;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
@@ -258,6 +255,14 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
+    public DependencyModel createDependencyModel(PrimitiveType paramType, AnnotatedConstruct metadata) {
+        return DependencyModel.builder()
+                .type(paramType.toString())
+                .qualifiers(extractQualifiers(metadata))
+                .wrapping(WrappingType.NONE)
+                .build();
+    }
+
     public DependencyModel createDependencyModel(DeclaredType paramType, AnnotatedConstruct metadata) {
         var resultBuilder = DependencyModel.builder();
         var qualifiers = extractQualifiers(metadata);
@@ -284,8 +289,14 @@ public class ModelUtils {
     }
 
     public DependencyModel createDependencyModel(VariableElement paramElement) {
-        var paramType = (DeclaredType) paramElement.asType();
-        return createDependencyModel(paramType, paramElement);
+        var rawType = paramElement.asType();
+        if (rawType.getKind().isPrimitive()) {
+            var paramType = (PrimitiveType) rawType;
+            return createDependencyModel(paramType, paramElement);
+        } else {
+            var paramType = (DeclaredType) paramElement.asType();
+            return createDependencyModel(paramType, paramElement);
+        }
     }
 
 }

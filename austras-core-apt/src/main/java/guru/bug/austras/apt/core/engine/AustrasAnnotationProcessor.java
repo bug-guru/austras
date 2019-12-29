@@ -21,6 +21,7 @@ import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -144,18 +145,23 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
     }
 
     private void scanComponent(TypeElement typeElement) {
-        var model = modelUtils.createComponentModel(typeElement);
-        var hasQualifierAnnotation = hasQualifiers(typeElement);
-        var hasApplicationAnnotation = typeElement.getAnnotationsByType(Application.class).length > 0;
-        if (hasQualifierAnnotation || hasApplicationAnnotation) {
-            log.debug("PROCESS: Adding component to index: {}", typeElement);
-            componentMap.publishComponent(model);
-        } else {
-            log.debug("PROCESS: Adding component to staging: {}", typeElement);
-            componentMap.stageComponent(model);
-        }
-        if (hasApplicationAnnotation) {
-            this.appMainComponent = model;
+        try {
+            var model = modelUtils.createComponentModel(typeElement);
+            var hasQualifierAnnotation = hasQualifiers(typeElement);
+            var hasApplicationAnnotation = typeElement.getAnnotationsByType(Application.class).length > 0;
+            if (hasQualifierAnnotation || hasApplicationAnnotation) {
+                log.debug("PROCESS: Adding component to index: {}", typeElement);
+                componentMap.publishComponent(model);
+            } else {
+                log.debug("PROCESS: Adding component to staging: {}", typeElement);
+                componentMap.stageComponent(model);
+            }
+            if (hasApplicationAnnotation) {
+                this.appMainComponent = model;
+            }
+        } catch (Exception e) {
+            log.error("Exception while scanning component", e);
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Exception while scanning component", typeElement);
         }
     }
 

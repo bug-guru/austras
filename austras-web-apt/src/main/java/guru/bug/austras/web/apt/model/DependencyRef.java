@@ -10,4 +10,12 @@ public class DependencyRef {
         this.varName = varName;
         this.dependencyModel = dependencyModel;
     }
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public DependencyModel getDependencyModel() {
+        return dependencyModel;
+    }
 }

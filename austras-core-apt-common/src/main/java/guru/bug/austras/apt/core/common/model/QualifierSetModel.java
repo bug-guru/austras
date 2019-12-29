@@ -55,6 +55,10 @@ public class QualifierSetModel implements Comparable<QualifierSetModel> {
         return new QualifierSetModel(Stream.of(q).map(QualifierModel::of));
     }
 
+    public static QualifierSetModel of(QualifierModel... qualifiers) {
+        return new QualifierSetModel(Stream.of(qualifiers));
+    }
+
     public static QualifierSetModel of(Collection<Qualifier> qualifiers) {
         var q = Objects.requireNonNull(qualifiers, "qualifiers");
         return new QualifierSetModel(q.stream().map(QualifierModel::of));

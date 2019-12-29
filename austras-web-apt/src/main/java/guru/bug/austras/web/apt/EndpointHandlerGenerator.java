@@ -7,11 +7,11 @@ import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.web.Endpoint;
-import guru.bug.austras.web.MediaType;
 import guru.bug.austras.web.PathSplitter;
 import guru.bug.austras.web.apt.model.DependencyRef;
 import guru.bug.austras.web.apt.model.MethodParam;
 import guru.bug.austras.web.apt.model.PathItemRef;
+import guru.bug.austras.web.apt.model.PathParamMethodParam;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -19,7 +19,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +56,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         this.simpleClassName = cls.getSimpleName().toString() + "_" + methodElement.getSimpleName().toString() + "_EndpointHandler";
         var endpointAnnotation = methodElement.getAnnotation(Endpoint.class);
         this.successStatus = endpointAnnotation.successStatus();
-        processControllerProvider(cls);
+        processController(cls);
         processEndpointInfo(endpointAnnotation);
         processParams(methodElement);
         processResult(methodElement);
@@ -65,33 +64,9 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         generateJavaClass();
     }
 
-    private void processResult(ExecutableElement methodElement) {
-        var returnType = methodElement.getReturnType();
-        if (returnType.getKind() == TypeKind.VOID) {
-            resultConverter = null;
-        } else {
-            resultConverter = JsonConverterUtil.selectConverter(returnType);
-            dependencies.add(resultConverter);
-        }
-    }
-
-    public void processControllerProvider(TypeElement cls) {
-        this.controllerProvider = ctx.modelUtils()
-                .createDependencyModel((DeclaredType) cls.asType(), cls);
-        dependencies.add(this.controllerProvider);
-    }
-
-    private void processParams(ExecutableElement methodElement) {
-//        for (var param : methodElement.getParameters()) {
-//            var type = param.asType();
-//            var name = param.getSimpleName().toString();
-//            var converterProvider = StringConverterUtil.selectConverter(type);
-//            if (converterProvider != null) {
-//                dependencies.add(converterProvider);
-//            }
-//            var paramObj = new PathParamMethodParam(name, converterProvider);
-//            methodParams.add(paramObj);
-//        }
+    public void processController(TypeElement cls) {
+        var dep = ctx.modelUtils().createDependencyModel((DeclaredType) cls.asType(), cls);
+        this.controllerDependency = addDependencyIfAbsent(new DependencyRef("controller", dep));
     }
 
     public void processEndpointInfo(Endpoint endpointAnnotation) {
@@ -99,9 +74,36 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         this.pathItems = PathSplitter.split(PathItemRef::new, endpointAnnotation.path());
     }
 
+    private void processParams(ExecutableElement methodElement) {
+        for (var param : methodElement.getParameters()) {
+            var type = param.asType();
+            var name = param.getSimpleName().toString();
+            var converterRef = addDependencyIfAbsent(ContentConverterUtil.createStringConverterDependency(type));
+            var paramObj = new PathParamMethodParam(name, converterRef);
+            methodParams.add(paramObj);
+        }
+    }
+
+    private void processResult(ExecutableElement methodElement) {
+        var returnType = methodElement.getReturnType();
+        if (returnType.getKind() == TypeKind.VOID) {
+            responseConverterSelectorDependency = null;
+        } else {
+            var ref = ContentConverterUtil.createConverterSelectorDependency(returnType);
+            responseConverterSelectorDependency = addDependencyIfAbsent(ref);
+        }
+    }
+
+    private DependencyRef addDependencyIfAbsent(DependencyRef ref) {
+        if (ref == null) {
+            return null;
+        }
+        return dependencies.computeIfAbsent(ref.getDependencyModel(), k -> ref);
+    }
+
     @FromTemplate("DEPENDENCIES")
     public void dependencies(PrintWriter out, BodyBlock bodyBlock) {
-        var i = dependencies.iterator();
+        var i = dependencies.values().iterator();
         while (i.hasNext()) {
             this.currentDependency = i.next();
             this.commaRequired = i.hasNext();
@@ -111,18 +113,18 @@ public class EndpointHandlerGenerator extends JavaGenerator {
 
     @FromTemplate("DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
-        var qualifiers = currentDependency.getQualifiers();
+        var qualifiers = currentDependency.getDependencyModel().getQualifiers();
         return qualifiers == null ? "" : qualifiers.toString();
     }
 
     @FromTemplate("DEPENDENCY_TYPE")
     public String dependencyType() {
-        return tryImport(currentDependency.asTypeDeclaration());
+        return tryImport(currentDependency.getDependencyModel().asTypeDeclaration());
     }
 
     @FromTemplate("DEPENDENCY_NAME")
     public String dependencyName() {
-        return currentDependency.getName();
+        return currentDependency.getVarName();
     }
 
     @FromTemplate(",")
@@ -172,20 +174,28 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return simpleClassName;
     }
 
-    @FromTemplate("MEDIA_TYPE")
-    public String getCurrentMediaType() {
-        return currentMediaType.toString();
-    }
-
     @FromTemplate("ENDPOINT_METHOD")
     public String getEndpointMethodName() {
         return endpointMethodName;
     }
 
-//    @FromTemplate("CONTROLLER_PROVIDER_NAME")
-//    public String getControllerProviderName() {
-//        return controllerProvider.getName();
-//    }
+    @FromTemplate("HAS_RESPONSE")
+    public void processIfHasResponseContent(PrintWriter out, BodyBlock body) {
+        if (responseConverterSelectorDependency != null) {
+            out.print(body.evaluateBody());
+        }
+    }
+
+    @FromTemplate("RESPONSE_CONVERTER_SELECTOR_NAME")
+    public String responseConverterSelectorName() {
+        return responseConverterSelectorDependency.getVarName();
+    }
+
+
+    @FromTemplate("CONTROLLER_DEPENDENCY_NAME")
+    public String getControllerProviderName() {
+        return controllerDependency.getVarName();
+    }
 
     @FromTemplate("ENDPOINT_METHOD_PARAMS")
     public void endpointMethodParams(PrintWriter out, BodyBlock body) {
@@ -200,41 +210,6 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     @FromTemplate("ENDPOINT_METHOD_PARAM_EXPRESSION")
     public String getEndpointMethodParamExpression() {
         return currentMethodParam.expresion();
-    }
-
-    @FromTemplate("VAR RESULT =")
-    public String getResultVarAssignment() {
-        if (resultConverter == null) {
-            return "";
-        }
-        return "var _result = ";
-    }
-//
-//    @FromTemplate("WRITE RESULT")
-//    public String getReturnResult() {
-//        if (resultConverter == null) {
-//            return "";
-//        }
-//
-//        return String.format("%s.toJson(_result, %s.newInstance(_out));",
-//                resultConverter.getName(),
-//                tryImport(JsonValueWriter.class.getName()));
-//    }
-
-    @FromTemplate("SET CONTENT TYPE")
-    public String getContentTYpe() {
-        if (resultConverter == null) {
-            return "";
-        }
-        return String.format("_response.setContentType(\"%s\");", MediaType.APPLICATION_JSON);
-    }
-
-    @FromTemplate("SET CHARSET")
-    public String getCharset() {
-        if (resultConverter == null) {
-            return "";
-        }
-        return String.format("_response.setCharacterEncoding(\"%s\");", StandardCharsets.UTF_8.name());
     }
 
 

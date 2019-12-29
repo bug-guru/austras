@@ -1,7 +1,6 @@
 package $PACKAGE_NAME$;
 
 #IMPORTS#
-JsonValueWriter
 guru.bug.austras.web.EndpointHandler
 guru.bug.austras.web.MediaType
 guru.bug.austras.web.PathItem
@@ -12,6 +11,9 @@ java.io.IOException
 java.util.List
 java.util.Map
 guru.bug.austras.web.errors.NotAcceptableException
+guru.bug.austras.core.qualifiers.Qualifier
+guru.bug.austras.core.qualifiers.QualifierProperty
+guru.bug.austras.web.errors.HttpException
 #END#
 
 public class $SIMPLE_NAME$ extends EndpointHandler {
@@ -37,7 +39,7 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
     }
 
     @Override
-    public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, Map<String, String> pathParams, HttpServletResponse response) throws IOException, ServletException, HttpException {
         #HAS_RESPONSE#
         var selectedResponseConverter =
                 selectResponseContentType($RESPONSE_CONVERTER_SELECTOR_NAME$, request)
