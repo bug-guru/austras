@@ -27,6 +27,10 @@ public class MediaType {
         if (mt.isBlank()) {
             throw new IllegalArgumentException("mediaType cannot be blank");
         }
+        var paramIdx = mt.indexOf(';');
+        if (paramIdx != -1) { // TODO Deal with parameters
+            mt = mt.substring(0, paramIdx);
+        }
         var sepIdx = mt.indexOf('/');
         if (sepIdx == -1) {
             throw new IllegalArgumentException("unsupported mediaType: " + mediaType);

@@ -6,8 +6,7 @@ import guru.bug.austras.web.errors.HttpException;
 import guru.bug.austras.web.errors.MethodNotAllowedException;
 import guru.bug.austras.web.errors.MultipleChoicesException;
 import guru.bug.austras.web.errors.NotFoundException;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.slf4j.Logger;
@@ -41,6 +40,12 @@ public class RestServer implements StartupService {
     public void initialize() {
 
         this.server = new Server(8080);
+        var configuration = new HttpConfiguration();
+        configuration.setSendXPoweredBy(false);
+        configuration.setSendServerVersion(false);
+        var serverConnector = new ServerConnector(server, new HttpConnectionFactory(configuration));
+        serverConnector.setPort(8080);
+        this.server.setConnectors(new Connector[]{serverConnector});
 
         if (endpoints.isEmpty()) {
             log.warn("There are no endpoints found in the application");
