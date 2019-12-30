@@ -21,4 +21,12 @@ public class MyDataObject {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "MyDataObject{" +
+                "group='" + group + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

@@ -1,0 +1,1 @@
+java -jar .\austras-test\target\austras-test-1.0-SNAPSHOT.jar

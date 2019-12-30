@@ -27,7 +27,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
           <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
@@ -45,7 +45,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
           <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
@@ -63,7 +63,7 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
           <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
@@ -90,7 +90,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-web-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-web/target/classes" />
           <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.4.20.v20190813/jetty-server-9.4.20.v20190813.jar" />
@@ -110,10 +110,10 @@
           <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
           <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />

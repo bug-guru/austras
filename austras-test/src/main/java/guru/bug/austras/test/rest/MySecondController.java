@@ -13,7 +13,7 @@ public class MySecondController {
 
     @Endpoint(method = "POST", path = "/sec/1")
     public void doSimplePost(@BodyParam MyDataObject obj) {
-        log.info("POST Simple endpoint");
+        log.info("POST Simple endpoint {}", obj);
     }
 
     @Endpoint(method = "POST", path = "/sec/2/{param1}")

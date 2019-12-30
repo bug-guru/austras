@@ -23,7 +23,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.20.v20190813" level="project" />
     <orderEntry type="module" module-name="austras-core" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.28" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="module" module-name="austras-convert-content-json" />
     <orderEntry type="module" module-name="austras-convert-content" />
     <orderEntry type="module" module-name="austras-convert-engine-json" />

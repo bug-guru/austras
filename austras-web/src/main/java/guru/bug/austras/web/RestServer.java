@@ -1,6 +1,5 @@
 package guru.bug.austras.web;
 
-import guru.bug.austras.core.Selector;
 import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.startup.StartupService;
 import guru.bug.austras.web.errors.HttpException;
@@ -29,12 +28,12 @@ public class RestServer implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(RestServer.class);
     private static final String ACCEPT_HEADER = "Accept";
     private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
-    private final Selector<? extends EndpointHandler> endpointsSelector;
+    private final Collection<? extends EndpointHandler> endpoints;
     private final JettyHandler jettyHandler = new JettyHandler();
     private Server server;
 
-    public RestServer(Selector<? extends EndpointHandler> endpointsSelector) {
-        this.endpointsSelector = endpointsSelector;
+    public RestServer(Collection<? extends EndpointHandler> endpoints) {
+        this.endpoints = endpoints;
     }
 
     @Override
@@ -42,11 +41,10 @@ public class RestServer implements StartupService {
 
         this.server = new Server(8080);
 
-        var endpointHandlers = this.endpointsSelector.get();
-        if (endpointHandlers.isEmpty()) {
+        if (endpoints.isEmpty()) {
             log.warn("There are no endpoints found in the application");
         } else {
-            for (var handler : endpointHandlers) {
+            for (var handler : endpoints) {
                 log.info("Registered {}", handler);
             }
         }
@@ -167,7 +165,7 @@ public class RestServer implements StartupService {
             var byMethodFilter = new Filter(c -> byMethod(c, method));
             var byPathFilter = new Filter(c -> byPath(c, pathItems));
 
-            var candidates = endpointsSelector.get().stream()
+            var candidates = endpoints.stream()
                     .map(EndpointHandlerHolder::new)
                     .filter(byMethodFilter)
                     .filter(byPathFilter)

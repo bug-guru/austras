@@ -13,7 +13,7 @@ public class $SIMPLE_CLASS_NAME$ {
     public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
 
     public static void main(String[] args) {
-        var _t1 = System.currentTimeMillis();
+        var _t1 = System.nanoTime();
         LOGGER.info("Application is starting up...");
         #COMPONENTS#
 
@@ -33,7 +33,9 @@ public class $SIMPLE_CLASS_NAME$ {
         LOGGER.info("Starting up services...");
         $STARTER_COMPONENT_NAME$.initAll();
 
-        var _t2 = System.currentTimeMillis();
-        LOGGER.info("Application is started up in {} ms", _t2 - _t1);
+        var _t2 = System.nanoTime();
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Application is started up in {} ms", (_t2 - _t1) / 1_000_000.0);
+        }
     }
 }

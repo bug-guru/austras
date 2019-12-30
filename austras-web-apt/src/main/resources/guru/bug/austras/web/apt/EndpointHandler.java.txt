@@ -45,6 +45,8 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
         var selectedResponseConverter =
                 selectResponseContentType($RESPONSE_CONVERTER_SELECTOR_NAME$, request)
                         .orElseThrow(NotAcceptableException::new);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(selectedResponseConverter.getMediaType().toString());
         #END#
         #HAS_REQUEST_BODY#
         var selectedRequestConverter =
@@ -59,7 +61,6 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
                 #END#
             );
             #HAS_RESPONSE_BODY#
-            response.setCharacterEncoding("UTF-8");
             selectedResponseConverter.getConverter().write(result, out);
             #END#
         }
