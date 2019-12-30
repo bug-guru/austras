@@ -24,10 +24,8 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.24.v20191120" level="project" />
     <orderEntry type="module" module-name="austras-core" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
-    <orderEntry type="module" module-name="austras-convert-content-json" />
-    <orderEntry type="module" module-name="austras-convert-content" />
-    <orderEntry type="module" module-name="austras-convert-engine-json" />
     <orderEntry type="module" module-name="austras-convert-content-plaintext" />
+    <orderEntry type="module" module-name="austras-convert-content" />
   </component>
   <component name="sonarModuleSettings">
     <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />

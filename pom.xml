@@ -59,6 +59,9 @@
     </dependencyManagement>
 
     <modules>
+        <module>austras-convert-content</module>
+        <module>austras-convert-content-json</module>
+        <module>austras-convert-content-plaintext</module>
         <module>austras-convert-engine-json</module>
         <module>austras-core-apt-common</module>
         <module>austras-core</module>
@@ -68,9 +71,6 @@
         <module>austras-web-apt</module>
         <module>austras-test</module>
         <module>austras-codegen</module>
-        <module>austras-convert-content</module>
-        <module>austras-convert-content-json</module>
-        <module>austras-convert-content-plaintext</module>
     </modules>
 
 </project>

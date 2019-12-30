@@ -25,6 +25,9 @@ public class ConvertersProcessorPlugin implements AustrasProcessorPlugin {
 
             var contentConverterGenerator = new JsonContentConverterGenerator(ctx);
             for (var ct : toGenerate) {
+                if (ct.toString().startsWith("java.")) {
+                    continue;
+                }
                 LOGGER.info("generating json converter for {}", ct);
                 contentConverterGenerator.generate(ct);
             }

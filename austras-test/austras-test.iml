@@ -21,10 +21,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="austras-convert-content-json" />
-    <orderEntry type="module" module-name="austras-convert-content" />
     <orderEntry type="module" module-name="austras-convert-engine-json" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="module" module-name="austras-convert-content-plaintext" />
+    <orderEntry type="module" module-name="austras-convert-content" />
     <orderEntry type="module" module-name="austras-core" />
     <orderEntry type="module" module-name="austras-web" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.24.v20191120" level="project" />

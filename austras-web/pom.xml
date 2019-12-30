@@ -23,11 +23,6 @@
         </dependency>
         <dependency>
             <groupId>guru.bug.austras</groupId>
-            <artifactId>austras-convert-content-json</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>guru.bug.austras</groupId>
             <artifactId>austras-convert-content-plaintext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

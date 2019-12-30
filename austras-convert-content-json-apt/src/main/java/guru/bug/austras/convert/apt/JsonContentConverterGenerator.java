@@ -8,6 +8,8 @@ import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.convert.content.BooleanContentConverter;
 import guru.bug.austras.convert.engine.json.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -19,6 +21,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 
 @FromTemplate("JsonContentConverter.java.txt")
 public class JsonContentConverterGenerator extends JavaGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonContentConverterGenerator.class);
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;
     private List<Property> properties;
@@ -206,7 +210,12 @@ public class JsonContentConverterGenerator extends JavaGenerator {
             if (prop == null) {
                 continue;
             }
-            index.compute(prop.name, (k, v) -> merge(prop, v));
+            try {
+                index.compute(prop.name, (k, v) -> merge(prop, v));
+            } catch (Exception ex) {
+                LOGGER.error("Collecting props error " + type, ex);
+                ctx.processingEnv().getMessager().printMessage(Diagnostic.Kind.ERROR, "Collecting props error " + type);
+            }
         }
         return index.values().stream().filter(this::isValid).collect(Collectors.toList());
     }
@@ -236,7 +245,7 @@ public class JsonContentConverterGenerator extends JavaGenerator {
         var e2 = o2.type.toString();
 
         if (!e1.equals(e2)) {
-            throw new IllegalArgumentException("Different types " + o1.type + " and " + o2.type);
+            throw new IllegalArgumentException("Different types " + o1 + " and " + o2);
         }
         if (o2.field != null) {
             if (o1.field != null) {
