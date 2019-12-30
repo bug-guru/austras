@@ -2,7 +2,6 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="MavenAnnotationProcessors">
     <modules>
-      <module name="austras-convert-content-json-apt" />
       <module name="austras-web-apt" />
       <module name="austras-core-apt" />
     </modules>
@@ -22,10 +21,13 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="austras-convert-content-json" />
     <orderEntry type="module" module-name="austras-convert-engine-json" />
+    <orderEntry type="module" module-name="austras-codegen" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="module" module-name="austras-convert-content-plaintext" />
     <orderEntry type="module" module-name="austras-convert-content" />
     <orderEntry type="module" module-name="austras-core" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="module" module-name="austras-web" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.24.v20191120" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />

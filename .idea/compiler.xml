@@ -17,111 +17,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="austras-convert-engine-json" />
+        <module name="austras-convert-content-plaintext" />
         <module name="austras-convert-content" />
         <module name="austras-codegen" />
-      </profile>
-      <profile name="Annotation profile for austras-convert-content-json" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-        </processorPath>
         <module name="austras-convert-content-json" />
-      </profile>
-      <profile name="Annotation profile for austras-convert-content-plaintext" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-        </processorPath>
-        <module name="austras-convert-content-plaintext" />
-      </profile>
-      <profile name="Annotation profile for austras-web" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-        </processorPath>
         <module name="austras-web" />
-      </profile>
-      <profile name="Annotation profile for austras" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/austras-convert-content-json-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-content/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-web-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-web/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.4.24.v20191120/jetty-server-9.4.24.v20191120.jar" />
-          <entry name="$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.24.v20191120/jetty-http-9.4.24.v20191120.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.24.v20191120/jetty-util-9.4.24.v20191120.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.24.v20191120/jetty-io-9.4.24.v20191120.jar" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-content-plaintext/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-content/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-core-apt/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-core/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
-          <entry name="$PROJECT_DIR$/austras-core-apt-common/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
-          <entry name="$PROJECT_DIR$/austras-codegen/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-text/1.7/commons-text-1.7.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar" />
-          <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar" />
-        </processorPath>
         <module name="austras-test" />
+        <module name="austras-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
