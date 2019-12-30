@@ -9,6 +9,7 @@ import guru.bug.austras.web.errors.NotFoundException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,12 @@ public class RestServer implements StartupService {
         }
 
         server.setHandler(jettyHandler);
+        server.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void doError(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+                baseRequest.setHandled(true);
+            }
+        });
 
         try {
             server.start();
@@ -124,6 +131,7 @@ public class RestServer implements StartupService {
                 var pathItems = PathSplitter.split(Function.identity(), target);
                 var handlerHolder = findHandler(request, pathItems);
                 handlerHolder.handle(request, response);
+                baseRequest.setHandled(true);
             } catch (HttpException e) {
                 log.error("Handling HTTP Exception", e);
                 sendError(response, e.getStatusCode(), e.getMessage());

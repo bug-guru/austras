@@ -93,11 +93,11 @@
           <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar" />
           <entry name="$PROJECT_DIR$/austras-web-apt/target/classes" />
           <entry name="$PROJECT_DIR$/austras-web/target/classes" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.4.20.v20190813/jetty-server-9.4.20.v20190813.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.4.24.v20191120/jetty-server-9.4.24.v20191120.jar" />
           <entry name="$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.20.v20190813/jetty-http-9.4.20.v20190813.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.20.v20190813/jetty-util-9.4.20.v20190813.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.20.v20190813/jetty-io-9.4.20.v20190813.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.24.v20191120/jetty-http-9.4.24.v20191120.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.4.24.v20191120/jetty-util-9.4.24.v20191120.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.4.24.v20191120/jetty-io-9.4.24.v20191120.jar" />
           <entry name="$PROJECT_DIR$/austras-core/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-content-json/target/classes" />
           <entry name="$PROJECT_DIR$/austras-convert-engine-json/target/classes" />
