@@ -1,8 +1,8 @@
 package guru.bug.austras.web.apt;
 
 import guru.bug.austras.apt.core.common.model.*;
-import guru.bug.austras.convert.content.*;
-import guru.bug.austras.convert.content.plaintext.PlainText;
+import guru.bug.austras.convert.*;
+import guru.bug.austras.convert.plaintext.PlainText;
 import guru.bug.austras.web.apt.model.DependencyRef;
 import org.apache.commons.lang3.StringUtils;
 

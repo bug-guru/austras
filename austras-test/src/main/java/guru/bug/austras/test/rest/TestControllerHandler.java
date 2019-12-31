@@ -1,6 +1,6 @@
 package guru.bug.austras.test.rest;
 
-import guru.bug.austras.convert.content.ContentConverter;
+import guru.bug.austras.convert.ContentConverter;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.core.qualifiers.Any;
 import guru.bug.austras.web.EndpointHandler;

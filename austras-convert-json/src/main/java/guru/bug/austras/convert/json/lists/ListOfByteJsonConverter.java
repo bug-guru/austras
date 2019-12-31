@@ -1,0 +1,14 @@
+package guru.bug.austras.convert.json.lists;
+
+import guru.bug.austras.convert.json.ApplicationJson;
+import guru.bug.austras.json.JsonConverter;
+
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
+@ApplicationJson
+public class ListOfByteJsonConverter extends AbstractListJsonConverter<Byte> {
+
+    public ListOfByteJsonConverter(@ApplicationJson JsonConverter<Byte> elementConverter) {
+        super(elementConverter);
+    }
+
+}

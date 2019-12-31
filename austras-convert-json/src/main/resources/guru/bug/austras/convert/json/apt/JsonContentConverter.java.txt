@@ -1,0 +1,46 @@
+package $PACKAGE_NAME$;
+
+#IMPORTS#
+guru.bug.austras.core.qualifiers.Default
+guru.bug.austras.convert.json.AbstractJsonConverter
+guru.bug.austras.convert.json.ApplicationJson
+guru.bug.austras.json.JsonConverter
+guru.bug.austras.json.writer.JsonValueWriter
+guru.bug.austras.json.reader.JsonValueReader
+#END#
+
+@ApplicationJson
+public class $SIMPLE_NAME$ extends AbstractJsonConverter<$TARGET$> {
+
+    #CONVERTERS#
+    private $CONVERTER_TYPE$ $CONVERTER_NAME$;
+    #END#
+
+    public $SIMPLE_NAME$(#CONVERTERS#@ApplicationJson $CONVERTER_TYPE$ $CONVERTER_NAME$$,$#END#) {
+        #CONVERTERS#
+        this.$CONVERTER_NAME$ = $CONVERTER_NAME$;
+        #END#
+    }
+
+    @Override
+    public void toJson($TARGET$ value, JsonValueWriter writer) {
+        writer.writeObject(value, (obj, out) -> {
+            #PROPERTIES#
+            out.writeValue("$PROPERTY_NAME$", obj.$PROPERTY_GETTER_NAME$(), $PROPERTY_CONVERTER_NAME$);
+            #END#
+        });
+    }
+
+    @Override
+    public $TARGET$ fromJson(JsonValueReader reader) {
+        return reader.readNullableObject($TARGET$::new, (obj, key, in) -> {
+            switch (key) {
+                #PROPERTIES#
+                case "$PROPERTY_NAME$":
+                    obj.$PROPERTY_SETTER_NAME$(reader.read($PROPERTY_CONVERTER_NAME$)#IF_NOT_PRIMITIVE#.orElse(null)#END#);
+                    break;
+                #END#
+            }
+        });
+    }
+}

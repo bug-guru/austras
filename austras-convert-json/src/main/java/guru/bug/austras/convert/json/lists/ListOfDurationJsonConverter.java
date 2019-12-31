@@ -1,0 +1,16 @@
+package guru.bug.austras.convert.json.lists;
+
+import guru.bug.austras.convert.json.ApplicationJson;
+import guru.bug.austras.json.JsonConverter;
+
+import java.time.Duration;
+
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
+@ApplicationJson
+public class ListOfDurationJsonConverter extends AbstractListJsonConverter<Duration> {
+
+    public ListOfDurationJsonConverter(@ApplicationJson JsonConverter<Duration> elementConverter) {
+        super(elementConverter);
+    }
+
+}

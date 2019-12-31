@@ -1,8 +1,8 @@
 package guru.bug.austras.apt.core.process;
 
 import guru.bug.austras.apt.core.common.model.ModuleModel;
-import guru.bug.austras.convert.engine.json.reader.JsonValueReader;
-import guru.bug.austras.convert.engine.json.writer.JsonValueWriter;
+import guru.bug.austras.json.reader.JsonValueReader;
+import guru.bug.austras.json.writer.JsonValueWriter;
 
 import java.io.Reader;
 import java.io.Writer;

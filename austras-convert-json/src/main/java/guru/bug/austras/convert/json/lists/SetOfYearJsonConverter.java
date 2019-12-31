@@ -1,0 +1,16 @@
+package guru.bug.austras.convert.json.lists;
+
+import guru.bug.austras.convert.json.ApplicationJson;
+import guru.bug.austras.json.JsonConverter;
+
+import java.time.Year;
+
+@SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
+@ApplicationJson
+public class SetOfYearJsonConverter extends AbstractSetJsonConverter<Year> {
+
+    public SetOfYearJsonConverter(@ApplicationJson JsonConverter<Year> elementConverter) {
+        super(elementConverter);
+    }
+
+}

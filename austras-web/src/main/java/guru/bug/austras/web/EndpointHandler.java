@@ -1,7 +1,7 @@
 package guru.bug.austras.web;
 
-import guru.bug.austras.convert.content.ContentConverter;
-import guru.bug.austras.convert.content.Converts;
+import guru.bug.austras.convert.ContentConverter;
+import guru.bug.austras.convert.Converts;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.web.errors.HttpException;
 
