@@ -17,12 +17,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-convert-engine-json" />
-        <module name="austras-convert-content-plaintext" />
-        <module name="austras-convert-content" />
-        <module name="austras-codegen" />
-        <module name="austras-convert-content-json" />
+        <module name="austras-convert-json" />
+        <module name="austras-convert" />
+        <module name="austras-json" />
         <module name="austras-web" />
+        <module name="austras-convert-plaintext" />
+        <module name="austras-codegen" />
         <module name="austras-test" />
         <module name="austras-core" />
       </profile>
@@ -31,14 +31,13 @@
       <module name="austras" target="11" />
       <module name="austras-codegen" target="11" />
       <module name="austras-convert" target="11" />
-      <module name="austras-convert-content" target="11" />
-      <module name="austras-convert-content-json" target="11" />
       <module name="austras-convert-content-json-apt" target="11" />
-      <module name="austras-convert-content-plaintext" target="11" />
-      <module name="austras-convert-engine-json" target="11" />
+      <module name="austras-convert-json" target="11" />
+      <module name="austras-convert-plaintext" target="11" />
       <module name="austras-core" target="11" />
       <module name="austras-core-apt" target="11" />
       <module name="austras-core-apt-common" target="11" />
+      <module name="austras-json" target="11" />
       <module name="austras-test" target="11" />
       <module name="austras-web" target="11" />
       <module name="austras-web-apt" target="11" />

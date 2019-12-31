@@ -66,14 +66,14 @@
     </build>
 
     <modules>
-        <module>austras-convert-content</module>
-        <module>austras-convert-content-json</module>
-        <module>austras-convert-content-plaintext</module>
-        <module>austras-convert-engine-json</module>
+        <module>austras-codegen</module>
+        <module>austras-json</module>
         <module>austras-core</module>
+        <module>austras-convert</module>
+        <module>austras-convert-plaintext</module>
+        <module>austras-convert-json</module>
         <module>austras-web</module>
         <module>austras-test</module>
-        <module>austras-codegen</module>
     </modules>
 
 </project>

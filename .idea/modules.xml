@@ -4,11 +4,11 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/austras.iml" filepath="$PROJECT_DIR$/austras.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-codegen/austras-codegen.iml" filepath="$PROJECT_DIR$/austras-codegen/austras-codegen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert-content/austras-convert-content.iml" filepath="$PROJECT_DIR$/austras-convert-content/austras-convert-content.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert-content-json/austras-convert-content-json.iml" filepath="$PROJECT_DIR$/austras-convert-content-json/austras-convert-content-json.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert-content-plaintext/austras-convert-content-plaintext.iml" filepath="$PROJECT_DIR$/austras-convert-content-plaintext/austras-convert-content-plaintext.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-convert-engine-json/austras-convert-engine-json.iml" filepath="$PROJECT_DIR$/austras-convert-engine-json/austras-convert-engine-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-convert/austras-convert.iml" filepath="$PROJECT_DIR$/austras-convert/austras-convert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-convert-json/austras-convert-json.iml" filepath="$PROJECT_DIR$/austras-convert-json/austras-convert-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-convert-plaintext/austras-convert-plaintext.iml" filepath="$PROJECT_DIR$/austras-convert-plaintext/austras-convert-plaintext.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core/austras-core.iml" filepath="$PROJECT_DIR$/austras-core/austras-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-json/austras-json.iml" filepath="$PROJECT_DIR$/austras-json/austras-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-test/austras-test.iml" filepath="$PROJECT_DIR$/austras-test/austras-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-web/austras-web.iml" filepath="$PROJECT_DIR$/austras-web/austras-web.iml" />
     </modules>
