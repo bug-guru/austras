@@ -17,6 +17,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="austras-convert-json" />
+        <module name="austras-web" />
+        <module name="austras-convert" />
+        <module name="austras-json" />
+        <module name="austras-core" />
+        <module name="austras-mapper" />
+        <module name="austras-convert-plaintext" />
         <module name="austras-codegen" />
         <module name="austras-test" />
       </profile>
