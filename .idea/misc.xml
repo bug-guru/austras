@@ -16,8 +16,13 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/austras-convert-content-json-apt/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-convert-json/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-convert-plaintext/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-convert/pom.xml" />
         <option value="$PROJECT_DIR$/austras-core-apt-common/pom.xml" />
         <option value="$PROJECT_DIR$/austras-core-apt/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-json/pom.xml" />
+        <option value="$PROJECT_DIR$/austras-mapper/pom.xml" />
         <option value="$PROJECT_DIR$/austras-web-apt/pom.xml" />
       </set>
     </option>
