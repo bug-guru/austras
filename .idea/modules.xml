@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/austras-convert-plaintext/austras-convert-plaintext.iml" filepath="$PROJECT_DIR$/austras-convert-plaintext/austras-convert-plaintext.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-core/austras-core.iml" filepath="$PROJECT_DIR$/austras-core/austras-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-json/austras-json.iml" filepath="$PROJECT_DIR$/austras-json/austras-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-mapper/austras-mapper.iml" filepath="$PROJECT_DIR$/austras-mapper/austras-mapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-test/austras-test.iml" filepath="$PROJECT_DIR$/austras-test/austras-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-web/austras-web.iml" filepath="$PROJECT_DIR$/austras-web/austras-web.iml" />
     </modules>

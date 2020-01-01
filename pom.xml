@@ -80,6 +80,7 @@
         <module>austras-convert-plaintext</module>
         <module>austras-convert-json</module>
         <module>austras-web</module>
+        <module>austras-mapper</module>
         <module>austras-test</module>
     </modules>
 
