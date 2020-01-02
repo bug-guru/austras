@@ -276,26 +276,6 @@ public class JsonContentConverterGenerator extends JavaGenerator {
     }
 
 
-    private static class Property {
-        String name;
-        TypeMirror type;
-        VariableElement field;
-        ExecutableElement getter;
-        ExecutableElement setter;
-        ConverterInfo converter;
-
-        @Override
-        public String toString() {
-            return "Property{" +
-                    "name='" + name + '\'' +
-                    ", type=" + type +
-                    ", field=" + field +
-                    ", getter=" + getter +
-                    ", setter=" + setter +
-                    '}';
-        }
-    }
-
     @SuppressWarnings("squid:MaximumInheritanceDepth")
     private static class PropExtractor extends SimpleElementVisitor9<Property, ProcessingContext> {
         @Override
@@ -332,6 +312,27 @@ public class JsonContentConverterGenerator extends JavaGenerator {
             return prop;
         }
     }
+
+    private static class Property {
+        String name;
+        TypeMirror type;
+        VariableElement field;
+        ExecutableElement getter;
+        ExecutableElement setter;
+        ConverterInfo converter;
+
+        @Override
+        public String toString() {
+            return "Property{" +
+                    "name='" + name + '\'' +
+                    ", type=" + type +
+                    ", field=" + field +
+                    ", getter=" + getter +
+                    ", setter=" + setter +
+                    '}';
+        }
+    }
+
 
     private static class ConverterInfo {
         final String type;
