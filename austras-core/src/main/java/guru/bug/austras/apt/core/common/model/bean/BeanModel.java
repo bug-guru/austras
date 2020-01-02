@@ -10,10 +10,7 @@ package guru.bug.austras.apt.core.common.model.bean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.SimpleElementVisitor9;
@@ -36,8 +33,8 @@ public class BeanModel {
                 .collect(Collectors.toMap(BeanPropertyModel::getName, Function.identity()));
     }
 
-    private static List<Property> collectProps(DeclaredType type) {
-        var index = new HashMap<String, Property>();
+    private static List<BeanPropertyModel> collectProps(DeclaredType type) {
+        var index = new HashMap<String, BeanPropertyModel.Builder>();
         for (var e : type.asElement().getEnclosedElements()) {
             var prop = e.accept(propExtractor, null);
             if (prop == null) {
@@ -65,46 +62,46 @@ public class BeanModel {
     }
 
     @SuppressWarnings("squid:MaximumInheritanceDepth")
-    private static class PropExtractor extends SimpleElementVisitor9<Property, Void> {
+    private static class PropExtractor extends SimpleElementVisitor9<Void, Map<String, BeanPropertyModel.Builder>> {
         @Override
-        public Property visitVariable(VariableElement e, Void aVoid) {
+        public Void visitVariable(VariableElement e, Map<String, BeanPropertyModel.Builder> index) {
             if (e.getKind() != ElementKind.FIELD) {
                 return null;
             }
-            var prop = new Property();
-            prop.name = e.getSimpleName().toString();
-            prop.field = e;
-            prop.type = e.asType();
-            return prop;
+            if (e.getModifiers().contains(Modifier.STATIC)) {
+                return null;
+            }
+            var name = e.getSimpleName().toString();
+            var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+            prop.field(name, e.asType(), e);
+            return null;
         }
 
         @Override
-        public Property visitExecutable(ExecutableElement e, Void aVoid) {
+        public Void visitExecutable(ExecutableElement e, Map<String, BeanPropertyModel.Builder> index) {
             if (e.getKind() != ElementKind.METHOD) {
                 return null;
             }
-            var prop = new Property();
+            if (e.getModifiers().contains(Modifier.STATIC)) {
+                return null;
+            }
+            if (!e.getModifiers().contains(Modifier.PUBLIC)) {
+                return null;
+            }
             var mname = e.getSimpleName().toString();
             var isVoid = e.getReturnType().getKind() == TypeKind.VOID;
             var params = e.getParameters();
             if (mname.startsWith("get") && params.isEmpty() && !isVoid) {
-                prop.getter = e;
-                prop.type = e.getReturnType();
+                var name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
+                var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+                prop.getter(name, e.getReturnType(), e);
             } else if (mname.startsWith("set") && params.size() == 1 && isVoid) {
-                prop.setter = e;
-                prop.type = params.get(0).asType();
-            } else {
-                return null;
+                var name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
+                var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+                prop.getter(name, params.get(0).asType(), e);
             }
-            prop.name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
-            return prop;
+            return null;
         }
     }
 
-
-    private static class PropertiesIndex {
-        private final Map<String, BeanPropertyModel.Builder> index;
-
-
-    }
 }
