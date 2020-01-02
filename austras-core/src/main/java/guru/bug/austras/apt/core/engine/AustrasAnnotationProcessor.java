@@ -11,10 +11,7 @@ import com.google.auto.service.AutoService;
 import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
-import guru.bug.austras.apt.core.common.model.ComponentKey;
-import guru.bug.austras.apt.core.common.model.ComponentModel;
-import guru.bug.austras.apt.core.common.model.DependencyModel;
-import guru.bug.austras.apt.core.common.model.QualifierSetModel;
+import guru.bug.austras.apt.core.common.model.*;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
 import guru.bug.austras.codegen.TemplateException;
@@ -101,12 +98,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             log.error("Error was raised");
             return false;
         }
-        var ctx = new ProcessingContextImpl() {
-            @Override
-            public RoundEnvironment roundEnv() {
-                return roundEnv;
-            }
-        };
+        var ctx = new ProcessingContextImpl(roundEnv);
         try {
             if (roundEnv.processingOver()) {
                 generatePluginServices();
@@ -115,7 +107,8 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             } else {
                 log.debug("SCAN");
                 var rootElements = roundEnv.getRootElements();
-                scanRootElements(rootElements);
+                Set<ComponentRef> dependencies = scanRootElements(rootElements);
+                ctx.setRoundDependencies(dependencies);
                 log.debug("PLUGINS");
                 processPlugins(ctx);
             }
@@ -157,19 +150,23 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void scanRootElements(Set<? extends Element> rootElements) {
+    private Set<ComponentRef> scanRootElements(Set<? extends Element> rootElements) {
+        var dependencies = new HashSet<ComponentRef>();
         for (var element : rootElements) {
             if (isProcessorPlugin(element)) {
                 var procType = (TypeElement) element;
                 foundProcessorPlugins.add(procType.getQualifiedName().toString());
-                continue;
-            }
-            if (!shouldBeIgnored(element)) {
+            } else if (!shouldBeIgnored(element)) {
                 TypeElement typeElement = (TypeElement) element;
                 log.info("PROCESS: Found component class {}.", element);
-                scanComponent(typeElement);
+                var refs = scanComponent(typeElement).stream()
+                        .flatMap(d -> d.getDependencies().stream())
+                        .map(DependencyModel::asComponentRef)
+                        .collect(Collectors.toSet());
+                dependencies.addAll(refs);
             }
         }
+        return dependencies;
     }
 
     private boolean isProcessorPlugin(Element element) {
@@ -189,7 +186,7 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void scanComponent(TypeElement typeElement) {
+    private Optional<ComponentModel> scanComponent(TypeElement typeElement) {
         try {
             var model = modelUtils.createComponentModel(typeElement);
             var hasQualifierAnnotation = hasQualifiers(typeElement);
@@ -204,9 +201,11 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
             if (hasApplicationAnnotation) {
                 this.appMainComponent = model;
             }
+            return Optional.of(model);
         } catch (Exception e) {
             log.error("Exception while scanning component", e);
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Exception while scanning component", typeElement);
+            return Optional.empty();
         }
     }
 
@@ -279,12 +278,28 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private abstract class ProcessingContextImpl implements ProcessingContext {
-        private final ComponentManager componentManager = new ComponentManagerImpl();
+    private class ProcessingContextImpl implements ProcessingContext {
+        private final RoundEnvironment roundEnv;
+        private Set<ComponentRef> roundDependencies = Set.of();
+        private final ComponentManagerImpl componentManager = new ComponentManagerImpl() {
+            @Override
+            public Set<ComponentRef> roundDependencies() {
+                return roundDependencies;
+            }
+        };
+
+        private ProcessingContextImpl(RoundEnvironment roundEnv) {
+            this.roundEnv = roundEnv;
+        }
 
         @Override
         public ProcessingEnvironment processingEnv() {
             return processingEnv;
+        }
+
+        @Override
+        public RoundEnvironment roundEnv() {
+            return roundEnv;
         }
 
         @Override
@@ -296,9 +311,13 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         public ModelUtils modelUtils() {
             return modelUtils;
         }
+
+        public void setRoundDependencies(Set<ComponentRef> roundDependencies) {
+            this.roundDependencies = Set.copyOf(roundDependencies);
+        }
     }
 
-    private class ComponentManagerImpl implements ComponentManager {
+    private abstract class ComponentManagerImpl implements ComponentManager {
 
         @Override
         public boolean tryUseComponents(TypeMirror type, QualifierSetModel qualifier) {
@@ -382,5 +401,6 @@ public class AustrasAnnotationProcessor extends AbstractProcessor {
         public QualifierSetModel extractQualifier(AnnotatedConstruct annotated) {
             return modelUtils.extractQualifiers(annotated);
         }
+
     }
 }

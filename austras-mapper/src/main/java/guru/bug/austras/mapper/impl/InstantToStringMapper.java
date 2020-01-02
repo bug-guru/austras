@@ -11,9 +11,20 @@ import guru.bug.austras.core.qualifiers.Default;
 import guru.bug.austras.mapper.Mapper;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
 @Default
 public class InstantToStringMapper implements Mapper<Instant, String> {
+    private final DateTimeFormatter format;
+
+    public InstantToStringMapper() {
+        format = DateTimeFormatter.ISO_INSTANT;
+    }
+
+    public InstantToStringMapper(String format) {
+        this.format = DateTimeFormatter.ofPattern(format);
+    }
+
     @Override
     public String map(Instant source) {
         return source == null ? null : source.toString();

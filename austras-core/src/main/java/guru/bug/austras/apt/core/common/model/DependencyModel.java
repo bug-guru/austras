@@ -12,17 +12,20 @@ import guru.bug.austras.json.JsonConverter;
 import guru.bug.austras.json.reader.JsonValueReader;
 import guru.bug.austras.json.writer.JsonValueWriter;
 
+import javax.lang.model.type.TypeMirror;
 import java.util.Collection;
 import java.util.Objects;
 
 public class DependencyModel {
     private static final Serializer SERIALIZER = new Serializer();
     private final String type;
+    private final TypeMirror mirror;
     private final QualifierSetModel qualifiers;
     private final WrappingType wrapping;
 
-    public DependencyModel(String type, QualifierSetModel qualifiers, WrappingType wrapping) {
+    private DependencyModel(String type, TypeMirror mirror, QualifierSetModel qualifiers, WrappingType wrapping) {
         this.type = type;
+        this.mirror = mirror;
         this.qualifiers = qualifiers;
         this.wrapping = wrapping;
     }
@@ -39,6 +42,10 @@ public class DependencyModel {
         return type;
     }
 
+    public TypeMirror getMirror() {
+        return mirror;
+    }
+
     public QualifierSetModel getQualifiers() {
         return qualifiers;
     }
@@ -49,6 +56,10 @@ public class DependencyModel {
 
     public ComponentKey asComponentKey() {
         return ComponentKey.of(type, qualifiers);
+    }
+
+    public ComponentRef asComponentRef() {
+        return ComponentRef.of(mirror, qualifiers);
     }
 
     public String asTypeDeclaration() {
@@ -121,11 +132,17 @@ public class DependencyModel {
 
     public static class Builder {
         private String type;
+        private TypeMirror mirror;
         private QualifierSetModel qualifiers;
         private WrappingType wrapping;
 
         public Builder type(String type) {
             this.type = type;
+            return this;
+        }
+
+        public Builder mirror(TypeMirror mirror) {
+            this.mirror = mirror;
             return this;
         }
 
@@ -140,7 +157,7 @@ public class DependencyModel {
         }
 
         public DependencyModel build() {
-            return new DependencyModel(type, qualifiers, wrapping);
+            return new DependencyModel(type, mirror, qualifiers, wrapping);
         }
     }
 }

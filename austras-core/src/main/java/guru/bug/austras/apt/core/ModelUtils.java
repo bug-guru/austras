@@ -265,6 +265,7 @@ public class ModelUtils {
     public DependencyModel createDependencyModel(PrimitiveType paramType, AnnotatedConstruct metadata) {
         return DependencyModel.builder()
                 .type(paramType.toString())
+                .mirror(paramType)
                 .qualifiers(extractQualifiers(metadata))
                 .wrapping(WrappingType.NONE)
                 .build();
@@ -290,6 +291,7 @@ public class ModelUtils {
         }
 
         resultBuilder.type(pt.toString());
+        resultBuilder.mirror(pt);
         resultBuilder.qualifiers(qualifiers);
 
         return resultBuilder.build();

@@ -7,15 +7,13 @@
 
 package guru.bug.austras.apt.core.engine;
 
-import guru.bug.austras.apt.core.common.model.ComponentKey;
-import guru.bug.austras.apt.core.common.model.ComponentModel;
-import guru.bug.austras.apt.core.common.model.DependencyModel;
-import guru.bug.austras.apt.core.common.model.QualifierSetModel;
+import guru.bug.austras.apt.core.common.model.*;
 
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.type.TypeMirror;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ComponentManager {
     boolean tryUseComponents(TypeMirror type, QualifierSetModel qualifier);
@@ -49,4 +47,6 @@ public interface ComponentManager {
     Optional<ComponentModel> findSingleComponent(ComponentKey key);
 
     QualifierSetModel extractQualifier(AnnotatedConstruct annotated);
+
+    Set<ComponentRef> roundDependencies();
 }
