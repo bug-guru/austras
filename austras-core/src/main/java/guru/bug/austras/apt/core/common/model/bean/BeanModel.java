@@ -10,12 +10,15 @@ package guru.bug.austras.apt.core.common.model.bean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.lang.model.element.*;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.SimpleElementVisitor9;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -24,41 +27,36 @@ import java.util.stream.Collectors;
 public class BeanModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(BeanModel.class);
     private static final PropExtractor propExtractor = new PropExtractor();
-    private final TypeElement dataClassElement;
+    private final DeclaredType beanType;
     private final Map<String, BeanPropertyModel> properties;
 
-    public BeanModel(TypeElement dataClassElement, Set<BeanPropertyModel> properties) {
-        this.dataClassElement = dataClassElement;
+    public BeanModel(DeclaredType beanType, Set<BeanPropertyModel> properties) {
+        this.beanType = beanType;
         this.properties = properties.stream()
-                .collect(Collectors.toMap(BeanPropertyModel::getName, Function.identity()));
+                .collect(Collectors.toUnmodifiableMap(BeanPropertyModel::getName, Function.identity()));
     }
 
-    private static List<BeanPropertyModel> collectProps(DeclaredType type) {
+    public static BeanModel of(DeclaredType beanType) {
+        var props = collectProps(beanType);
+        return new BeanModel(beanType, props);
+    }
+
+    private static Set<BeanPropertyModel> collectProps(DeclaredType type) {
         var index = new HashMap<String, BeanPropertyModel.Builder>();
         for (var e : type.asElement().getEnclosedElements()) {
-            var prop = e.accept(propExtractor, null);
-            if (prop == null) {
-                continue;
-            }
-            try {
-                index.compute(prop.name, (k, v) -> merge(prop, v));
-            } catch (Exception ex) {
-                throw new IllegalArgumentException("Collecting props error " + type, ex);
-            }
+            e.accept(propExtractor, index);
         }
         return index.values().stream()
-                .filter(BeanModel::isValid)
-                .map(p -> {
-
-                })
-                .collect(Collectors.toList());
+                .map(BeanPropertyModel.Builder::build)
+                .collect(Collectors.toSet());
     }
 
-    private static boolean isValid(Property property) {
-        if (property.type == null || property.name == null || property.name.isBlank()) {
-            throw new IllegalArgumentException("invalid property " + property);
-        }
-        return property.setter != null && property.getter != null;
+    public DeclaredType getBeanType() {
+        return beanType;
+    }
+
+    public Collection<BeanPropertyModel> getProperties() {
+        return properties.values();
     }
 
     @SuppressWarnings("squid:MaximumInheritanceDepth")
@@ -72,7 +70,7 @@ public class BeanModel {
                 return null;
             }
             var name = e.getSimpleName().toString();
-            var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+            var prop = getPropertyBuilderByName(index, name);
             prop.field(name, e.asType(), e);
             return null;
         }
@@ -88,19 +86,27 @@ public class BeanModel {
             if (!e.getModifiers().contains(Modifier.PUBLIC)) {
                 return null;
             }
-            var mname = e.getSimpleName().toString();
+            var methodName = e.getSimpleName().toString();
             var isVoid = e.getReturnType().getKind() == TypeKind.VOID;
             var params = e.getParameters();
-            if (mname.startsWith("get") && params.isEmpty() && !isVoid) {
-                var name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
-                var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+            if (methodName.startsWith("get") && params.isEmpty() && !isVoid) {
+                var name = propNameFromMethodName(methodName);
+                var prop = getPropertyBuilderByName(index, name);
                 prop.getter(name, e.getReturnType(), e);
-            } else if (mname.startsWith("set") && params.size() == 1 && isVoid) {
-                var name = mname.substring(3, 4).toLowerCase() + mname.substring(4);
-                var prop = index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+            } else if (methodName.startsWith("set") && params.size() == 1 && isVoid) {
+                var name = propNameFromMethodName(methodName);
+                var prop = getPropertyBuilderByName(index, name);
                 prop.getter(name, params.get(0).asType(), e);
             }
             return null;
+        }
+
+        private BeanPropertyModel.Builder getPropertyBuilderByName(Map<String, BeanPropertyModel.Builder> index, String name) {
+            return index.computeIfAbsent(name, k -> BeanPropertyModel.builder());
+        }
+
+        private String propNameFromMethodName(String methodName) {
+            return methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
         }
     }
 

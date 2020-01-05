@@ -51,6 +51,31 @@ public class BeanPropertyModel {
         return getter;
     }
 
+    public boolean isReadable() {
+        return getter != null;
+    }
+
+    public boolean isWritable() {
+        return setter != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeanPropertyModel that = (BeanPropertyModel) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(field, that.field) &&
+                Objects.equals(setter, that.setter) &&
+                Objects.equals(getter, that.getter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, field, setter, getter);
+    }
+
     public static class Builder {
         private String name;
         private TypeMirror type;
@@ -97,6 +122,10 @@ public class BeanPropertyModel {
                     throw new IllegalArgumentException("different type " + this.type + " and " + type);
                 }
             }
+        }
+
+        public BeanPropertyModel build() {
+            return new BeanPropertyModel(name, type, field, setter, getter);
         }
     }
 }

@@ -8,21 +8,81 @@
 package guru.bug.austras.mapper.apt;
 
 import guru.bug.austras.apt.core.common.model.ComponentRef;
+import guru.bug.austras.apt.core.common.model.bean.BeanModel;
+import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
+import guru.bug.austras.mapper.Mapper;
 
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MapperProcessorPlugin implements AustrasProcessorPlugin {
     @Override
     public void process(ProcessingContext ctx) {
-        for (var ref : ctx.componentManager().roundDependencies()) {
-            createMapperModel(ctx, ref)
-        }
+        var models = ctx.componentManager().roundDependencies().stream()
+                .map(this::createMapperModel)
+                .filter(Optional::isPresent)
+                .collect(Collectors.toSet());
     }
 
-    private Optional<MapperModel> createMapperModel(ProcessingContext ctx, ComponentRef ref) {
-        ref.getType().
+    private Optional<MapperModel> createMapperModel(ComponentRef ref) {
+        return processDeclared(ref.getType())
+                .flatMap(this::processIfMapper);
+    }
+
+    private Optional<MapperModel> processIfMapper(DeclaredType type) {
+        if (!type.toString().startsWith(Mapper.class.getName() + "<")) {
+            return Optional.empty();
+        }
+        var args = type.getTypeArguments();
+        var srcBeanModel = convertToBeanModel(args.get(0));
+        var trgBeanModel = convertToBeanModel(args.get(1));
+        var result = new MapperModel();
+        result.setSource(srcBeanModel);
+        result.setTarget(trgBeanModel);
+
+        var fieldMappings = new ArrayList<FieldMapping>();
+        for (var srcProp : srcBeanModel.getProperties()) {
+            if (!srcProp.isReadable()) {
+                continue;
+            }
+            var fieldMapping = new FieldMapping();
+            fieldMapping.setSourceField(srcProp);
+
+            BeanPropertyModel pairTargetField = null;
+            for (var trgProp : trgBeanModel.getProperties()) {
+                if (trgProp.isWritable() && trgProp.getName().equals(srcProp.getName())) {
+                    pairTargetField = trgProp;
+                    break;
+                }
+            }
+
+            if (pairTargetField == null) {
+                continue;
+            }
+            result.setTarget(trgBeanModel);
+            fieldMappings.add(fieldMapping);
+        }
+        result.setMappings(fieldMappings);
+        return Optional.of(result);
+    }
+
+    private BeanModel convertToBeanModel(TypeMirror type) {
+        return processDeclared(type)
+                .map(BeanModel::of)
+                .orElseThrow();
+    }
+
+    private Optional<DeclaredType> processDeclared(TypeMirror type) {
+        if (type.getKind() == TypeKind.DECLARED) {
+            return Optional.of((DeclaredType) type);
+        }
+        return Optional.empty();
     }
 
 }

@@ -7,10 +7,52 @@
 
 package guru.bug.austras.mapper.apt;
 
-import javax.lang.model.type.DeclaredType;
+import guru.bug.austras.apt.core.common.model.bean.BeanModel;
+
+import java.util.List;
+import java.util.Objects;
 
 public class MapperModel {
-    private DeclaredType source;
-    private DeclaredType target;
-    private List<FieldMapping>
+    private BeanModel source;
+    private BeanModel target;
+    private List<FieldMapping> mappings;
+
+    public BeanModel getSource() {
+        return source;
+    }
+
+    public void setSource(BeanModel source) {
+        this.source = source;
+    }
+
+    public BeanModel getTarget() {
+        return target;
+    }
+
+    public void setTarget(BeanModel target) {
+        this.target = target;
+    }
+
+    public List<FieldMapping> getMappings() {
+        return mappings;
+    }
+
+    public void setMappings(List<FieldMapping> mappings) {
+        this.mappings = mappings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MapperModel that = (MapperModel) o;
+        return Objects.equals(source, that.source) &&
+                Objects.equals(target, that.target) &&
+                Objects.equals(mappings, that.mappings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target, mappings);
+    }
 }
