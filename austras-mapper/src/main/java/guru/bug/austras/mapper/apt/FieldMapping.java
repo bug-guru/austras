@@ -10,22 +10,24 @@ package guru.bug.austras.mapper.apt;
 import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 
 public class FieldMapping {
-    private BeanPropertyModel sourceField;
-    private BeanPropertyModel targetField;
+    private final BeanPropertyModel sourceField;
+    private final BeanPropertyModel targetField;
+
+    public FieldMapping(BeanPropertyModel sourceField, BeanPropertyModel targetField) {
+        this.sourceField = sourceField;
+        this.targetField = targetField;
+    }
+
+    public static FieldMapping of(BeanPropertyModel sourceField, BeanPropertyModel targetField) {
+        return new FieldMapping(sourceField, targetField);
+    }
 
     public BeanPropertyModel getSourceField() {
         return sourceField;
-    }
-
-    public void setSourceField(BeanPropertyModel sourceField) {
-        this.sourceField = sourceField;
     }
 
     public BeanPropertyModel getTargetField() {
         return targetField;
     }
 
-    public void setTargetField(BeanPropertyModel targetField) {
-        this.targetField = targetField;
-    }
 }

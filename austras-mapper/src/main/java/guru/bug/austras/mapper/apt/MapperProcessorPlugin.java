@@ -9,6 +9,7 @@ package guru.bug.austras.mapper.apt;
 
 import guru.bug.austras.apt.core.common.model.ComponentRef;
 import guru.bug.austras.apt.core.common.model.bean.BeanModel;
+import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.mapper.Mapper;
@@ -16,7 +17,6 @@ import guru.bug.austras.mapper.Mapper;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,21 +45,15 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
         result.setSource(srcBeanModel);
         result.setTarget(trgBeanModel);
 
-        var fieldMappings = new ArrayList<FieldMapping>();
-        for (var srcProp : srcBeanModel.getProperties()) {
-            if (srcProp.isReadable()) {
-                var fieldMapping = new FieldMapping();
-                fieldMapping.setSourceField(srcProp);
-
-                for (var trgProp : trgBeanModel.getProperties()) {
-                    if (trgProp.isWritable() && trgProp.getName().equals(srcProp.getName())) {
-                        fieldMapping.setTargetField(trgProp);
-                        fieldMappings.add(fieldMapping);
-                        break;
-                    }
-                }
-            }
-        }
+        var fieldMappings = srcBeanModel.getProperties().stream()
+                .filter(BeanPropertyModel::isReadable)
+                .map(srcProp -> trgBeanModel.getProperties().stream()
+                        .filter(trgProp -> trgProp.isWritable() && trgProp.getName().equals(srcProp.getName()))
+                        .map(trgProp -> FieldMapping.of(srcProp, trgProp))
+                        .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toUnmodifiableList());
         result.setMappings(fieldMappings);
         return Optional.of(result);
     }
