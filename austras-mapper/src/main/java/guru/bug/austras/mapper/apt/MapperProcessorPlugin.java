@@ -9,7 +9,6 @@ package guru.bug.austras.mapper.apt;
 
 import guru.bug.austras.apt.core.common.model.ComponentRef;
 import guru.bug.austras.apt.core.common.model.bean.BeanModel;
-import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.mapper.Mapper;
@@ -48,25 +47,18 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
 
         var fieldMappings = new ArrayList<FieldMapping>();
         for (var srcProp : srcBeanModel.getProperties()) {
-            if (!srcProp.isReadable()) {
-                continue;
-            }
-            var fieldMapping = new FieldMapping();
-            fieldMapping.setSourceField(srcProp);
+            if (srcProp.isReadable()) {
+                var fieldMapping = new FieldMapping();
+                fieldMapping.setSourceField(srcProp);
 
-            BeanPropertyModel pairTargetField = null;
-            for (var trgProp : trgBeanModel.getProperties()) {
-                if (trgProp.isWritable() && trgProp.getName().equals(srcProp.getName())) {
-                    pairTargetField = trgProp;
-                    break;
+                for (var trgProp : trgBeanModel.getProperties()) {
+                    if (trgProp.isWritable() && trgProp.getName().equals(srcProp.getName())) {
+                        fieldMapping.setTargetField(trgProp);
+                        fieldMappings.add(fieldMapping);
+                        break;
+                    }
                 }
             }
-
-            if (pairTargetField == null) {
-                continue;
-            }
-            result.setTarget(trgBeanModel);
-            fieldMappings.add(fieldMapping);
         }
         result.setMappings(fieldMappings);
         return Optional.of(result);
