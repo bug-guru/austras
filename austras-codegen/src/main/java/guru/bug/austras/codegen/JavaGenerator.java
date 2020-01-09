@@ -90,7 +90,7 @@ public abstract class JavaGenerator extends Generator {
     @SuppressWarnings({"WeakerAccess", "RedundantSuppression"})
     public abstract String getSimpleClassName();
 
-    @FromTemplate("IMPORTS")
+    @Template(name = "IMPORTS")
     public final void processImports(PrintWriter out, BodyBlock body) {
         var strBody = body.evaluateBody();
         if (imports.isEmpty()) {

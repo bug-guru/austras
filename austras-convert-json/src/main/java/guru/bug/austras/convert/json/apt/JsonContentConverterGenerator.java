@@ -9,8 +9,8 @@ package guru.bug.austras.convert.json.apt;
 
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.Template;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.convert.BooleanContentConverter;
 import guru.bug.austras.json.*;
@@ -37,7 +37,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-@FromTemplate("JsonContentConverter.java.txt")
+@Template(name = "JsonContentConverter.java.txt")
 public class JsonContentConverterGenerator extends JavaGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonContentConverterGenerator.class);
     private static final PropExtractor propExtractor = new PropExtractor();
@@ -131,24 +131,24 @@ public class JsonContentConverterGenerator extends JavaGenerator {
         }, null).getName();
     }
 
-    @FromTemplate("PACKAGE_NAME")
+    @Template(name = "PACKAGE_NAME")
     @Override
     public String getPackageName() {
         return packageName;
     }
 
-    @FromTemplate("SIMPLE_NAME")
+    @Template(name = "SIMPLE_NAME")
     @Override
     public String getSimpleClassName() {
         return simpleName;
     }
 
-    @FromTemplate("TARGET")
+    @Template(name = "TARGET")
     public String getTarget() {
         return tryImport(targetQualifiedName);
     }
 
-    @FromTemplate("PROPERTIES")
+    @Template(name = "PROPERTIES")
     public void processConvertersParams(PrintWriter out, BodyBlock body) {
         var pi = properties.iterator();
         while (pi.hasNext()) {
@@ -158,7 +158,7 @@ public class JsonContentConverterGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("CONVERTERS")
+    @Template(name = "CONVERTERS")
     public void processConverters(PrintWriter out, BodyBlock body) {
         var pi = converters.iterator();
         while (pi.hasNext()) {
@@ -168,42 +168,42 @@ public class JsonContentConverterGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate(",")
+    @Template(name = ",")
     public String commaSeparator() {
         return hasMore ? ", " : "";
     }
 
-    @FromTemplate("CONVERTER_TYPE")
+    @Template(name = "CONVERTER_TYPE")
     public String getCurrentConverterType() {
         return tryImport(currentConverter.type);
     }
 
-    @FromTemplate("CONVERTER_NAME")
+    @Template(name = "CONVERTER_NAME")
     public String getCurrentConverterName() {
         return currentConverter.name;
     }
 
-    @FromTemplate("PROPERTY_NAME")
+    @Template(name = "PROPERTY_NAME")
     public String getCurrentPropertyName() {
         return currentProperty.name;
     }
 
-    @FromTemplate("PROPERTY_CONVERTER_NAME")
+    @Template(name = "PROPERTY_CONVERTER_NAME")
     public String getCurrentPropertyConverterName() {
         return currentProperty.converter.name;
     }
 
-    @FromTemplate("PROPERTY_GETTER_NAME")
+    @Template(name = "PROPERTY_GETTER_NAME")
     public String getCurrentPropertyGetterName() {
         return currentProperty.getter.getSimpleName().toString();
     }
 
-    @FromTemplate("PROPERTY_SETTER_NAME")
+    @Template(name = "PROPERTY_SETTER_NAME")
     public String getCurrentPropertySetterName() {
         return currentProperty.setter.getSimpleName().toString();
     }
 
-    @FromTemplate("IF_NOT_PRIMITIVE")
+    @Template(name = "IF_NOT_PRIMITIVE")
     public void ifNotPrimitive(PrintWriter out, BodyBlock body) {
         if (!currentProperty.type.getKind().isPrimitive()) {
             out.print(body.evaluateBody());

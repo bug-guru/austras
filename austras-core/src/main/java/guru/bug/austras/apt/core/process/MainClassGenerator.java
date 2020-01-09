@@ -12,8 +12,8 @@ import guru.bug.austras.apt.core.common.model.ComponentModel;
 import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.Template;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.core.Instance;
 import guru.bug.austras.core.Selector;
@@ -27,7 +27,7 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@FromTemplate("Main.java.txt")
+@Template(name = "Main.java.txt")
 public class MainClassGenerator extends JavaGenerator {
     private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
     private final ProcessingContext ctx;
@@ -45,24 +45,24 @@ public class MainClassGenerator extends JavaGenerator {
         this.ctx = ctx;
     }
 
-    @FromTemplate("PACKAGE_NAME")
+    @Template(name = "PACKAGE_NAME")
     @Override
     public String getPackageName() {
         return packageName;
     }
 
-    @FromTemplate("QUALIFIED_CLASS_NAME")
+    @Template(name = "QUALIFIED_CLASS_NAME")
     public String getQualifiedClassName() {
         return qualifiedClassName;
     }
 
-    @FromTemplate("SIMPLE_CLASS_NAME")
+    @Template(name = "SIMPLE_CLASS_NAME")
     @Override
     public String getSimpleClassName() {
         return simpleClassName;
     }
 
-    @FromTemplate("COMPONENTS")
+    @Template(name = "COMPONENTS")
     public void componentsLoop(PrintWriter out, BodyBlock bodyBlock) {
         for (var c : sortedComponents) {
             this.currentComponent = c;
@@ -70,31 +70,31 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("COMPONENT_NAME")
+    @Template(name = "COMPONENT_NAME")
     public String getCurrentComponentProviderName() {
         return currentComponent.getName();
     }
 
-    @FromTemplate("COMPONENT_CLASS")
+    @Template(name = "COMPONENT_CLASS")
     public String getCurrentComponentProviderClass() {
         return tryImport(currentComponent.getInstantiable());
     }
 
-    @FromTemplate("WITH_DEPENDENCIES")
+    @Template(name = "WITH_DEPENDENCIES")
     public void withDependencies(PrintWriter out, BodyBlock bodyBlock) {
         if (!currentComponent.getDependencies().isEmpty()) {
             out.print(bodyBlock.evaluateBody());
         }
     }
 
-    @FromTemplate("WITHOUT_DEPENDENCIES")
+    @Template(name = "WITHOUT_DEPENDENCIES")
     public void withoutDependencies(PrintWriter out, BodyBlock bodyBlock) {
         if (currentComponent.getDependencies().isEmpty()) {
             out.print(bodyBlock.evaluateBody());
         }
     }
 
-    @FromTemplate("COMPONENT_DEPENDENCIES")
+    @Template(name = "COMPONENT_DEPENDENCIES")
     public void currentComponentCollectionsInitializers(PrintWriter out, BodyBlock bodyBlock) {
 
         Iterator<DependencyModel> dependencies = currentComponent.getDependencies().iterator();
@@ -105,7 +105,7 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate(",")
+    @Template(name = ",")
     public String dependenciesSeparator() {
         if (this.hasMoreDependencies) {
             return ",";
@@ -114,7 +114,7 @@ public class MainClassGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("DEPENDENCY")
+    @Template(name = "DEPENDENCY")
     public String dependency() {
         switch (currentDependency.getWrapping()) {
             case NONE:
@@ -170,7 +170,7 @@ public class MainClassGenerator extends JavaGenerator {
         result.append('"').append(StringEscapeUtils.escapeJava(value)).append('"');
     }
 
-    @FromTemplate("STARTER_COMPONENT_NAME")
+    @Template(name = "STARTER_COMPONENT_NAME")
     public String getStarterName() {
         return starterComponent.getName();
     }

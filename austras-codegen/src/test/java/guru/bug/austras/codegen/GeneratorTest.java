@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-@FromTemplate("loop_and_var.txt")
+@Template(name = "loop_and_var.txt")
 public class GeneratorTest extends Generator {
     private int externalVar;
     private int internalVar;
@@ -41,7 +41,7 @@ public class GeneratorTest extends Generator {
                 "This is last line" + System.lineSeparator(), result);
     }
 
-    @FromTemplate("EXTERNAL LOOP")
+    @Template(name = "EXTERNAL LOOP")
     public void externalLoop(PrintWriter out, BodyBlock body) {
         for (int i = 0; i < 3; i++) {
             externalVar = i;
@@ -49,7 +49,7 @@ public class GeneratorTest extends Generator {
         }
     }
 
-    @FromTemplate("INTERNAL LOOP")
+    @Template(name = "INTERNAL LOOP")
     public void internalLoop(PrintWriter out, BodyBlock body) {
         for (int i = 100; i < 103; i++) {
             internalVar = i;
@@ -57,12 +57,12 @@ public class GeneratorTest extends Generator {
         }
     }
 
-    @FromTemplate("INT_VALUE")
+    @Template(name = "INT_VALUE")
     public int getIntVar() {
         return internalVar;
     }
 
-    @FromTemplate("EXT_VALUE")
+    @Template(name = "EXT_VALUE")
     public int getExtVar() {
         return externalVar;
     }

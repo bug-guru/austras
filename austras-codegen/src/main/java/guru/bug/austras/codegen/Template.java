@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface FromTemplate {
-    String value();
+public @interface Template {
+    String name();
 }

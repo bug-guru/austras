@@ -13,8 +13,8 @@ import guru.bug.austras.apt.events.model.EventsBroadcasterModel;
 import guru.bug.austras.apt.events.model.MethodModel;
 import guru.bug.austras.apt.events.model.MethodParam;
 import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.Template;
 import guru.bug.austras.codegen.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@FromTemplate("Broadcaster.java.txt")
+@Template(name = "Broadcaster.java.txt")
 public class BroadcasterGenerator extends JavaGenerator {
 
     private final ProcessingContext ctx;
@@ -49,33 +49,33 @@ public class BroadcasterGenerator extends JavaGenerator {
     }
 
     @Override
-    @FromTemplate("PACKAGE_NAME")
+    @Template(name = "PACKAGE_NAME")
     public String getPackageName() {
         return eventsBroadcasterModel.getPackageName();
     }
 
     @Override
-    @FromTemplate("SIMPLE_CLASS_NAME")
+    @Template(name = "SIMPLE_CLASS_NAME")
     public String getSimpleClassName() {
         return eventsBroadcasterModel.getSimpleName();
     }
 
-    @FromTemplate("EVENTS_INTERFACE")
+    @Template(name = "EVENTS_INTERFACE")
     public String getMessageType() {
         return tryImport(eventsBroadcasterModel.getEventsInterface());
     }
 
-    @FromTemplate("BROADCASTER_QUALIFIERS")
+    @Template(name = "BROADCASTER_QUALIFIERS")
     public String broadcasterQualifiers() {
         return eventsBroadcasterModel.getQualifier().toString();
     }
 
-    @FromTemplate("DEPENDENCIES_QUALIFIERS")
+    @Template(name = "DEPENDENCIES_QUALIFIERS")
     public String dependenciesQualifiers() {
         return eventsBroadcasterModel.getQualifier().minus(QualifierModel.BROADCAST).toString();
     }
 
-    @FromTemplate("METHODS")
+    @Template(name = "METHODS")
     public void methods(PrintWriter out, BodyBlock body) {
         for (var m : eventsBroadcasterModel.getMethods()) {
             this.currentMethod = m;
@@ -83,12 +83,12 @@ public class BroadcasterGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("METHOD_NAME")
+    @Template(name = "METHOD_NAME")
     public String methodName() {
         return currentMethod.getName();
     }
 
-    @FromTemplate("METHOD_PARAMS")
+    @Template(name = "METHOD_PARAMS")
     public String methodParams() {
         return currentMethod.getParameters().stream()
                 .map(p -> {
@@ -101,7 +101,7 @@ public class BroadcasterGenerator extends JavaGenerator {
                 .collect(Collectors.joining(", "));
     }
 
-    @FromTemplate("METHOD_PARAM_NAMES")
+    @Template(name = "METHOD_PARAM_NAMES")
     public String methodParamNames() {
         return currentMethod.getParameters().stream()
                 .map(MethodParam::getName)

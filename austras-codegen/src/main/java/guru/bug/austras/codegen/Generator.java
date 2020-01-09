@@ -45,11 +45,11 @@ public abstract class Generator {
     }
 
     private BlockWithBody createContentBlock() throws IOException, TemplateException {
-        var fromTemplate = getClass().getAnnotation(FromTemplate.class);
+        var fromTemplate = getClass().getAnnotation(Template.class);
         if (fromTemplate == null) {
-            throw new TemplateException("Annotation @FromTemplate not found on class " + getClass().getName());
+            throw new TemplateException("Annotation @Template not found on class " + getClass().getName());
         }
-        var resourceName = fromTemplate.value();
+        var resourceName = fromTemplate.name();
         var strContent = readContent(resourceName);
         TemplateTokenizer tokenizer = new TemplateTokenizer();
         var tokens = tokenizer.process(strContent);
@@ -62,11 +62,11 @@ public abstract class Generator {
 
     private void collectCallers() {
         for (var m : getClass().getMethods()) {
-            var ft = m.getAnnotation(FromTemplate.class);
+            var ft = m.getAnnotation(Template.class);
             if (ft == null) {
                 continue;
             }
-            this.callers.put(ft.value(), new Caller(m));
+            this.callers.put(ft.name(), new Caller(m));
         }
     }
 

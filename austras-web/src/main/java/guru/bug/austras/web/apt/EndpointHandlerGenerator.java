@@ -10,8 +10,8 @@ package guru.bug.austras.web.apt;
 import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.FromTemplate;
 import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.Template;
 import guru.bug.austras.codegen.TemplateException;
 import guru.bug.austras.web.*;
 import guru.bug.austras.web.apt.model.*;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@FromTemplate("EndpointHandler.java.txt")
+@Template(name = "EndpointHandler.java.txt")
 public class EndpointHandlerGenerator extends JavaGenerator {
     private final ProcessingContext ctx;
     private String packageName;
@@ -166,7 +166,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         return dependencies.computeIfAbsent(ref.getDependencyModel(), k -> ref);
     }
 
-    @FromTemplate("DEPENDENCIES")
+    @Template(name = "DEPENDENCIES")
     public void dependencies(PrintWriter out, BodyBlock bodyBlock) {
         var i = dependencies.values().iterator();
         while (i.hasNext()) {
@@ -176,38 +176,38 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("DEPENDENCY_QUALIFIERS")
+    @Template(name = "DEPENDENCY_QUALIFIERS")
     public String dependencyQualifiers() {
         var qualifiers = currentDependency.getDependencyModel().getQualifiers();
         return qualifiers == null ? "" : qualifiers.toString();
     }
 
-    @FromTemplate("DEPENDENCY_TYPE")
+    @Template(name = "DEPENDENCY_TYPE")
     public String dependencyType() {
         return tryImport(currentDependency.getDependencyModel().asTypeDeclaration());
     }
 
-    @FromTemplate("DEPENDENCY_NAME")
+    @Template(name = "DEPENDENCY_NAME")
     public String dependencyName() {
         return currentDependency.getVarName();
     }
 
-    @FromTemplate(",")
+    @Template(name = ",")
     public String optionalComma() {
         return commaRequired ? ", " : "";
     }
 
-    @FromTemplate("METHOD")
+    @Template(name = "METHOD")
     public String getHttpMethod() {
         return httpMethod;
     }
 
-    @FromTemplate("SUCCESS_STATUS")
+    @Template(name = "SUCCESS_STATUS")
     public int getSuccessStatus() {
         return successStatus;
     }
 
-    @FromTemplate("PATH_ITEMS")
+    @Template(name = "PATH_ITEMS")
     public void pathItems(PrintWriter out, BodyBlock body) {
         var pi = pathItems.iterator();
         while (pi.hasNext()) {
@@ -217,63 +217,63 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("PATH_ITEM_TYPE")
+    @Template(name = "PATH_ITEM_TYPE")
     public String getCurrentPathItemType() {
         return currentPathItem.getType();
     }
 
-    @FromTemplate("PATH_ITEM_VALUE")
+    @Template(name = "PATH_ITEM_VALUE")
     public String getCurrentPathItemValue() {
         return currentPathItem.getValue();
     }
 
-    @FromTemplate("PACKAGE_NAME")
+    @Template(name = "PACKAGE_NAME")
     @Override
     public String getPackageName() {
         return packageName;
     }
 
-    @FromTemplate("SIMPLE_NAME")
+    @Template(name = "SIMPLE_NAME")
     @Override
     public String getSimpleClassName() {
         return simpleClassName;
     }
 
-    @FromTemplate("ENDPOINT_METHOD")
+    @Template(name = "ENDPOINT_METHOD")
     public String getEndpointMethodName() {
         return endpointMethodName;
     }
 
-    @FromTemplate("HAS_RESPONSE_BODY")
+    @Template(name = "HAS_RESPONSE_BODY")
     public void processIfHasResponseContent(PrintWriter out, BodyBlock body) {
         if (responseConverterSelectorDependency != null) {
             out.print(body.evaluateBody());
         }
     }
 
-    @FromTemplate("HAS_REQUEST_BODY")
+    @Template(name = "HAS_REQUEST_BODY")
     public void processIfHasRequestBody(PrintWriter out, BodyBlock body) {
         if (requestBodyConverterSelectorDependency != null) {
             out.print(body.evaluateBody());
         }
     }
 
-    @FromTemplate("RESPONSE_CONVERTER_SELECTOR_NAME")
+    @Template(name = "RESPONSE_CONVERTER_SELECTOR_NAME")
     public String responseConverterSelectorName() {
         return responseConverterSelectorDependency.getVarName();
     }
 
-    @FromTemplate("REQUEST_CONVERTER_SELECTOR_NAME")
+    @Template(name = "REQUEST_CONVERTER_SELECTOR_NAME")
     public String requestConverterSelectorName() {
         return requestBodyConverterSelectorDependency.getVarName();
     }
 
-    @FromTemplate("CONTROLLER_DEPENDENCY_NAME")
+    @Template(name = "CONTROLLER_DEPENDENCY_NAME")
     public String getControllerProviderName() {
         return controllerDependency.getVarName();
     }
 
-    @FromTemplate("ENDPOINT_METHOD_PARAMS")
+    @Template(name = "ENDPOINT_METHOD_PARAMS")
     public void endpointMethodParams(PrintWriter out, BodyBlock body) {
         var mpi = methodParams.iterator();
         while (mpi.hasNext()) {
@@ -283,7 +283,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         }
     }
 
-    @FromTemplate("ENDPOINT_METHOD_PARAM_EXPRESSION")
+    @Template(name = "ENDPOINT_METHOD_PARAM_EXPRESSION")
     public String getEndpointMethodParamExpression() {
         return currentMethodParam.expresion();
     }
