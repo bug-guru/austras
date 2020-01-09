@@ -23,10 +23,13 @@ import java.util.stream.Collectors;
 public class MapperProcessorPlugin implements AustrasProcessorPlugin {
     @Override
     public void process(ProcessingContext ctx) {
-        var models = ctx.componentManager().roundDependencies().stream()
+        var
+        ctx.componentManager().roundDependencies().stream()
                 .map(this::createMapperModel)
                 .filter(Optional::isPresent)
-                .collect(Collectors.toSet());
+                .map(Optional::get)
+                .forEach(this::generate);
+
     }
 
     private Optional<MapperModel> createMapperModel(ComponentRef ref) {
