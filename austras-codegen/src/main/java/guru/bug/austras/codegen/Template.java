@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
@@ -15,5 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Template {
-    String name();
+    String name() default "";
+
+    String content() default "";
 }

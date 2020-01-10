@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
@@ -41,7 +41,7 @@ import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_13)
 @AutoService(Processor.class)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
     public static final String COMPONENTS_INDEX_FILE_NAME = "META-INF/components.json";
