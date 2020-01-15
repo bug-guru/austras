@@ -22,42 +22,41 @@ public class MapperGenerator extends JavaGenerator {
         super(ctx.processingEnv().getFiler());
     }
 
-    @Template(content = """
-            package $PACKAGE_NAME$;
+    public void generate(MapperModel model) {
+        writeBody("""
+                package $PACKAGE_NAME$;
 
-            #IMPORTS#
-            org.slf4j.Logger
-            org.slf4j.LoggerFactory
-            guru.bug.austras.mapper.Mapper
-            #END#
-
-            $QUALIFIERS$
-            public class $SIMPLE_CLASS_NAME$ implements Mapper<$SOURCE_TYPE$, $TARGET_TYPE$> {
-                public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
-
-                #DEPENDENCIES#
-                private final $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$;
+                #IMPORTS#
+                org.slf4j.Logger
+                org.slf4j.LoggerFactory
+                guru.bug.austras.mapper.Mapper
                 #END#
 
-                public $SIMPLE_CLASS_NAME$(
+                $QUALIFIERS$
+                public class $SIMPLE_CLASS_NAME$ implements Mapper<$SOURCE_TYPE$, $TARGET_TYPE$> {
+                    public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
+
                     #DEPENDENCIES#
-                    $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$$,$
+                    private final $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$;
                     #END#
-                ) {
-                    #DEPENDENCIES#
-                    this.$DEPENDENCY_NAME$ = $DEPENDENCY_NAME$;
-                    #END#
+
+                    public $SIMPLE_CLASS_NAME$(
+                        #DEPENDENCIES#
+                        $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$$,$
+                        #END#
+                    ) {
+                        #DEPENDENCIES#
+                        this.$DEPENDENCY_NAME$ = $DEPENDENCY_NAME$;
+                        #END#
+                    }
+
+                    @Override
+                    public $TARGET_TYPE$ map($SOURCE_TYPE$ source) {
+                        $GENERATE_TARGET_INSTANCE$
+                    }
+
                 }
-
-                @Override
-                public $TARGET_TYPE$ map($SOURCE_TYPE$ source) {
-                    $GENERATE_TARGET_INSTANCE$
-                }
-
-            }
-            """)
-    public void generate(MapperModel model) {
-
+                """);
     }
 
     @Override

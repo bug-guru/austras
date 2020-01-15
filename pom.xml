@@ -87,6 +87,7 @@
         <module>austras-mapper</module>
         <module>austras-test</module>
         <module>austras-mapper-generator</module>
+        <module>austras-common</module>
     </modules>
 
 </project>

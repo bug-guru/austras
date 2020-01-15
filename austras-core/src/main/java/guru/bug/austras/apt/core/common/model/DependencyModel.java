@@ -7,6 +7,7 @@
 
 package guru.bug.austras.apt.core.common.model;
 
+import guru.bug.austras.common.model.WrappingType;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.json.JsonConverter;
 import guru.bug.austras.json.reader.JsonValueReader;

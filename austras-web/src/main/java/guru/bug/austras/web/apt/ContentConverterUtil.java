@@ -7,7 +7,11 @@
 
 package guru.bug.austras.web.apt;
 
-import guru.bug.austras.apt.core.common.model.*;
+import guru.bug.austras.apt.core.common.model.DependencyModel;
+import guru.bug.austras.apt.core.common.model.QualifierModel;
+import guru.bug.austras.apt.core.common.model.QualifierPropertyModel;
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
+import guru.bug.austras.common.model.WrappingType;
 import guru.bug.austras.convert.*;
 import guru.bug.austras.convert.plaintext.PlainText;
 import guru.bug.austras.web.apt.model.DependencyRef;

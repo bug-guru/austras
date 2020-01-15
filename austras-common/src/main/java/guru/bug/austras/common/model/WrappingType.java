@@ -5,7 +5,7 @@
  *
  */
 
-package guru.bug.austras.apt.core.common.model;
+package guru.bug.austras.common.model;
 
 public enum WrappingType {
     NONE,
