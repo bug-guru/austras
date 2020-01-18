@@ -15,7 +15,7 @@ import guru.bug.austras.apt.events.model.MethodParam;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.ElementKind;

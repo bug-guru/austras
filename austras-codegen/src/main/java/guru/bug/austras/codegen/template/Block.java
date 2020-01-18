@@ -5,7 +5,10 @@
  *
  */
 
-package guru.bug.austras.codegen.javacode;
+package guru.bug.austras.codegen.template;
 
-public class TextTemplate {
+import java.io.PrintWriter;
+
+interface Block {
+    void writeTo(PrintWriter out, TemplateCaller caller);
 }

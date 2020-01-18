@@ -7,6 +7,11 @@
 
 package guru.bug.austras.codegen;
 
+import guru.bug.austras.codegen.template.TemplateCleaner;
+import guru.bug.austras.codegen.template.TemplateException;
+import guru.bug.austras.codegen.template.TemplateToken;
+import guru.bug.austras.codegen.template.TemplateTokenizer;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

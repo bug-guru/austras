@@ -5,9 +5,9 @@
  *
  */
 
-package guru.bug.austras.codegen.generator;
+package guru.bug.austras.codegen;
 
-import guru.bug.austras.codegen.Template;
+import guru.bug.austras.codegen.template.CompiledTemplate;
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -33,11 +33,25 @@ public abstract class FileGenerator {
     }
 
     private TemplateHolder createTemplateHolder(Class<?> cls, TemplateHolder parent) {
+        var templateAnnotation = cls.getDeclaredAnnotation(Template.class);
+        String templateValue;
+        if (templateAnnotation == null) {
+            templateValue = "$$";
+        } else if (templateAnnotation.file() != null) {
+            templateValue = readFromResource(cls, templateAnnotation.file());
+        } else if (templateAnnotation.value() != null) {
+            templateValue = templateAnnotation.value();
+        } else {
+            throw new IllegalArgumentException("Annotation @Template isn't valid on " + cls + ". Property 'file' or 'value' is expected");
+        }
+        var template = CompiledTemplate.compile(templateValue);
+    }
+
+    private String readFromResource(Class<?> cls, String resName) {
 
     }
 
     protected void generate(PrintWriter out) {
-        Template template = this.getClass().getDeclaredAnnotation(Template.class);
     }
 
     private static class TemplateHolder {

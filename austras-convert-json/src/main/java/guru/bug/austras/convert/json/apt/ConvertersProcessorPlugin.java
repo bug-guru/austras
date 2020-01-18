@@ -9,7 +9,7 @@ package guru.bug.austras.convert.json.apt;
 
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

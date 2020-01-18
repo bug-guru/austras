@@ -5,19 +5,16 @@
  *
  */
 
-package guru.bug.austras.codegen.javacode;
+package guru.bug.austras.codegen;
 
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.function.Function;
 
 class JavaCodeWriterImpl implements JavaCodeWriter {
-    private final Function<String, TemplateProcessor> resolver;
     private final ImportsManager importsManager;
     private final PrintWriter out;
 
-    JavaCodeWriterImpl(Function<String, TemplateProcessor> resolver, ImportsManager importsManager, Writer out) {
-        this.resolver = resolver;
+    JavaCodeWriterImpl(ImportsManager importsManager, Writer out) {
         this.importsManager = importsManager;
         this.out = new PrintWriter(out);
     }
@@ -34,11 +31,6 @@ class JavaCodeWriterImpl implements JavaCodeWriter {
 
     @Override
     public void writeRaw(String str) {
-
-    }
-
-    @Override
-    public void writeTemplate(Template template) {
 
     }
 

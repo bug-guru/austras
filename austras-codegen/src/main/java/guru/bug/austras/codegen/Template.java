@@ -17,5 +17,7 @@ import java.lang.annotation.Target;
 public @interface Template {
     String name() default "";
 
-    String content() default "";
+    String value() default "";
+
+    String file() default "";
 }

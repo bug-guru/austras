@@ -7,6 +7,8 @@
 
 package guru.bug.austras.codegen;
 
+import guru.bug.austras.codegen.template.TemplateException;
+
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,11 +1,13 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
  */
 
-package guru.bug.austras.codegen;
+package guru.bug.austras.codegen.template;
+
+import guru.bug.austras.codegen.ProcessResult;
 
 public class NewLineTokenProcessor implements TokenProcessor<TemplateToken> {
     private State state = State.READY;

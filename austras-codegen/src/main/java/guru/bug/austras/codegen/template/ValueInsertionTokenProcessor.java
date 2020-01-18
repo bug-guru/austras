@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
  */
 
-package guru.bug.austras.codegen;
+package guru.bug.austras.codegen.template;
 
-class ValueInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
+public class ValueInsertionTokenProcessor extends AbstractInsertionTokenProcessor {
     ValueInsertionTokenProcessor() {
         super('$', TemplateToken.Type.VALUE);
     }

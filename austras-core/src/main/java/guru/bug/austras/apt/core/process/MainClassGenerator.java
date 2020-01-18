@@ -14,7 +14,7 @@ import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.core.Instance;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.startup.ServiceManager;

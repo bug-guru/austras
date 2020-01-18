@@ -1,17 +1,19 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
  */
 
-package guru.bug.austras.codegen;
+package guru.bug.austras.codegen.template;
+
+import guru.bug.austras.codegen.ProcessResult;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-class Tokenizer<T> {
+public class Tokenizer<T> {
     private final List<TokenProcessor<T>> variants;
 
     Tokenizer(List<TokenProcessor<T>> variants) {
@@ -48,21 +50,21 @@ class Tokenizer<T> {
         for (var processor : processors) {
             var result = processor.process(cp);
             switch (result) {
-                case REJECT:
+                case ProcessResult.REJECT:
                     processor.reset();
                     break;
-                case ACCEPT_FORCE_NEXT:
+                case ProcessResult.ACCEPT_FORCE_NEXT:
                     stateHolder.forced = processor;
                     accept(processor, resultTokens, stateHolder);
                     return;
-                case ACCEPT:
+                case ProcessResult.ACCEPT:
                     accept(processor, resultTokens, stateHolder);
                     return;
-                case COMPLETE_REWIND:
+                case ProcessResult.COMPLETE_REWIND:
                     stateHolder.repeat = true;
                     complete(processor, resultTokens, stateHolder);
                     return;
-                case COMPLETE:
+                case ProcessResult.COMPLETE:
                     complete(processor, resultTokens, stateHolder);
                     return;
             }

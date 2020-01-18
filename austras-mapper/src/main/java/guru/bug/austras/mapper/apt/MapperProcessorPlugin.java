@@ -12,7 +12,7 @@ import guru.bug.austras.apt.core.common.model.bean.BeanModel;
 import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.mapper.Mapper;
 
 import javax.lang.model.type.DeclaredType;

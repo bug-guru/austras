@@ -11,7 +11,7 @@ import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -74,7 +74,7 @@ public class MapperGenerator extends JavaGenerator {
 
     }
 
-    @Template(content = """
+    @Template(value = """
                     var result = new $TARGET_TYPE$();
                     #PROPERTIES#
                     result.$PROPERTY_TARGET_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#);
@@ -85,7 +85,7 @@ public class MapperGenerator extends JavaGenerator {
 
     }
 
-    @Template(content = """
+    @Template(value = """
                     return $TARGET_TYPE$.builder()
                     #PROPERTIES#
                         .$PROPERTY_TARGET_BUILDER_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#)
@@ -96,7 +96,7 @@ public class MapperGenerator extends JavaGenerator {
 
     }
 
-    @Template(content = """
+    @Template(value = """
                     return new $TARGET_TYPE$(
                     #PROPERTIES#
                         #CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#$,$

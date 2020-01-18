@@ -11,7 +11,7 @@ import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.codegen.BodyBlock;
 import guru.bug.austras.codegen.JavaGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.convert.BooleanContentConverter;
 import guru.bug.austras.json.*;
 import org.apache.commons.lang3.StringUtils;

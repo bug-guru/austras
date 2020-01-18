@@ -7,6 +7,8 @@
 
 package guru.bug.austras.codegen;
 
+import guru.bug.austras.codegen.template.TemplateToken;
+import guru.bug.austras.codegen.template.TemplateTokenizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

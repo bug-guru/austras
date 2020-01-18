@@ -5,7 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.javacode;
+package guru.bug.austras.codegen;
 
 public interface JavaCodeWriter {
 
@@ -15,5 +15,4 @@ public interface JavaCodeWriter {
 
     void writeRaw(String str);
 
-    void writeTemplate(Template template);
 }

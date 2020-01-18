@@ -5,7 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.javacode;
+package guru.bug.austras.codegen;
 
 import java.io.PrintWriter;
 import java.util.HashMap;

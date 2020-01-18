@@ -7,6 +7,8 @@
 
 package guru.bug.austras.codegen;
 
-public interface BodyBlock {
-    String evaluateBody();
+@Template(file = "ComponentGenerator")
+public class ComponentGenerator extends FileGenerator {
+
+
 }

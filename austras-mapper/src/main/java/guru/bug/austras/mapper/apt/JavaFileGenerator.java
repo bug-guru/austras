@@ -9,7 +9,7 @@ package guru.bug.austras.mapper.apt;
 
 import guru.bug.austras.codegen.Template;
 
-@Template(content = """
+@Template(value = """
         package $PACKAGE_NAME$;
 
         #IMPORTS#

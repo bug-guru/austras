@@ -29,18 +29,18 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="austras" target="13" />
-      <module name="austras-codegen" target="13" />
-      <module name="austras-common" target="13" />
-      <module name="austras-convert" target="13" />
-      <module name="austras-convert-json" target="13" />
-      <module name="austras-convert-plaintext" target="13" />
-      <module name="austras-core" target="13" />
-      <module name="austras-json" target="13" />
-      <module name="austras-mapper" target="13" />
-      <module name="austras-mapper-generator" target="13" />
-      <module name="austras-test" target="13" />
-      <module name="austras-web" target="13" />
+      <module name="austras" target="11" />
+      <module name="austras-codegen" target="11" />
+      <module name="austras-common" target="11" />
+      <module name="austras-convert" target="11" />
+      <module name="austras-convert-json" target="11" />
+      <module name="austras-convert-plaintext" target="11" />
+      <module name="austras-core" target="11" />
+      <module name="austras-json" target="11" />
+      <module name="austras-mapper" target="11" />
+      <module name="austras-mapper-generator" target="11" />
+      <module name="austras-test" target="11" />
+      <module name="austras-web" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

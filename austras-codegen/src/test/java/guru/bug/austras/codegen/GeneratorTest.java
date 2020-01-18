@@ -7,6 +7,7 @@
 
 package guru.bug.austras.codegen;
 
+import guru.bug.austras.codegen.template.TemplateException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

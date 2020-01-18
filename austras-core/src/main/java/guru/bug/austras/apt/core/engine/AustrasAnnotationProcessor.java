@@ -14,7 +14,7 @@ import guru.bug.austras.apt.core.UniqueNameGenerator;
 import guru.bug.austras.apt.core.common.model.*;
 import guru.bug.austras.apt.core.process.MainClassGenerator;
 import guru.bug.austras.apt.core.process.ModuleModelSerializer;
-import guru.bug.austras.codegen.TemplateException;
+import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.core.Application;
 import guru.bug.austras.core.qualifiers.Qualifier;
 import guru.bug.austras.core.qualifiers.Qualifiers;
@@ -41,7 +41,7 @@ import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_13)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
     public static final String COMPONENTS_INDEX_FILE_NAME = "META-INF/components.json";
