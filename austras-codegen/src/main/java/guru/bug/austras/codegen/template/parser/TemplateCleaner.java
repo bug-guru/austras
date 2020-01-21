@@ -5,7 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
+package guru.bug.austras.codegen.template.parser;
 
 import java.util.List;
 import java.util.ListIterator;

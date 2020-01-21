@@ -5,9 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
-
-import guru.bug.austras.codegen.ProcessResult;
+package guru.bug.austras.codegen.template.parser;
 
 public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder content = new StringBuilder();
@@ -31,6 +29,15 @@ public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<
         return null;
     }
 
+    private ProcessResult processStart(int codePoint) {
+        if (codePoint == symbol) {
+            state = State.STARTED;
+            return ProcessResult.ACCEPT_FORCE_NEXT;
+        } else {
+            return ProcessResult.REJECT;
+        }
+    }
+
     private ProcessResult processBody(int codePoint) {
         if (codePoint == symbol) {
             state = State.COMPLETED;
@@ -40,15 +47,6 @@ public abstract class AbstractInsertionTokenProcessor implements TokenProcessor<
         return ProcessResult.ACCEPT_FORCE_NEXT;
     }
 
-
-    private ProcessResult processStart(int codePoint) {
-        if (codePoint == symbol) {
-            state = State.STARTED;
-            return ProcessResult.ACCEPT_FORCE_NEXT;
-        } else {
-            return ProcessResult.REJECT;
-        }
-    }
 
     @Override
     public void reset() {

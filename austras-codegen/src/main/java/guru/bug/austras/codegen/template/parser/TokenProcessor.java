@@ -5,9 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
-
-import guru.bug.austras.codegen.ProcessResult;
+package guru.bug.austras.codegen.template.parser;
 
 public interface TokenProcessor<T> {
     ProcessResult process(int codePoint);

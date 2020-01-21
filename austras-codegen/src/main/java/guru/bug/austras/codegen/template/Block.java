@@ -10,5 +10,5 @@ package guru.bug.austras.codegen.template;
 import java.io.PrintWriter;
 
 interface Block {
-    void writeTo(PrintWriter out, TemplateCaller caller);
+    void process(PrintWriter out, TemplateCaller caller);
 }

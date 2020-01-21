@@ -7,10 +7,10 @@
 
 package guru.bug.austras.codegen;
 
-import guru.bug.austras.codegen.template.TemplateCleaner;
 import guru.bug.austras.codegen.template.TemplateException;
-import guru.bug.austras.codegen.template.TemplateToken;
-import guru.bug.austras.codegen.template.TemplateTokenizer;
+import guru.bug.austras.codegen.template.parser.TemplateCleaner;
+import guru.bug.austras.codegen.template.parser.TemplateToken;
+import guru.bug.austras.codegen.template.parser.TemplateTokenizer;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -63,7 +63,6 @@ public abstract class Generator {
         var tokenIterator = tokens.iterator();
         return new BlockWithBody(null, tokenIterator);
     }
-
 
     private void collectCallers() {
         for (var m : getClass().getMethods()) {

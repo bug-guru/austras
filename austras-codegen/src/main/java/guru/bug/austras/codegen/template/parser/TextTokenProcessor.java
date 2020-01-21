@@ -5,9 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
-
-import guru.bug.austras.codegen.ProcessResult;
+package guru.bug.austras.codegen.template.parser;
 
 public class TextTokenProcessor implements TokenProcessor<TemplateToken> {
     private final StringBuilder text = new StringBuilder();

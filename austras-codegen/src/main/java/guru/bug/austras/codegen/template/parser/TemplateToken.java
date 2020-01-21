@@ -5,7 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
+package guru.bug.austras.codegen.template.parser;
 
 public class TemplateToken {
     public enum Type {TEXT, NEW_LINE, BLOCK, VALUE}

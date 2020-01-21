@@ -5,9 +5,7 @@
  *
  */
 
-package guru.bug.austras.codegen.template;
-
-import guru.bug.austras.codegen.ProcessResult;
+package guru.bug.austras.codegen.template.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,23 +48,25 @@ public class Tokenizer<T> {
         for (var processor : processors) {
             var result = processor.process(cp);
             switch (result) {
-                case ProcessResult.REJECT:
+                case REJECT:
                     processor.reset();
                     break;
-                case ProcessResult.ACCEPT_FORCE_NEXT:
+                case ACCEPT_FORCE_NEXT:
                     stateHolder.forced = processor;
                     accept(processor, resultTokens, stateHolder);
                     return;
-                case ProcessResult.ACCEPT:
+                case ACCEPT:
                     accept(processor, resultTokens, stateHolder);
                     return;
-                case ProcessResult.COMPLETE_REWIND:
+                case COMPLETE_REWIND:
                     stateHolder.repeat = true;
                     complete(processor, resultTokens, stateHolder);
                     return;
-                case ProcessResult.COMPLETE:
+                case COMPLETE:
                     complete(processor, resultTokens, stateHolder);
                     return;
+                default:
+                    throw new IllegalArgumentException("Not supported " + result);
             }
         }
     }

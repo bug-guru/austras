@@ -7,8 +7,12 @@
 
 package guru.bug.austras.codegen.template;
 
-public class TemplateException extends Exception {
+public class TemplateException extends RuntimeException {
     public TemplateException(String msg) {
         super(msg);
+    }
+
+    public TemplateException(Exception cause) {
+        super(cause);
     }
 }
