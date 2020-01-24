@@ -15,15 +15,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public abstract class FileGenerator {
@@ -114,75 +109,5 @@ public abstract class FileGenerator {
         return parent;
     }
 
-    private class ClassTemplateCaller implements TemplateCaller {
-        final ClassTemplateCaller child;
-        final ClassTemplate classTemplate;
-
-        private ClassTemplateCaller(ClassTemplateCaller child, ClassTemplate classTemplate) {
-            this.child = child;
-            this.classTemplate = classTemplate;
-        }
-
-        void callRoot(PrintWriter out) {
-            classTemplate.
-        }
-
-        @Override
-        public void call(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter) {
-
-        }
-
-        @Override
-        public void callExtension(PrintWriter out) {
-
-        }
-    }
-
-
-    private static class ClassTemplate implements TemplateCaller {
-        final Class<?> backedClass;
-        final ClassTemplate parent;
-        final CompiledTemplate rootTemplate;
-        final Map<String, MethodTemplate> methodTemplates;
-
-        private ClassTemplate(Class<?> backedClass, ClassTemplate parent, CompiledTemplate rootTemplate, List<MethodTemplate> methodTemplates) {
-            this.backedClass = backedClass;
-            this.parent = parent;
-            this.rootTemplate = rootTemplate;
-            this.methodTemplates = methodTemplates.stream()
-                    .collect(Collectors.toMap(MethodTemplate::getName, Function.identity()));
-        }
-
-
-        @Override
-        public void call(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter) {
-
-        }
-
-        @Override
-        public void callExtension(PrintWriter out) {
-
-        }
-    }
-
-    private static class MethodTemplate {
-        final String name;
-        final CompiledTemplate template;
-        final Method method;
-
-        private MethodTemplate(String name, CompiledTemplate template, Method method) {
-            this.name = name;
-            this.template = template;
-            this.method = method;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    private static class MutableRef<T> {
-        T value;
-    }
 
 }
