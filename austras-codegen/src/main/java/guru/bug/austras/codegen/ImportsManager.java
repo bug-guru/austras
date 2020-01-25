@@ -10,17 +10,12 @@ package guru.bug.austras.codegen;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 class ImportsManager {
     private final Map<String, ImportLine> imports = new HashMap<>();
-    private final String packageName;
+    private String packageName;
 
-    ImportsManager(String packageName) {
-        this.packageName = packageName;
-    }
-
-    void processImports(PrintWriter out, Set<String> importedLined) {
+    void processImports(PrintWriter out) {
         if (imports.isEmpty()) {
             importedLined.stream()
                     .filter(s -> !s.isBlank())
@@ -93,6 +88,15 @@ class ImportsManager {
 
     private boolean isPrintableToImportPkg(String pkg) {
         return !pkg.equals("java.lang") && !pkg.equals(packageName);
+    }
+
+    void initPackage(String packageName) {
+        clear();
+        this.packageName = packageName;
+    }
+
+    void clear() {
+        imports.clear();
     }
 
     private static class ImportLine implements Comparable<ImportLine> {

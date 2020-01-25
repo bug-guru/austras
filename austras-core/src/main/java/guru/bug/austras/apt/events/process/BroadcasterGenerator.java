@@ -13,7 +13,7 @@ import guru.bug.austras.apt.events.model.EventsBroadcasterModel;
 import guru.bug.austras.apt.events.model.MethodModel;
 import guru.bug.austras.apt.events.model.MethodParam;
 import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
 import guru.bug.austras.codegen.template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Template(name = "Broadcaster.java.txt")
-public class BroadcasterGenerator extends JavaGenerator {
+@Template(file = "Broadcaster.java.txt")
+public class BroadcasterGenerator extends JavaFileGenerator {
 
     private final ProcessingContext ctx;
     private EventsBroadcasterModel eventsBroadcasterModel;
@@ -45,16 +45,19 @@ public class BroadcasterGenerator extends JavaGenerator {
 
     void generate(VariableElement e) {
         eventsBroadcasterModel = createModel(e);
-        super.generateJavaClass();
+        super.generate();
     }
 
     @Override
+    protected String getQualifiedClassName() {
+        return getPackageName() + "." + getSimpleClassName();
+    }
+
     @Template(name = "PACKAGE_NAME")
     public String getPackageName() {
         return eventsBroadcasterModel.getPackageName();
     }
 
-    @Override
     @Template(name = "SIMPLE_CLASS_NAME")
     public String getSimpleClassName() {
         return eventsBroadcasterModel.getSimpleName();
