@@ -1,9 +1,9 @@
 package $TARGET.PACKAGE$;
 
 #IMPORTS#
-JsonConverter
-JsonValueReader
-JsonValueWriter
+guru.bug.austras.convert.converters.JsonConverter
+guru.bug.austras.json.reader.JsonValueReader
+guru.bug.austras.json.writer.JsonValueWriter
 guru.bug.austras.core.qualifiers.Default
 #END#
 

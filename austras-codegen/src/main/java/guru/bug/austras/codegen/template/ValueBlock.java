@@ -18,9 +18,7 @@ class ValueBlock implements Block {
     }
 
     @Override
-    public void process(PrintWriter out, TemplateCaller caller) {
-        caller.call(name, out, o -> {
-            throw new TemplateException("Block " + name + " doesn't have a body");
-        });
+    public void process(PrintWriter out, ClassTemplateCaller caller) {
+        caller.callMethod(name, out, null);
     }
 }

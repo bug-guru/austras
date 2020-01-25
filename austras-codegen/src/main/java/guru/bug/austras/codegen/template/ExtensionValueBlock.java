@@ -16,7 +16,7 @@ class ExtensionValueBlock implements Block {
     }
 
     @Override
-    public void process(PrintWriter out, TemplateCaller caller) {
+    public void process(PrintWriter out, ClassTemplateCaller caller) {
         caller.callExtension(out);
     }
 }

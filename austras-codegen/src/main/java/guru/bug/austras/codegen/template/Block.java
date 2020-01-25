@@ -9,6 +9,6 @@ package guru.bug.austras.codegen.template;
 
 import java.io.PrintWriter;
 
-interface Block {
-    void process(PrintWriter out, TemplateCaller caller);
+public interface Block {
+    void process(PrintWriter out, ClassTemplateCaller caller);
 }

@@ -10,9 +10,9 @@ package guru.bug.austras.codegen.template;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
-public interface TemplateCaller {
+public interface ClassTemplateCaller {
 
-    void call(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter);
+    void callMethod(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter);
 
     void callExtension(PrintWriter out);
 

@@ -13,17 +13,18 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 class BlockWithBody implements Block {
     private final String name;
     private final List<Block> blocks;
 
-    BlockWithBody(String name, Iterator<TemplateToken> tokenIterator) {
+    BlockWithBody(String name, Iterator<TemplateToken> tokenIterator, Consumer<String> exporter) {
         this.name = name;
-        this.blocks = collectBlocks(tokenIterator);
+        this.blocks = collectBlocks(tokenIterator, exporter);
     }
 
-    private List<Block> collectBlocks(Iterator<TemplateToken> tokenIterator) {
+    private List<Block> collectBlocks(Iterator<TemplateToken> tokenIterator, Consumer<String> exporter) {
         var result = new ArrayList<Block>();
         while (tokenIterator.hasNext()) {
             Block block;
@@ -41,6 +42,7 @@ class BlockWithBody implements Block {
                         block = ExtensionValueBlock.INSTANCE;
                     } else {
                         block = new ValueBlock(nameValue);
+                        exporter.accept(nameValue);
                     }
                     break;
                 case BLOCK:
@@ -48,7 +50,9 @@ class BlockWithBody implements Block {
                         result.trimToSize();
                         return result;
                     }
-                    block = new BlockWithBody(t.getValue(), tokenIterator);
+                    var blockName = t.getValue();
+                    block = new BlockWithBody(blockName, tokenIterator, exporter);
+                    exporter.accept(blockName);
                     break;
                 default:
                     throw new IllegalStateException("Unsupported token " + t.getType());
@@ -60,12 +64,18 @@ class BlockWithBody implements Block {
     }
 
     @Override
-    public void process(PrintWriter out, TemplateCaller caller) {
-        caller.call(name, out, o -> {
-            for (var b : blocks) {
-                b.process(o, caller);
+    public void process(PrintWriter out, ClassTemplateCaller caller) {
+        if (name == null) {
+            for (var block : blocks) {
+                block.process(out, caller);
             }
-        });
+        } else {
+            caller.callMethod(name, out, w -> {
+                for (var block : blocks) {
+                    block.process(w, caller);
+                }
+            });
+        }
     }
 
 }

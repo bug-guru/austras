@@ -8,53 +8,53 @@
 package guru.bug.austras.codegen;
 
 import guru.bug.austras.codegen.template.CompiledTemplate;
-import guru.bug.austras.codegen.template.TemplateCaller;
 import guru.bug.austras.codegen.template.TemplateException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.lang.reflect.Method;
+import java.util.*;
 
 
 public abstract class FileGenerator {
-    private static final Map<Class<?>, ClassTemplate> templates = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, ClassTemplateProcessor> templates = new HashMap<>();
 
-    private ClassTemplate createClassTemplate(Class<?> backedClass, ClassTemplate parent) {
-        var rootTemplate = rootTemplate(backedClass);
-        var methodTemplates = new ArrayList<MethodTemplate>();
-        for (var m : backedClass.getMethods()) {
-            var templateAnnotation = m.getDeclaredAnnotation(Template.class);
-            if (templateAnnotation == null) {
-                continue;
+    public FileGenerator() {
+        Class<?> cur = getClass();
+        if (!templates.containsKey(cur)) {
+            var classes = new LinkedList<Class<?>>();
+            while (!cur.equals(FileGenerator.class)) {
+                classes.addFirst(cur);
+                if (templates.containsKey(cur)) {
+                    break;
+                }
+                cur = cur.getSuperclass();
             }
-            var templateName = templateAnnotation.name();
-            if (templateName.isBlank()) {
-                throw new TemplateException("Annotation @Template isn't valid on " + backedClass + "." + m.getName() + ": name is required");
+
+            ClassTemplateProcessor parent = null;
+            for (var cls : classes) {
+                var tmp = templates.get(cls);
+                if (tmp == null) {
+                    tmp = createClassTemplateProcessor(cls, parent);
+                    templates.put(cls, tmp);
+                }
+                parent = tmp;
             }
-            var template = methodTemplate(backedClass, templateAnnotation);
-            methodTemplates.add(template);
         }
-        return new ClassTemplate(backedClass, parent, rootTemplate, methodTemplates);
     }
 
-    private MethodTemplate methodTemplate(Class<?> cls, Template templateAnnotation) {
-        String templateValue;
-        if (!templateAnnotation.file().isBlank()) {
-            templateValue = readFromResource(cls, templateAnnotation.file());
-        } else if (!templateAnnotation.value().isBlank()) {
-            templateValue = templateAnnotation.value();
-        } else {
-            return null;
+    private ClassTemplateProcessor createClassTemplateProcessor(Class<?> backedClass, ClassTemplateProcessor parentProcessor) {
+        var rootTemplate = compileRootTemplate(backedClass);
+        var methodTemplateProcessors = new ArrayList<MethodTemplateProcessor>();
+        for (var m : backedClass.getDeclaredMethods()) {
+            createMethodTemplateProcessor(backedClass, m).ifPresent(methodTemplateProcessors::add);
         }
-        return MethodTemplate.compile(templateValue);
+        return new ClassTemplateProcessor(backedClass, parentProcessor, rootTemplate, methodTemplateProcessors);
     }
 
-    private CompiledTemplate rootTemplate(Class<?> cls) {
+    private CompiledTemplate compileRootTemplate(Class<?> cls) {
         var templateAnnotation = cls.getDeclaredAnnotation(Template.class);
         String templateValue;
         if (templateAnnotation == null) {
@@ -69,10 +69,34 @@ public abstract class FileGenerator {
         return CompiledTemplate.compile(templateValue);
     }
 
+    private Optional<MethodTemplateProcessor> createMethodTemplateProcessor(Class<?> cls, Method method) {
+        var templateAnnotation = method.getDeclaredAnnotation(Template.class);
+        if (templateAnnotation == null) {
+            return Optional.empty();
+        }
+        CompiledTemplate template;
+        var templateName = templateAnnotation.name();
+        if (templateName.isBlank()) {
+            throw new TemplateException("Annotation @Template isn't valid on " + method + " (" + cls + ") : name is required");
+        }
+
+        if (!templateAnnotation.file().isBlank()) {
+            var txt = readFromResource(cls, templateAnnotation.file());
+            template = CompiledTemplate.compile(txt);
+        } else if (!templateAnnotation.value().isBlank()) {
+            var txt = templateAnnotation.value();
+            template = CompiledTemplate.compile(txt);
+        } else {
+            template = null;
+        }
+
+        return Optional.of(MethodTemplateProcessor.with(templateName, template, method));
+    }
+
     private String readFromResource(Class<?> cls, String resourceName) {
-        try (var is = getClass().getResourceAsStream(resourceName)) {
+        try (var is = cls.getResourceAsStream(resourceName)) {
             if (is == null) {
-                throw new TemplateException(resourceName + " not found for " + getClass().getName());
+                throw new TemplateException(resourceName + " not found for " + cls.getName());
             }
             try (var reader = new InputStreamReader(is)) {
                 var writer = new StringWriter(2048);
@@ -85,29 +109,8 @@ public abstract class FileGenerator {
     }
 
     protected final void generate(PrintWriter out) {
-        var templateStack = collectTemplateStack();
-        var callers = new ArrayList<TemplateCaller>();
-        TemplateCaller prev = null;
-        for (var t : templateStack) {
-            var caller =
-        }
+        var template = templates.get(getClass());
+        template.process(this, out);
     }
-
-    private ClassTemplate findTemplate() {
-        var classes = new LinkedList<Class<?>>();
-        Class<?> cur = getClass();
-        while (!cur.equals(FileGenerator.class)) {
-            classes.addFirst(cur);
-            cur = cur.getSuperclass();
-        }
-
-        ClassTemplate parent = null;
-        for (var cls : classes) {
-            parent = createClassTemplate(cls, parent);
-        }
-
-        return parent;
-    }
-
 
 }
