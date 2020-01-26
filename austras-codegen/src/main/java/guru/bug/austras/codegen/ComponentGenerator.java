@@ -7,8 +7,17 @@
 
 package guru.bug.austras.codegen;
 
-@Template(file = "ComponentGenerator")
-public class ComponentGenerator extends FileGenerator {
+@Template(file = "ComponentGenerator.java.txt")
+public class ComponentGenerator extends JavaFileGenerator {
 
 
+    @Override
+    public String getPackageName() {
+        return null;
+    }
+
+    @Override
+    public String getSimpleClassName() {
+        return null;
+    }
 }
