@@ -16,50 +16,46 @@ class ImportsManager {
     private String packageName;
 
     void processImports(PrintWriter out) {
-        if (imports.isEmpty()) {
-            importedLined.stream()
-                    .filter(s -> !s.isBlank())
-                    .filter(this::isPrintableToImports)
-                    .forEach(s -> {
-                        tryImport(s);
-                        out.print("import ");
-                        out.print(s);
-                        out.println(';');
-                    });
-        } else {
-            imports.values().stream()
-                    .filter(i -> isPrintableToImportPkg(i.packageName))
-                    .sorted()
-                    .forEach(s -> {
-                        out.print("import ");
-                        out.print(s.packageName);
-                        out.print('.');
-                        out.print(s.className);
-                        out.println(';');
-                    });
-        }
+        imports.values().stream()
+                .filter(i -> isPrintableToImportPkg(i.packageName))
+                .sorted()
+                .forEach(s -> {
+                    out.print("import ");
+                    out.print(s.packageName);
+                    out.print('.');
+                    out.print(s.className);
+                    out.println(';');
+                });
+    }
+
+    void requireImport(String typeName) {
+        tryImport(typeName, true);
     }
 
     String tryImport(String typeName) {
+        return tryImport(typeName, false);
+    }
+
+    private String tryImport(String typeName, boolean required) {
         String prefix = "";
         if (typeName.startsWith("? extends ")) {
             prefix = "? extends ";
         }
         var tpFirstIdx = typeName.indexOf('<');
         if (tpFirstIdx == -1) {
-            return prefix + tryImport0(typeName.substring(prefix.length()));
+            return prefix + tryImport0(typeName.substring(prefix.length()), required);
         } else {
-            var type = tryImport0(typeName.substring(prefix.length(), tpFirstIdx));
+            var type = tryImport0(typeName.substring(prefix.length(), tpFirstIdx), required);
             var tpLastIdx = typeName.lastIndexOf('>');
             if (tpLastIdx == -1) {
                 throw new IllegalArgumentException("wrong type " + typeName);
             }
-            var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx));
+            var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx), required);
             return prefix + type + '<' + param + '>';
         }
     }
 
-    private String tryImport0(String qualifiedName) {
+    private String tryImport0(String qualifiedName, boolean required) {
         var idx = qualifiedName.lastIndexOf('.');
         var pkg = idx == -1 ? "" : qualifiedName.substring(0, idx);
         var cls = qualifiedName.substring(idx + 1);
@@ -72,18 +68,11 @@ class ImportsManager {
             return cls;
         } else if (pkg.equals(imp.packageName)) {
             return cls;
+        } else if (required) {
+            throw new IllegalArgumentException(qualifiedName + " cannot be imported: conflict");
         } else {
             return qualifiedName;
         }
-    }
-
-    private boolean isPrintableToImports(String qualifiedName) {
-        var idx = qualifiedName.lastIndexOf('.');
-        if (idx == -1) {
-            return true;
-        }
-        var pkg = qualifiedName.substring(0, idx);
-        return isPrintableToImportPkg(pkg);
     }
 
     private boolean isPrintableToImportPkg(String pkg) {

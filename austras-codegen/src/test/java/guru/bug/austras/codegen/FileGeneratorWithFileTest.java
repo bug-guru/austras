@@ -39,18 +39,18 @@ public class FileGeneratorWithFileTest extends FileGenerator {
     }
 
     @Template(name = "EXTERNAL LOOP")
-    public void externalLoop(Runnable body) {
+    public void externalLoop(BodyProcessor body) {
         for (int i = 0; i < 3; i++) {
             externalVar = i;
-            body.run();
+            body.process();
         }
     }
 
     @Template(name = "INTERNAL LOOP")
-    public void internalLoop(Runnable body) {
+    public void internalLoop(BodyProcessor body) {
         for (int i = 100; i < 103; i++) {
             internalVar = i;
-            body.run();
+            body.process();
         }
     }
 

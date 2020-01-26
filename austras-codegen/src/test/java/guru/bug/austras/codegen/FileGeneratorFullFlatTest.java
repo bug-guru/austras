@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Template("<start>#REPEAT#$INDEX$$,$#END#<end>")
-class FileGeneratorTest extends FileGenerator {
+class FileGeneratorFullFlatTest extends FileGenerator {
 
     String comma = "";
     int index;
@@ -25,23 +25,27 @@ class FileGeneratorTest extends FileGenerator {
         var result = new StringWriter(200);
         var out = new PrintWriter(result);
         super.generate(out);
-        assertEquals("<start>i=1i=1, i=2i=2, i=3i=3, i=4i=4, i=5i=5<end>", result.toString());
+        assertEquals("<start>|i=1|1=i|, |i=2|2=i|, |i=3|3=i|, |i=4|4=i|, |i=5|5=i|<end>", result.toString());
     }
 
     @Template(name = "REPEAT")
-    public void repeat(Runnable body) {
+    public void repeat(BodyProcessor body) {
         var count = 5;
         for (int i = 1; i <= count; i++) {
             this.index = i;
             this.comma = i == count ? "" : ", ";
-            body.run();
+            body.process();
         }
     }
 
     @Template(name = "INDEX", value = "i=$IDX$")
-    public void index(Runnable body) {
-        body.run();
-        body.run();
+    public void index(BodyProcessor body) {
+        body.getOutput().print("|");
+        body.process();
+        body.getOutput().print("|");
+        var txt = new StringBuilder(body.processAndGetBody());
+        body.getOutput().print(txt.reverse());
+        body.getOutput().print("|");
     }
 
     @Template(name = "IDX")

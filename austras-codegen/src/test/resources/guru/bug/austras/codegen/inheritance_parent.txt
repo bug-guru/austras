@@ -1,0 +1,9 @@
+start parent
+$COLLECTION$
+#LINES#
+parent line 1
+parent line 2
+parent line 3
+#END#
+$$
+end parent

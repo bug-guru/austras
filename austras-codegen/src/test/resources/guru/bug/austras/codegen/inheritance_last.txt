@@ -1,0 +1,6 @@
+start last
+#LINES#
+last line 1
+last line 2
+#END#
+end last

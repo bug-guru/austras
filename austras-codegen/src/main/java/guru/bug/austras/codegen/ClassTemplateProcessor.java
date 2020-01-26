@@ -53,15 +53,23 @@ class ClassTemplateProcessor {
         }
     }
 
+    private MethodTemplateProcessor findMethodProcessor(String name) {
+        Objects.requireNonNull(name, "name");
+        var result = methodTemplateProcessors.get(name);
+        if (result == null && parent != null) {
+            result = parent.findMethodProcessor(name);
+        }
+        if (result == null) {
+            throw new TemplateException("Template method [" + name + "] not found");
+        }
+        return result;
+    }
+
     private void processThis(FileGenerator generatorInstance, PrintWriter out, Consumer<PrintWriter> childProcessor) {
         rootTemplate.process(out, new ClassTemplateCaller() {
             @Override
             public void callMethod(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter) {
-                Objects.requireNonNull(name, "name");
-                var methodTemplateProcessor = methodTemplateProcessors.get(name);
-                if (methodTemplateProcessor == null) {
-                    throw new TemplateException("Template method [" + name + "] not found");
-                }
+                var methodTemplateProcessor = findMethodProcessor(name);
                 methodTemplateProcessor.process(generatorInstance, out, this, bodyWriter);
             }
 

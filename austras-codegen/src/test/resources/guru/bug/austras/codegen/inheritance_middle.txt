@@ -1,0 +1,7 @@
+start middle
+#LINES#
+middle line 1
+middle line 2
+#END#
+$$
+end middle

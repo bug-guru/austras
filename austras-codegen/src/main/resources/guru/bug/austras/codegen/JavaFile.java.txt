@@ -1,5 +1,5 @@
 package $PACKAGE_NAME$;
 
-$IMPORTS$
+$IMPORT_SECTION$
 
 $$

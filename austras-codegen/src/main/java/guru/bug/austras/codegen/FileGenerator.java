@@ -108,7 +108,7 @@ public abstract class FileGenerator {
         }
     }
 
-    protected final void generate(PrintWriter out) {
+    protected void generate(PrintWriter out) {
         var template = templates.get(getClass());
         template.process(this, out);
     }

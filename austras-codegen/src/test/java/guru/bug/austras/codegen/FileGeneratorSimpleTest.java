@@ -29,12 +29,12 @@ class FileGeneratorSimpleTest extends FileGenerator {
     }
 
     @Template(name = "REPEAT")
-    public void repeat(Runnable body) {
+    public void repeat(BodyProcessor body) {
         var count = 5;
         for (int i = 1; i <= count; i++) {
             this.index = i;
             this.comma = i == count ? "" : ", ";
-            body.run();
+            body.process();
         }
     }
 

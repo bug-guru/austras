@@ -29,7 +29,9 @@ class MethodTemplateProcessor {
         MethodCaller methodCaller;
         var isVoid = Void.TYPE.equals(method.getReturnType()) || method.getReturnType() == null;
         var hasParam = method.getParameterCount() == 1;
-        var isRunnableParam = hasParam && Runnable.class.equals(method.getParameters()[0].getType());
+        var fistParamType = hasParam ? method.getParameters()[0].getType() : null;
+        var isBodyProcessorParam = hasParam && BodyProcessor.class.equals(fistParamType);
+        var isPrintWriterParam = hasParam && PrintWriter.class.equals(fistParamType);
         if (!hasParam && !isVoid && template == null) {
             methodCaller = (instance, out, caller, bodyWriter) -> {
                 if (bodyWriter != null) {
@@ -38,20 +40,28 @@ class MethodTemplateProcessor {
                 var result = method.invoke(instance);
                 out.print(result);
             };
-        } else if (isVoid && isRunnableParam && template == null) {
+        } else if (isVoid && isBodyProcessorParam && template == null) {
             methodCaller = (instance, out, caller, bodyWriter) -> {
                 if (bodyWriter == null) {
                     throw new TemplateException("Block " + name + " doesn't have template");
                 }
-                method.invoke(instance, (Runnable) () -> bodyWriter.accept(out));
+                method.invoke(instance, new WriterBodyProcessor(out, bodyWriter));
             };
-        } else if (isVoid && isRunnableParam && template != null) {
+        } else if (isVoid && isBodyProcessorParam && template != null) {
             methodCaller = (instance, out, caller, bodyWriter) -> {
                 if (bodyWriter != null) {
                     throw new TemplateException("Block " + name + " has template defined twice");
                 }
-                method.invoke(instance, (Runnable) () -> template.process(out, caller));
+                method.invoke(instance, new TemplateBodyProcessor(template, out, caller));
             };
+        } else if (isVoid && isPrintWriterParam && template == null) {
+            methodCaller = (instance, out, caller, bodyWriter) -> {
+                if (bodyWriter != null) {
+                    throw new TemplateException("Block " + name + " has template but it is ignored");
+                }
+                method.invoke(instance, out);
+            };
+
         } else {
             throw new IllegalArgumentException("Method not supported " + method);
         }
