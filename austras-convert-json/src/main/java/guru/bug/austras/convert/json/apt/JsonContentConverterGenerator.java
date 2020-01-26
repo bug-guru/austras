@@ -8,10 +8,9 @@
 package guru.bug.austras.convert.json.apt;
 
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.BodyProcessor;
+import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.convert.BooleanContentConverter;
 import guru.bug.austras.json.*;
 import org.apache.commons.lang3.StringUtils;
@@ -29,16 +28,14 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleElementVisitor9;
 import javax.lang.model.util.TypeKindVisitor9;
 import javax.tools.Diagnostic;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-@Template(name = "JsonContentConverter.java.txt")
-public class JsonContentConverterGenerator extends JavaGenerator {
+@Template(file = "JsonContentConverter.java.txt")
+public class JsonContentConverterGenerator extends JavaFileGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonContentConverterGenerator.class);
     private static final PropExtractor propExtractor = new PropExtractor();
     private final ProcessingContext ctx;
@@ -51,11 +48,9 @@ public class JsonContentConverterGenerator extends JavaGenerator {
     private List<ConverterInfo> converters;
     private ConverterInfo currentConverter;
 
-    JsonContentConverterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
-        super(ctx.processingEnv().getFiler());
+    JsonContentConverterGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
-
 
     void generate(DeclaredType type) {
         properties = collectProps(type);
@@ -63,7 +58,7 @@ public class JsonContentConverterGenerator extends JavaGenerator {
         packageName = ctx.processingEnv().getElementUtils().getPackageOf(type.asElement()).getQualifiedName().toString();
         simpleName = type.asElement().getSimpleName().toString() + "JsonConverter";
         targetQualifiedName = ((TypeElement) type.asElement()).getQualifiedName().toString();
-        generateJavaClass();
+        generate(ctx.processingEnv().getFiler());
     }
 
     private List<ConverterInfo> collectConverters() {
@@ -149,22 +144,22 @@ public class JsonContentConverterGenerator extends JavaGenerator {
     }
 
     @Template(name = "PROPERTIES")
-    public void processConvertersParams(PrintWriter out, BodyBlock body) {
+    public void processConvertersParams(BodyProcessor body) {
         var pi = properties.iterator();
         while (pi.hasNext()) {
             this.currentProperty = pi.next();
             this.hasMore = pi.hasNext();
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
     @Template(name = "CONVERTERS")
-    public void processConverters(PrintWriter out, BodyBlock body) {
+    public void processConverters(BodyProcessor body) {
         var pi = converters.iterator();
         while (pi.hasNext()) {
             this.currentConverter = pi.next();
             this.hasMore = pi.hasNext();
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
@@ -204,9 +199,9 @@ public class JsonContentConverterGenerator extends JavaGenerator {
     }
 
     @Template(name = "IF_NOT_PRIMITIVE")
-    public void ifNotPrimitive(PrintWriter out, BodyBlock body) {
+    public void ifNotPrimitive(BodyProcessor body) {
         if (!currentProperty.type.getKind().isPrimitive()) {
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 

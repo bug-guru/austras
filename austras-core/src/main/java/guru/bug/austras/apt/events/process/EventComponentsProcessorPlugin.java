@@ -9,7 +9,6 @@ package guru.bug.austras.apt.events.process;
 
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.core.qualifiers.Broadcast;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.lang.model.element.*;
 import javax.lang.model.util.SimpleElementVisitor9;
 import javax.tools.Diagnostic;
-import java.io.IOException;
 
 public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
     private static final Logger log = LoggerFactory.getLogger(EventComponentsProcessorPlugin.class);
@@ -28,11 +26,7 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
     @Override
     public void process(ProcessingContext ctx) {
         this.ctx = ctx;
-        try {
-            broadcasterGenerator = new BroadcasterGenerator(ctx);
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e);
-        }
+        broadcasterGenerator = new BroadcasterGenerator(ctx);
         ctx.roundEnv().getElementsAnnotatedWith(Broadcast.class)
                 .forEach(e -> e.accept(msgVisitor, ctx));
     }
@@ -55,8 +49,8 @@ public class EventComponentsProcessorPlugin implements AustrasProcessorPlugin {
         @Override
         public Void visitVariable(VariableElement e, ProcessingContext ctx) {
             if (!validParameter(e)
-                    || !validConstructor(e.getEnclosingElement())
-                    || !validClass(e.getEnclosingElement().getEnclosingElement())) {
+                || !validConstructor(e.getEnclosingElement())
+                || !validClass(e.getEnclosingElement().getEnclosingElement())) {
                 logError(ctx, e, Broadcast.class.getSimpleName() + "-annotation unexpected placement"); // TODO Better error handling
                 return null;
             }

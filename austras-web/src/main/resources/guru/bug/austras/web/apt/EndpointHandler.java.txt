@@ -1,5 +1,3 @@
-package $PACKAGE_NAME$;
-
 #IMPORTS#
 guru.bug.austras.web.EndpointHandler
 guru.bug.austras.web.MediaType

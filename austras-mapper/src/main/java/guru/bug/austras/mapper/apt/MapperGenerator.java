@@ -8,55 +8,21 @@
 package guru.bug.austras.mapper.apt;
 
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.BodyProcessor;
+import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.template.TemplateException;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+@Template(file = "Mapper.java.txt")
+public class MapperGenerator extends JavaFileGenerator {
 
-public class MapperGenerator extends JavaGenerator {
+    private final ProcessingContext ctx;
 
-    protected MapperGenerator(ProcessingContext ctx) throws IOException, TemplateException {
-        super(ctx.processingEnv().getFiler());
+    protected MapperGenerator(ProcessingContext ctx) {
+        this.ctx = ctx;
     }
 
     public void generate(MapperModel model) {
-        writeBody("""
-                package $PACKAGE_NAME$;
-
-                #IMPORTS#
-                org.slf4j.Logger
-                org.slf4j.LoggerFactory
-                guru.bug.austras.mapper.Mapper
-                #END#
-
-                $QUALIFIERS$
-                public class $SIMPLE_CLASS_NAME$ implements Mapper<$SOURCE_TYPE$, $TARGET_TYPE$> {
-                    public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
-
-                    #DEPENDENCIES#
-                    private final $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$;
-                    #END#
-
-                    public $SIMPLE_CLASS_NAME$(
-                        #DEPENDENCIES#
-                        $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$$,$
-                        #END#
-                    ) {
-                        #DEPENDENCIES#
-                        this.$DEPENDENCY_NAME$ = $DEPENDENCY_NAME$;
-                        #END#
-                    }
-
-                    @Override
-                    public $TARGET_TYPE$ map($SOURCE_TYPE$ source) {
-                        $GENERATE_TARGET_INSTANCE$
-                    }
-
-                }
-                """);
+        generate(ctx.processingEnv().getFiler());
     }
 
     @Override
@@ -69,41 +35,38 @@ public class MapperGenerator extends JavaGenerator {
         return null;
     }
 
-    @Template(name = "GENERATE_TARGET_INSTANCE")
-    public void generateTargetInstance(PrintWriter out, BodyBlock body) {
-
+    @Template(name = "GENERATE_TARGET_INSTANCE", value = "$WITH_SETTERS$$WITH_BUILDER$$WITH_CONSTRUCTOR$")
+    public void generateTargetInstance(BodyProcessor body) {
+        body.process();
     }
 
-    @Template(value = """
-                    var result = new $TARGET_TYPE$();
-                    #PROPERTIES#
-                    result.$PROPERTY_TARGET_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#);
-                    #END#
-                    return result;
-            """)
-    public void generateJavaBeanInstance(PrintWriter out, BodyBlock body) {
-
+    @Template(name = "WITH_SETTERS",
+            value = "        var result = new $TARGET_TYPE$();\n" +
+                    "        #PROPERTIES#\n" +
+                    "        result.$PROPERTY_TARGET_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#);\n" +
+                    "        #END#\n" +
+                    "        return result;\n")
+    public void generateJavaBeanInstance(BodyProcessor body) {
+        body.process();
     }
 
-    @Template(value = """
-                    return $TARGET_TYPE$.builder()
-                    #PROPERTIES#
-                        .$PROPERTY_TARGET_BUILDER_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#)
-                    #END#
-                        .build();
-            """)
-    public void generateInstanceWithBuilder(PrintWriter out, BodyBlock body) {
-
+    @Template(name = "WITH_BUILDER",
+            value = "        return $TARGET_TYPE$.builder()\n" +
+                    "        #PROPERTIES#\n" +
+                    "            .$PROPERTY_TARGET_BUILDER_SETTER$(#CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#)\n" +
+                    "        #END#\n" +
+                    "            .build();\n")
+    public void generateInstanceWithBuilder(BodyProcessor body) {
+        body.process();
     }
 
-    @Template(value = """
-                    return new $TARGET_TYPE$(
-                    #PROPERTIES#
-                        #CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#$,$
-                    #END#
-                    );
-            """)
-    public void generateInstanceWithConstructor(PrintWriter out, BodyBlock body) {
-
+    @Template(name = "WITH_CONSTRUCTOR",
+            value = "        return new $TARGET_TYPE$(\n" +
+                    "        #PROPERTIES#\n" +
+                    "            #CONVERTER#source.$PROPERTY_SOURCE_GETTER$()#END#$,$\n" +
+                    "        #END#\n" +
+                    "        );\n")
+    public void generateInstanceWithConstructor(BodyProcessor body) {
+        body.process();
     }
 }

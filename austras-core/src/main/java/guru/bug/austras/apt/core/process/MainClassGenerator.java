@@ -11,10 +11,9 @@ import guru.bug.austras.apt.core.common.model.ComponentKey;
 import guru.bug.austras.apt.core.common.model.ComponentModel;
 import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.BodyProcessor;
+import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.core.Instance;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.startup.ServiceManager;
@@ -22,13 +21,11 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Template(name = "Main.java.txt")
-public class MainClassGenerator extends JavaGenerator {
+@Template(file = "Main.java.txt")
+public class MainClassGenerator extends JavaFileGenerator {
     private static final Logger log = LoggerFactory.getLogger(MainClassGenerator.class);
     private final ProcessingContext ctx;
     private String qualifiedClassName;
@@ -40,8 +37,7 @@ public class MainClassGenerator extends JavaGenerator {
     private boolean hasMoreDependencies;
     private List<ComponentModel> sortedComponents;
 
-    public MainClassGenerator(ProcessingContext ctx) throws IOException, TemplateException {
-        super(ctx.processingEnv().getFiler());
+    public MainClassGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
 
@@ -63,10 +59,10 @@ public class MainClassGenerator extends JavaGenerator {
     }
 
     @Template(name = "COMPONENTS")
-    public void componentsLoop(PrintWriter out, BodyBlock bodyBlock) {
+    public void componentsLoop(BodyProcessor body) {
         for (var c : sortedComponents) {
             this.currentComponent = c;
-            out.print(bodyBlock.evaluateBody());
+            body.process();
         }
     }
 
@@ -81,27 +77,27 @@ public class MainClassGenerator extends JavaGenerator {
     }
 
     @Template(name = "WITH_DEPENDENCIES")
-    public void withDependencies(PrintWriter out, BodyBlock bodyBlock) {
+    public void withDependencies(BodyProcessor body) {
         if (!currentComponent.getDependencies().isEmpty()) {
-            out.print(bodyBlock.evaluateBody());
+            body.process();
         }
     }
 
     @Template(name = "WITHOUT_DEPENDENCIES")
-    public void withoutDependencies(PrintWriter out, BodyBlock bodyBlock) {
+    public void withoutDependencies(BodyProcessor body) {
         if (currentComponent.getDependencies().isEmpty()) {
-            out.print(bodyBlock.evaluateBody());
+            body.process();
         }
     }
 
     @Template(name = "COMPONENT_DEPENDENCIES")
-    public void currentComponentCollectionsInitializers(PrintWriter out, BodyBlock bodyBlock) {
+    public void currentComponentCollectionsInitializers(BodyProcessor body) {
 
         Iterator<DependencyModel> dependencies = currentComponent.getDependencies().iterator();
         while (dependencies.hasNext()) {
             this.currentDependency = dependencies.next();
             this.hasMoreDependencies = dependencies.hasNext();
-            out.print(bodyBlock.evaluateBody());
+            body.process();
         }
     }
 
@@ -232,7 +228,7 @@ public class MainClassGenerator extends JavaGenerator {
         var lastDotIndex = qualifiedClassName.lastIndexOf('.');
         this.simpleClassName = qualifiedClassName.substring(lastDotIndex + 1);
         this.packageName = qualifiedClassName.substring(0, lastDotIndex);
-        generateJavaClass();
+        generate(ctx.processingEnv().getFiler());
     }
 
     private class ComponentModelRef {

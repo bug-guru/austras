@@ -12,29 +12,23 @@ import guru.bug.austras.apt.core.common.model.bean.BeanModel;
 import guru.bug.austras.apt.core.common.model.bean.BeanPropertyModel;
 import guru.bug.austras.apt.core.engine.AustrasProcessorPlugin;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.mapper.Mapper;
 
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MapperProcessorPlugin implements AustrasProcessorPlugin {
     @Override
     public void process(ProcessingContext ctx) {
-        try {
-            var generator = new MapperGenerator(ctx);
-            ctx.componentManager().roundDependencies().stream()
-                    .map(this::createMapperModel)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(generator::generate);
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e); // TODO better error handling
-        }
+        var generator = new MapperGenerator(ctx);
+        ctx.componentManager().roundDependencies().stream()
+                .map(this::createMapperModel)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(generator::generate);
     }
 
     private Optional<MapperModel> createMapperModel(ComponentRef ref) {

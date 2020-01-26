@@ -12,9 +12,7 @@ import guru.bug.austras.codegen.template.TemplateException;
 import javax.annotation.processing.Filer;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.function.Consumer;
 
 @Template(file = "JavaFile.java.txt")
 public abstract class JavaFileGenerator extends FileGenerator {
@@ -26,12 +24,8 @@ public abstract class JavaFileGenerator extends FileGenerator {
     }
 
     @Template(name = "IMPORTS")
-    public void collectImports(Consumer<PrintWriter> body) {
-        var writer = new StringWriter(200);
-        var out = new PrintWriter(writer);
-        body.accept(out);
-        var bodyText = writer.toString();
-        bodyText.lines()
+    public void collectImports(BodyProcessor body) {
+        body.processAndGetBody().lines()
                 .map(String::strip)
                 .filter(l -> !l.isEmpty())
                 .forEach(importsManager::requireImport);

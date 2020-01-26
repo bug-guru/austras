@@ -12,10 +12,9 @@ import guru.bug.austras.apt.core.engine.ProcessingContext;
 import guru.bug.austras.apt.events.model.EventsBroadcasterModel;
 import guru.bug.austras.apt.events.model.MethodModel;
 import guru.bug.austras.apt.events.model.MethodParam;
-import guru.bug.austras.codegen.BodyBlock;
+import guru.bug.austras.codegen.BodyProcessor;
 import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.template.TemplateException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.ElementKind;
@@ -25,8 +24,6 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,19 +35,13 @@ public class BroadcasterGenerator extends JavaFileGenerator {
     private EventsBroadcasterModel eventsBroadcasterModel;
     private MethodModel currentMethod;
 
-    BroadcasterGenerator(ProcessingContext ctx) throws IOException, TemplateException {
-        super(ctx.processingEnv().getFiler());
+    BroadcasterGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
 
     void generate(VariableElement e) {
         eventsBroadcasterModel = createModel(e);
-        super.generate();
-    }
-
-    @Override
-    protected String getQualifiedClassName() {
-        return getPackageName() + "." + getSimpleClassName();
+        super.generate(ctx.processingEnv().getFiler());
     }
 
     @Template(name = "PACKAGE_NAME")
@@ -79,10 +70,10 @@ public class BroadcasterGenerator extends JavaFileGenerator {
     }
 
     @Template(name = "METHODS")
-    public void methods(PrintWriter out, BodyBlock body) {
+    public void methods(BodyProcessor body) {
         for (var m : eventsBroadcasterModel.getMethods()) {
             this.currentMethod = m;
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 

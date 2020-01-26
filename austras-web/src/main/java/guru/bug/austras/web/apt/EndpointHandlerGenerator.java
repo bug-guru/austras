@@ -9,10 +9,9 @@ package guru.bug.austras.web.apt;
 
 import guru.bug.austras.apt.core.common.model.DependencyModel;
 import guru.bug.austras.apt.core.engine.ProcessingContext;
-import guru.bug.austras.codegen.BodyBlock;
-import guru.bug.austras.codegen.JavaGenerator;
+import guru.bug.austras.codegen.BodyProcessor;
+import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
-import guru.bug.austras.codegen.template.TemplateException;
 import guru.bug.austras.web.*;
 import guru.bug.austras.web.apt.model.*;
 
@@ -22,15 +21,13 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.tools.Diagnostic;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Template(name = "EndpointHandler.java.txt")
-public class EndpointHandlerGenerator extends JavaGenerator {
+@Template(file = "EndpointHandler.java.txt")
+public class EndpointHandlerGenerator extends JavaFileGenerator {
     private final ProcessingContext ctx;
     private String packageName;
     private String simpleClassName;
@@ -48,8 +45,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     private MethodParam currentMethodParam;
     private int successStatus;
 
-    protected EndpointHandlerGenerator(ProcessingContext ctx) throws IOException, TemplateException {
-        super(ctx.processingEnv().getFiler());
+    protected EndpointHandlerGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
 
@@ -69,7 +65,7 @@ public class EndpointHandlerGenerator extends JavaGenerator {
         processParams(methodElement);
         processResult(methodElement);
 
-        generateJavaClass();
+        generate(ctx.processingEnv().getFiler());
     }
 
     public void processController(TypeElement cls) {
@@ -167,12 +163,12 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     @Template(name = "DEPENDENCIES")
-    public void dependencies(PrintWriter out, BodyBlock bodyBlock) {
+    public void dependencies(BodyProcessor body) {
         var i = dependencies.values().iterator();
         while (i.hasNext()) {
             this.currentDependency = i.next();
             this.commaRequired = i.hasNext();
-            out.print(bodyBlock.evaluateBody());
+            body.process();
         }
     }
 
@@ -208,12 +204,12 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     @Template(name = "PATH_ITEMS")
-    public void pathItems(PrintWriter out, BodyBlock body) {
+    public void pathItems(BodyProcessor body) {
         var pi = pathItems.iterator();
         while (pi.hasNext()) {
             this.currentPathItem = pi.next();
             this.commaRequired = pi.hasNext();
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
@@ -245,16 +241,16 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     @Template(name = "HAS_RESPONSE_BODY")
-    public void processIfHasResponseContent(PrintWriter out, BodyBlock body) {
+    public void processIfHasResponseContent(BodyProcessor body) {
         if (responseConverterSelectorDependency != null) {
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
     @Template(name = "HAS_REQUEST_BODY")
-    public void processIfHasRequestBody(PrintWriter out, BodyBlock body) {
+    public void processIfHasRequestBody(BodyProcessor body) {
         if (requestBodyConverterSelectorDependency != null) {
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
@@ -274,12 +270,12 @@ public class EndpointHandlerGenerator extends JavaGenerator {
     }
 
     @Template(name = "ENDPOINT_METHOD_PARAMS")
-    public void endpointMethodParams(PrintWriter out, BodyBlock body) {
+    public void endpointMethodParams(BodyProcessor body) {
         var mpi = methodParams.iterator();
         while (mpi.hasNext()) {
             this.currentMethodParam = mpi.next();
             this.commaRequired = mpi.hasNext();
-            out.print(body.evaluateBody());
+            body.process();
         }
     }
 
