@@ -13,12 +13,12 @@ import guru.bug.austras.codegen.template.CompiledTemplate;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class TemplateBodyProcessor implements BodyProcessor {
+class TemplateBodyProcessor implements BodyProcessor {
     private final CompiledTemplate template;
     private final PrintWriter out;
     private final ClassTemplateCaller caller;
 
-    public TemplateBodyProcessor(CompiledTemplate template, PrintWriter out, ClassTemplateCaller caller) {
+    TemplateBodyProcessor(CompiledTemplate template, PrintWriter out, ClassTemplateCaller caller) {
         this.template = template;
         this.out = out;
         this.caller = caller;

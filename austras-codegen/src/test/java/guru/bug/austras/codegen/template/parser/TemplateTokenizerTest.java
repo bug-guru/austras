@@ -1,14 +1,12 @@
 /*
- * Copyright (c) 2019 Dimitrijs Fedotovs
+ * Copyright (c) 2020 Dimitrijs Fedotovs
  * This software is licensed under the terms of the MIT license
  * See LICENSE for the license details.
  *
  */
 
-package guru.bug.austras.codegen;
+package guru.bug.austras.codegen.template.parser;
 
-import guru.bug.austras.codegen.template.parser.TemplateToken;
-import guru.bug.austras.codegen.template.parser.TemplateTokenizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

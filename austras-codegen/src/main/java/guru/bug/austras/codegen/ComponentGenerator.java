@@ -8,16 +8,18 @@
 package guru.bug.austras.codegen;
 
 @Template(file = "ComponentGenerator.java.txt")
-public class ComponentGenerator extends JavaFileGenerator {
+public abstract class ComponentGenerator extends JavaFileGenerator {
 
 
     @Override
-    public String getPackageName() {
-        return null;
-    }
+    public abstract String getPackageName();
 
     @Override
-    public String getSimpleClassName() {
-        return null;
+    public abstract String getSimpleClassName();
+
+    @Template(name = "QUALIFIED_CLASS_NAME")
+    public String getQualifiedClassName() {
+        return getPackageName() + "." + getSimpleClassName();
     }
+
 }

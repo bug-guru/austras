@@ -5,7 +5,7 @@ org.slf4j.LoggerFactory
 
 $QUALIFIERS$
 public class $SIMPLE_CLASS_NAME$ $EXTENDS$ $IMPLEMENTS$ {
-    public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger($SIMPLE_CLASS_NAME$.class);
 
     #DEPENDENCIES#
     private final $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$;

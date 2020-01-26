@@ -13,18 +13,17 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 class BlockWithBody implements Block {
     private final String name;
     private final List<Block> blocks;
 
-    BlockWithBody(String name, Iterator<TemplateToken> tokenIterator, Consumer<String> exporter) {
+    BlockWithBody(String name, Iterator<TemplateToken> tokenIterator) {
         this.name = name;
-        this.blocks = collectBlocks(tokenIterator, exporter);
+        this.blocks = collectBlocks(tokenIterator);
     }
 
-    private List<Block> collectBlocks(Iterator<TemplateToken> tokenIterator, Consumer<String> exporter) {
+    private List<Block> collectBlocks(Iterator<TemplateToken> tokenIterator) {
         var result = new ArrayList<Block>();
         while (tokenIterator.hasNext()) {
             Block block;
@@ -42,7 +41,6 @@ class BlockWithBody implements Block {
                         block = ExtensionValueBlock.INSTANCE;
                     } else {
                         block = new ValueBlock(nameValue);
-                        exporter.accept(nameValue);
                     }
                     break;
                 case BLOCK:
@@ -51,8 +49,7 @@ class BlockWithBody implements Block {
                         return result;
                     }
                     var blockName = t.getValue();
-                    block = new BlockWithBody(blockName, tokenIterator, exporter);
-                    exporter.accept(blockName);
+                    block = new BlockWithBody(blockName, tokenIterator);
                     break;
                 default:
                     throw new IllegalStateException("Unsupported token " + t.getType());

@@ -12,24 +12,13 @@ import guru.bug.austras.codegen.template.parser.TemplateTokenizer;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
-import java.util.Set;
 
 public class CompiledTemplate {
     private static final CompiledTemplate EXTENSION_TEMPLATE = new CompiledTemplate(ExtensionValueBlock.INSTANCE);
-    private static final Block EMPTY_BLOCK = (out, caller) -> {
-        // nothing
-    };
     private final Block body;
-    private final Set<String> exported;
-
-    private CompiledTemplate(Block body, Set<String> exported) {
-        this.body = body;
-        this.exported = Set.copyOf(exported);
-    }
 
     private CompiledTemplate(Block body) {
         this.body = body;
-        this.exported = Set.of();
     }
 
     public static CompiledTemplate compile(String content) {
@@ -39,8 +28,8 @@ public class CompiledTemplate {
 
         var tokenIterator = tokens.iterator();
         var exported = new HashSet<String>();
-        var body = new BlockWithBody(null, tokenIterator, exported::add);
-        return new CompiledTemplate(body, exported);
+        var body = new BlockWithBody(null, tokenIterator);
+        return new CompiledTemplate(body);
     }
 
     public static CompiledTemplate extension() {
