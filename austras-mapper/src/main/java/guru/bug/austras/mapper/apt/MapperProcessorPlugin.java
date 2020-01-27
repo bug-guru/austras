@@ -49,15 +49,19 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
 
         var fieldMappings = srcBeanModel.getProperties().stream()
                 .filter(BeanPropertyModel::isReadable)
-                .map(srcProp -> trgBeanModel.getProperties().stream()
-                        .filter(trgProp -> trgProp.isWritable() && trgProp.getName().equals(srcProp.getName()))
-                        .map(trgProp -> FieldMapping.of(srcProp, trgProp))
-                        .findFirst())
+                .map(srcProp -> findFieldMapping(srcProp, trgBeanModel))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toUnmodifiableList());
         result.setMappings(fieldMappings);
         return Optional.of(result);
+    }
+
+    private Optional<FieldMapping> findFieldMapping(BeanPropertyModel srcProp, BeanModel trgBeanModel) {
+        return trgBeanModel.getProperties().stream()
+                .filter(trgProp -> trgProp.isWritable() && trgProp.getName().equals(srcProp.getName()))
+                .map(trgProp -> FieldMapping.of(srcProp, trgProp))
+                .findFirst();
     }
 
     private BeanModel convertToBeanModel(TypeMirror type) {
