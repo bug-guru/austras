@@ -12,27 +12,34 @@ import guru.bug.austras.codegen.BodyProcessor;
 import guru.bug.austras.codegen.JavaFileGenerator;
 import guru.bug.austras.codegen.Template;
 
+import javax.lang.model.element.TypeElement;
+
 @Template(file = "Mapper.java.txt")
 public class MapperGenerator extends JavaFileGenerator {
-
     private final ProcessingContext ctx;
+    private String packageName;
+    private String simpleClassName;
 
     protected MapperGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
 
     public void generate(MapperModel model) {
+        var srcTypeElement = (TypeElement) model.getSource().getBeanType().asElement();
+        var trgTypeElement = (TypeElement) model.getTarget().getBeanType().asElement();
+        packageName = ctx.processingEnv().getElementUtils().getPackageOf(srcTypeElement).getQualifiedName().toString();
+        simpleClassName = srcTypeElement.getSimpleName() + "To" + trgTypeElement.getSimpleName() + "Mapper";
         generate(ctx.processingEnv().getFiler());
     }
 
     @Override
     public String getPackageName() {
-        return null;
+        return packageName;
     }
 
     @Override
     public String getSimpleClassName() {
-        return null;
+        return simpleClassName;
     }
 
     @Template(name = "GENERATE_TARGET_INSTANCE", value = "$WITH_SETTERS$$WITH_BUILDER$$WITH_CONSTRUCTOR$")
@@ -57,7 +64,7 @@ public class MapperGenerator extends JavaFileGenerator {
                     "        #END#\n" +
                     "            .build();\n")
     public void generateInstanceWithBuilder(BodyProcessor body) {
-        body.process();
+        // not yet supported
     }
 
     @Template(name = "WITH_CONSTRUCTOR",
@@ -67,6 +74,6 @@ public class MapperGenerator extends JavaFileGenerator {
                     "        #END#\n" +
                     "        );\n")
     public void generateInstanceWithConstructor(BodyProcessor body) {
-        body.process();
+        // not yet supported
     }
 }
