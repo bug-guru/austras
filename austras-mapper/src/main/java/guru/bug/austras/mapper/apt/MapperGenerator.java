@@ -42,9 +42,9 @@ public class MapperGenerator extends JavaFileGenerator {
         return simpleClassName;
     }
 
-    @Template(name = "GENERATE_TARGET_INSTANCE", value = "$WITH_SETTERS$$WITH_BUILDER$$WITH_CONSTRUCTOR$")
+    @Template(name = "GENERATE_TARGET_INSTANCE")
     public void generateTargetInstance(BodyProcessor body) {
-        body.process();
+        body.process("WITH_SETTERS");
     }
 
     @Template(name = "WITH_SETTERS",

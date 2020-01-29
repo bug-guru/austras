@@ -13,6 +13,8 @@ public interface BodyProcessor {
 
     void process();
 
+    void process(String name);
+
     String processAndGetBody();
 
     PrintWriter getOutput();

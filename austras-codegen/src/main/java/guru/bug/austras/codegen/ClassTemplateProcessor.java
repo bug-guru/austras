@@ -67,6 +67,7 @@ class ClassTemplateProcessor {
 
     private void processThis(FileGenerator generatorInstance, PrintWriter out, Consumer<PrintWriter> childProcessor) {
         rootTemplate.process(out, new ClassTemplateCaller() {
+
             @Override
             public void callMethod(String name, PrintWriter out, Consumer<PrintWriter> bodyWriter) {
                 var methodTemplateProcessor = findMethodProcessor(name);

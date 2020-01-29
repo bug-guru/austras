@@ -14,7 +14,7 @@ import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Template("<start>#REPEAT#$INDEX$$,$#END#<end>")
+@Template("<start>#REPEAT#$INDEX$$SWITCH$$,$#END#<end>")
 class FileGeneratorFullFlatTest extends FileGenerator {
 
     String comma = "";
@@ -25,7 +25,7 @@ class FileGeneratorFullFlatTest extends FileGenerator {
         var result = new StringWriter(200);
         var out = new PrintWriter(result);
         super.generate(out);
-        assertEquals("<start>|i=1|1=i|, |i=2|2=i|, |i=3|3=i|, |i=4|4=i|, |i=5|5=i|<end>", result.toString());
+        assertEquals("<start>|i=1|1=i|one, |i=2|2=i|two, |i=3|3=i|three, |i=4|4=i|four, |i=5|5=i|four+one<end>", result.toString());
     }
 
     @Template(name = "REPEAT")
@@ -51,6 +51,36 @@ class FileGeneratorFullFlatTest extends FileGenerator {
     @Template(name = "IDX")
     public int idx() {
         return index;
+    }
+
+    @Template(name = "SWITCH")
+    public void switchTemplate(BodyProcessor bodyProcessor) {
+        bodyProcessor.process(String.valueOf(index));
+    }
+
+    @Template(name = "1")
+    public String one() {
+        return "one";
+    }
+
+    @Template(name = "2")
+    public String two() {
+        return "two";
+    }
+
+    @Template(name = "3")
+    public String three() {
+        return "three";
+    }
+
+    @Template(name = "4")
+    public String four() {
+        return "four";
+    }
+
+    @Template(name = "5", value = "$4$+$1$")
+    public void five(BodyProcessor body) {
+        body.process();
     }
 
     @Template(name = ",")

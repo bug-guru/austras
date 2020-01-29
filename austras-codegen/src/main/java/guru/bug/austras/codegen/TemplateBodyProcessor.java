@@ -30,6 +30,11 @@ class TemplateBodyProcessor implements BodyProcessor {
     }
 
     @Override
+    public void process(String name) {
+        caller.callMethod(name, out, null);
+    }
+
+    @Override
     public String processAndGetBody() {
         var result = new StringWriter(200);
         var pw = new PrintWriter(result);

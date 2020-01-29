@@ -41,12 +41,8 @@ class MethodTemplateProcessor {
                 out.print(result);
             };
         } else if (isVoid && isBodyProcessorParam && template == null) {
-            methodCaller = (instance, out, caller, bodyWriter) -> {
-                if (bodyWriter == null) {
-                    throw new TemplateException("Block " + name + " doesn't have template");
-                }
-                method.invoke(instance, new WriterBodyProcessor(out, bodyWriter));
-            };
+            methodCaller = (instance, out, caller, bodyWriter) ->
+                    method.invoke(instance, new WriterBodyProcessor(out, bodyWriter, caller));
         } else if (isVoid && isBodyProcessorParam && template != null) {
             methodCaller = (instance, out, caller, bodyWriter) -> {
                 if (bodyWriter != null) {
