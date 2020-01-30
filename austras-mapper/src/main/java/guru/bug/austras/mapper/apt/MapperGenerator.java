@@ -19,12 +19,14 @@ public class MapperGenerator extends JavaFileGenerator {
     private final ProcessingContext ctx;
     private String packageName;
     private String simpleClassName;
+    private MapperModel model;
 
     protected MapperGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
     }
 
     public void generate(MapperModel model) {
+        this.model = model;
         var srcTypeElement = (TypeElement) model.getSource().getBeanType().asElement();
         var trgTypeElement = (TypeElement) model.getTarget().getBeanType().asElement();
         packageName = ctx.processingEnv().getElementUtils().getPackageOf(srcTypeElement).getQualifiedName().toString();
@@ -40,6 +42,11 @@ public class MapperGenerator extends JavaFileGenerator {
     @Override
     public String getSimpleClassName() {
         return simpleClassName;
+    }
+
+    @Template(name = "QUALIFIERS")
+    public String componentQualifiers() {
+        return model.getQualifiers().toString();
     }
 
     @Template(name = "GENERATE_TARGET_INSTANCE")

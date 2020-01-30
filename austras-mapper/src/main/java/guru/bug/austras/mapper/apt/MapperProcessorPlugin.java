@@ -21,14 +21,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MapperProcessorPlugin implements AustrasProcessorPlugin {
+    private ProcessingContext ctx;
     @Override
     public void process(ProcessingContext ctx) {
-        var generator = new MapperGenerator(ctx);
-        ctx.componentManager().roundDependencies().stream()
-                .map(this::createMapperModel)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(generator::generate);
+        this.ctx = ctx;
+        try {
+            var generator = new MapperGenerator(ctx);
+            ctx.componentManager().roundDependencies().stream()
+                    .map(this::createMapperModel)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(generator::generate);
+        } finally {
+            this.ctx = null;
+        }
     }
 
     private Optional<MapperModel> createMapperModel(ComponentRef ref) {
@@ -40,10 +46,12 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
         if (!type.toString().startsWith(Mapper.class.getName() + "<")) {
             return Optional.empty();
         }
+        var qualifiers = ctx.modelUtils().extractQualifiers(type);
         var args = type.getTypeArguments();
         var srcBeanModel = convertToBeanModel(args.get(0));
         var trgBeanModel = convertToBeanModel(args.get(1));
         var result = new MapperModel();
+        result.setQualifiers(qualifiers);
         result.setSource(srcBeanModel);
         result.setTarget(trgBeanModel);
 

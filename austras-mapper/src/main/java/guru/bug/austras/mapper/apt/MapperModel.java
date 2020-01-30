@@ -7,6 +7,7 @@
 
 package guru.bug.austras.mapper.apt;
 
+import guru.bug.austras.apt.core.common.model.QualifierSetModel;
 import guru.bug.austras.apt.core.common.model.bean.BeanModel;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class MapperModel {
     private BeanModel source;
     private BeanModel target;
     private List<FieldMapping> mappings;
+    private QualifierSetModel qualifiers;
 
     public BeanModel getSource() {
         return source;
@@ -41,14 +43,22 @@ public class MapperModel {
         this.mappings = mappings;
     }
 
+    public void setQualifiers(QualifierSetModel qualifiers) {
+        this.qualifiers = qualifiers;
+    }
+
+    public QualifierSetModel getQualifiers() {
+        return qualifiers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MapperModel that = (MapperModel) o;
         return Objects.equals(source, that.source) &&
-                Objects.equals(target, that.target) &&
-                Objects.equals(mappings, that.mappings);
+               Objects.equals(target, that.target) &&
+               Objects.equals(mappings, that.mappings);
     }
 
     @Override
