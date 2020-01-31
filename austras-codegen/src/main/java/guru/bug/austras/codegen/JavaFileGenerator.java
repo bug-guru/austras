@@ -17,6 +17,7 @@ import java.io.Writer;
 @Template(file = "JavaFile.java.txt")
 public abstract class JavaFileGenerator extends FileGenerator {
     private final ImportsManager importsManager = new ImportsManager();
+    private String qualifiedClassName;
 
     @Template(name = "IMPORTS_SECTION")
     public void writeImportsSection(PrintWriter out) {
@@ -34,14 +35,19 @@ public abstract class JavaFileGenerator extends FileGenerator {
     @Template(name = "PACKAGE_NAME")
     public abstract String getPackageName();
 
+    @Template(name = "QUALIFIED_CLASS_NAME")
+    public String getGetQualifiedClassName() {
+        return qualifiedClassName;
+    }
+
     public abstract String getSimpleClassName();
 
     protected void generate(Filer filer) {
         var pkgName = getPackageName();
         var clsName = getSimpleClassName();
-        var qName = pkgName + "." + clsName;
+        this.qualifiedClassName = pkgName + "." + clsName;
 
-        try (var w = filer.createSourceFile(qName).openWriter();
+        try (var w = filer.createSourceFile(qualifiedClassName).openWriter();
              var out = new PrintWriter(w)) {
             generate(out);
         } catch (IOException e) {

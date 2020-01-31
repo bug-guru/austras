@@ -18,6 +18,7 @@ public class MapperModel {
     private BeanModel target;
     private List<FieldMapping> mappings;
     private QualifierSetModel qualifiers;
+    private List<FieldMapperDependency> dependencies;
 
     public BeanModel getSource() {
         return source;
@@ -49,6 +50,14 @@ public class MapperModel {
 
     public QualifierSetModel getQualifiers() {
         return qualifiers;
+    }
+
+    public List<FieldMapperDependency> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<FieldMapperDependency> dependencies) {
+        this.dependencies = dependencies;
     }
 
     @Override

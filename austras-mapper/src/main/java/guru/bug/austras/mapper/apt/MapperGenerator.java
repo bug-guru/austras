@@ -20,6 +20,8 @@ public class MapperGenerator extends JavaFileGenerator {
     private String packageName;
     private String simpleClassName;
     private MapperModel model;
+    private boolean commaNeeded;
+    private FieldMapperDependency currentDep;
 
     protected MapperGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
@@ -45,8 +47,34 @@ public class MapperGenerator extends JavaFileGenerator {
     }
 
     @Template(name = "QUALIFIERS")
-    public String componentQualifiers() {
+    public String getComponentQualifiers() {
         return model.getQualifiers().toString();
+    }
+
+    @Template(name = "SOURCE_TYPE")
+    public String getSourceType() {
+        return tryImport(model.getSource().getBeanType().toString());
+    }
+
+    @Template(name = "DEPENDENCIES")
+    public void processDependencies(BodyProcessor body) {
+        var i = model.getDependencies().iterator();
+        while (i.hasNext()) {
+            currentDep = i.next();
+            commaNeeded = i.hasNext();
+            body.process();
+        }
+    }
+
+    @Template(name = ",")
+    public String comma() {
+        return commaNeeded ? ", " : "";
+    }
+
+    @Template(name = "TARGET_TYPE")
+    public String getTargetType() {
+
+        return tryImport(model.getTarget().getBeanType().toString());
     }
 
     @Template(name = "GENERATE_TARGET_INSTANCE")
