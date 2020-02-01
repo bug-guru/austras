@@ -60,7 +60,7 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
         result.setQualifiers(qualifiers);
         result.setSource(srcBeanModel);
         result.setTarget(trgBeanModel);
-        var deps = new HashMap<DeclaredType, FieldMapperDependency>();
+        var deps = new HashMap<String, FieldMapperDependency>();
         var usedNames = new HashSet<String>();
         var fieldMappings = srcBeanModel.getProperties().stream()
                 .filter(BeanPropertyModel::isReadable)
@@ -73,7 +73,7 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
         return Optional.of(result);
     }
 
-    private Optional<FieldMapping> findFieldMapping(BeanPropertyModel srcProp, BeanModel trgBeanModel, Map<DeclaredType, FieldMapperDependency> dependencies, Set<String> usedNames) {
+    private Optional<FieldMapping> findFieldMapping(BeanPropertyModel srcProp, BeanModel trgBeanModel, Map<String, FieldMapperDependency> dependencies, Set<String> usedNames) {
         return trgBeanModel.getProperties().stream()
                 .filter(trgProp -> trgProp.isWritable() && trgProp.getName().equals(srcProp.getName()))
                 .map(trgProp -> {
@@ -85,9 +85,9 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
                         return FieldMapping.of(srcProp, trgProp, null);
                     } else {
                         var mapperType = types.getDeclaredType(mapperElement, srcType, trgType);
-                        var dep = dependencies.computeIfAbsent(mapperType, k -> {
+                        var dep = dependencies.computeIfAbsent(mapperType.toString(), k -> {
                             String name = generateUniqueVarName(srcType, trgType, usedNames);
-                            return new FieldMapperDependency(name, k);
+                            return new FieldMapperDependency(name, mapperType);
                         });
                         return FieldMapping.of(srcProp, trgProp, dep);
                     }

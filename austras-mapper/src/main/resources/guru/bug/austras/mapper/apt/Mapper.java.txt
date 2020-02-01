@@ -25,6 +25,9 @@ public class $SIMPLE_CLASS_NAME$ implements Mapper<$SOURCE_TYPE$, $TARGET_TYPE$>
 
     @Override
     public $TARGET_TYPE$ map($SOURCE_TYPE$ source) {
+        if (source == null) {
+            return null;
+        }
 $GENERATE_TARGET_INSTANCE$
     }
 
