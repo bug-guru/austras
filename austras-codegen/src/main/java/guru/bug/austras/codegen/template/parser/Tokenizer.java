@@ -7,11 +7,15 @@
 
 package guru.bug.austras.codegen.template.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class Tokenizer<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Tokenizer.class);
     private final List<TokenProcessor<T>> variants;
 
     Tokenizer(List<TokenProcessor<T>> variants) {
@@ -29,6 +33,9 @@ public class Tokenizer<T> {
     }
 
     private void processCodepoint(int cp, ArrayList<T> resultTokens, StateHolder<T> holder) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Processing {}", printableCodePoint(cp));
+        }
         do {
             holder.repeat = false;
             if (cp == -1) {
@@ -44,9 +51,34 @@ public class Tokenizer<T> {
         } while (holder.repeat);
     }
 
+    private String printableCodePoint(int cp) {
+        if (cp > 32 && cp < 127) {
+            return Character.toString(cp);
+        }
+        switch (cp) {
+            case ' ':
+                return "SPACE";
+            case '\n':
+                return "\\n";
+            case '\t':
+                return "\\t";
+            case '\r':
+                return "\\r";
+            case '\b':
+                return "\\b";
+            case '\f':
+                return "\\f";
+            default:
+                return String.format("%04x", cp);
+        }
+    }
+
     private void processAll(List<TokenProcessor<T>> processors, int cp, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
         for (var processor : processors) {
             var result = processor.process(cp);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Processor: {} result: {}", processor.getClass().getSimpleName(), result);
+            }
             switch (result) {
                 case REJECT:
                     processor.reset();
@@ -72,6 +104,12 @@ public class Tokenizer<T> {
     }
 
     private void accept(TokenProcessor<T> processor, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
+        processLastAccepted(processor, resultTokens, stateHolder);
+        stateHolder.lastAccepted = processor;
+        stateHolder.processed = true;
+    }
+
+    private void processLastAccepted(TokenProcessor<T> processor, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
         if (stateHolder.lastAccepted != null && stateHolder.lastAccepted != processor) {
             T token = stateHolder.lastAccepted.complete();
             stateHolder.lastAccepted.reset();
@@ -79,11 +117,10 @@ public class Tokenizer<T> {
                 resultTokens.add(token);
             }
         }
-        stateHolder.lastAccepted = processor;
-        stateHolder.processed = true;
     }
 
     private void complete(TokenProcessor<T> processor, ArrayList<T> resultTokens, StateHolder<T> stateHolder) {
+        processLastAccepted(processor, resultTokens, stateHolder);
         stateHolder.forced = null;
         stateHolder.lastAccepted = null;
         stateHolder.processed = true;

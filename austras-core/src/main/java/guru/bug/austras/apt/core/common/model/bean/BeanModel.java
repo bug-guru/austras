@@ -96,7 +96,7 @@ public class BeanModel {
             } else if (methodName.startsWith("set") && params.size() == 1 && isVoid) {
                 var name = propNameFromMethodName(methodName);
                 var prop = getPropertyBuilderByName(index, name);
-                prop.getter(name, params.get(0).asType(), e);
+                prop.setter(name, params.get(0).asType(), e);
             }
             return null;
         }

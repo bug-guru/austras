@@ -8,8 +8,11 @@
 package guru.bug.austras.codegen;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 class ImportsManager {
     private final Map<String, ImportLine> imports = new HashMap<>();
@@ -36,26 +39,59 @@ class ImportsManager {
         return tryImport(typeName, false);
     }
 
-    private String tryImport(String typeName, boolean required) {
-        String prefix = "";
-        if (typeName.startsWith("? extends ")) {
-            prefix = "? extends ";
+    private String tryImport(String type, boolean required) {
+        var trimmedType = type.strip();
+        var pStartIdx = trimmedType.indexOf('<');
+        if (pStartIdx == -1) {
+            return new TypePart(tryImport0(trimmedType, required)).toString();
         }
-        var tpFirstIdx = typeName.indexOf('<');
-        if (tpFirstIdx == -1) {
-            return prefix + tryImport0(typeName.substring(prefix.length()), required);
-        } else {
-            var type = tryImport0(typeName.substring(prefix.length(), tpFirstIdx), required);
-            var tpLastIdx = typeName.lastIndexOf('>');
-            if (tpLastIdx == -1) {
-                throw new IllegalArgumentException("wrong type " + typeName);
-            }
-            var param = tryImport(typeName.substring(tpFirstIdx + 1, tpLastIdx), required);
-            return prefix + type + '<' + param + '>';
-        }
+        var name = tryImport0(trimmedType.substring(0, pStartIdx), required);
+        var params = new ArrayList<TypePart>(2);
+        parseParams(trimmedType, pStartIdx, params, required);
+        return new TypePart(name, params).toString();
     }
 
-    private String tryImport0(String qualifiedName, boolean required) {
+    private int parseParams(String type, int fromIdx, List<TypePart> result, boolean required) {
+        var startIdx = fromIdx + 1;
+        while (true) {
+            var commaIdx = type.indexOf(',', startIdx);
+            var paramStartIdx = type.indexOf('<', startIdx);
+            var paramEndIdx = type.indexOf('>', startIdx);
+            var minIdx = IntStream.of(commaIdx, paramStartIdx, paramEndIdx).filter(i -> i >= 0).min().orElseThrow();
+            if (minIdx == paramEndIdx) {
+                var paramTypeName = type.substring(startIdx, minIdx).strip();
+                if (!paramTypeName.isEmpty()) {
+                    result.add(new TypePart(tryImport0(paramTypeName, required)));
+                }
+                startIdx = minIdx;
+                break;
+            }
+            if (minIdx == commaIdx) {
+                var paramTypeName = type.substring(startIdx, minIdx).strip();
+                if (!paramTypeName.isEmpty()) {
+                    result.add(new TypePart(tryImport0(paramTypeName, required)));
+                }
+                startIdx = minIdx + 1;
+            }
+            if (minIdx == paramStartIdx) {
+                var paramTypeName = tryImport0(type.substring(startIdx, minIdx).strip(), required);
+                var params = new ArrayList<TypePart>(2);
+                result.add(new TypePart(paramTypeName, params));
+                startIdx = parseParams(type, minIdx, params, required) + 1;
+            }
+        }
+        return startIdx;
+    }
+
+
+    private String tryImport0(String param, boolean required) {
+        var prefix = "";
+        var qualifiedName = param;
+        if (param.startsWith("? extends ")) {
+            prefix = "? extends ";
+            qualifiedName = param.substring(prefix.length());
+        }
+
         var idx = qualifiedName.lastIndexOf('.');
         var pkg = idx == -1 ? "" : qualifiedName.substring(0, idx);
         var cls = qualifiedName.substring(idx + 1);
@@ -65,13 +101,13 @@ class ImportsManager {
             imp.className = cls;
             imp.packageName = pkg;
             imports.put(cls, imp);
-            return cls;
+            return prefix + cls;
         } else if (pkg.equals(imp.packageName)) {
-            return cls;
+            return prefix + cls;
         } else if (required) {
-            throw new IllegalArgumentException(qualifiedName + " cannot be imported: conflict");
+            throw new IllegalArgumentException(param + " cannot be imported: conflict");
         } else {
-            return qualifiedName;
+            return prefix + qualifiedName;
         }
     }
 
@@ -117,6 +153,42 @@ class ImportsManager {
                 return this.className.compareTo(o.className);
             }
             return result;
+        }
+    }
+
+    private static class TypePart {
+        final String name;
+        final List<TypePart> params;
+
+        TypePart(String name) {
+            this(name, List.of());
+        }
+
+        TypePart(String name, List<TypePart> params) {
+            this.name = name;
+            this.params = params;
+        }
+
+        @Override
+        public String toString() {
+            var result = new StringBuilder();
+            toString(result);
+            return result.toString();
+        }
+
+        private void toString(StringBuilder result) {
+            result.append(name);
+            if (!params.isEmpty()) {
+                result.append('<');
+                var i = params.iterator();
+                while (i.hasNext()) {
+                    i.next().toString(result);
+                    if (i.hasNext()) {
+                        result.append(", ");
+                    }
+                }
+                result.append('>');
+            }
         }
     }
 }

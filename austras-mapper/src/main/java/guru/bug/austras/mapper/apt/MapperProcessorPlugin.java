@@ -50,6 +50,9 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
             return Optional.empty();
         }
         var qualifiers = ctx.modelUtils().extractQualifiers(type);
+        if (ctx.componentManager().tryUseComponents(type, qualifiers)) {
+            return Optional.empty();
+        }
         var args = type.getTypeArguments();
         var srcBeanModel = convertToBeanModel(args.get(0));
         var trgBeanModel = convertToBeanModel(args.get(1));
@@ -108,7 +111,7 @@ public class MapperProcessorPlugin implements AustrasProcessorPlugin {
 
     private DeclaredType getDeclaredTypeOf(TypeMirror type) {
         if (type.getKind().isPrimitive()) {
-            return (DeclaredType) ctx.processingEnv().getTypeUtils().boxedClass((PrimitiveType) type);
+            return (DeclaredType) ctx.processingEnv().getTypeUtils().boxedClass((PrimitiveType) type).asType();
         } else if (type.getKind() == TypeKind.DECLARED) {
             return (DeclaredType) type;
         } else {

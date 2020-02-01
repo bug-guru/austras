@@ -11,7 +11,6 @@ import guru.bug.austras.codegen.template.parser.TemplateCleaner;
 import guru.bug.austras.codegen.template.parser.TemplateTokenizer;
 
 import java.io.PrintWriter;
-import java.util.HashSet;
 
 public class CompiledTemplate {
     private static final CompiledTemplate EXTENSION_TEMPLATE = new CompiledTemplate(ExtensionValueBlock.INSTANCE);
@@ -27,7 +26,6 @@ public class CompiledTemplate {
         TemplateCleaner.cleanup(tokens);
 
         var tokenIterator = tokens.iterator();
-        var exported = new HashSet<String>();
         var body = new BlockWithBody(null, tokenIterator);
         return new CompiledTemplate(body);
     }

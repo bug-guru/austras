@@ -40,6 +40,7 @@ public abstract class JavaFileGenerator extends FileGenerator {
         return qualifiedClassName;
     }
 
+    @Template(name = "SIMPLE_CLASS_NAME")
     public abstract String getSimpleClassName();
 
     protected void generate(Filer filer) {
