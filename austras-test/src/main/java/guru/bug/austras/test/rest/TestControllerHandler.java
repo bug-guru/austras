@@ -10,11 +10,11 @@ package guru.bug.austras.test.rest;
 import guru.bug.austras.convert.ContentConverter;
 import guru.bug.austras.core.Selector;
 import guru.bug.austras.core.qualifiers.Any;
-import guru.bug.austras.web.EndpointHandler;
-import guru.bug.austras.web.PathItem;
-import guru.bug.austras.web.errors.HttpException;
-import guru.bug.austras.web.errors.NotAcceptableException;
-import guru.bug.austras.web.errors.NotFoundException;
+import guru.bug.austras.rest.EndpointHandler;
+import guru.bug.austras.rest.PathItem;
+import guru.bug.austras.rest.errors.HttpException;
+import guru.bug.austras.rest.errors.NotAcceptableException;
+import guru.bug.austras.rest.errors.NotFoundException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

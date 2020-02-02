@@ -37,19 +37,14 @@
                 <version>1.2.3</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>1.2.3</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.7</version>
+                <version>1.8</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
-                <version>9.4.24.v20191120</version>
+                <version>9.4.26.v20200117</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -67,7 +62,7 @@
         <module>austras-convert</module>
         <module>austras-convert-plaintext</module>
         <module>austras-convert-json</module>
-        <module>austras-web</module>
+        <module>austras-rest</module>
         <module>austras-mapper</module>
         <module>austras-test</module>
         <module>austras-mapper-generator</module>

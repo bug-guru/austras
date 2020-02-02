@@ -12,8 +12,8 @@
       <module fileurl="file://$PROJECT_DIR$/austras-json/austras-json.iml" filepath="$PROJECT_DIR$/austras-json/austras-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-mapper/austras-mapper.iml" filepath="$PROJECT_DIR$/austras-mapper/austras-mapper.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-mapper-generator/austras-mapper-generator.iml" filepath="$PROJECT_DIR$/austras-mapper-generator/austras-mapper-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/austras-rest/austras-rest.iml" filepath="$PROJECT_DIR$/austras-rest/austras-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/austras-test/austras-test.iml" filepath="$PROJECT_DIR$/austras-test/austras-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/austras-web/austras-web.iml" filepath="$PROJECT_DIR$/austras-web/austras-web.iml" />
     </modules>
   </component>
 </project>

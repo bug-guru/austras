@@ -7,9 +7,9 @@
 
 package guru.bug.austras.test.rest;
 
-import guru.bug.austras.web.BodyParam;
-import guru.bug.austras.web.Endpoint;
-import guru.bug.austras.web.PathParam;
+import guru.bug.austras.rest.BodyParam;
+import guru.bug.austras.rest.Endpoint;
+import guru.bug.austras.rest.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

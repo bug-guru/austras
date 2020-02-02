@@ -21,11 +21,11 @@
     <file url="file://$PROJECT_DIR$/austras-mapper-generator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-mapper/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-mapper/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-rest" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-rest/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/austras-rest/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/austras-test/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/austras-web" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/austras-web/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/austras-web/src/main/resources" charset="UTF-8" />
   </component>
 </project>
