@@ -24,10 +24,12 @@ import java.util.stream.StreamSupport;
 public abstract class EndpointHandler {
     private static final String ACCEPT_HEADER = "Accept";
     private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
-    private final List<PathItem> path;
+    private final List<PathItem> pathItems;
+    private final String path;
     private final String method;
 
-    protected EndpointHandler(String method, List<PathItem> path) {
+    protected EndpointHandler(String method, String path, List<PathItem> pathItems) {
+        this.pathItems = pathItems;
         this.path = path;
         this.method = Objects.requireNonNull(method).toUpperCase().intern();
     }
@@ -36,8 +38,8 @@ public abstract class EndpointHandler {
         return method;
     }
 
-    public final List<PathItem> getPath() {
-        return path;
+    public final List<PathItem> getPathItems() {
+        return pathItems;
     }
 
     protected final List<MediaType> getAcceptTypes(HttpServletRequest request) {

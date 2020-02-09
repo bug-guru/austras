@@ -16,11 +16,7 @@ import guru.bug.austras.startup.StartupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpFilter;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,21 +28,23 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Default
-public class RestServer extends HttpFilter implements StartupService {
-    private static final Logger log = LoggerFactory.getLogger(RestServer.class);
+public class RestHandlingServlet implements StartupService, Servlet {
+    private static final Logger log = LoggerFactory.getLogger(RestHandlingServlet.class);
     private static final String ACCEPT_HEADER = "Accept";
     private static final List<MediaType> WILDCARD_TYPE = List.of(MediaType.WILDCARD_TYPE);
     private final Collection<? extends EndpointHandler> endpoints;
+    private ServletConfig config;
 
-    public RestServer(Collection<? extends EndpointHandler> endpoints) {
+    public RestHandlingServlet(Collection<? extends EndpointHandler> endpoints) {
         this.endpoints = endpoints;
     }
 
     @Override
     public void initialize(ServletContext ctx) {
 
-        var registration = ctx.addFilter(getClass().getName(), this);
-        registration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+        var registration = ctx.addServlet(getClass().getName(), this);
+        registration.setLoadOnStartup(0);
+        registration.addMapping("/api/*");
 
         if (endpoints.isEmpty()) {
             log.warn("There are no endpoints found in the application");
@@ -63,15 +61,20 @@ public class RestServer extends HttpFilter implements StartupService {
 
 
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+        if (!(req instanceof HttpServletRequest && res instanceof HttpServletResponse)) {
+            throw new ServletException("Not HTTP");
+        }
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
         try {
-            var target = request.getServletPath();
+            var target = request.getPathInfo();
             var pathItems = PathSplitter.split(Function.identity(), target);
-            var handlerHolder = findHandler(request, pathItems);
+            var handlerHolder = findHandler(request, pathItems, target);
             handlerHolder.handle(request, response);
         } catch (HttpException e) {
             log.error("Handling HTTP Exception", e);
-            sendError(response, e.getStatusCode(), e.getMessage());
+            sendError(response, e.getStatusCode(), e.getHttpMessage());
         } catch (Exception e) {
             log.error("Handling unexpected exception", e);
             sendError(response, 500, "Unexpected server error");
@@ -83,7 +86,13 @@ public class RestServer extends HttpFilter implements StartupService {
             log.error("Cannot send error {} {} - response is already committed", code, message);
         } else try {
             response.reset();
-            response.sendError(code, message);
+            response.setStatus(code);
+            response.setContentType(MediaType.TEXT_PLAIN);
+            try (var out = response.getWriter()) {
+                out.print(code);
+                out.print(" - ");
+                out.print(message);
+            }
         } catch (Exception e) {
             log.error("Cannot send error " + code + " " + message + " - unexpected exception", e);
         }
@@ -101,32 +110,32 @@ public class RestServer extends HttpFilter implements StartupService {
         }
     }
 
-    EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems) throws HttpException {
+    EndpointHandlerHolder findHandler(HttpServletRequest request, List<String> pathItems, String target) throws HttpException {
         var method = request.getMethod().toUpperCase();
         var contentType = Optional.ofNullable(request.getContentType()).map(MediaType::valueOf).orElse(null);
         var acceptTypes = getAcceptTypes(request);
         log.debug("Searching a handler. Method: {}; contentType: {}; accepts types: {}", method, contentType, acceptTypes);
 
+        var byPathFilter = new Filter(c -> byPath(c, pathItems, target));
         var byMethodFilter = new Filter(c -> byMethod(c, method));
-        var byPathFilter = new Filter(c -> byPath(c, pathItems));
 
         var candidates = endpoints.stream()
                 .map(EndpointHandlerHolder::new)
-                .filter(byMethodFilter)
                 .filter(byPathFilter)
+                .filter(byMethodFilter)
                 .collect(Collectors.toList());
         if (candidates.size() > 1) {
             log.error("More than one candidate found {}", candidates);
             throw new MultipleChoicesException();
         }
         if (candidates.isEmpty()) {
-            byMethodFilter.throwIfNotPassed(() -> {
-                log.error("No handler found for HTTP method {}", method);
-                throw new MethodNotAllowedException();
-            });
             byPathFilter.throwIfNotPassed(() -> {
                 log.error("No handler found for path {}", pathItems);
                 throw new NotFoundException();
+            });
+            byMethodFilter.throwIfNotPassed(() -> {
+                log.error("No handler found for HTTP method {}", method);
+                throw new MethodNotAllowedException(method);
             });
         }
         var result = candidates.get(0);
@@ -134,13 +143,13 @@ public class RestServer extends HttpFilter implements StartupService {
         return result;
     }
 
-    private boolean byPath(EndpointHandlerHolder candidate, List<String> requestPath) {
-        if (candidate.handler.getPath().size() != requestPath.size()) {
+    private boolean byPath(EndpointHandlerHolder candidate, List<String> requestPathItems, String requestPath) {
+        if (candidate.handler.getPathItems().size() != requestPathItems.size()) {
             log.trace("Testing candidate: {}; path: {}}; passed: false", candidate.handler, requestPath);
             return false;
         }
-        Iterator<PathItem> resPathIterator = candidate.handler.getPath().iterator();
-        Iterator<String> requestPathIterator = requestPath.iterator();
+        Iterator<PathItem> resPathIterator = candidate.handler.getPathItems().iterator();
+        Iterator<String> requestPathIterator = requestPathItems.iterator();
         while (resPathIterator.hasNext()) {
             var resPathItem = resPathIterator.next();
             var requestPathItem = requestPathIterator.next();
@@ -161,6 +170,26 @@ public class RestServer extends HttpFilter implements StartupService {
         var result = candidate.handler.getMethod().equals(method);
         log.trace("Testing candidate: {}; Method: {}; passed: {}", candidate.handler, method, result);
         return result;
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        this.config = config;
+    }
+
+    @Override
+    public ServletConfig getServletConfig() {
+        return config;
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "austras-rest servlet";
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
 

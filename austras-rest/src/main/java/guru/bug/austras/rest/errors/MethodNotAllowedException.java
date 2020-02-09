@@ -12,4 +12,8 @@ public class MethodNotAllowedException extends HttpException {
     public MethodNotAllowedException() {
         super(405, "Method Not Allowed");
     }
+
+    public MethodNotAllowedException(String message) {
+        super(405, "Method Not Allowed", message);
+    }
 }

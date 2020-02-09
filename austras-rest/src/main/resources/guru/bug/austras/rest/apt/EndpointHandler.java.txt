@@ -25,7 +25,7 @@ public class $SIMPLE_NAME$ extends EndpointHandler {
         $DEPENDENCY_QUALIFIERS$ $DEPENDENCY_TYPE$ $DEPENDENCY_NAME$$,$
         #END#
     ) {
-        super("$METHOD$",
+        super("$METHOD$", "$PATH$",
                 List.of(
                     #PATH_ITEMS#
                         PathItem.$PATH_ITEM_TYPE$("$PATH_ITEM_VALUE$")$,$

@@ -28,10 +28,12 @@ public class TestControllerHandler extends EndpointHandler {
 
     public TestControllerHandler(@Any Selector<ContentConverter<MyDataObject>> resultConverterSelector) {
         super("POST",
+                "/test/group",
                 List.of(
                         PathItem.matching("test"),
                         PathItem.param("group")
                 )
+
         );
         this.resultConverterSelector = resultConverterSelector;
     }

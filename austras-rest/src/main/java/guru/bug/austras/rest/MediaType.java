@@ -38,6 +38,9 @@ public class MediaType {
         if (paramIdx != -1) { // TODO Deal with parameters
             mt = mt.substring(0, paramIdx);
         }
+        if ("*".equals(mt)) {
+            return MediaType.WILDCARD_TYPE;
+        }
         var sepIdx = mt.indexOf('/');
         if (sepIdx == -1) {
             throw new IllegalArgumentException("unsupported mediaType: " + mediaType);

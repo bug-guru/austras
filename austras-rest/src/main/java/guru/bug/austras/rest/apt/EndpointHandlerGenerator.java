@@ -44,6 +44,7 @@ public class EndpointHandlerGenerator extends JavaFileGenerator {
     private String endpointMethodName;
     private MethodParam currentMethodParam;
     private int successStatus;
+    private String path;
 
     protected EndpointHandlerGenerator(ProcessingContext ctx) {
         this.ctx = ctx;
@@ -76,6 +77,7 @@ public class EndpointHandlerGenerator extends JavaFileGenerator {
     public void processEndpointInfo(Endpoint endpointAnnotation) {
         this.httpMethod = endpointAnnotation.method().toUpperCase();
         this.pathItems = PathSplitter.split(PathItemRef::new, endpointAnnotation.path());
+        this.path = endpointAnnotation.path();
     }
 
     private void processParams(ExecutableElement methodElement) {
@@ -213,6 +215,11 @@ public class EndpointHandlerGenerator extends JavaFileGenerator {
         }
     }
 
+    @Template(name = "PATH")
+    public String getPath() {
+        return path;
+    }
+
     @Template(name = "PATH_ITEM_TYPE")
     public String getCurrentPathItemType() {
         return currentPathItem.getType();
@@ -283,7 +290,6 @@ public class EndpointHandlerGenerator extends JavaFileGenerator {
     public String getEndpointMethodParamExpression() {
         return currentMethodParam.expresion();
     }
-
 
 }
 
