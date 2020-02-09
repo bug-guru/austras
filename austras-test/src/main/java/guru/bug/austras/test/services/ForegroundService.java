@@ -12,6 +12,8 @@ import guru.bug.austras.test.broadcast.SenderStrComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
+
 
 public class ForegroundService implements StartupService, Runnable {
     private static final Logger log = LoggerFactory.getLogger(ForegroundService.class);
@@ -25,14 +27,14 @@ public class ForegroundService implements StartupService, Runnable {
 
 
     @Override
-    public void initialize() {
+    public void initialize(ServletContext ctx) {
         log.info("Starting foreground service");
         thread.start();
         log.info("Foreground service is started");
     }
 
     @Override
-    public void destroy() {
+    public void destroy(ServletContext ctx) {
         log.info("Stopping foreground service");
         if (interrupt) {
             log.warn("Already stopped");

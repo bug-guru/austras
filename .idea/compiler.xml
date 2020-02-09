@@ -16,6 +16,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="austras-convert-json" />
+        <module name="austras-test" />
         <module name="austras-convert" />
         <module name="austras-mapper" />
         <module name="austras-core" />
@@ -23,7 +24,6 @@
         <module name="austras-common" />
         <module name="austras-convert-plaintext" />
         <module name="austras-codegen" />
-        <module name="austras-test" />
         <module name="austras-rest" />
         <module name="austras-json" />
       </profile>
@@ -36,6 +36,7 @@
       <module name="austras-convert-json" target="11" />
       <module name="austras-convert-plaintext" target="11" />
       <module name="austras-core" target="11" />
+      <module name="austras-http-server" target="11" />
       <module name="austras-json" target="11" />
       <module name="austras-mapper" target="11" />
       <module name="austras-mapper-generator" target="11" />

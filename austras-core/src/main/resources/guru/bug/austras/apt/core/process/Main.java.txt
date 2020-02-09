@@ -5,12 +5,18 @@ java.util.Collection
 guru.bug.austras.core.Selector
 java.util.List
 guru.bug.austras.startup.ServiceManager
+javax.servlet.ServletContextListener
+javax.servlet.ServletContextEvent
+javax.servlet.annotation.WebListener
 #END#
 
-public class $SIMPLE_CLASS_NAME$ {
+@WebListener
+public class $SIMPLE_CLASS_NAME$ implements ServletContextListener {
     public static final Logger LOGGER = LoggerFactory.getLogger($QUALIFIED_CLASS_NAME$.class);
+    private ServiceManager $STARTER_COMPONENT_NAME$;
 
-    public static void main(String[] args) {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
         var _t1 = System.nanoTime();
         LOGGER.info("Application is starting up...");
         #COMPONENTS#
@@ -28,12 +34,19 @@ public class $SIMPLE_CLASS_NAME$ {
         #END#
         #END#
 
-        LOGGER.info("Starting up services...");
-        $STARTER_COMPONENT_NAME$.initAll();
+        LOGGER.info("Starting services...");
+        this.$STARTER_COMPONENT_NAME$ = $STARTER_COMPONENT_NAME$;
+        $STARTER_COMPONENT_NAME$.initAll(sce.getServletContext());
 
         var _t2 = System.nanoTime();
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Application is started up in {} ms", (_t2 - _t1) / 1_000_000.0);
         }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        LOGGER.info("Stopping services...");
+        $STARTER_COMPONENT_NAME$.destroyAll(sce.getServletContext());
     }
 }

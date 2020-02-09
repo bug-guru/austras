@@ -10,6 +10,7 @@ package guru.bug.austras.startup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,20 +26,19 @@ public class ServiceManager {
         this.services = services;
     }
 
-    public void initAll() {
-        Runtime.getRuntime().addShutdownHook(new Terminator());
+    public void initAll(ServletContext ctx) {
         if (services == null || services.isEmpty()) {
             log.info("No services found. Nothing to initialize.");
         } else {
             log.info("Initializing {} services", services.size());
-            services.forEach(this::init);
+            services.forEach(s -> init(s, ctx));
         }
     }
 
-    private void init(StartupService startupService) {
+    private void init(StartupService startupService, ServletContext ctx) {
         log.info("Initializing service {}", startupService.getClass().getName());
         try {
-            startupService.initialize();
+            startupService.initialize(ctx);
             initializedStartupServices.add(startupService);
         } catch (Exception e) {
             log.error(format("Error initializing service %s", startupService.getClass().getName()), e);
@@ -46,25 +46,19 @@ public class ServiceManager {
         }
     }
 
-    private class Terminator extends Thread {
-        private Terminator() {
-            super(ServiceManager.class.getSimpleName() + "-shutdown");
-        }
+    public void destroyAll(ServletContext ctx) {
+        log.info("Stopping {} services", initializedStartupServices.size());
+        initializedStartupServices.forEach(s -> destroy(s, ctx));
+        log.info("Application is stopped");
 
-        @Override
-        public void run() {
-            log.info("Stopping {} services", initializedStartupServices.size());
-            initializedStartupServices.forEach(this::destroy);
-            log.info("Application is stopped");
-        }
+    }
 
-        private void destroy(StartupService startupService) {
-            try {
-                log.info("Stopping service {}", startupService.getClass().getName());
-                startupService.destroy();
-            } catch (Exception e) {
-                log.error("Error stopping service " + startupService.getClass().getName(), e);
-            }
+    private void destroy(StartupService startupService, ServletContext ctx) {
+        try {
+            log.info("Stopping service {}", startupService.getClass().getName());
+            startupService.destroy(ctx);
+        } catch (Exception e) {
+            log.error("Error stopping service " + startupService.getClass().getName(), e);
         }
     }
 }

@@ -6,22 +6,17 @@
     </modules>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
-    <output url="file://$MODULE_DIR$/../austras-rest/target/classes" />
-    <output-test url="file://$MODULE_DIR$/../austras-rest/target/test-classes" />
-    <content url="file://$MODULE_DIR$/../austras-rest">
-      <sourceFolder url="file://$MODULE_DIR$/../austras-rest/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../austras-rest/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../austras-rest/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../austras-rest/target/generated-sources/annotations" isTestSource="false" generated="true" />
-      <excludeFolder url="file://$MODULE_DIR$/../austras-rest/target" />
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.26.v20200117" level="project" />
-    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:9.4.26.v20200117" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.26.v20200117" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.26.v20200117" level="project" />
     <orderEntry type="module" module-name="austras-core" />
     <orderEntry type="module" module-name="austras-common" />
     <orderEntry type="module" module-name="austras-json" />
@@ -31,6 +26,8 @@
     <orderEntry type="module" module-name="austras-convert" />
     <orderEntry type="module" module-name="austras-codegen" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:4.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.websocket:javax.websocket-api:1.1" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

@@ -41,11 +41,21 @@
                 <artifactId>commons-text</artifactId>
                 <version>1.8</version>
             </dependency>
+
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>9.4.26.v20200117</version>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>4.0.1</version>
+                <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-api</artifactId>
+                <version>1.1</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
@@ -65,8 +75,9 @@
         <module>austras-rest</module>
         <module>austras-mapper</module>
         <module>austras-test</module>
-        <module>austras-mapper-generator</module>
         <module>austras-common</module>
+        <!-- auxiliary modules -->
+        <module>austras-mapper-generator</module>
     </modules>
 
 </project>

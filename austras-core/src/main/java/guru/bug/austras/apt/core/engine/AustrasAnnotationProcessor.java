@@ -7,7 +7,6 @@
 
 package guru.bug.austras.apt.core.engine;
 
-import com.google.auto.service.AutoService;
 import guru.bug.austras.apt.core.ComponentMap;
 import guru.bug.austras.apt.core.ModelUtils;
 import guru.bug.austras.apt.core.UniqueNameGenerator;
@@ -41,7 +40,6 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
-@AutoService(Processor.class)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
     public static final String COMPONENTS_INDEX_FILE_NAME = "META-INF/components.json";
     public static final String PROCESSOR_PLUGIN_SERVICE_DIR_NAME = "META-INF/services/";

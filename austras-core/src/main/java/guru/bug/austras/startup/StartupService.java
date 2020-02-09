@@ -7,8 +7,10 @@
 
 package guru.bug.austras.startup;
 
-public interface StartupService {
-    void initialize();
+import javax.servlet.ServletContext;
 
-    void destroy();
+public interface StartupService {
+    void initialize(ServletContext ctx);
+
+    void destroy(ServletContext ctx);
 }

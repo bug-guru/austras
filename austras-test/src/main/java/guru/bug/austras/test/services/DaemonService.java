@@ -12,6 +12,8 @@ import guru.bug.austras.test.broadcast.SenderVoidComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
+
 public class DaemonService implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(DaemonService.class);
     private final SenderVoidComponent sender;
@@ -22,13 +24,13 @@ public class DaemonService implements StartupService {
 
 
     @Override
-    public void initialize() {
+    public void initialize(ServletContext ctx) {
         log.info("DAEMON SERVICE INITIALIZED!");
         sender.sendNotification();
     }
 
     @Override
-    public void destroy() {
+    public void destroy(ServletContext ctx) {
         sender.sendNotification();
         log.info("DAEMON SERVICE DESTROYED!");
     }

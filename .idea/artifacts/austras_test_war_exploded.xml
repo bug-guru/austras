@@ -1,0 +1,57 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="austras-test:war exploded">
+    <output-path>$PROJECT_DIR$/austras-test/target/austras-test-1.0-SNAPSHOT</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>austras-test</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="austras-test" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="archive" name="austras-convert-json-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-convert-json" />
+          </element>
+          <element id="archive" name="austras-json-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-json" />
+          </element>
+          <element id="archive" name="austras-codegen-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-codegen" />
+          </element>
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.30" />
+          <element id="archive" name="austras-convert-plaintext-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-convert-plaintext" />
+          </element>
+          <element id="archive" name="austras-convert-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-convert" />
+          </element>
+          <element id="archive" name="austras-core-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-core" />
+          </element>
+          <element id="archive" name="austras-common-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-common" />
+          </element>
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-text:1.8" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.9" />
+          <element id="archive" name="austras-rest-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-rest" />
+          </element>
+          <element id="archive" name="austras-mapper-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="austras-mapper" />
+          </element>
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.2.3" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.2.3" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/austras-test/target/austras-test-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="austras-test/web/Web" />
+    </root>
+  </artifact>
+</component>
