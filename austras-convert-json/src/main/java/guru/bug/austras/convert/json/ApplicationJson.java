@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Qualifier(name = Converts.QUALIFIER_NAME, properties = @QualifierProperty(name = Converts.PROPERTY_TYPE, value = "application/json"))
+@Qualifier(name = Converts.QUALIFIER_NAME, properties = @QualifierProperty(name = Converts.PROPERTY_TYPE, value = ApplicationJson.CONTENT_TYPE))
 public @interface ApplicationJson {
+    String CONTENT_TYPE = "application/json";
 }

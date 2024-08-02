@@ -39,7 +39,7 @@ import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class AustrasAnnotationProcessor extends AbstractProcessor {
     public static final String COMPONENTS_INDEX_FILE_NAME = "META-INF/components.json";
     public static final String PROCESSOR_PLUGIN_SERVICE_DIR_NAME = "META-INF/services/";

@@ -20,7 +20,7 @@ class BigIntegerJsonConverterTest extends JsonConverterTestBase {
     @Test
     void toJson() {
         assertEquals("123456",
-                toJson(writer -> converter.toJson(BigInteger.valueOf(1234567890), writer)));
+                toJson(writer -> converter.toJson(BigInteger.valueOf(123456), writer)));
     }
 
     @Test

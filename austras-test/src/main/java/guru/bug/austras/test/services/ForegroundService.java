@@ -12,7 +12,7 @@ import guru.bug.austras.test.broadcast.SenderStrComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 
 public class ForegroundService implements StartupService, Runnable {

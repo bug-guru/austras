@@ -2,9 +2,9 @@
 guru.bug.austras.rest.EndpointHandler
 guru.bug.austras.rest.MediaType
 guru.bug.austras.rest.PathItem
-javax.servlet.ServletException
-javax.servlet.http.HttpServletRequest
-javax.servlet.http.HttpServletResponse
+jakarta.servlet.ServletException
+jakarta.servlet.http.HttpServletRequest
+jakarta.servlet.http.HttpServletResponse
 java.io.IOException
 java.util.List
 java.util.Map

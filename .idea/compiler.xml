@@ -2,46 +2,31 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true">
-        <processorPath>
-          <entry name="$PROJECT_DIR$/austras-convert-apt" />
-          <entry name="$PROJECT_DIR$/austras-core" />
-          <entry name="$PROJECT_DIR$/austras-core-apt" />
-          <entry name="$PROJECT_DIR$/austras-web-apt" />
-          <entry name="$PROJECT_DIR$/austras-codegen" />
-        </processorPath>
-      </profile>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="austras-convert-json" />
-        <module name="austras-test" />
-        <module name="austras-convert" />
-        <module name="austras-mapper" />
-        <module name="austras-core" />
         <module name="austras-mapper-generator" />
         <module name="austras-common" />
-        <module name="austras-convert-plaintext" />
-        <module name="austras-codegen" />
+        <module name="austras-core" />
+        <module name="austras-convert" />
+        <module name="austras-convert-json" />
+        <module name="austras-test" />
         <module name="austras-rest" />
+        <module name="austras-convert-plaintext" />
         <module name="austras-json" />
+        <module name="austras-mapper" />
+        <module name="austras-codegen" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="austras" target="11" />
-      <module name="austras-codegen" target="11" />
-      <module name="austras-common" target="11" />
-      <module name="austras-convert" target="11" />
-      <module name="austras-convert-json" target="11" />
-      <module name="austras-convert-plaintext" target="11" />
-      <module name="austras-core" target="11" />
-      <module name="austras-http-server" target="11" />
-      <module name="austras-json" target="11" />
-      <module name="austras-mapper" target="11" />
-      <module name="austras-mapper-generator" target="11" />
-      <module name="austras-rest" target="11" />
-      <module name="austras-test" target="11" />
+      <module name="austras-containerizer" target="11" />
+      <module name="austras-servlets" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="austras-containerizer" options="--add-modules jdk.compiler --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED" />
+    </option>
   </component>
 </project>

@@ -5,9 +5,9 @@ java.util.Collection
 guru.bug.austras.core.Selector
 java.util.List
 guru.bug.austras.startup.ServiceManager
-javax.servlet.ServletContextListener
-javax.servlet.ServletContextEvent
-javax.servlet.annotation.WebListener
+jakarta.servlet.ServletContextListener
+jakarta.servlet.ServletContextEvent
+jakarta.servlet.annotation.WebListener
 #END#
 
 @WebListener

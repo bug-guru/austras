@@ -12,7 +12,7 @@ import guru.bug.austras.test.broadcast.SenderVoidComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 public class DaemonService implements StartupService {
     private static final Logger log = LoggerFactory.getLogger(DaemonService.class);

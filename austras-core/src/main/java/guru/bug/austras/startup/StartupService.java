@@ -7,7 +7,7 @@
 
 package guru.bug.austras.startup;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 public interface StartupService {
     void initialize(ServletContext ctx);

@@ -16,9 +16,9 @@ import guru.bug.austras.rest.errors.HttpException;
 import guru.bug.austras.rest.errors.NotAcceptableException;
 import guru.bug.austras.rest.errors.NotFoundException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

@@ -13,12 +13,12 @@ import guru.bug.austras.rest.errors.MethodNotAllowedException;
 import guru.bug.austras.rest.errors.MultipleChoicesException;
 import guru.bug.austras.rest.errors.NotFoundException;
 import guru.bug.austras.startup.StartupService;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
@@ -62,11 +62,10 @@ public class RestHandlingServlet implements StartupService, Servlet {
 
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        if (!(req instanceof HttpServletRequest && res instanceof HttpServletResponse)) {
+        if (!(req instanceof HttpServletRequest request &&
+                res instanceof HttpServletResponse response)) {
             throw new ServletException("Not HTTP");
         }
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
         try {
             var target = request.getPathInfo();
             var pathItems = PathSplitter.split(Function.identity(), target);
@@ -94,7 +93,7 @@ public class RestHandlingServlet implements StartupService, Servlet {
                 out.print(message);
             }
         } catch (Exception e) {
-            log.error("Cannot send error " + code + " " + message + " - unexpected exception", e);
+            log.error("Cannot send error {} {} - unexpected exception", code, message, e);
         }
     }
 
